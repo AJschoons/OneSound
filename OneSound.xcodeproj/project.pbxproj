@@ -12,7 +12,10 @@
 		81062FAC196B6C7E0057D230 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 81062FAB196B6C7E0057D230 /* Images.xcassets */; };
 		81062FB8196B6C7E0057D230 /* OneSoundTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81062FB7196B6C7E0057D230 /* OneSoundTests.swift */; };
 		81062FC2196B6DAA0057D230 /* TestViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81062FC1196B6DAA0057D230 /* TestViewController.swift */; };
+		81527128196C5A8E00464068 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81527127196C5A8E00464068 /* User.swift */; };
 		81929C86196B7973006F336B /* SwiftyJSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81929C85196B7973006F336B /* SwiftyJSON.swift */; };
+		81929C88196C2C2C006F336B /* OneSoundHTTPClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81929C87196C2C2C006F336B /* OneSoundHTTPClient.swift */; };
+		81929C8A196C35FA006F336B /* SwiftUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81929C89196C35FA006F336B /* SwiftUtilities.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -36,9 +39,12 @@
 		81062FB6196B6C7E0057D230 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		81062FB7196B6C7E0057D230 /* OneSoundTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OneSoundTests.swift; sourceTree = "<group>"; };
 		81062FC1196B6DAA0057D230 /* TestViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestViewController.swift; sourceTree = "<group>"; };
+		81527127196C5A8E00464068 /* User.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		81929C81196B71F3006F336B /* OneSound-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "OneSound-Bridging-Header.h"; sourceTree = "<group>"; };
 		81929C84196B736B006F336B /* Podfile */ = {isa = PBXFileReference; lastKnownFileType = text; path = Podfile; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		81929C85196B7973006F336B /* SwiftyJSON.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SwiftyJSON.swift; path = "../../../../../../Downloads/SwiftyJSON-master/SwiftyJSON/SwiftyJSON.swift"; sourceTree = "<group>"; };
+		81929C87196C2C2C006F336B /* OneSoundHTTPClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OneSoundHTTPClient.swift; sourceTree = "<group>"; };
+		81929C89196C35FA006F336B /* SwiftUtilities.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SwiftUtilities.swift; path = ../../../../../Swift/SwiftUtilities.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -84,12 +90,15 @@
 		81062F9F196B6C7E0057D230 /* OneSound */ = {
 			isa = PBXGroup;
 			children = (
-				81929C85196B7973006F336B /* SwiftyJSON.swift */,
 				81062FA2196B6C7E0057D230 /* AppDelegate.swift */,
+				81929C85196B7973006F336B /* SwiftyJSON.swift */,
+				81929C87196C2C2C006F336B /* OneSoundHTTPClient.swift */,
 				81062FC1196B6DAA0057D230 /* TestViewController.swift */,
 				81062FAB196B6C7E0057D230 /* Images.xcassets */,
 				81062FA0196B6C7E0057D230 /* Supporting Files */,
 				81929C81196B71F3006F336B /* OneSound-Bridging-Header.h */,
+				81929C89196C35FA006F336B /* SwiftUtilities.swift */,
+				81527127196C5A8E00464068 /* User.swift */,
 			);
 			path = OneSound;
 			sourceTree = "<group>";
@@ -262,6 +271,9 @@
 			files = (
 				81929C86196B7973006F336B /* SwiftyJSON.swift in Sources */,
 				81062FA3196B6C7E0057D230 /* AppDelegate.swift in Sources */,
+				81527128196C5A8E00464068 /* User.swift in Sources */,
+				81929C8A196C35FA006F336B /* SwiftUtilities.swift in Sources */,
+				81929C88196C2C2C006F336B /* OneSoundHTTPClient.swift in Sources */,
 				81062FC2196B6DAA0057D230 /* TestViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

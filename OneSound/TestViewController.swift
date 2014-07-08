@@ -9,26 +9,42 @@
 import UIKit
 
 class TestViewController: UIViewController {
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
-    }
-
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
+        
+        for i in 1...4 {
+            OSAPI.sharedAPI.GETUser(i,
+                success: { data, responseObject in
+                    let responseJSON = JSONValue(responseObject)
+                    println(responseJSON)
+                },
+                failure: defaultAFHTTPFailureBlock
+            )
+        }
+        /*
+        for i in 1...4 {
+            OSAPI.sharedAPI.GETUserFollowing(i,
+                success: { data, responseObject in
+                    let responseJSON = JSONValue(responseObject)
+                    println(responseJSON)
+                },
+                failure: defaultAFHTTPFailureBlock
+            )
+        }
+        
+        for i in 1...4 {
+            OSAPI.sharedAPI.GETUserFollowers(i,
+                success: { data, responseObject in
+                    let responseJSON = JSONValue(responseObject)
+                    println(responseJSON)
+                },
+                failure: defaultAFHTTPFailureBlock
+            )
+        }
+        */
     
-
-    /*
-    // #pragma mark - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepareForSegue(segue: UIStoryboardSegue!, sender: AnyObject!) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
     }
-    */
 
 }
