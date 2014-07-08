@@ -12,18 +12,30 @@ import UIKit
 class AppDelegate: UIResponder, UIApplicationDelegate {
                             
     var window: UIWindow?
-
+    var viewController: SWRevealViewController?
 
     func application(application: UIApplication!, didFinishLaunchingWithOptions launchOptions: NSDictionary!) -> Bool {
         window = UIWindow(frame: UIScreen.mainScreen().bounds)
         
         // Override point for customization after application launch.
         
-        let test = TestViewController()
-        let nav = UINavigationController(rootViewController: test)
-        window!.rootViewController = nav
+        //let test = TestViewController()
+        //let nav = UINavigationController(rootViewController: test)
         
-        window!.backgroundColor = UIColor.whiteColor()
+        let frontViewController = FrontViewController()
+        let rearViewController = RearViewController()
+        
+        let frontNavigationController = UINavigationController(rootViewController: frontViewController)
+        let rearNavigationController = UINavigationController(rootViewController: rearViewController)
+        
+        let revealController = SWRevealViewController(rearViewController: rearViewController, frontViewController: frontNavigationController)
+        
+        revealController.delegate = self
+        viewController = revealController
+        
+        window!.rootViewController = viewController
+        
+        //window!.backgroundColor = UIColor.whiteColor()
         window!.makeKeyAndVisible()
         
         AFNetworkActivityIndicatorManager.sharedManager().enabled = true
@@ -54,5 +66,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
 
+}
+
+extension AppDelegate: SWRevealViewControllerDelegate {
+    
 }
 
