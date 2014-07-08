@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0C5C4B89C9B444C983D44940 /* libPods-OneSound.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 52F652D4E9264838BE2D4D5C /* libPods-OneSound.a */; };
 		81062FA3196B6C7E0057D230 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81062FA2196B6C7E0057D230 /* AppDelegate.swift */; };
 		81062FAC196B6C7E0057D230 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 81062FAB196B6C7E0057D230 /* Images.xcassets */; };
 		81062FB8196B6C7E0057D230 /* OneSoundTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81062FB7196B6C7E0057D230 /* OneSoundTests.swift */; };
@@ -24,6 +25,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		2B74F56C655F4716852A0B36 /* Pods-OneSound.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-OneSound.xcconfig"; path = "Pods/Pods-OneSound.xcconfig"; sourceTree = "<group>"; };
+		52F652D4E9264838BE2D4D5C /* libPods-OneSound.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-OneSound.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		81062F9D196B6C7E0057D230 /* OneSound.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OneSound.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		81062FA1196B6C7E0057D230 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		81062FA2196B6C7E0057D230 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -32,6 +35,8 @@
 		81062FB6196B6C7E0057D230 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		81062FB7196B6C7E0057D230 /* OneSoundTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OneSoundTests.swift; sourceTree = "<group>"; };
 		81062FC1196B6DAA0057D230 /* TestViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestViewController.swift; sourceTree = "<group>"; };
+		81929C81196B71F3006F336B /* OneSound-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "OneSound-Bridging-Header.h"; sourceTree = "<group>"; };
+		81929C84196B736B006F336B /* Podfile */ = {isa = PBXFileReference; lastKnownFileType = text; path = Podfile; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -39,6 +44,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0C5C4B89C9B444C983D44940 /* libPods-OneSound.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -55,9 +61,12 @@
 		81062F94196B6C7E0057D230 = {
 			isa = PBXGroup;
 			children = (
+				81929C84196B736B006F336B /* Podfile */,
 				81062F9F196B6C7E0057D230 /* OneSound */,
 				81062FB4196B6C7E0057D230 /* OneSoundTests */,
 				81062F9E196B6C7E0057D230 /* Products */,
+				2B74F56C655F4716852A0B36 /* Pods-OneSound.xcconfig */,
+				F0954DF62FE441E2A671CB82 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -77,6 +86,7 @@
 				81062FC1196B6DAA0057D230 /* TestViewController.swift */,
 				81062FAB196B6C7E0057D230 /* Images.xcassets */,
 				81062FA0196B6C7E0057D230 /* Supporting Files */,
+				81929C81196B71F3006F336B /* OneSound-Bridging-Header.h */,
 			);
 			path = OneSound;
 			sourceTree = "<group>";
@@ -106,6 +116,14 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
+		F0954DF62FE441E2A671CB82 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				52F652D4E9264838BE2D4D5C /* libPods-OneSound.a */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -113,9 +131,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 81062FBB196B6C7E0057D230 /* Build configuration list for PBXNativeTarget "OneSound" */;
 			buildPhases = (
+				205EC9B4E71C4A5882214705 /* Check Pods Manifest.lock */,
 				81062F99196B6C7E0057D230 /* Sources */,
 				81062F9A196B6C7E0057D230 /* Frameworks */,
 				81062F9B196B6C7E0057D230 /* Resources */,
+				FBAECF98FB8E476DADF83FAD /* Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -198,6 +218,39 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		205EC9B4E71C4A5882214705 /* Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		FBAECF98FB8E476DADF83FAD /* Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Pods-OneSound-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		81062F99196B6C7E0057D230 /* Sources */ = {
@@ -309,25 +362,32 @@
 		};
 		81062FBC196B6C7E0057D230 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 2B74F56C655F4716852A0B36 /* Pods-OneSound.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CLANG_ENABLE_MODULES = YES;
 				INFOPLIST_FILE = OneSound/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "OneSound/OneSound-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
 			name = Debug;
 		};
 		81062FBD196B6C7E0057D230 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 2B74F56C655F4716852A0B36 /* Pods-OneSound.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CLANG_ENABLE_MODULES = YES;
 				INFOPLIST_FILE = OneSound/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "OneSound/OneSound-Bridging-Header.h";
 			};
 			name = Release;
 		};
@@ -384,6 +444,7 @@
 				81062FBD196B6C7E0057D230 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		81062FBE196B6C7E0057D230 /* Build configuration list for PBXNativeTarget "OneSoundTests" */ = {
 			isa = XCConfigurationList;
@@ -392,6 +453,7 @@
 				81062FC0196B6C7E0057D230 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
