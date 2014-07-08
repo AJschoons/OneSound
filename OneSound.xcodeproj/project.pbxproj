@@ -12,6 +12,7 @@
 		81062FAC196B6C7E0057D230 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 81062FAB196B6C7E0057D230 /* Images.xcassets */; };
 		81062FB8196B6C7E0057D230 /* OneSoundTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81062FB7196B6C7E0057D230 /* OneSoundTests.swift */; };
 		81062FC2196B6DAA0057D230 /* TestViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81062FC1196B6DAA0057D230 /* TestViewController.swift */; };
+		81929C86196B7973006F336B /* SwiftyJSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81929C85196B7973006F336B /* SwiftyJSON.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -37,6 +38,7 @@
 		81062FC1196B6DAA0057D230 /* TestViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestViewController.swift; sourceTree = "<group>"; };
 		81929C81196B71F3006F336B /* OneSound-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "OneSound-Bridging-Header.h"; sourceTree = "<group>"; };
 		81929C84196B736B006F336B /* Podfile */ = {isa = PBXFileReference; lastKnownFileType = text; path = Podfile; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
+		81929C85196B7973006F336B /* SwiftyJSON.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SwiftyJSON.swift; path = "../../../../../../Downloads/SwiftyJSON-master/SwiftyJSON/SwiftyJSON.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -82,6 +84,7 @@
 		81062F9F196B6C7E0057D230 /* OneSound */ = {
 			isa = PBXGroup;
 			children = (
+				81929C85196B7973006F336B /* SwiftyJSON.swift */,
 				81062FA2196B6C7E0057D230 /* AppDelegate.swift */,
 				81062FC1196B6DAA0057D230 /* TestViewController.swift */,
 				81062FAB196B6C7E0057D230 /* Images.xcassets */,
@@ -257,6 +260,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				81929C86196B7973006F336B /* SwiftyJSON.swift in Sources */,
 				81062FA3196B6C7E0057D230 /* AppDelegate.swift in Sources */,
 				81062FC2196B6DAA0057D230 /* TestViewController.swift in Sources */,
 			);
