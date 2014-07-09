@@ -9,35 +9,28 @@
 import UIKit
 
 class FrontViewController: UIViewController {
-
+    
+    let overlay = UIView()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
         
+        overlay.frame = CGRectMake(0, 0, UIScreen.mainScreen().bounds.width, UIScreen.mainScreen().bounds.height)
+        overlay.backgroundColor = UIColor.blackColor()
+        overlay.alpha = 0.0
+        view.addSubview(overlay)
+        
         title = "Front View"
         
         let revealController = revealViewController()
-        
         revealController.panGestureRecognizer()
         revealController.tapGestureRecognizer()
         let revealButtonItem = UIBarButtonItem(image: UIImage(named: "List.png"), style: UIBarButtonItemStyle.Plain, target: revealController, action: "revealToggle:")
         navigationItem.leftBarButtonItem = revealButtonItem
+        
+        navigationController.navigationBar.barTintColor = UIColor.whiteColor()
+        navigationController.navigationBar.translucent = false
     }
-
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
-    
-
-    /*
-    // #pragma mark - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepareForSegue(segue: UIStoryboardSegue!, sender: AnyObject!) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
-    }
-    */
 
 }
