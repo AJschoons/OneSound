@@ -89,7 +89,7 @@ extension AppDelegate: SWRevealViewControllerDelegate {
             printlnC(pL, pG, "animate side nav to VISIBLE")
             
             if let fnc = revealController.frontViewController as? FrontNavigationControllerWithOverlay {
-                UIApplication.sharedApplication().setStatusBarHidden(true, withAnimation: UIStatusBarAnimation.Slide)
+                //UIApplication.sharedApplication().setStatusBarHidden(true, withAnimation: UIStatusBarAnimation.Slide)
                 UIView.animateWithDuration(revealController.toggleAnimationDuration, animations: {
                     fnc.setOverlayAlpha(0.5)
                     })
@@ -98,7 +98,7 @@ extension AppDelegate: SWRevealViewControllerDelegate {
             // If will move to hide side nav
             printlnC(pL, pG, "animate side nav to HIDDEN")
             if let fnc = revealController.frontViewController as? FrontNavigationControllerWithOverlay {
-                UIApplication.sharedApplication().setStatusBarHidden(false, withAnimation: UIStatusBarAnimation.Slide)
+                //UIApplication.sharedApplication().setStatusBarHidden(false, withAnimation: UIStatusBarAnimation.Slide)
                 UIView.animateWithDuration(revealController.toggleAnimationDuration, animations: {
                         fnc.setOverlayAlpha(0.0)
                     })
@@ -125,7 +125,7 @@ extension AppDelegate: SWRevealViewControllerDelegate {
             if pgVelocity.x > 0 {
                 // If side nav is hidden and pan gesture is to the right side, hide the status bar
                 // Fixes bug where swiping left while side nav is hidden still hides the status bar
-                UIApplication.sharedApplication().setStatusBarHidden(true, withAnimation: UIStatusBarAnimation.Slide)
+                //UIApplication.sharedApplication().setStatusBarHidden(true, withAnimation: UIStatusBarAnimation.Slide)
             }
         } else if location >= revealController.rearViewRevealWidth / 2.0 {
             // If pan began with side nav visible, set the most recent pan start to FrontViewPositionRight
@@ -165,3 +165,4 @@ extension AppDelegate: SWRevealViewControllerDelegate {
         }
     }
 }
+    

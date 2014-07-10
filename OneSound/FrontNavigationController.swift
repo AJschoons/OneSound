@@ -27,7 +27,7 @@ class FrontNavigationController: UINavigationController {
         // Make it 20 px smaller to account for status bar
         //view.frame = CGRectMake(0, 20, view.frame.width, view.frame.height - 20.0)
         
-        overlay.frame = CGRectMake(0, 0, UIScreen.mainScreen().bounds.height, UIScreen.mainScreen().bounds.height)
+        overlay.frame = CGRectMake(0, 20, UIScreen.mainScreen().bounds.height, UIScreen.mainScreen().bounds.height - 20)
         overlay.backgroundColor = UIColor.blackColor()
         overlay.alpha = 0.0
         view.addSubview(overlay)
