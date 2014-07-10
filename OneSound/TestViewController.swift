@@ -14,6 +14,8 @@ class TestViewController: UIViewController {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
         
+        view.backgroundColor = UIColor.blueColor()
+        /*
         for i in 1...4 {
             OSAPI.sharedAPI.GETUser(i,
                 success: { data, responseObject in
@@ -23,6 +25,8 @@ class TestViewController: UIViewController {
                 failure: defaultAFHTTPFailureBlock
             )
         }
+        */
+        
         /*
         for i in 1...4 {
             OSAPI.sharedAPI.GETUserFollowing(i,
@@ -45,6 +49,10 @@ class TestViewController: UIViewController {
         }
         */
     
+    }
+    
+    override func touchesBegan(touches: NSSet!, withEvent event: UIEvent!) {
+        dismissViewControllerAnimated(true, completion: nil)
     }
 
 }

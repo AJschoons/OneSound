@@ -15,7 +15,7 @@ var pG = false
 class AppDelegate: UIResponder, UIApplicationDelegate {
                             
     var window: UIWindow?
-    var statusBarBackground: UIWindow?
+    //var statusBarBackground: UIWindow?
     var viewController: SWRevealViewController?
     var panGestureStartedFrom: UInt32 = 1000000 // 1000000 so it won't init as an enum val
     
@@ -24,41 +24,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(application: UIApplication!, didFinishLaunchingWithOptions launchOptions: NSDictionary!) -> Bool {
         window = UIWindow(frame: UIScreen.mainScreen().bounds)
-        // Override point for customization after application launch.
         
-        // Make the status bar behave like in iOS6 so it can be hidden but still 
-        // retain space above the navigation controller for when side nav is visible
-        // See: http://stackoverflow.com/questions/18294872/ios-7-status-bar-back-to-ios-6-default-style-in-iphone-app/18855464#18855464
-        // Check if iOS7 or greater
-        if (UIDevice.currentDevice().systemVersion as NSString).floatValue >= 7 {
-            // Set status bar to be default w/ black icons and text
-            application.setStatusBarStyle(UIStatusBarStyle.Default, animated: true)
-            
-            // Avoid subviews whose frames extend beyond the visible bounds from showing up
-            // (for views animating into the main view from top)
-            // Commented out because interfered with SideNav
-            //window!.clipsToBounds = true
-            
-            // Create the illusion that the status bar takes up space like how it is in iOS 6 
-            // by shifting and resizing the app's window frame
-            window!.frame = CGRectMake(0, 20, window!.frame.size.width, window!.frame.size.height - 20)
-            
-            // Fixes scaling bugs (appearently)
-            window!.bounds = CGRectMake(0, 20, window!.frame.size.width, window!.frame.size.height)
-            
-            // Create a separate status bar background window to edit color
-            statusBarBackground = UIWindow(frame: CGRectMake(0, 0, window!.frame.size.width, 20))
-            statusBarBackground!.backgroundColor = UIColor.whiteColor()
-            statusBarBackground!.hidden = false
-            
-            // For reacting to screen rotation changes
-            NSNotificationCenter.defaultCenter().addObserver(self, selector: "applicationDidChangeStatusBarOrientation:", name: UIApplicationDidChangeStatusBarOrientationNotification, object: nil)
-        }
+        // Override point for customization after application launch.
         
         let frontViewController = FrontViewController()
         let rearViewController = SideNavigationViewController()
         
-        let frontNavigationController = FrontNavigationControllerWithoutTabs(rootViewController: frontViewController)
+        let frontNavigationController = FrontNavigationController(rootViewController: frontViewController)
+        
         let rearNavigationController = UINavigationController(rootViewController: rearViewController)
         
         let revealController = SWRevealViewController(rearViewController: rearViewController, frontViewController: frontNavigationController)
@@ -136,7 +109,8 @@ extension AppDelegate: SWRevealViewControllerDelegate {
     func revealController(revealController: SWRevealViewController, panGestureMovedToLocation location: CGFloat, progress: CGFloat) {
         if let fnc = revealController.frontViewController as? FrontNavigationControllerWithOverlay {
             UIView.animateWithDuration(0.03, animations: {
-                fnc.setOverlayAlpha(customCurveEaseInOut(progress) / 2.0)
+                let progressDouble = Double(progress)
+                fnc.setOverlayAlpha(CGFloat(customCurveEaseInOut(progressDouble)) / 2.0)
                 })
         }
     }
@@ -146,7 +120,13 @@ extension AppDelegate: SWRevealViewControllerDelegate {
             // If pan began with side nav hidden, set the most recent pan start to FrontViewPositionLeft
             printlnC(pL, pG, "pan began with side nav HIDDEN")
             panGestureStartedFrom = FrontViewPositionLeft.value
-            UIApplication.sharedApplication().setStatusBarHidden(true, withAnimation: UIStatusBarAnimation.Slide)
+            
+            let pgVelocity = revealController.panGestureRecognizer().velocityInView(revealController.frontViewController.view)
+            if pgVelocity.x > 0 {
+                // If side nav is hidden and pan gesture is to the right side, hide the status bar
+                // Fixes bug where swiping left while side nav is hidden still hides the status bar
+                UIApplication.sharedApplication().setStatusBarHidden(true, withAnimation: UIStatusBarAnimation.Slide)
+            }
         } else if location >= revealController.rearViewRevealWidth / 2.0 {
             // If pan began with side nav visible, set the most recent pan start to FrontViewPositionRight
             printlnC(pL, pG, "pan began with side nav VISIBLE")
@@ -156,7 +136,7 @@ extension AppDelegate: SWRevealViewControllerDelegate {
     
     func revealController(revealController: SWRevealViewController, panGestureEndedToLocation location: CGFloat, progress: CGFloat) {
         // Seems that this is the val SFReveal uses to decide where a paritally moved pan should go
-        let criticalWidthDenom = 2.0
+        let criticalWidthDenom = CGFloat(2.0)
         
         if panGestureStartedFrom == FrontViewPositionLeft.value {
             // If pan started with side nav HIDDEN
@@ -184,10 +164,4 @@ extension AppDelegate: SWRevealViewControllerDelegate {
             }
         }
     }
-}
-
-extension AppDelegate {
-    // MARK: Responding to status bar changing because of screen orientation
-    
-    
 }

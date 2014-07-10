@@ -11,16 +11,16 @@ import UIKit
 class FrontViewController: UIViewController {
     
     let overlay = UIView()
+    var pL = true
+    
+    @IBAction func modal(sender: AnyObject) {
+        presentViewController(TestViewController(), animated: true, completion: nil)
+    }
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
-        
-        overlay.frame = CGRectMake(0, 0, UIScreen.mainScreen().bounds.width, UIScreen.mainScreen().bounds.height)
-        overlay.backgroundColor = UIColor.blackColor()
-        overlay.alpha = 0.0
-        view.addSubview(overlay)
-        
         title = "Front View"
         
         let revealController = revealViewController()
@@ -29,8 +29,11 @@ class FrontViewController: UIViewController {
         let revealButtonItem = UIBarButtonItem(image: UIImage(named: "List.png"), style: UIBarButtonItemStyle.Plain, target: revealController, action: "revealToggle:")
         navigationItem.leftBarButtonItem = revealButtonItem
         
-        navigationController.navigationBar.barTintColor = UIColor.whiteColor()
-        navigationController.navigationBar.translucent = false
+        /*
+        let nameMap = ["navBar" : navigationController.navigationBar, "topGuide" : topLayoutGuide]
+        let constraints = NSLayoutConstraint.constraintsWithVisualFormat("V:[topGuide]-20-[navBar]", options: nil, metrics: nil, views: nameMap)
+        view.addConstraints(constraints)
+        */
     }
-
 }
+

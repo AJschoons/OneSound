@@ -13,14 +13,17 @@
 		81062FB8196B6C7E0057D230 /* OneSoundTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81062FB7196B6C7E0057D230 /* OneSoundTests.swift */; };
 		81062FC2196B6DAA0057D230 /* TestViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81062FC1196B6DAA0057D230 /* TestViewController.swift */; };
 		81527128196C5A8E00464068 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81527127196C5A8E00464068 /* User.swift */; };
-		81751FEF196D253900B9F9A9 /* FrontNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81751FEE196D253900B9F9A9 /* FrontNavigationController.swift */; };
 		81751FF2196DB56600B9F9A9 /* SideNavigationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81751FF0196DB56600B9F9A9 /* SideNavigationViewController.swift */; };
 		81751FF3196DB56600B9F9A9 /* SideNavigationViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 81751FF1196DB56600B9F9A9 /* SideNavigationViewController.xib */; };
+		81751FF5196DEB0F00B9F9A9 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 81751FF4196DEB0F00B9F9A9 /* Foundation.framework */; };
+		81751FF7196DEB1D00B9F9A9 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 81751FF6196DEB1D00B9F9A9 /* UIKit.framework */; };
 		81929C86196B7973006F336B /* SwiftyJSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81929C85196B7973006F336B /* SwiftyJSON.swift */; };
 		81929C88196C2C2C006F336B /* OneSoundHTTPClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81929C87196C2C2C006F336B /* OneSoundHTTPClient.swift */; };
 		81929C8A196C35FA006F336B /* SwiftUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81929C89196C35FA006F336B /* SwiftUtilities.swift */; };
 		81936FC8196C656F005E42F4 /* FrontViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81936FC6196C656F005E42F4 /* FrontViewController.swift */; };
 		81936FC9196C656F005E42F4 /* FrontViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 81936FC7196C656F005E42F4 /* FrontViewController.xib */; };
+		81DF03C0196E00A5003FB84F /* FrontNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81DF03BE196E00A5003FB84F /* FrontNavigationController.swift */; };
+		81DF03C3196E14B3003FB84F /* FrontNavigationController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 81DF03C2196E14B3003FB84F /* FrontNavigationController.xib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -45,9 +48,10 @@
 		81062FB7196B6C7E0057D230 /* OneSoundTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OneSoundTests.swift; sourceTree = "<group>"; };
 		81062FC1196B6DAA0057D230 /* TestViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestViewController.swift; sourceTree = "<group>"; };
 		81527127196C5A8E00464068 /* User.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
-		81751FEE196D253900B9F9A9 /* FrontNavigationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FrontNavigationController.swift; sourceTree = "<group>"; };
 		81751FF0196DB56600B9F9A9 /* SideNavigationViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SideNavigationViewController.swift; path = ../SideNavigationViewController.swift; sourceTree = "<group>"; };
 		81751FF1196DB56600B9F9A9 /* SideNavigationViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = SideNavigationViewController.xib; path = ../SideNavigationViewController.xib; sourceTree = "<group>"; };
+		81751FF4196DEB0F00B9F9A9 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		81751FF6196DEB1D00B9F9A9 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		81929C81196B71F3006F336B /* OneSound-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "OneSound-Bridging-Header.h"; sourceTree = "<group>"; };
 		81929C84196B736B006F336B /* Podfile */ = {isa = PBXFileReference; lastKnownFileType = text; path = Podfile; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		81929C85196B7973006F336B /* SwiftyJSON.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SwiftyJSON.swift; path = "../../../../../../Downloads/SwiftyJSON-master/SwiftyJSON/SwiftyJSON.swift"; sourceTree = "<group>"; };
@@ -55,6 +59,8 @@
 		81929C89196C35FA006F336B /* SwiftUtilities.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SwiftUtilities.swift; path = ../../../../../Swift/SwiftUtilities.swift; sourceTree = "<group>"; };
 		81936FC6196C656F005E42F4 /* FrontViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FrontViewController.swift; sourceTree = "<group>"; };
 		81936FC7196C656F005E42F4 /* FrontViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = FrontViewController.xib; sourceTree = "<group>"; };
+		81DF03BE196E00A5003FB84F /* FrontNavigationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FrontNavigationController.swift; path = ../FrontNavigationController.swift; sourceTree = "<group>"; };
+		81DF03C2196E14B3003FB84F /* FrontNavigationController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = FrontNavigationController.xib; path = ../../../../../../.Trash/FrontNavigationController.xib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -62,6 +68,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				81751FF7196DEB1D00B9F9A9 /* UIKit.framework in Frameworks */,
+				81751FF5196DEB0F00B9F9A9 /* Foundation.framework in Frameworks */,
 				0C5C4B89C9B444C983D44940 /* libPods-OneSound.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -105,7 +113,8 @@
 				81929C81196B71F3006F336B /* OneSound-Bridging-Header.h */,
 				81929C89196C35FA006F336B /* SwiftUtilities.swift */,
 				81062FA2196B6C7E0057D230 /* AppDelegate.swift */,
-				81751FEE196D253900B9F9A9 /* FrontNavigationController.swift */,
+				81DF03BE196E00A5003FB84F /* FrontNavigationController.swift */,
+				81DF03C2196E14B3003FB84F /* FrontNavigationController.xib */,
 				81929C85196B7973006F336B /* SwiftyJSON.swift */,
 				81929C87196C2C2C006F336B /* OneSoundHTTPClient.swift */,
 				81062FC1196B6DAA0057D230 /* TestViewController.swift */,
@@ -146,6 +155,8 @@
 		F0954DF62FE441E2A671CB82 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				81751FF6196DEB1D00B9F9A9 /* UIKit.framework */,
+				81751FF4196DEB0F00B9F9A9 /* Foundation.framework */,
 				52F652D4E9264838BE2D4D5C /* libPods-OneSound.a */,
 			);
 			name = Frameworks;
@@ -202,6 +213,7 @@
 				TargetAttributes = {
 					81062F9C196B6C7E0057D230 = {
 						CreatedOnToolsVersion = 6.0;
+						DevelopmentTeam = 8YP7AK358X;
 					};
 					81062FB0196B6C7E0057D230 = {
 						CreatedOnToolsVersion = 6.0;
@@ -236,6 +248,7 @@
 				81936FC9196C656F005E42F4 /* FrontViewController.xib in Resources */,
 				81751FF3196DB56600B9F9A9 /* SideNavigationViewController.xib in Resources */,
 				81062FAC196B6C7E0057D230 /* Images.xcassets in Resources */,
+				81DF03C3196E14B3003FB84F /* FrontNavigationController.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -288,13 +301,13 @@
 			files = (
 				81929C86196B7973006F336B /* SwiftyJSON.swift in Sources */,
 				81062FA3196B6C7E0057D230 /* AppDelegate.swift in Sources */,
-				81751FEF196D253900B9F9A9 /* FrontNavigationController.swift in Sources */,
 				81936FC8196C656F005E42F4 /* FrontViewController.swift in Sources */,
 				81527128196C5A8E00464068 /* User.swift in Sources */,
 				81751FF2196DB56600B9F9A9 /* SideNavigationViewController.swift in Sources */,
 				81929C8A196C35FA006F336B /* SwiftUtilities.swift in Sources */,
 				81929C88196C2C2C006F336B /* OneSoundHTTPClient.swift in Sources */,
 				81062FC2196B6DAA0057D230 /* TestViewController.swift in Sources */,
+				81DF03C0196E00A5003FB84F /* FrontNavigationController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
