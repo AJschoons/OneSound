@@ -13,6 +13,9 @@
 		81062FB8196B6C7E0057D230 /* OneSoundTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81062FB7196B6C7E0057D230 /* OneSoundTests.swift */; };
 		81062FC2196B6DAA0057D230 /* TestViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81062FC1196B6DAA0057D230 /* TestViewController.swift */; };
 		81527128196C5A8E00464068 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81527127196C5A8E00464068 /* User.swift */; };
+		815831111974308E0011D3CE /* OneSound Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 815831101974308E0011D3CE /* OneSound Colors.swift */; };
+		81583116197443940011D3CE /* SideNavigationUserCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81583114197443940011D3CE /* SideNavigationUserCell.swift */; };
+		81583117197443940011D3CE /* SideNavigationUserCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 81583115197443940011D3CE /* SideNavigationUserCell.xib */; };
 		816FD445196F22B0003CCB1C /* SideNavigationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 816FD444196F22B0003CCB1C /* SideNavigationViewController.swift */; };
 		816FD447196F22DB003CCB1C /* FrontNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 816FD446196F22DB003CCB1C /* FrontNavigationController.swift */; };
 		81751FF5196DEB0F00B9F9A9 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 81751FF4196DEB0F00B9F9A9 /* Foundation.framework */; };
@@ -22,6 +25,8 @@
 		81929C8A196C35FA006F336B /* SwiftUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81929C89196C35FA006F336B /* SwiftUtilities.swift */; };
 		81936FC8196C656F005E42F4 /* FrontViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81936FC6196C656F005E42F4 /* FrontViewController.swift */; };
 		81936FC9196C656F005E42F4 /* FrontViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 81936FC7196C656F005E42F4 /* FrontViewController.xib */; };
+		81B17D8F196F2A680062943C /* SideNavigationMenuCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81B17D8D196F2A680062943C /* SideNavigationMenuCell.swift */; };
+		81B17D90196F2A680062943C /* SideNavigationMenuCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 81B17D8E196F2A680062943C /* SideNavigationMenuCell.xib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -46,6 +51,9 @@
 		81062FB7196B6C7E0057D230 /* OneSoundTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OneSoundTests.swift; sourceTree = "<group>"; };
 		81062FC1196B6DAA0057D230 /* TestViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestViewController.swift; sourceTree = "<group>"; };
 		81527127196C5A8E00464068 /* User.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
+		815831101974308E0011D3CE /* OneSound Colors.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "OneSound Colors.swift"; sourceTree = "<group>"; };
+		81583114197443940011D3CE /* SideNavigationUserCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SideNavigationUserCell.swift; sourceTree = "<group>"; };
+		81583115197443940011D3CE /* SideNavigationUserCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SideNavigationUserCell.xib; sourceTree = "<group>"; };
 		816FD444196F22B0003CCB1C /* SideNavigationViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SideNavigationViewController.swift; sourceTree = "<group>"; };
 		816FD446196F22DB003CCB1C /* FrontNavigationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FrontNavigationController.swift; sourceTree = "<group>"; };
 		81751FF4196DEB0F00B9F9A9 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -57,6 +65,8 @@
 		81929C89196C35FA006F336B /* SwiftUtilities.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SwiftUtilities.swift; path = ../../../../../Swift/SwiftUtilities.swift; sourceTree = "<group>"; };
 		81936FC6196C656F005E42F4 /* FrontViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FrontViewController.swift; sourceTree = "<group>"; };
 		81936FC7196C656F005E42F4 /* FrontViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = FrontViewController.xib; sourceTree = "<group>"; };
+		81B17D8D196F2A680062943C /* SideNavigationMenuCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SideNavigationMenuCell.swift; sourceTree = "<group>"; };
+		81B17D8E196F2A680062943C /* SideNavigationMenuCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SideNavigationMenuCell.xib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -86,6 +96,7 @@
 				81929C85196B7973006F336B /* SwiftyJSON.swift */,
 				81929C81196B71F3006F336B /* OneSound-Bridging-Header.h */,
 				81929C89196C35FA006F336B /* SwiftUtilities.swift */,
+				815831101974308E0011D3CE /* OneSound Colors.swift */,
 			);
 			name = "Utility + Bridging Header";
 			sourceTree = "<group>";
@@ -122,6 +133,10 @@
 			isa = PBXGroup;
 			children = (
 				816FD444196F22B0003CCB1C /* SideNavigationViewController.swift */,
+				81B17D8D196F2A680062943C /* SideNavigationMenuCell.swift */,
+				81B17D8E196F2A680062943C /* SideNavigationMenuCell.xib */,
+				81583114197443940011D3CE /* SideNavigationUserCell.swift */,
+				81583115197443940011D3CE /* SideNavigationUserCell.xib */,
 			);
 			name = "Side Menu";
 			sourceTree = "<group>";
@@ -279,8 +294,10 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				81B17D90196F2A680062943C /* SideNavigationMenuCell.xib in Resources */,
 				81936FC9196C656F005E42F4 /* FrontViewController.xib in Resources */,
 				81062FAC196B6C7E0057D230 /* Images.xcassets in Resources */,
+				81583117197443940011D3CE /* SideNavigationUserCell.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -337,9 +354,12 @@
 				81527128196C5A8E00464068 /* User.swift in Sources */,
 				816FD445196F22B0003CCB1C /* SideNavigationViewController.swift in Sources */,
 				81929C8A196C35FA006F336B /* SwiftUtilities.swift in Sources */,
+				815831111974308E0011D3CE /* OneSound Colors.swift in Sources */,
+				81583116197443940011D3CE /* SideNavigationUserCell.swift in Sources */,
 				81929C88196C2C2C006F336B /* OneSoundHTTPClient.swift in Sources */,
 				81062FC2196B6DAA0057D230 /* TestViewController.swift in Sources */,
 				816FD447196F22DB003CCB1C /* FrontNavigationController.swift in Sources */,
+				81B17D8F196F2A680062943C /* SideNavigationMenuCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -20,7 +20,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var panGestureStartedFrom: UInt32 = 1000000 // 1000000 so it won't init as an enum val
     
     // Set to true to print everything in AppDelegate
-    var pL = true
+    var pL = false
 
     func application(application: UIApplication!, didFinishLaunchingWithOptions launchOptions: NSDictionary!) -> Bool {
         window = UIWindow(frame: UIScreen.mainScreen().bounds)

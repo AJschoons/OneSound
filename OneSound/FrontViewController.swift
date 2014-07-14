@@ -26,14 +26,8 @@ class FrontViewController: UIViewController {
         let revealController = revealViewController()
         revealController.panGestureRecognizer()
         revealController.tapGestureRecognizer()
-        let revealButtonItem = UIBarButtonItem(image: UIImage(named: "List.png"), style: UIBarButtonItemStyle.Plain, target: revealController, action: "revealToggle:")
+        let revealButtonItem = UIBarButtonItem(image: UIImage(named: "sideMenuToggleIcon"), style: UIBarButtonItemStyle.Plain, target: revealController, action: "revealToggle:")
         navigationItem.leftBarButtonItem = revealButtonItem
-        
-        /*
-        let nameMap = ["navBar" : navigationController.navigationBar, "topGuide" : topLayoutGuide]
-        let constraints = NSLayoutConstraint.constraintsWithVisualFormat("V:[topGuide]-20-[navBar]", options: nil, metrics: nil, views: nameMap)
-        view.addConstraints(constraints)
-        */
     }
 }
 
