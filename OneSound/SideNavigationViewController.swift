@@ -65,7 +65,7 @@ extension SideNavigationViewController: UITableViewDataSource {
         if indexPath.row == 0 {
             // If the user cell
             cell = tableView.dequeueReusableCellWithIdentifier(userCellIdentifier, forIndexPath: indexPath) as SideNavigationUserCell
-            userCell = cell
+            userCell = (cell as SideNavigationUserCell)
         } else {
             // If a menu cell
             let menuCell = tableView.dequeueReusableCellWithIdentifier(menuCellIdentifier, forIndexPath: indexPath) as SideNavigationMenuCell
