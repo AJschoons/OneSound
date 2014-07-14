@@ -10,13 +10,18 @@ import UIKit
 
 class SideNavigationViewController: UITableViewController {
     
+    enum SideMenuRow: Int {
+        case Party = 1, History, Search, Following, Stories, Profile
+    }
+    
     let menuCellIdentifier = "sideNavigationMenuCell"
     let userCellIdentifier = "sideNavigationUserCell"
     var topCellHeight: CGFloat = 150
-    var sideMenuSelectedIcons = [UIImage]()
-    var sideMenuUnselectedIcons = [UIImage]()
-    var sideMenuItemLabels = [String]()
+    var sideMenuSelectedIcons = [UIImage?]()
+    var sideMenuUnselectedIcons = [UIImage?]()
+    var sideMenuItemLabels = [String?]()
     var userCell: SideNavigationUserCell?
+    var menuViewControllers = [UIViewController?]()
     
     var pL = true
 
@@ -28,20 +33,23 @@ class SideNavigationViewController: UITableViewController {
         // Customize the tableView
         tableView.scrollEnabled = false
         tableView.separatorStyle = UITableViewCellSeparatorStyle.None
-        //tableView
         
-        // These arrays have a dummy item in the first index so menu cell attributes can be set
-        // by cell row (otherwise having the first cell be a different type would make indexing
-        // less clear)
-        sideMenuSelectedIcons = [UIImage(), UIImage(named: "sideMenuPartyIconSelected"),
+        // Initialize the view controllers the sideMenu will navigate to
+        // First item is nil so index will match table row
+        menuViewControllers = [nil, PartyTabBarController(), HistoryViewController(),
+            SearchViewController(), FollowingViewController(), StoriesViewController(),
+            ProfileViewController()]
+        
+        // First items are nil so index match table table row
+        sideMenuSelectedIcons = [nil, UIImage(named: "sideMenuPartyIconSelected"),
             UIImage(named: "sideMenuHistoryIconSelected"), UIImage(named: "sideMenuSearchIconSelected"),
             UIImage(named: "sideMenuFollowingIconSelected"), UIImage(named: "sideMenuStoriesIconSelected"),
             UIImage(named: "sideMenuProfileIconSelected")]
-        sideMenuUnselectedIcons = [UIImage(), UIImage(named: "sideMenuPartyIconUnselected"),
+        sideMenuUnselectedIcons = [nil, UIImage(named: "sideMenuPartyIconUnselected"),
             UIImage(named: "sideMenuHistoryIconUnselected"), UIImage(named: "sideMenuSearchIconUnselected"),
             UIImage(named: "sideMenuFollowingIconUnselected"), UIImage(named: "sideMenuStoriesIconUnselected"),
             UIImage(named: "sideMenuProfileIconUnselected")]
-        sideMenuItemLabels = ["", "Party", "History", "Search", "Following", "Stories", "Profile"]
+        sideMenuItemLabels = [nil, "Party", "History", "Search", "Following", "Stories", "Profile"]
         
         // Register the cells
         var nib = UINib(nibName: "SideNavigationMenuCell", bundle: nil)
@@ -82,6 +90,21 @@ extension SideNavigationViewController: UITableViewDataSource {
 }
 
 extension SideNavigationViewController: UITableViewDelegate {
+    
+    override func tableView(tableView: UITableView!, didSelectRowAtIndexPath indexPath: NSIndexPath!) {
+        
+        // If a menu row
+        if indexPath.row > 0 {
+            let revealViewController = (UIApplication.sharedApplication().delegate as AppDelegate).revealViewController
+            let fnc = revealViewController!.frontViewController as FrontNavigationController
+            
+            let menuViewController = menuViewControllers[indexPath.row]!
+            fnc.setViewControllers([menuViewController], animated: false)
+            
+            // Animate to FrontNavigationController; hide SideNavigation
+            revealViewController!.setFrontViewPosition(FrontViewPositionLeft, animated: true)
+        }
+    }
     
     override func tableView(tableView: UITableView!, heightForRowAtIndexPath indexPath: NSIndexPath!) -> CGFloat {
         if indexPath.row == 0   {

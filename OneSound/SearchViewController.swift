@@ -1,27 +1,22 @@
 //
-//  FrontViewController.swift
+//  SearchViewController.swift
 //  OneSound
 //
-//  Created by adam on 7/8/14.
+//  Created by adam on 7/14/14.
 //  Copyright (c) 2014 Adam Schoonmaker. All rights reserved.
 //
 
 import UIKit
 
-class FrontViewController: UIViewController {
-    
-    var pL = true
-    
-    @IBAction func modal(sender: AnyObject) {
-        presentViewController(TestViewController(), animated: true, completion: nil)
-    }
-    
-    
+class SearchViewController: UIViewController {
+
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
-        title = "Front View"
+        title = "Search"
         
+        // Setup the revealViewController to work for this view controller,
+        // add its sideMenu icon to the nav bar
         let revealController = revealViewController()
         revealController.panGestureRecognizer()
         revealController.tapGestureRecognizer()
@@ -29,4 +24,3 @@ class FrontViewController: UIViewController {
         navigationItem.leftBarButtonItem = revealButtonItem
     }
 }
-

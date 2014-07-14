@@ -16,7 +16,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                             
     var window: UIWindow?
     //var statusBarBackground: UIWindow?
-    var viewController: SWRevealViewController?
+    var revealViewController: SWRevealViewController?
     var panGestureStartedFrom: UInt32 = 1000000 // 1000000 so it won't init as an enum val
     
     // Set to true to print everything in AppDelegate
@@ -43,9 +43,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         revealController.bounceBackOnOverdraw = false
         revealController.bounceBackOnLeftOverdraw = false
         revealController.quickFlickVelocity = 1000000 // Disables quick Flicks
-        viewController = revealController
+        revealViewController = revealController
         
-        window!.rootViewController = viewController
+        window!.rootViewController = revealViewController
         
         //window!.backgroundColor = UIColor.whiteColor()
         window!.makeKeyAndVisible()

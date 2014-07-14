@@ -16,6 +16,24 @@
 		815831111974308E0011D3CE /* OneSound Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 815831101974308E0011D3CE /* OneSound Colors.swift */; };
 		81583116197443940011D3CE /* SideNavigationUserCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81583114197443940011D3CE /* SideNavigationUserCell.swift */; };
 		81583117197443940011D3CE /* SideNavigationUserCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 81583115197443940011D3CE /* SideNavigationUserCell.xib */; };
+		8158311A197471ED0011D3CE /* PartyMainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81583118197471ED0011D3CE /* PartyMainViewController.swift */; };
+		8158311B197471ED0011D3CE /* PartyMainViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 81583119197471ED0011D3CE /* PartyMainViewController.xib */; };
+		8158311F197477990011D3CE /* HistoryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8158311D197477990011D3CE /* HistoryViewController.swift */; };
+		81583120197477990011D3CE /* HistoryViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8158311E197477990011D3CE /* HistoryViewController.xib */; };
+		81583123197477E30011D3CE /* SearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81583121197477E30011D3CE /* SearchViewController.swift */; };
+		81583124197477E30011D3CE /* SearchViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 81583122197477E30011D3CE /* SearchViewController.xib */; };
+		815831271974786C0011D3CE /* FollowingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 815831251974786C0011D3CE /* FollowingViewController.swift */; };
+		815831281974786C0011D3CE /* FollowingViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 815831261974786C0011D3CE /* FollowingViewController.xib */; };
+		8158312B1974792C0011D3CE /* StoriesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 815831291974792C0011D3CE /* StoriesViewController.swift */; };
+		8158312C1974792C0011D3CE /* StoriesViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8158312A1974792C0011D3CE /* StoriesViewController.xib */; };
+		8158312F197479B40011D3CE /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8158312D197479B40011D3CE /* ProfileViewController.swift */; };
+		81583130197479B40011D3CE /* ProfileViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8158312E197479B40011D3CE /* ProfileViewController.xib */; };
+		8158313A19747F7B0011D3CE /* PartyTabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8158313819747F7B0011D3CE /* PartyTabBarController.swift */; };
+		8158313B19747F7B0011D3CE /* PartyTabBarController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8158313919747F7B0011D3CE /* PartyTabBarController.xib */; };
+		8158313E19748F080011D3CE /* PartySongsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8158313C19748F080011D3CE /* PartySongsViewController.swift */; };
+		8158313F19748F080011D3CE /* PartySongsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8158313D19748F080011D3CE /* PartySongsViewController.xib */; };
+		8158314219748F730011D3CE /* PartyMembersViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8158314019748F730011D3CE /* PartyMembersViewController.swift */; };
+		8158314319748F730011D3CE /* PartyMembersViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8158314119748F730011D3CE /* PartyMembersViewController.xib */; };
 		816FD445196F22B0003CCB1C /* SideNavigationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 816FD444196F22B0003CCB1C /* SideNavigationViewController.swift */; };
 		816FD447196F22DB003CCB1C /* FrontNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 816FD446196F22DB003CCB1C /* FrontNavigationController.swift */; };
 		81751FF5196DEB0F00B9F9A9 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 81751FF4196DEB0F00B9F9A9 /* Foundation.framework */; };
@@ -54,6 +72,24 @@
 		815831101974308E0011D3CE /* OneSound Colors.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "OneSound Colors.swift"; sourceTree = "<group>"; };
 		81583114197443940011D3CE /* SideNavigationUserCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SideNavigationUserCell.swift; sourceTree = "<group>"; };
 		81583115197443940011D3CE /* SideNavigationUserCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SideNavigationUserCell.xib; sourceTree = "<group>"; };
+		81583118197471ED0011D3CE /* PartyMainViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PartyMainViewController.swift; sourceTree = "<group>"; };
+		81583119197471ED0011D3CE /* PartyMainViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PartyMainViewController.xib; sourceTree = "<group>"; };
+		8158311D197477990011D3CE /* HistoryViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HistoryViewController.swift; sourceTree = "<group>"; };
+		8158311E197477990011D3CE /* HistoryViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = HistoryViewController.xib; sourceTree = "<group>"; };
+		81583121197477E30011D3CE /* SearchViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchViewController.swift; sourceTree = "<group>"; };
+		81583122197477E30011D3CE /* SearchViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SearchViewController.xib; sourceTree = "<group>"; };
+		815831251974786C0011D3CE /* FollowingViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FollowingViewController.swift; sourceTree = "<group>"; };
+		815831261974786C0011D3CE /* FollowingViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = FollowingViewController.xib; sourceTree = "<group>"; };
+		815831291974792C0011D3CE /* StoriesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StoriesViewController.swift; sourceTree = "<group>"; };
+		8158312A1974792C0011D3CE /* StoriesViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = StoriesViewController.xib; sourceTree = "<group>"; };
+		8158312D197479B40011D3CE /* ProfileViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
+		8158312E197479B40011D3CE /* ProfileViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ProfileViewController.xib; sourceTree = "<group>"; };
+		8158313819747F7B0011D3CE /* PartyTabBarController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PartyTabBarController.swift; sourceTree = "<group>"; };
+		8158313919747F7B0011D3CE /* PartyTabBarController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PartyTabBarController.xib; sourceTree = "<group>"; };
+		8158313C19748F080011D3CE /* PartySongsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PartySongsViewController.swift; sourceTree = "<group>"; };
+		8158313D19748F080011D3CE /* PartySongsViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PartySongsViewController.xib; sourceTree = "<group>"; };
+		8158314019748F730011D3CE /* PartyMembersViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PartyMembersViewController.swift; sourceTree = "<group>"; };
+		8158314119748F730011D3CE /* PartyMembersViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PartyMembersViewController.xib; sourceTree = "<group>"; };
 		816FD444196F22B0003CCB1C /* SideNavigationViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SideNavigationViewController.swift; sourceTree = "<group>"; };
 		816FD446196F22DB003CCB1C /* FrontNavigationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FrontNavigationController.swift; sourceTree = "<group>"; };
 		81751FF4196DEB0F00B9F9A9 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -121,10 +157,8 @@
 			isa = PBXGroup;
 			children = (
 				816FD446196F22DB003CCB1C /* FrontNavigationController.swift */,
-				81936FC6196C656F005E42F4 /* FrontViewController.swift */,
-				81936FC7196C656F005E42F4 /* FrontViewController.xib */,
+				8158311C197472000011D3CE /* MainViewControllers */,
 				8100A963196F086000EB1156 /* Side Menu */,
-				81062FC1196B6DAA0057D230 /* TestViewController.swift */,
 			);
 			name = UI;
 			sourceTree = "<group>";
@@ -199,6 +233,90 @@
 				81062FB6196B6C7E0057D230 /* Info.plist */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		8158311C197472000011D3CE /* MainViewControllers */ = {
+			isa = PBXGroup;
+			children = (
+				8158313619747EEE0011D3CE /* Party */,
+				8158313519747EE50011D3CE /* History */,
+				8158313419747ECA0011D3CE /* Search */,
+				8158313319747EBE0011D3CE /* Following */,
+				8158313219747EB20011D3CE /* Stories */,
+				8158313119747EAA0011D3CE /* Profile */,
+				8158313719747EFB0011D3CE /* Other */,
+			);
+			name = MainViewControllers;
+			sourceTree = "<group>";
+		};
+		8158313119747EAA0011D3CE /* Profile */ = {
+			isa = PBXGroup;
+			children = (
+				8158312D197479B40011D3CE /* ProfileViewController.swift */,
+				8158312E197479B40011D3CE /* ProfileViewController.xib */,
+			);
+			name = Profile;
+			sourceTree = "<group>";
+		};
+		8158313219747EB20011D3CE /* Stories */ = {
+			isa = PBXGroup;
+			children = (
+				815831291974792C0011D3CE /* StoriesViewController.swift */,
+				8158312A1974792C0011D3CE /* StoriesViewController.xib */,
+			);
+			name = Stories;
+			sourceTree = "<group>";
+		};
+		8158313319747EBE0011D3CE /* Following */ = {
+			isa = PBXGroup;
+			children = (
+				815831251974786C0011D3CE /* FollowingViewController.swift */,
+				815831261974786C0011D3CE /* FollowingViewController.xib */,
+			);
+			name = Following;
+			sourceTree = "<group>";
+		};
+		8158313419747ECA0011D3CE /* Search */ = {
+			isa = PBXGroup;
+			children = (
+				81583121197477E30011D3CE /* SearchViewController.swift */,
+				81583122197477E30011D3CE /* SearchViewController.xib */,
+			);
+			name = Search;
+			sourceTree = "<group>";
+		};
+		8158313519747EE50011D3CE /* History */ = {
+			isa = PBXGroup;
+			children = (
+				8158311D197477990011D3CE /* HistoryViewController.swift */,
+				8158311E197477990011D3CE /* HistoryViewController.xib */,
+			);
+			name = History;
+			sourceTree = "<group>";
+		};
+		8158313619747EEE0011D3CE /* Party */ = {
+			isa = PBXGroup;
+			children = (
+				8158313819747F7B0011D3CE /* PartyTabBarController.swift */,
+				8158313919747F7B0011D3CE /* PartyTabBarController.xib */,
+				81583118197471ED0011D3CE /* PartyMainViewController.swift */,
+				81583119197471ED0011D3CE /* PartyMainViewController.xib */,
+				8158313C19748F080011D3CE /* PartySongsViewController.swift */,
+				8158313D19748F080011D3CE /* PartySongsViewController.xib */,
+				8158314019748F730011D3CE /* PartyMembersViewController.swift */,
+				8158314119748F730011D3CE /* PartyMembersViewController.xib */,
+			);
+			name = Party;
+			sourceTree = "<group>";
+		};
+		8158313719747EFB0011D3CE /* Other */ = {
+			isa = PBXGroup;
+			children = (
+				81062FC1196B6DAA0057D230 /* TestViewController.swift */,
+				81936FC6196C656F005E42F4 /* FrontViewController.swift */,
+				81936FC7196C656F005E42F4 /* FrontViewController.xib */,
+			);
+			name = Other;
 			sourceTree = "<group>";
 		};
 		F0954DF62FE441E2A671CB82 /* Frameworks */ = {
@@ -295,9 +413,18 @@
 			buildActionMask = 2147483647;
 			files = (
 				81B17D90196F2A680062943C /* SideNavigationMenuCell.xib in Resources */,
+				8158314319748F730011D3CE /* PartyMembersViewController.xib in Resources */,
 				81936FC9196C656F005E42F4 /* FrontViewController.xib in Resources */,
+				8158313F19748F080011D3CE /* PartySongsViewController.xib in Resources */,
+				8158311B197471ED0011D3CE /* PartyMainViewController.xib in Resources */,
 				81062FAC196B6C7E0057D230 /* Images.xcassets in Resources */,
+				8158312C1974792C0011D3CE /* StoriesViewController.xib in Resources */,
+				815831281974786C0011D3CE /* FollowingViewController.xib in Resources */,
 				81583117197443940011D3CE /* SideNavigationUserCell.xib in Resources */,
+				81583120197477990011D3CE /* HistoryViewController.xib in Resources */,
+				81583130197479B40011D3CE /* ProfileViewController.xib in Resources */,
+				81583124197477E30011D3CE /* SearchViewController.xib in Resources */,
+				8158313B19747F7B0011D3CE /* PartyTabBarController.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -348,13 +475,22 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				81583123197477E30011D3CE /* SearchViewController.swift in Sources */,
 				81929C86196B7973006F336B /* SwiftyJSON.swift in Sources */,
+				8158313E19748F080011D3CE /* PartySongsViewController.swift in Sources */,
+				8158312B1974792C0011D3CE /* StoriesViewController.swift in Sources */,
 				81062FA3196B6C7E0057D230 /* AppDelegate.swift in Sources */,
 				81936FC8196C656F005E42F4 /* FrontViewController.swift in Sources */,
 				81527128196C5A8E00464068 /* User.swift in Sources */,
+				8158312F197479B40011D3CE /* ProfileViewController.swift in Sources */,
 				816FD445196F22B0003CCB1C /* SideNavigationViewController.swift in Sources */,
+				8158311F197477990011D3CE /* HistoryViewController.swift in Sources */,
 				81929C8A196C35FA006F336B /* SwiftUtilities.swift in Sources */,
+				815831271974786C0011D3CE /* FollowingViewController.swift in Sources */,
 				815831111974308E0011D3CE /* OneSound Colors.swift in Sources */,
+				8158314219748F730011D3CE /* PartyMembersViewController.swift in Sources */,
+				8158313A19747F7B0011D3CE /* PartyTabBarController.swift in Sources */,
+				8158311A197471ED0011D3CE /* PartyMainViewController.swift in Sources */,
 				81583116197443940011D3CE /* SideNavigationUserCell.swift in Sources */,
 				81929C88196C2C2C006F336B /* OneSoundHTTPClient.swift in Sources */,
 				81062FC2196B6DAA0057D230 /* TestViewController.swift in Sources */,
