@@ -45,12 +45,3 @@ class PartyTabBarController: UITabBarController {
         navigationItem.leftBarButtonItem = revealButtonItem
     }
 }
-
-extension PartyTabBarController: UITabBarControllerDelegate {
-
-    func tabBarController(tabBarController: UITabBarController!, didSelectViewController viewController: UIViewController!) {
-        if viewController is PartyMembersViewController {
-            navigationController.navigationItem.title = "Members"
-        }
-    }
-}
