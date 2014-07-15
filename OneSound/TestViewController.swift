@@ -15,40 +15,6 @@ class TestViewController: UIViewController {
         // Do any additional setup after loading the view.
         
         view.backgroundColor = UIColor.blueColor()
-        /*
-        for i in 1...4 {
-            OSAPI.sharedAPI.GETUser(i,
-                success: { data, responseObject in
-                    let responseJSON = JSONValue(responseObject)
-                    println(responseJSON)
-                },
-                failure: defaultAFHTTPFailureBlock
-            )
-        }
-        */
-        
-        /*
-        for i in 1...4 {
-            OSAPI.sharedAPI.GETUserFollowing(i,
-                success: { data, responseObject in
-                    let responseJSON = JSONValue(responseObject)
-                    println(responseJSON)
-                },
-                failure: defaultAFHTTPFailureBlock
-            )
-        }
-        
-        for i in 1...4 {
-            OSAPI.sharedAPI.GETUserFollowers(i,
-                success: { data, responseObject in
-                    let responseJSON = JSONValue(responseObject)
-                    println(responseJSON)
-                },
-                failure: defaultAFHTTPFailureBlock
-            )
-        }
-        */
-    
     }
     
     override func touchesBegan(touches: NSSet!, withEvent event: UIEvent!) {

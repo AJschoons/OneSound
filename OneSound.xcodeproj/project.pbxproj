@@ -34,13 +34,13 @@
 		8158313F19748F080011D3CE /* PartySongsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8158313D19748F080011D3CE /* PartySongsViewController.xib */; };
 		8158314219748F730011D3CE /* PartyMembersViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8158314019748F730011D3CE /* PartyMembersViewController.swift */; };
 		8158314319748F730011D3CE /* PartyMembersViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8158314119748F730011D3CE /* PartyMembersViewController.xib */; };
+		815831451975CD450011D3CE /* SwiftUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 815831441975CD450011D3CE /* SwiftUtilities.swift */; };
+		815831471975CD9B0011D3CE /* SwiftyJSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = 815831461975CD9B0011D3CE /* SwiftyJSON.swift */; };
 		816FD445196F22B0003CCB1C /* SideNavigationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 816FD444196F22B0003CCB1C /* SideNavigationViewController.swift */; };
 		816FD447196F22DB003CCB1C /* FrontNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 816FD446196F22DB003CCB1C /* FrontNavigationController.swift */; };
 		81751FF5196DEB0F00B9F9A9 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 81751FF4196DEB0F00B9F9A9 /* Foundation.framework */; };
 		81751FF7196DEB1D00B9F9A9 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 81751FF6196DEB1D00B9F9A9 /* UIKit.framework */; };
-		81929C86196B7973006F336B /* SwiftyJSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81929C85196B7973006F336B /* SwiftyJSON.swift */; };
 		81929C88196C2C2C006F336B /* OneSoundHTTPClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81929C87196C2C2C006F336B /* OneSoundHTTPClient.swift */; };
-		81929C8A196C35FA006F336B /* SwiftUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81929C89196C35FA006F336B /* SwiftUtilities.swift */; };
 		81936FC8196C656F005E42F4 /* FrontViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81936FC6196C656F005E42F4 /* FrontViewController.swift */; };
 		81936FC9196C656F005E42F4 /* FrontViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 81936FC7196C656F005E42F4 /* FrontViewController.xib */; };
 		81B17D8F196F2A680062943C /* SideNavigationMenuCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81B17D8D196F2A680062943C /* SideNavigationMenuCell.swift */; };
@@ -90,15 +90,15 @@
 		8158313D19748F080011D3CE /* PartySongsViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PartySongsViewController.xib; sourceTree = "<group>"; };
 		8158314019748F730011D3CE /* PartyMembersViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PartyMembersViewController.swift; sourceTree = "<group>"; };
 		8158314119748F730011D3CE /* PartyMembersViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PartyMembersViewController.xib; sourceTree = "<group>"; };
+		815831441975CD450011D3CE /* SwiftUtilities.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftUtilities.swift; sourceTree = "<group>"; };
+		815831461975CD9B0011D3CE /* SwiftyJSON.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftyJSON.swift; sourceTree = "<group>"; };
 		816FD444196F22B0003CCB1C /* SideNavigationViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SideNavigationViewController.swift; sourceTree = "<group>"; };
 		816FD446196F22DB003CCB1C /* FrontNavigationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FrontNavigationController.swift; sourceTree = "<group>"; };
 		81751FF4196DEB0F00B9F9A9 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		81751FF6196DEB1D00B9F9A9 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		81929C81196B71F3006F336B /* OneSound-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "OneSound-Bridging-Header.h"; sourceTree = "<group>"; };
 		81929C84196B736B006F336B /* Podfile */ = {isa = PBXFileReference; lastKnownFileType = text; path = Podfile; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
-		81929C85196B7973006F336B /* SwiftyJSON.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SwiftyJSON.swift; path = "../../../../../../Downloads/SwiftyJSON-master/SwiftyJSON/SwiftyJSON.swift"; sourceTree = "<group>"; };
 		81929C87196C2C2C006F336B /* OneSoundHTTPClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OneSoundHTTPClient.swift; sourceTree = "<group>"; };
-		81929C89196C35FA006F336B /* SwiftUtilities.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SwiftUtilities.swift; path = ../../../../../Swift/SwiftUtilities.swift; sourceTree = "<group>"; };
 		81936FC6196C656F005E42F4 /* FrontViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FrontViewController.swift; sourceTree = "<group>"; };
 		81936FC7196C656F005E42F4 /* FrontViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = FrontViewController.xib; sourceTree = "<group>"; };
 		81B17D8D196F2A680062943C /* SideNavigationMenuCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SideNavigationMenuCell.swift; sourceTree = "<group>"; };
@@ -129,10 +129,10 @@
 		8100A95F196F075300EB1156 /* Utility + Bridging Header */ = {
 			isa = PBXGroup;
 			children = (
-				81929C85196B7973006F336B /* SwiftyJSON.swift */,
 				81929C81196B71F3006F336B /* OneSound-Bridging-Header.h */,
-				81929C89196C35FA006F336B /* SwiftUtilities.swift */,
 				815831101974308E0011D3CE /* OneSound Colors.swift */,
+				815831441975CD450011D3CE /* SwiftUtilities.swift */,
+				815831461975CD9B0011D3CE /* SwiftyJSON.swift */,
 			);
 			name = "Utility + Bridging Header";
 			sourceTree = "<group>";
@@ -475,8 +475,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				815831451975CD450011D3CE /* SwiftUtilities.swift in Sources */,
 				81583123197477E30011D3CE /* SearchViewController.swift in Sources */,
-				81929C86196B7973006F336B /* SwiftyJSON.swift in Sources */,
+				815831471975CD9B0011D3CE /* SwiftyJSON.swift in Sources */,
 				8158313E19748F080011D3CE /* PartySongsViewController.swift in Sources */,
 				8158312B1974792C0011D3CE /* StoriesViewController.swift in Sources */,
 				81062FA3196B6C7E0057D230 /* AppDelegate.swift in Sources */,
@@ -485,7 +486,6 @@
 				8158312F197479B40011D3CE /* ProfileViewController.swift in Sources */,
 				816FD445196F22B0003CCB1C /* SideNavigationViewController.swift in Sources */,
 				8158311F197477990011D3CE /* HistoryViewController.swift in Sources */,
-				81929C8A196C35FA006F336B /* SwiftUtilities.swift in Sources */,
 				815831271974786C0011D3CE /* FollowingViewController.swift in Sources */,
 				815831111974308E0011D3CE /* OneSound Colors.swift in Sources */,
 				8158314219748F730011D3CE /* PartyMembersViewController.swift in Sources */,
