@@ -32,6 +32,7 @@ class PartyTabBarController: UITabBarController {
         viewControllers = [partyMembersViewController, partyMainViewController,
             partySongsViewController]
         selectedIndex = 1
+        title = "Party"
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -42,5 +43,14 @@ class PartyTabBarController: UITabBarController {
         revealController.tapGestureRecognizer()
         let revealButtonItem = UIBarButtonItem(image: UIImage(named: "sideMenuToggleIcon"), style: UIBarButtonItemStyle.Plain, target: revealController, action: "revealToggle:")
         navigationItem.leftBarButtonItem = revealButtonItem
+    }
+}
+
+extension PartyTabBarController: UITabBarControllerDelegate {
+
+    func tabBarController(tabBarController: UITabBarController!, didSelectViewController viewController: UIViewController!) {
+        if viewController is PartyMembersViewController {
+            navigationController.navigationItem.title = "Members"
+        }
     }
 }

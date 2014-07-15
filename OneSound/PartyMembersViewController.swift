@@ -10,21 +10,8 @@ import UIKit
 
 class PartyMembersViewController: UIViewController {
 
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        // Do any additional setup after loading the view.
-        title = "Party"
-    }
-    
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
-        
-        // Setup the revealViewController to work for this view controller,
-        // add its sideMenu icon to the nav bar
-        let revealController = revealViewController()
-        revealController.panGestureRecognizer()
-        revealController.tapGestureRecognizer()
-        let revealButtonItem = UIBarButtonItem(image: UIImage(named: "sideMenuToggleIcon"), style: UIBarButtonItemStyle.Plain, target: revealController, action: "revealToggle:")
-        navigationItem.leftBarButtonItem = revealButtonItem
+        navigationController.visibleViewController.title = "Members"
     }
 }

@@ -22,16 +22,6 @@ class SideNavigationMenuCell: UITableViewCell {
         // Stop cell color from changing when selected
         selectionStyle = UITableViewCellSelectionStyle.None
     }
-    
-    override func setHighlighted(highlighted: Bool, animated: Bool) {
-        if highlighted {
-            sideMenuItemIcon.image = selectedIcon
-            sideMenuItemLabel.textColor = UIColor.blue()
-        } else {
-            sideMenuItemIcon.image = unselectedIcon
-            sideMenuItemLabel.textColor = UIColor.grayDark()
-        }
-    }
 
     override func setSelected(selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)

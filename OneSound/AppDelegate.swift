@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import QuartzCore
 
 // Set to true to print everything in app to console
 var pG = false
@@ -47,8 +48,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         window!.rootViewController = revealViewController
         
-        //window!.backgroundColor = UIColor.whiteColor()
+        window!.backgroundColor = UIColor.whiteColor()
         window!.makeKeyAndVisible()
+        
+        // Set navigation bar and tab bar shadows throughout app
+        UINavigationBar.appearance().setBackgroundImage(UIImage(named: "navigationBarBackground"), forBarMetrics: UIBarMetrics.Default)
+        UINavigationBar.appearance().shadowImage = UIImage(named: "navigationBarShadow")
+        UITabBar.appearance().backgroundImage = UIImage(named: "tabBarBackground")
+        UITabBar.appearance().shadowImage = UIImage(named: "tabBarShadow")
         
         AFNetworkActivityIndicatorManager.sharedManager().enabled = true
         
@@ -110,7 +117,7 @@ extension AppDelegate: SWRevealViewControllerDelegate {
         if let fnc = revealController.frontViewController as? FrontNavigationControllerWithOverlay {
             UIView.animateWithDuration(0.03, animations: {
                 let progressDouble = Double(progress)
-                fnc.setOverlayAlpha(CGFloat(customCurveEaseInOut(progressDouble)) / 2.0)
+                fnc.setOverlayAlpha(CGFloat(customExponentialEaseOut(progressDouble) / 2.0))
                 })
         }
     }

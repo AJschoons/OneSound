@@ -21,7 +21,7 @@
                     <nil key="highlightedColor"/>
                 </label>
             </subviews>
-            <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+            <color key="backgroundColor" red="0.95075207948684692" green="0.95072358846664429" blue="0.95073968172073364" alpha="1" colorSpace="calibratedRGB"/>
             <constraints>
                 <constraint firstAttribute="centerX" secondItem="Bhx-ih-hgi" secondAttribute="centerX" constant="-0.5" id="8Kw-4i-a3e"/>
                 <constraint firstAttribute="centerY" secondItem="Bhx-ih-hgi" secondAttribute="centerY" constant="0.5" id="Bk3-PV-NRP"/>

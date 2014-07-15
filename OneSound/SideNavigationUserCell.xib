@@ -22,8 +22,8 @@
                         </constraints>
                     </imageView>
                     <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Name of User" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="NK2-Sa-VVV">
-                        <rect key="frame" x="20" y="118" width="160" height="22"/>
-                        <fontDescription key="fontDescription" type="boldSystem" pointSize="18"/>
+                        <rect key="frame" x="20" y="118" width="160" height="20"/>
+                        <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
                         <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                         <nil key="highlightedColor"/>
                     </label>
@@ -33,7 +33,7 @@
                     <constraint firstAttribute="centerX" secondItem="NK2-Sa-VVV" secondAttribute="centerX" id="Gsa-xH-0Gx"/>
                     <constraint firstItem="QYz-Hy-nEE" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="10" id="Sn2-EU-6it"/>
                     <constraint firstItem="NK2-Sa-VVV" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="20" id="Vym-53-BTe"/>
-                    <constraint firstAttribute="bottom" secondItem="NK2-Sa-VVV" secondAttribute="bottom" constant="9.5" id="WzE-al-rB8"/>
+                    <constraint firstAttribute="bottom" secondItem="NK2-Sa-VVV" secondAttribute="bottom" constant="11.5" id="WzE-al-rB8"/>
                     <constraint firstAttribute="trailing" secondItem="NK2-Sa-VVV" secondAttribute="trailing" constant="20" id="jMk-4H-znQ"/>
                 </constraints>
             </tableViewCellContentView>
