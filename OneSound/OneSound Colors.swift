@@ -53,4 +53,8 @@ extension UIColor {
     class func orange() -> UIColor {
         return UIColor.colorWithHexString("FF972D")
     }
+    
+    class func green() -> UIColor {
+        return UIColor.colorWithHexString("57E54E")
+    }
 }

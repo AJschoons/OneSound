@@ -5,7 +5,7 @@ target "OneSound" do
 
 pod 'AFNetworking', '~> 2.0'
 pod 'SWRevealViewController', '~> 2.1'
-pod 'MagicalRecord', '~> 2.2'
+pod 'Facebook-iOS-SDK', '~> 3.16'
 
 end
 

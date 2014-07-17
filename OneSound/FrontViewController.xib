@@ -14,7 +14,7 @@
             <rect key="frame" x="0.0" y="0.0" width="480" height="480"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
-                <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Dfx-il-vXV">
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Dfx-il-vXV">
                     <rect key="frame" x="217" y="225" width="46" height="30"/>
                     <state key="normal" title="Button">
                         <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
@@ -25,6 +25,10 @@
                 </button>
             </subviews>
             <color key="backgroundColor" red="0.74117647058823533" green="0.062745098039215685" blue="0.8784313725490196" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <constraints>
+                <constraint firstAttribute="centerY" secondItem="Dfx-il-vXV" secondAttribute="centerY" id="Ua5-zx-LWV"/>
+                <constraint firstAttribute="centerX" secondItem="Dfx-il-vXV" secondAttribute="centerX" id="vsU-jW-RGl"/>
+            </constraints>
         </view>
     </objects>
 </document>

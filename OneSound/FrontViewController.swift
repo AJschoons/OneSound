@@ -13,7 +13,11 @@ class FrontViewController: UIViewController {
     var pL = true
     
     @IBAction func modal(sender: AnyObject) {
-        presentViewController(TestViewController(), animated: true, completion: nil)
+        let loginStoryboard = UIStoryboard(name: "Login", bundle: nil)
+        let loginViewController = loginStoryboard.instantiateViewControllerWithIdentifier("LoginViewController") as LoginViewController
+        let navC = UINavigationController(rootViewController: loginViewController)
+        
+        presentViewController(navC, animated: true, completion: nil)
     }
     
     
@@ -29,7 +33,19 @@ class FrontViewController: UIViewController {
         navigationItem.leftBarButtonItem = revealButtonItem
         /*
         for i in 1...4 {
-            OSAPI.sharedAPI.GETUser(i,
+            OSAPI.sharedClient.GETUser(i,
+                success: { data, responseObject in
+                    let responseJSON = JSONValue(responseObject)
+                    println(responseJSON)
+                    let user = User(json: responseJSON)
+                    println(user.description())
+                },
+                failure: defaultAFHTTPFailureBlock
+            )
+        }
+        
+        for i in 1...4 {
+            OSAPI.sharedClient.GETUserFollowing(i,
                 success: { data, responseObject in
                     let responseJSON = JSONValue(responseObject)
                     println(responseJSON)
@@ -39,17 +55,7 @@ class FrontViewController: UIViewController {
         }
         
         for i in 1...4 {
-            OSAPI.sharedAPI.GETUserFollowing(i,
-                success: { data, responseObject in
-                    let responseJSON = JSONValue(responseObject)
-                    println(responseJSON)
-                },
-                failure: defaultAFHTTPFailureBlock
-            )
-        }
-        
-        for i in 1...4 {
-            OSAPI.sharedAPI.GETUserFollowers(i,
+            OSAPI.sharedClient.GETUserFollowers(i,
                 success: { data, responseObject in
                     let responseJSON = JSONValue(responseObject)
                     println(responseJSON)

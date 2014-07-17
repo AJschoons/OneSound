@@ -12,6 +12,7 @@
 		81062FAC196B6C7E0057D230 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 81062FAB196B6C7E0057D230 /* Images.xcassets */; };
 		81062FB8196B6C7E0057D230 /* OneSoundTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81062FB7196B6C7E0057D230 /* OneSoundTests.swift */; };
 		81062FC2196B6DAA0057D230 /* TestViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81062FC1196B6DAA0057D230 /* TestViewController.swift */; };
+		813FCE081977583C00419097 /* LoginColorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 813FCE071977583C00419097 /* LoginColorViewController.swift */; };
 		81527128196C5A8E00464068 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81527127196C5A8E00464068 /* User.swift */; };
 		815831111974308E0011D3CE /* OneSound Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 815831101974308E0011D3CE /* OneSound Colors.swift */; };
 		81583116197443940011D3CE /* SideNavigationUserCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81583114197443940011D3CE /* SideNavigationUserCell.swift */; };
@@ -36,6 +37,8 @@
 		8158314319748F730011D3CE /* PartyMembersViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8158314119748F730011D3CE /* PartyMembersViewController.xib */; };
 		815831451975CD450011D3CE /* SwiftUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 815831441975CD450011D3CE /* SwiftUtilities.swift */; };
 		815831471975CD9B0011D3CE /* SwiftyJSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = 815831461975CD9B0011D3CE /* SwiftyJSON.swift */; };
+		8158314C1976D54F0011D3CE /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8158314B1976D54F0011D3CE /* LoginViewController.swift */; };
+		815CB6E31976D749000FD4B7 /* Login.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 815CB6E21976D749000FD4B7 /* Login.storyboard */; };
 		816FD445196F22B0003CCB1C /* SideNavigationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 816FD444196F22B0003CCB1C /* SideNavigationViewController.swift */; };
 		816FD447196F22DB003CCB1C /* FrontNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 816FD446196F22DB003CCB1C /* FrontNavigationController.swift */; };
 		81751FF5196DEB0F00B9F9A9 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 81751FF4196DEB0F00B9F9A9 /* Foundation.framework */; };
@@ -68,6 +71,8 @@
 		81062FB6196B6C7E0057D230 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		81062FB7196B6C7E0057D230 /* OneSoundTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OneSoundTests.swift; sourceTree = "<group>"; };
 		81062FC1196B6DAA0057D230 /* TestViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestViewController.swift; sourceTree = "<group>"; };
+		813FCE0619774ECF00419097 /* TestingPlayground.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = TestingPlayground.playground; sourceTree = "<group>"; };
+		813FCE071977583C00419097 /* LoginColorViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginColorViewController.swift; sourceTree = "<group>"; };
 		81527127196C5A8E00464068 /* User.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		815831101974308E0011D3CE /* OneSound Colors.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "OneSound Colors.swift"; sourceTree = "<group>"; };
 		81583114197443940011D3CE /* SideNavigationUserCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SideNavigationUserCell.swift; sourceTree = "<group>"; };
@@ -92,6 +97,8 @@
 		8158314119748F730011D3CE /* PartyMembersViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PartyMembersViewController.xib; sourceTree = "<group>"; };
 		815831441975CD450011D3CE /* SwiftUtilities.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftUtilities.swift; sourceTree = "<group>"; };
 		815831461975CD9B0011D3CE /* SwiftyJSON.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftyJSON.swift; sourceTree = "<group>"; };
+		8158314B1976D54F0011D3CE /* LoginViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
+		815CB6E21976D749000FD4B7 /* Login.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Login.storyboard; sourceTree = "<group>"; };
 		816FD444196F22B0003CCB1C /* SideNavigationViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SideNavigationViewController.swift; sourceTree = "<group>"; };
 		816FD446196F22DB003CCB1C /* FrontNavigationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FrontNavigationController.swift; sourceTree = "<group>"; };
 		81751FF4196DEB0F00B9F9A9 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -133,6 +140,7 @@
 				815831101974308E0011D3CE /* OneSound Colors.swift */,
 				815831441975CD450011D3CE /* SwiftUtilities.swift */,
 				815831461975CD9B0011D3CE /* SwiftyJSON.swift */,
+				813FCE0619774ECF00419097 /* TestingPlayground.playground */,
 			);
 			name = "Utility + Bridging Header";
 			sourceTree = "<group>";
@@ -159,6 +167,10 @@
 				816FD446196F22DB003CCB1C /* FrontNavigationController.swift */,
 				8158311C197472000011D3CE /* MainViewControllers */,
 				8100A963196F086000EB1156 /* Side Menu */,
+				8158313719747EFB0011D3CE /* Other */,
+				8158314B1976D54F0011D3CE /* LoginViewController.swift */,
+				815CB6E21976D749000FD4B7 /* Login.storyboard */,
+				813FCE071977583C00419097 /* LoginColorViewController.swift */,
 			);
 			name = UI;
 			sourceTree = "<group>";
@@ -244,7 +256,6 @@
 				8158313319747EBE0011D3CE /* Following */,
 				8158313219747EB20011D3CE /* Stories */,
 				8158313119747EAA0011D3CE /* Profile */,
-				8158313719747EFB0011D3CE /* Other */,
 			);
 			name = MainViewControllers;
 			sourceTree = "<group>";
@@ -417,6 +428,7 @@
 				81936FC9196C656F005E42F4 /* FrontViewController.xib in Resources */,
 				8158313F19748F080011D3CE /* PartySongsViewController.xib in Resources */,
 				8158311B197471ED0011D3CE /* PartyMainViewController.xib in Resources */,
+				815CB6E31976D749000FD4B7 /* Login.storyboard in Resources */,
 				81062FAC196B6C7E0057D230 /* Images.xcassets in Resources */,
 				8158312C1974792C0011D3CE /* StoriesViewController.xib in Resources */,
 				815831281974786C0011D3CE /* FollowingViewController.xib in Resources */,
@@ -490,12 +502,14 @@
 				815831111974308E0011D3CE /* OneSound Colors.swift in Sources */,
 				8158314219748F730011D3CE /* PartyMembersViewController.swift in Sources */,
 				8158313A19747F7B0011D3CE /* PartyTabBarController.swift in Sources */,
+				8158314C1976D54F0011D3CE /* LoginViewController.swift in Sources */,
 				8158311A197471ED0011D3CE /* PartyMainViewController.swift in Sources */,
 				81583116197443940011D3CE /* SideNavigationUserCell.swift in Sources */,
 				81929C88196C2C2C006F336B /* OneSoundHTTPClient.swift in Sources */,
 				81062FC2196B6DAA0057D230 /* TestViewController.swift in Sources */,
 				816FD447196F22DB003CCB1C /* FrontNavigationController.swift in Sources */,
 				81B17D8F196F2A680062943C /* SideNavigationMenuCell.swift in Sources */,
+				813FCE081977583C00419097 /* LoginColorViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -604,6 +618,8 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_ENABLE_MODULES = YES;
+				GCC_PRECOMPILE_PREFIX_HEADER = NO;
+				GCC_SHORT_ENUMS = YES;
 				INFOPLIST_FILE = OneSound/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -621,6 +637,8 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_ENABLE_MODULES = YES;
+				GCC_PRECOMPILE_PREFIX_HEADER = NO;
+				GCC_SHORT_ENUMS = YES;
 				INFOPLIST_FILE = OneSound/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";

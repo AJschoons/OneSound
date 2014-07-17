@@ -18,22 +18,22 @@ let defaultAFHTTPFailureBlock: AFHTTPFailureBlock = { task, error in
     alertView.show()
 }
 
-let baseURLString = "http://shaw.herokuapp.com/"
+let baseURLString = "http://sparty.onesoundapp.com/"
 
-class OSAPI: NSObject {
+class OSAPI: AFHTTPSessionManager {
     
-    class var sharedAPI: OSAPI {
+    class var sharedClient: OSAPI {
         struct Static {
             static let api = OSAPI()
         }
         return Static.api
     }
-    
+    /*
     @lazy var manager: AFHTTPSessionManager = {
         let sessionManager = AFHTTPSessionManager(baseURL: NSURL(string: baseURLString))
         //sessionManager.responseSerializer = AFJSONResponseSerializer
         return sessionManager
-    }()
+    }()*/
 }
 
 extension OSAPI {
@@ -44,23 +44,23 @@ extension OSAPI {
         let urlString = "\(baseURLString)user/\(uid)"
         println("GETUser \(urlString)")
 
-        manager.GET(urlString, parameters: nil, success: success, failure: failure)
+        GET(urlString, parameters: nil, success: success, failure: failure)
     }
     
     func GETUserFollowing(uid: Int, success: AFHTTPSuccessBlock, failure: AFHTTPFailureBlock) {
         // Create a URL string from the base URL string, then user/following/:uid
-        let urlString = "\(baseURLString)user/following/\(uid)"
+        let urlString = "\(baseURLString)user/\(uid)/following"
         println("GETUserFollowing \(urlString)")
         
-        manager.GET(urlString, parameters: nil, success: success, failure: failure)
+        GET(urlString, parameters: nil, success: success, failure: failure)
     }
 
     func GETUserFollowers(uid: Int, success: AFHTTPSuccessBlock, failure: AFHTTPFailureBlock) {
         // Create a URL string from the base URL string, then user/following/:uid
-        let urlString = "\(baseURLString)user/followers/\(uid)"
+        let urlString = "\(baseURLString)user/\(uid)/followers"
         println("GETUserFollowers \(urlString)")
         
-        manager.GET(urlString, parameters: nil, success: success, failure: failure)
+        GET(urlString, parameters: nil, success: success, failure: failure)
     }
     
     // func PUTUser
