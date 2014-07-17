@@ -41,7 +41,6 @@ class LoginColorViewController: UITableViewController {
         tableView.scrollEnabled = false
         
         selectedIndex = find(colorNames, selectedColor)
-        println("viewDidLoad: selectedIndex is \(selectedIndex)")
     }
 
 }
