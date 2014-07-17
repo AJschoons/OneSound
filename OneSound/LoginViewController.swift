@@ -12,11 +12,14 @@ class LoginViewController: UITableViewController {
     
     let validCharacters = "abcdefghijklmnopqrstuvwxyz1234567890"
     
+    
     @IBOutlet var nameCell: UITableViewCell
     @IBOutlet var nameCellTextField: UITextField
     @IBOutlet var nameCellTextFieldCount: UILabel
     @IBOutlet var colorCell: UITableViewCell
-    @IBOutlet var authenticationCell: UITableViewCell
+    @IBOutlet var colorCellColorLabel: UILabel
+    
+    var color: OneSoundColorOption = OneSoundColorOption.Random
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -32,9 +35,14 @@ class LoginViewController: UITableViewController {
         nameCellTextField.addTarget(self, action: "textFieldDidChange", forControlEvents: UIControlEvents.EditingChanged)
         updateNameCellTextFieldCount()
         
+        // Initialize color label to the initial color
+        colorCellColorLabel.text = color.toRaw()
+        
         // Add tap gesture recognizer to dismiss keyboard when background touched
-        //let tap = UITapGestureRecognizer(target: self, action: "tap")
-        //tableView.addGestureRecognizer(tap)
+        // Make sure the tap doesn't interfere with touches in the table view
+        let tap = UITapGestureRecognizer(target: self, action: "tap")
+        tap.cancelsTouchesInView = false
+        tableView.addGestureRecognizer(tap)
     }
     
     func cancel() {
@@ -83,8 +91,6 @@ extension LoginViewController: UITableViewDataSource {
             return nameCell
         case 1:
             return colorCell
-        case 2:
-            return authenticationCell
         default:
             println("Error: LoginViewController cellForRowAtIndexPath couldn't get cell")
             return UITableViewCell()
@@ -92,11 +98,24 @@ extension LoginViewController: UITableViewDataSource {
     }
     
     override func numberOfSectionsInTableView(tableView: UITableView!) -> Int {
-        return 3
+        return 2
     }
 }
 
 extension LoginViewController: UITableViewDelegate {
+    override func tableView(tableView: UITableView!, didSelectRowAtIndexPath indexPath: NSIndexPath!) {
+        switch indexPath.section {
+        case 0:
+            // Selecting anywhere in the first cell will start editing text field
+            // Otherwise would be weird b/c must touch UITextField but design makes it look otherwise
+            nameCellTextField.becomeFirstResponder()
+        case 1:
+            let loginColorViewController = LoginColorViewController(delegate: self, selectedColor: color)
+            navigationController.pushViewController(loginColorViewController, animated: true)
+        default:
+            return
+        }
+    }
 }
 
 extension LoginViewController: UITextFieldDelegate {
@@ -107,13 +126,25 @@ extension LoginViewController: UITextFieldDelegate {
                 return false
             }
         }
-        
+    
+        // Only allow change if 15 or less characters
         let newLength = textField.text.utf16count + string.utf16count - range.length
         return ((newLength > 15) ? false : true)
     }
     
     func textFieldShouldReturn(textField: UITextField!) -> Bool {
+        // Hide keyboard when user presses "Done"
         nameCellTextField.resignFirstResponder()
         return true
+    }
+}
+
+extension LoginViewController: LoginColorViewControllerDelegate {
+    func loginColorViewController(loginColorviewController: LoginColorViewController, didSelectColor selectedColor: OneSoundColorOption) {
+        // Update color and color label, pop the LoginColorViewController
+        color = selectedColor
+        colorCellColorLabel.text = color.toRaw()
+        
+        navigationController.popViewControllerAnimated(true)
     }
 }

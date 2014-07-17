@@ -51,9 +51,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         window!.backgroundColor = UIColor.whiteColor()
         window!.makeKeyAndVisible()
         
-        // Set navigation bar and tab bar shadows throughout app
+        // Set navigation bar and tab bar shadows throughout app, plus other appearances
         UINavigationBar.appearance().setBackgroundImage(UIImage(named: "navigationBarBackground"), forBarMetrics: UIBarMetrics.Default)
         UINavigationBar.appearance().shadowImage = UIImage(named: "navigationBarShadow")
+        UINavigationBar.appearance().tintColor = UIColor.blue()
+        UINavigationBar.appearance().barTintColor = UIColor.white()
         UITabBar.appearance().backgroundImage = UIImage(named: "tabBarBackground")
         UITabBar.appearance().shadowImage = UIImage(named: "tabBarShadow")
         

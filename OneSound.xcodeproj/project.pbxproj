@@ -46,6 +46,8 @@
 		81929C88196C2C2C006F336B /* OneSoundHTTPClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81929C87196C2C2C006F336B /* OneSoundHTTPClient.swift */; };
 		81936FC8196C656F005E42F4 /* FrontViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81936FC6196C656F005E42F4 /* FrontViewController.swift */; };
 		81936FC9196C656F005E42F4 /* FrontViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 81936FC7196C656F005E42F4 /* FrontViewController.xib */; };
+		8195347B19775FCE000B97A3 /* LoginColorCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8195347919775FCE000B97A3 /* LoginColorCell.swift */; };
+		8195347C19775FCE000B97A3 /* LoginColorCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8195347A19775FCE000B97A3 /* LoginColorCell.xib */; };
 		81B17D8F196F2A680062943C /* SideNavigationMenuCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81B17D8D196F2A680062943C /* SideNavigationMenuCell.swift */; };
 		81B17D90196F2A680062943C /* SideNavigationMenuCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 81B17D8E196F2A680062943C /* SideNavigationMenuCell.xib */; };
 /* End PBXBuildFile section */
@@ -108,6 +110,8 @@
 		81929C87196C2C2C006F336B /* OneSoundHTTPClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OneSoundHTTPClient.swift; sourceTree = "<group>"; };
 		81936FC6196C656F005E42F4 /* FrontViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FrontViewController.swift; sourceTree = "<group>"; };
 		81936FC7196C656F005E42F4 /* FrontViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = FrontViewController.xib; sourceTree = "<group>"; };
+		8195347919775FCE000B97A3 /* LoginColorCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginColorCell.swift; sourceTree = "<group>"; };
+		8195347A19775FCE000B97A3 /* LoginColorCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LoginColorCell.xib; sourceTree = "<group>"; };
 		81B17D8D196F2A680062943C /* SideNavigationMenuCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SideNavigationMenuCell.swift; sourceTree = "<group>"; };
 		81B17D8E196F2A680062943C /* SideNavigationMenuCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SideNavigationMenuCell.xib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -168,9 +172,7 @@
 				8158311C197472000011D3CE /* MainViewControllers */,
 				8100A963196F086000EB1156 /* Side Menu */,
 				8158313719747EFB0011D3CE /* Other */,
-				8158314B1976D54F0011D3CE /* LoginViewController.swift */,
-				815CB6E21976D749000FD4B7 /* Login.storyboard */,
-				813FCE071977583C00419097 /* LoginColorViewController.swift */,
+				8195347D19777A5C000B97A3 /* Modal */,
 			);
 			name = UI;
 			sourceTree = "<group>";
@@ -330,6 +332,26 @@
 			name = Other;
 			sourceTree = "<group>";
 		};
+		8195347D19777A5C000B97A3 /* Modal */ = {
+			isa = PBXGroup;
+			children = (
+				8195347E19777A71000B97A3 /* Login */,
+			);
+			name = Modal;
+			sourceTree = "<group>";
+		};
+		8195347E19777A71000B97A3 /* Login */ = {
+			isa = PBXGroup;
+			children = (
+				8158314B1976D54F0011D3CE /* LoginViewController.swift */,
+				815CB6E21976D749000FD4B7 /* Login.storyboard */,
+				813FCE071977583C00419097 /* LoginColorViewController.swift */,
+				8195347919775FCE000B97A3 /* LoginColorCell.swift */,
+				8195347A19775FCE000B97A3 /* LoginColorCell.xib */,
+			);
+			name = Login;
+			sourceTree = "<group>";
+		};
 		F0954DF62FE441E2A671CB82 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -424,6 +446,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				81B17D90196F2A680062943C /* SideNavigationMenuCell.xib in Resources */,
+				8195347C19775FCE000B97A3 /* LoginColorCell.xib in Resources */,
 				8158314319748F730011D3CE /* PartyMembersViewController.xib in Resources */,
 				81936FC9196C656F005E42F4 /* FrontViewController.xib in Resources */,
 				8158313F19748F080011D3CE /* PartySongsViewController.xib in Resources */,
@@ -502,6 +525,7 @@
 				815831111974308E0011D3CE /* OneSound Colors.swift in Sources */,
 				8158314219748F730011D3CE /* PartyMembersViewController.swift in Sources */,
 				8158313A19747F7B0011D3CE /* PartyTabBarController.swift in Sources */,
+				8195347B19775FCE000B97A3 /* LoginColorCell.swift in Sources */,
 				8158314C1976D54F0011D3CE /* LoginViewController.swift in Sources */,
 				8158311A197471ED0011D3CE /* PartyMainViewController.swift in Sources */,
 				81583116197443940011D3CE /* SideNavigationUserCell.swift in Sources */,

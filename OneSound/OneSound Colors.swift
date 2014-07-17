@@ -8,6 +8,16 @@
 
 import Foundation
 
+enum OneSoundColorOption: String {
+    case Random = "Random"
+    case Green = "Green"
+    case Turquiose = "Turquoise"
+    case Purple = "Purple"
+    case Red = "Red"
+    case Orange = "Orange"
+    case Yellow = "Yellow"
+}
+
 extension UIColor {
     
     class func black() -> UIColor {
@@ -35,7 +45,7 @@ extension UIColor {
     }
     
     class func purple() -> UIColor {
-        return UIColor.colorWithHexString("57E54E")
+        return UIColor.colorWithHexString("BD10E0")
     }
     
     class func turquoise() -> UIColor {
