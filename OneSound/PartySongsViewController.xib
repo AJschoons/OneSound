@@ -6,25 +6,38 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="PartySongsViewController" customModule="OneSound" customModuleProvider="target">
             <connections>
-                <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
+                <outlet property="messageLabel1" destination="D3d-8y-oQy" id="EzQ-JM-vvv"/>
+                <outlet property="messageLabel2" destination="5hu-FG-ml0" id="Du0-Ua-uGp"/>
+                <outlet property="view" destination="9vV-Ux-saW" id="duo-Y4-D1y"/>
             </connections>
         </placeholder>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
-        <view clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="i5M-Pr-FkT">
+        <view clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="9vV-Ux-saW">
             <rect key="frame" x="0.0" y="0.0" width="480" height="480"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
-                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="PartySongsViewController" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="WaP-iQ-Gpk">
-                    <rect key="frame" x="140" y="229" width="200" height="21"/>
-                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Some text for main line of message" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="D3d-8y-oQy">
+                    <rect key="frame" x="20" y="231.5" width="440" height="17"/>
+                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
                     <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                     <nil key="highlightedColor"/>
                 </label>
+                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Some text below that further explains first message" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5hu-FG-ml0">
+                    <rect key="frame" x="20" y="248.5" width="440" height="13.5"/>
+                    <fontDescription key="fontDescription" type="system" pointSize="11"/>
+                    <color key="textColor" red="0.51700145009999998" green="0.51698595290000005" blue="0.51699477429999996" alpha="1" colorSpace="calibratedRGB"/>
+                    <nil key="highlightedColor"/>
+                </label>
             </subviews>
-            <color key="backgroundColor" red="0.95075207948684692" green="0.95072358846664429" blue="0.95073968172073364" alpha="1" colorSpace="calibratedRGB"/>
+            <color key="backgroundColor" red="0.95075207949999996" green="0.95072358850000005" blue="0.95073968170000001" alpha="1" colorSpace="calibratedRGB"/>
             <constraints>
-                <constraint firstAttribute="centerY" secondItem="WaP-iQ-Gpk" secondAttribute="centerY" constant="0.5" id="Yjd-y3-37d"/>
-                <constraint firstAttribute="centerX" secondItem="WaP-iQ-Gpk" secondAttribute="centerX" id="dHa-2h-Yk6"/>
+                <constraint firstAttribute="trailing" secondItem="5hu-FG-ml0" secondAttribute="trailing" constant="20" id="Og5-7h-lT9"/>
+                <constraint firstAttribute="centerX" secondItem="D3d-8y-oQy" secondAttribute="centerX" id="dGB-Fu-s7o"/>
+                <constraint firstItem="5hu-FG-ml0" firstAttribute="leading" secondItem="9vV-Ux-saW" secondAttribute="leading" constant="20" id="mAb-Gk-fHb"/>
+                <constraint firstItem="5hu-FG-ml0" firstAttribute="top" secondItem="D3d-8y-oQy" secondAttribute="bottom" id="tg4-cz-nZm"/>
+                <constraint firstAttribute="trailing" secondItem="D3d-8y-oQy" secondAttribute="trailing" constant="20" id="wta-13-Kdt"/>
+                <constraint firstItem="D3d-8y-oQy" firstAttribute="leading" secondItem="9vV-Ux-saW" secondAttribute="leading" constant="20" id="ydO-sn-pED"/>
+                <constraint firstAttribute="centerY" secondItem="D3d-8y-oQy" secondAttribute="centerY" id="zbj-I9-06G"/>
             </constraints>
         </view>
     </objects>

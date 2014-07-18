@@ -6,25 +6,38 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="HistoryViewController" customModule="OneSound" customModuleProvider="target">
             <connections>
-                <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
+                <outlet property="messageLabel1" destination="ufd-NZ-SHc" id="JBM-YJ-OrW"/>
+                <outlet property="messageLabel2" destination="lvl-0N-Rrj" id="ny9-J3-vfh"/>
+                <outlet property="view" destination="qaW-Ec-fUK" id="If4-RF-Mec"/>
             </connections>
         </placeholder>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
-        <view clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="i5M-Pr-FkT">
+        <view clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="qaW-Ec-fUK">
             <rect key="frame" x="0.0" y="0.0" width="480" height="480"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
-                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="HistoryViewController" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="8zj-fC-2Ev">
-                    <rect key="frame" x="157" y="229" width="166" height="21"/>
-                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Some text for main line of message" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ufd-NZ-SHc">
+                    <rect key="frame" x="20" y="231.5" width="440" height="17"/>
+                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
                     <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                     <nil key="highlightedColor"/>
                 </label>
+                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Some text below that further explains first message" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="lvl-0N-Rrj">
+                    <rect key="frame" x="20" y="248.5" width="440" height="13.5"/>
+                    <fontDescription key="fontDescription" type="system" pointSize="11"/>
+                    <color key="textColor" red="0.51700145009999998" green="0.51698595290000005" blue="0.51699477429999996" alpha="1" colorSpace="calibratedRGB"/>
+                    <nil key="highlightedColor"/>
+                </label>
             </subviews>
-            <color key="backgroundColor" red="0.95075207948684692" green="0.95072358846664429" blue="0.95073968172073364" alpha="1" colorSpace="calibratedRGB"/>
+            <color key="backgroundColor" red="0.95075207949999996" green="0.95072358850000005" blue="0.95073968170000001" alpha="1" colorSpace="calibratedRGB"/>
             <constraints>
-                <constraint firstAttribute="centerY" secondItem="8zj-fC-2Ev" secondAttribute="centerY" constant="0.5" id="I3U-0Q-Rr9"/>
-                <constraint firstAttribute="centerX" secondItem="8zj-fC-2Ev" secondAttribute="centerX" id="oGy-Ji-e46"/>
+                <constraint firstAttribute="centerX" secondItem="ufd-NZ-SHc" secondAttribute="centerX" id="0fg-8G-3De"/>
+                <constraint firstAttribute="trailing" secondItem="lvl-0N-Rrj" secondAttribute="trailing" constant="20" id="In0-RM-ZEb"/>
+                <constraint firstItem="lvl-0N-Rrj" firstAttribute="leading" secondItem="qaW-Ec-fUK" secondAttribute="leading" constant="20" id="PET-9h-UMN"/>
+                <constraint firstItem="lvl-0N-Rrj" firstAttribute="top" secondItem="ufd-NZ-SHc" secondAttribute="bottom" id="hlQ-bY-YEs"/>
+                <constraint firstItem="ufd-NZ-SHc" firstAttribute="leading" secondItem="qaW-Ec-fUK" secondAttribute="leading" constant="20" id="lSH-Bs-gBy"/>
+                <constraint firstAttribute="trailing" secondItem="ufd-NZ-SHc" secondAttribute="trailing" constant="20" id="lbf-jN-1Ex"/>
+                <constraint firstAttribute="centerY" secondItem="ufd-NZ-SHc" secondAttribute="centerY" id="vBh-Yv-Dd7"/>
             </constraints>
         </view>
     </objects>

@@ -6,6 +6,8 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="StoriesViewController" customModule="OneSound" customModuleProvider="target">
             <connections>
+                <outlet property="messageLabel1" destination="CVg-oO-hDC" id="v8n-xh-bom"/>
+                <outlet property="messageLabel2" destination="KIi-Rq-Dl8" id="QGF-8I-VFV"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
             </connections>
         </placeholder>
@@ -14,17 +16,28 @@
             <rect key="frame" x="0.0" y="0.0" width="480" height="480"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
-                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="StoriesViewController" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="cuL-Ha-tCK">
-                    <rect key="frame" x="158" y="229" width="165" height="21"/>
-                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Some text for main line of message" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="CVg-oO-hDC">
+                    <rect key="frame" x="20" y="231.5" width="440" height="17"/>
+                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
                     <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                    <nil key="highlightedColor"/>
+                </label>
+                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Some text below that further explains first message" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="KIi-Rq-Dl8">
+                    <rect key="frame" x="20" y="248.5" width="440" height="13.5"/>
+                    <fontDescription key="fontDescription" type="system" pointSize="11"/>
+                    <color key="textColor" red="0.51700145009999998" green="0.51698595290000005" blue="0.51699477429999996" alpha="1" colorSpace="calibratedRGB"/>
                     <nil key="highlightedColor"/>
                 </label>
             </subviews>
             <color key="backgroundColor" red="0.95075207948684692" green="0.95072358846664429" blue="0.95073968172073364" alpha="1" colorSpace="calibratedRGB"/>
             <constraints>
-                <constraint firstAttribute="centerX" secondItem="cuL-Ha-tCK" secondAttribute="centerX" constant="-0.5" id="0OB-x9-XOk"/>
-                <constraint firstAttribute="centerY" secondItem="cuL-Ha-tCK" secondAttribute="centerY" constant="0.5" id="tWM-Uo-WUr"/>
+                <constraint firstItem="KIi-Rq-Dl8" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" constant="20" id="AQB-Tn-bn6"/>
+                <constraint firstAttribute="trailing" secondItem="KIi-Rq-Dl8" secondAttribute="trailing" constant="20" id="CtF-EE-jQh"/>
+                <constraint firstAttribute="centerX" secondItem="CVg-oO-hDC" secondAttribute="centerX" id="FvZ-a8-ilh"/>
+                <constraint firstItem="CVg-oO-hDC" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" constant="20" id="IUo-6F-ZTU"/>
+                <constraint firstItem="KIi-Rq-Dl8" firstAttribute="top" secondItem="CVg-oO-hDC" secondAttribute="bottom" id="RlW-cT-1LZ"/>
+                <constraint firstAttribute="centerY" secondItem="CVg-oO-hDC" secondAttribute="centerY" id="iIe-3H-1Uj"/>
+                <constraint firstAttribute="trailing" secondItem="CVg-oO-hDC" secondAttribute="trailing" constant="20" id="qkV-Qg-25L"/>
             </constraints>
         </view>
     </objects>

@@ -35,6 +35,8 @@ class ProfileViewController: UIViewController {
         
         // Make view respond to network reachability changes
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "refresh", name: AFNetworkingReachabilityDidChangeNotification, object: nil)
+        // Make sure view knows the user is setup so it won't keep displaying 'Not signed into account' when there is no  internet connection when app launches and then the network comes back and LocalUser is setup
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "refresh", name: LocalUserDidGetSetupNotification, object: nil)
     }
     
     override func viewWillAppear(animated: Bool) {

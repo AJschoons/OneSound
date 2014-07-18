@@ -8,6 +8,8 @@
 
 import Foundation
 
+let LocalUserDidGetSetupNotification = "LocalUserDidGetSetup"
+
 class LocalUser {
     
     var setup = false
@@ -21,11 +23,13 @@ class LocalUser {
     var name: String!
     var color: String!
     var guest: Bool!
-    var photo: String?
+    var photoURL: String?
     var songCount: Int!
     var voteCount: Int!
     var followers: Int!
     var following: Int!
+    
+    var photo: UIImage?
     
     class var sharedUser: LocalUser {
     struct Static {
@@ -40,10 +44,6 @@ class LocalUser {
     //var twitterUID: String?
     //var twitterAccessToken: String?
     //var email: String?
-    
-    init() {
-        // Do nothing; just create the user
-    }
     
     var colorToUIColor: UIColor {
     if let userColor = UserColors.fromRaw(color) {
@@ -61,6 +61,26 @@ class LocalUser {
         case .Orange:
             return UIColor.orange()
         }
+        }
+        return UIColor.brownColor()
+    }
+    
+    class func colorToUIColor(color: String) -> UIColor {
+        if let userColor = UserColors.fromRaw(color) {
+            switch userColor {
+            case .Green:
+                return UIColor.green()
+            case .Purple:
+                return UIColor.purple()
+            case .Turquoise:
+                return UIColor.turquoise()
+            case .Yellow:
+                return UIColor.yellow()
+            case .Red:
+                return UIColor.red()
+            case .Orange:
+                return UIColor.orange()
+            }
         }
         return UIColor.brownColor()
     }
@@ -123,6 +143,12 @@ extension LocalUser {
                 // Instantiate guest user from response JSON
                 self.updateLocalUserFromJSON(responseJSON, apiToken: apiToken, fbUID: nil, fbAuthToken: nil)
                 println(self.description())
+                
+                // Update the guest user's defaults after fetching
+                self.updateUserDefaultsForLocalUser()
+                
+                // Send out LocalUserDidGetSetup notification
+                NSNotificationCenter.defaultCenter().postNotificationName(LocalUserDidGetSetupNotification, object: nil)
             },
             failure: { task, error in
                 println("ERROR: Guest account no longer exists, creating new one")
@@ -171,9 +197,15 @@ extension LocalUser {
                         printlnC(self.pL, pG, "CREATED GUEST userID:\(guestUID)")
                         printlnC(self.pL, pG, "CREATED GUEST userAPIToken:\(guestAPIToken)")
                         
+                        // Save the new guest's info in NSUserDefaults
+                        self.updateUserDefaultsForLocalUser()
+                        
                         // Save the new guest's info in the keychain
                         SSKeychain.setPassword(String(guestUID!), forService: service, account: userIDKeychainKey)
                         SSKeychain.setPassword(guestAPIToken, forService: service, account: userAPITokenKeychainKey)
+                        
+                        // Send out LocalUserDidGetSetup notification
+                        NSNotificationCenter.defaultCenter().postNotificationName(LocalUserDidGetSetupNotification, object: nil)
                     },
                     failure: defaultAFHTTPFailureBlockForServerDown
                 )
@@ -193,7 +225,7 @@ extension LocalUser {
         name = json["name"].string
         color = json["color"].string
         guest = json["guest"].bool
-        photo = json["photo"].string
+        photoURL = json["photo"].string
         songCount = json["song_count"].integer
         voteCount = json["vote_count"].integer
         followers = json["followers"].integer
@@ -215,5 +247,17 @@ extension LocalUser {
             },
             failure: defaultAFHTTPFailureBlockForServerDown
         )
+    }
+    
+    func updateUserDefaultsForLocalUser() {
+        println("updating information for LocalUser in UserDefaults")
+        
+        let defaults = NSUserDefaults.standardUserDefaults()
+        defaults.setObject(name, forKey: "name")
+        defaults.setObject(color, forKey: "color")
+        defaults.setBool(guest, forKey: "guest")
+        if !guest {
+            // Save the photo information
+        }
     }
 }

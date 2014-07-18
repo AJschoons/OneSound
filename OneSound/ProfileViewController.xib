@@ -24,6 +24,12 @@
                     <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                     <nil key="highlightedColor"/>
                 </label>
+                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Some text below that further explains first message" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Nf6-Nc-dCj">
+                    <rect key="frame" x="20" y="194.5" width="440" height="13.5"/>
+                    <fontDescription key="fontDescription" type="system" pointSize="11"/>
+                    <color key="textColor" red="0.5170014500617981" green="0.51698595285415649" blue="0.51699477434158325" alpha="1" colorSpace="calibratedRGB"/>
+                    <nil key="highlightedColor"/>
+                </label>
                 <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="B8w-mW-KVj">
                     <rect key="frame" x="0.0" y="372" width="480" height="44"/>
                     <items>
@@ -34,12 +40,6 @@
                         <barButtonItem width="8" style="plain" systemItem="fixedSpace" id="cjj-rA-LUX"/>
                     </items>
                 </toolbar>
-                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Some text below  that further explains first message" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Nf6-Nc-dCj">
-                    <rect key="frame" x="20" y="194" width="440" height="13.5"/>
-                    <fontDescription key="fontDescription" type="system" pointSize="11"/>
-                    <color key="textColor" red="0.5170014500617981" green="0.51698595285415649" blue="0.51699477434158325" alpha="1" colorSpace="calibratedRGB"/>
-                    <nil key="highlightedColor"/>
-                </label>
             </subviews>
             <color key="backgroundColor" red="0.95075207948684692" green="0.95072358846664429" blue="0.95073968172073364" alpha="1" colorSpace="calibratedRGB"/>
             <constraints>

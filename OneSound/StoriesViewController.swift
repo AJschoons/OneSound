@@ -9,6 +9,8 @@
 import UIKit
 
 class StoriesViewController: UIViewController {
+    @IBOutlet var messageLabel1: UILabel
+    @IBOutlet var messageLabel2: UILabel
 
     override func viewDidLoad() {
         super.viewDidLoad()

@@ -10,6 +10,9 @@ import UIKit
 
 class PartyMembersViewController: UIViewController {
 
+    @IBOutlet var messageLabel1: UILabel
+    @IBOutlet var messageLabel2: UILabel
+    
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         navigationController.visibleViewController.title = "Members"

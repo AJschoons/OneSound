@@ -6,25 +6,38 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="PartyMainViewController" customModule="OneSound" customModuleProvider="target">
             <connections>
-                <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
+                <outlet property="messageLabel1" destination="38j-1O-m9U" id="KBn-9l-lfe"/>
+                <outlet property="messageLabel2" destination="ovA-Fr-31a" id="DQa-sQ-9uD"/>
+                <outlet property="view" destination="ggx-wY-78Y" id="ShI-Fz-ueM"/>
             </connections>
         </placeholder>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
-        <view clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="i5M-Pr-FkT">
+        <view clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="ggx-wY-78Y">
             <rect key="frame" x="0.0" y="0.0" width="480" height="480"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
-                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="PartyMainViewController" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Dbr-JB-tx5">
-                    <rect key="frame" x="146" y="229" width="189" height="21"/>
-                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Some text for main line of message" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="38j-1O-m9U">
+                    <rect key="frame" x="20" y="231.5" width="440" height="17"/>
+                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
                     <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                     <nil key="highlightedColor"/>
                 </label>
+                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Some text below that further explains first message" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ovA-Fr-31a">
+                    <rect key="frame" x="20" y="248.5" width="440" height="13.5"/>
+                    <fontDescription key="fontDescription" type="system" pointSize="11"/>
+                    <color key="textColor" red="0.51700145009999998" green="0.51698595290000005" blue="0.51699477429999996" alpha="1" colorSpace="calibratedRGB"/>
+                    <nil key="highlightedColor"/>
+                </label>
             </subviews>
-            <color key="backgroundColor" red="0.95075207948684692" green="0.95072358846664429" blue="0.95073968172073364" alpha="1" colorSpace="calibratedRGB"/>
+            <color key="backgroundColor" red="0.95075207949999996" green="0.95072358850000005" blue="0.95073968170000001" alpha="1" colorSpace="calibratedRGB"/>
             <constraints>
-                <constraint firstAttribute="centerX" secondItem="Dbr-JB-tx5" secondAttribute="centerX" constant="-0.5" id="JOf-iz-dam"/>
-                <constraint firstAttribute="centerY" secondItem="Dbr-JB-tx5" secondAttribute="centerY" constant="0.5" id="Yvd-7d-kZ6"/>
+                <constraint firstItem="38j-1O-m9U" firstAttribute="leading" secondItem="ggx-wY-78Y" secondAttribute="leading" constant="20" id="4j4-VI-DLD"/>
+                <constraint firstItem="ovA-Fr-31a" firstAttribute="top" secondItem="38j-1O-m9U" secondAttribute="bottom" id="Ii8-Rq-UNh"/>
+                <constraint firstAttribute="centerY" secondItem="38j-1O-m9U" secondAttribute="centerY" id="ItZ-Ed-Jhp"/>
+                <constraint firstAttribute="trailing" secondItem="38j-1O-m9U" secondAttribute="trailing" constant="20" id="JqM-Ew-Mxd"/>
+                <constraint firstItem="ovA-Fr-31a" firstAttribute="leading" secondItem="ggx-wY-78Y" secondAttribute="leading" constant="20" id="Yj7-k2-2DA"/>
+                <constraint firstAttribute="centerX" secondItem="38j-1O-m9U" secondAttribute="centerX" id="tYG-yk-KlT"/>
+                <constraint firstAttribute="trailing" secondItem="ovA-Fr-31a" secondAttribute="trailing" constant="20" id="wfD-QS-d4j"/>
             </constraints>
         </view>
     </objects>

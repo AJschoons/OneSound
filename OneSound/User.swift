@@ -25,7 +25,7 @@ class User {
     var name: String!
     var color: String!
     var guest: Bool!
-    var photo: String?
+    var photoURL: String?
     var songCount: Int!
     var voteCount: Int!
     var followers: Int!
@@ -56,7 +56,7 @@ class User {
         name = json["name"].string
         color = json["color"].string
         guest = json["guest"].bool
-        photo = json["photo"].string
+        photoURL = json["photo"].string
         songCount = json["song_count"].integer
         voteCount = json["vote_count"].integer
         followers = json["followers"].integer
@@ -64,7 +64,7 @@ class User {
     }
     
     func description() -> String {
-        return "[USER] id:\(id) name:'\(name)' color:\(color) guest:\(guest) f-ers:\(followers) f-ing:\(following) songs:\(songCount) votes:\(voteCount) photo:\(photo)"
+        return "[USER] id:\(id) name:'\(name)' color:\(color) guest:\(guest) f-ers:\(followers) f-ing:\(following) songs:\(songCount) votes:\(voteCount) photo:\(photoURL)"
     }
     
 }

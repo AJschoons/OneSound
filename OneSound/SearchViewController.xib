@@ -6,25 +6,38 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="SearchViewController" customModule="OneSound" customModuleProvider="target">
             <connections>
-                <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
+                <outlet property="messageLabel1" destination="Nq1-Qx-HSP" id="3sf-xR-6O4"/>
+                <outlet property="messageLabel2" destination="8aD-Hx-ffP" id="1N9-s6-Pi1"/>
+                <outlet property="view" destination="9tl-7X-D3T" id="9EX-Cn-gvl"/>
             </connections>
         </placeholder>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
-        <view clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="i5M-Pr-FkT">
+        <view clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="9tl-7X-D3T">
             <rect key="frame" x="0.0" y="0.0" width="480" height="480"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
-                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="SearchViewController" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7LC-uf-eF3">
-                    <rect key="frame" x="158" y="229" width="165" height="21"/>
-                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Some text for main line of message" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Nq1-Qx-HSP">
+                    <rect key="frame" x="20" y="231.5" width="440" height="17"/>
+                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
                     <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                     <nil key="highlightedColor"/>
                 </label>
+                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Some text below that further explains first message" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="8aD-Hx-ffP">
+                    <rect key="frame" x="20" y="248.5" width="440" height="13.5"/>
+                    <fontDescription key="fontDescription" type="system" pointSize="11"/>
+                    <color key="textColor" red="0.51700145009999998" green="0.51698595290000005" blue="0.51699477429999996" alpha="1" colorSpace="calibratedRGB"/>
+                    <nil key="highlightedColor"/>
+                </label>
             </subviews>
-            <color key="backgroundColor" red="0.95075207948684692" green="0.95072358846664429" blue="0.95073968172073364" alpha="1" colorSpace="calibratedRGB"/>
+            <color key="backgroundColor" red="0.95075207949999996" green="0.95072358850000005" blue="0.95073968170000001" alpha="1" colorSpace="calibratedRGB"/>
             <constraints>
-                <constraint firstAttribute="centerX" secondItem="7LC-uf-eF3" secondAttribute="centerX" constant="-0.5" id="7E8-a4-35E"/>
-                <constraint firstAttribute="centerY" secondItem="7LC-uf-eF3" secondAttribute="centerY" constant="0.5" id="Idv-Vu-fu6"/>
+                <constraint firstAttribute="centerX" secondItem="Nq1-Qx-HSP" secondAttribute="centerX" id="EH5-IX-KoE"/>
+                <constraint firstItem="Nq1-Qx-HSP" firstAttribute="leading" secondItem="9tl-7X-D3T" secondAttribute="leading" constant="20" id="ELS-ZG-4ft"/>
+                <constraint firstAttribute="centerY" secondItem="Nq1-Qx-HSP" secondAttribute="centerY" id="FMr-hl-MGa"/>
+                <constraint firstItem="8aD-Hx-ffP" firstAttribute="leading" secondItem="9tl-7X-D3T" secondAttribute="leading" constant="20" id="b9o-a7-kwp"/>
+                <constraint firstItem="8aD-Hx-ffP" firstAttribute="top" secondItem="Nq1-Qx-HSP" secondAttribute="bottom" id="fte-Jg-AOa"/>
+                <constraint firstAttribute="trailing" secondItem="Nq1-Qx-HSP" secondAttribute="trailing" constant="20" id="ndQ-v4-B7t"/>
+                <constraint firstAttribute="trailing" secondItem="8aD-Hx-ffP" secondAttribute="trailing" constant="20" id="ooe-tn-RvF"/>
             </constraints>
         </view>
     </objects>
