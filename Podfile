@@ -6,6 +6,8 @@ target "OneSound" do
 pod 'AFNetworking', '~> 2.0'
 pod 'SWRevealViewController', '~> 2.1'
 pod 'Facebook-iOS-SDK', '~> 3.16'
+pod 'AFNetworkActivityLogger', '~> 2.0'
+pod 'SSKeychain', '~> 1.2'
 
 end
 

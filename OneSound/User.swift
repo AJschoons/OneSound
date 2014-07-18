@@ -10,12 +10,14 @@ import UIKit
 
 enum UserColors: String {
     case Green = "g"
-    case Purple = "p"
     case Turquoise = "t"
-    case Yellow = "y"
+    case Purple = "p"
     case Red = "r"
     case Orange = "o"
+    case Yellow = "y"
 }
+
+let numberOfOneSoundColors = 6
 
 class User {
    
@@ -28,19 +30,6 @@ class User {
     var voteCount: Int!
     var followers: Int!
     var following: Int!
-    
-    var apiToken: String?
-    
-    var soundCloudUID: String?
-    var soundCloudAccessToken: String?
-    
-    var facebookUID: String?
-    var facebookAccessToken: String?
-    
-    var twitterUID: String?
-    var twitterAccessToken: String?
-    
-    var email: String?
     
     var colorToUIColor: UIColor {
         if let userColor = UserColors.fromRaw(color) {
@@ -75,20 +64,7 @@ class User {
     }
     
     func description() -> String {
-        var d = "id:\(id) name:'\(name)' color:\(color) guest:\(guest) f-ers:\(followers) f-ing:\(following) songs:\(songCount) votes:\(voteCount) photo:\(photo) token:\(apiToken)"
-        if facebookUID {
-            d += " fUID:\(facebookUID)"
-        }
-        if facebookAccessToken {
-            d += " fToken:\(facebookAccessToken)"
-        }
-        if twitterUID {
-            d += " tUID:\(twitterUID)"
-        }
-        if twitterAccessToken {
-            d += " tToken:\(twitterAccessToken)"
-        }
-        
-        return d
+        return "[USER] id:\(id) name:'\(name)' color:\(color) guest:\(guest) f-ers:\(followers) f-ing:\(following) songs:\(songCount) votes:\(voteCount) photo:\(photo)"
     }
+    
 }

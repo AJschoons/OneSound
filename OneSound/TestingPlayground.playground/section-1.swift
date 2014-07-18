@@ -43,3 +43,7 @@ var str = "HelloPlayground"
 str.hasSubstringCaseInsensitive("play")
 let validCharacters = "abcdefhijklmnopqrstuvwxyz1234567890"
 validCharacters.hasSubstringCaseInsensitive("")
+
+for i in 0..<100 {
+    println(arc4random() % 6)
+}

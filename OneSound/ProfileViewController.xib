@@ -6,26 +6,57 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="ProfileViewController" customModule="OneSound" customModuleProvider="target">
             <connections>
+                <outlet property="messageLabel1" destination="uBI-A4-FvY" id="JBs-UB-jSD"/>
+                <outlet property="messageLabel2" destination="Nf6-Nc-dCj" id="vxd-Dd-QOl"/>
+                <outlet property="settingsButton" destination="Vs3-s6-wcB" id="HkX-Eh-yya"/>
+                <outlet property="signOutButton" destination="GtE-bC-VWa" id="PUe-Ux-oqO"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
             </connections>
         </placeholder>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
         <view clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="i5M-Pr-FkT">
-            <rect key="frame" x="0.0" y="0.0" width="480" height="480"/>
+            <rect key="frame" x="0.0" y="64" width="480" height="416"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
-                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="ProfileViewController" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="o9e-Nj-aWy">
-                    <rect key="frame" x="160" y="229" width="160" height="21"/>
-                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Some text for main line of message" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="uBI-A4-FvY">
+                    <rect key="frame" x="20" y="177" width="440" height="17"/>
+                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
                     <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                    <nil key="highlightedColor"/>
+                </label>
+                <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="B8w-mW-KVj">
+                    <rect key="frame" x="0.0" y="372" width="480" height="44"/>
+                    <items>
+                        <barButtonItem width="8" style="plain" systemItem="fixedSpace" id="kV3-a9-PDx"/>
+                        <barButtonItem title="Sign Out" id="GtE-bC-VWa"/>
+                        <barButtonItem style="plain" systemItem="flexibleSpace" id="P9D-tA-nVt"/>
+                        <barButtonItem title="Settings" id="Vs3-s6-wcB"/>
+                        <barButtonItem width="8" style="plain" systemItem="fixedSpace" id="cjj-rA-LUX"/>
+                    </items>
+                </toolbar>
+                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Some text below  that further explains first message" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Nf6-Nc-dCj">
+                    <rect key="frame" x="20" y="194" width="440" height="13.5"/>
+                    <fontDescription key="fontDescription" type="system" pointSize="11"/>
+                    <color key="textColor" red="0.5170014500617981" green="0.51698595285415649" blue="0.51699477434158325" alpha="1" colorSpace="calibratedRGB"/>
                     <nil key="highlightedColor"/>
                 </label>
             </subviews>
             <color key="backgroundColor" red="0.95075207948684692" green="0.95072358846664429" blue="0.95073968172073364" alpha="1" colorSpace="calibratedRGB"/>
             <constraints>
-                <constraint firstAttribute="centerX" secondItem="o9e-Nj-aWy" secondAttribute="centerX" id="7EL-CW-dMa"/>
-                <constraint firstAttribute="centerY" secondItem="o9e-Nj-aWy" secondAttribute="centerY" constant="0.5" id="vjE-De-hGf"/>
+                <constraint firstAttribute="bottom" secondItem="B8w-mW-KVj" secondAttribute="bottom" id="2El-S2-0A7"/>
+                <constraint firstItem="uBI-A4-FvY" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" constant="20" id="4jU-1y-NVT"/>
+                <constraint firstAttribute="centerY" secondItem="uBI-A4-FvY" secondAttribute="centerY" constant="22.5" id="6S2-VJ-NCS"/>
+                <constraint firstAttribute="trailing" secondItem="uBI-A4-FvY" secondAttribute="trailing" constant="20" id="FAV-aH-bBV"/>
+                <constraint firstAttribute="centerX" secondItem="Nf6-Nc-dCj" secondAttribute="centerX" id="STn-FG-eER"/>
+                <constraint firstAttribute="centerX" secondItem="uBI-A4-FvY" secondAttribute="centerX" id="aIJ-Zd-Fgf"/>
+                <constraint firstAttribute="trailing" secondItem="B8w-mW-KVj" secondAttribute="trailing" id="hHp-I9-T4S"/>
+                <constraint firstItem="B8w-mW-KVj" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="ltA-yi-5oQ"/>
+                <constraint firstItem="Nf6-Nc-dCj" firstAttribute="top" secondItem="uBI-A4-FvY" secondAttribute="bottom" id="n69-7m-K3R"/>
+                <constraint firstAttribute="trailing" secondItem="Nf6-Nc-dCj" secondAttribute="trailing" constant="20" id="nBz-7N-OuO"/>
+                <constraint firstItem="Nf6-Nc-dCj" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" constant="20" id="pvt-Zx-8ek"/>
             </constraints>
+            <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" translucent="NO" prompted="NO"/>
+            <nil key="simulatedBottomBarMetrics"/>
         </view>
     </objects>
 </document>

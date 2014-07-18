@@ -21,12 +21,25 @@ class SideNavigationUserCell: UITableViewCell {
         
         // Stop cell color from changing when selected
         selectionStyle = UITableViewCellSelectionStyle.None
+        
+        refreshUserInformation()
     }
-
-    override func setSelected(selected: Bool, animated: Bool) {
-        super.setSelected(selected, animated: animated)
-
-        // Configure the view for the selected state
+    
+    func refreshUserInformation() {
+        let user = LocalUser.sharedUser
+        
+        if user.setup {
+            // If user exists
+            if user.guest {
+                // If user is a guest
+                userImage.backgroundColor = user.colorToUIColor
+                userLabel.text = user.name
+            }
+        }
+        else {
+            userImage.backgroundColor = UIColor.grayDark()
+            userLabel.text = "Not Signed In"
+        }
     }
     
 }

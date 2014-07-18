@@ -31,6 +31,16 @@ class FrontViewController: UIViewController {
         revealController.tapGestureRecognizer()
         let revealButtonItem = UIBarButtonItem(image: UIImage(named: "sideMenuToggleIcon"), style: UIBarButtonItemStyle.Plain, target: revealController, action: "revealToggle:")
         navigationItem.leftBarButtonItem = revealButtonItem
+        
+        /*
+        OSAPI.sharedClient.PUTUser(9, newName: nil, newColor: "p",
+            success: { data, responseObject in
+                let responseJSON = JSONValue(responseObject)
+                println(responseJSON)
+            },
+            failure: defaultAFHTTPFailureBlock)
+        */
+        
         /*
         for i in 1...4 {
             OSAPI.sharedClient.GETUser(i,

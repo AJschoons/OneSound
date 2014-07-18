@@ -48,6 +48,8 @@
 		81936FC9196C656F005E42F4 /* FrontViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 81936FC7196C656F005E42F4 /* FrontViewController.xib */; };
 		8195347B19775FCE000B97A3 /* LoginColorCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8195347919775FCE000B97A3 /* LoginColorCell.swift */; };
 		8195347C19775FCE000B97A3 /* LoginColorCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8195347A19775FCE000B97A3 /* LoginColorCell.xib */; };
+		81953480197857E6000B97A3 /* LocalUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8195347F197857E6000B97A3 /* LocalUser.swift */; };
+		81953482197860A7000B97A3 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 81953481197860A7000B97A3 /* Security.framework */; };
 		81B17D8F196F2A680062943C /* SideNavigationMenuCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81B17D8D196F2A680062943C /* SideNavigationMenuCell.swift */; };
 		81B17D90196F2A680062943C /* SideNavigationMenuCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 81B17D8E196F2A680062943C /* SideNavigationMenuCell.xib */; };
 /* End PBXBuildFile section */
@@ -112,6 +114,9 @@
 		81936FC7196C656F005E42F4 /* FrontViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = FrontViewController.xib; sourceTree = "<group>"; };
 		8195347919775FCE000B97A3 /* LoginColorCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginColorCell.swift; sourceTree = "<group>"; };
 		8195347A19775FCE000B97A3 /* LoginColorCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LoginColorCell.xib; sourceTree = "<group>"; };
+		8195347F197857E6000B97A3 /* LocalUser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocalUser.swift; sourceTree = "<group>"; };
+		81953481197860A7000B97A3 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
+		81953483197862F5000B97A3 /* OneSound.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = OneSound.entitlements; sourceTree = "<group>"; };
 		81B17D8D196F2A680062943C /* SideNavigationMenuCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SideNavigationMenuCell.swift; sourceTree = "<group>"; };
 		81B17D8E196F2A680062943C /* SideNavigationMenuCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SideNavigationMenuCell.xib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -121,6 +126,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				81953482197860A7000B97A3 /* Security.framework in Frameworks */,
 				81751FF7196DEB1D00B9F9A9 /* UIKit.framework in Frameworks */,
 				81751FF5196DEB0F00B9F9A9 /* Foundation.framework in Frameworks */,
 				0C5C4B89C9B444C983D44940 /* libPods-OneSound.a in Frameworks */,
@@ -153,6 +159,7 @@
 			isa = PBXGroup;
 			children = (
 				81527127196C5A8E00464068 /* User.swift */,
+				8195347F197857E6000B97A3 /* LocalUser.swift */,
 			);
 			name = Models;
 			sourceTree = "<group>";
@@ -213,6 +220,7 @@
 		81062F9F196B6C7E0057D230 /* OneSound */ = {
 			isa = PBXGroup;
 			children = (
+				81953483197862F5000B97A3 /* OneSound.entitlements */,
 				81062FA2196B6C7E0057D230 /* AppDelegate.swift */,
 				81062FAB196B6C7E0057D230 /* Images.xcassets */,
 				81062FA0196B6C7E0057D230 /* Supporting Files */,
@@ -355,6 +363,7 @@
 		F0954DF62FE441E2A671CB82 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				81953481197860A7000B97A3 /* Security.framework */,
 				81751FF6196DEB1D00B9F9A9 /* UIKit.framework */,
 				81751FF4196DEB0F00B9F9A9 /* Foundation.framework */,
 				52F652D4E9264838BE2D4D5C /* libPods-OneSound.a */,
@@ -414,6 +423,11 @@
 					81062F9C196B6C7E0057D230 = {
 						CreatedOnToolsVersion = 6.0;
 						DevelopmentTeam = 8YP7AK358X;
+						SystemCapabilities = {
+							com.apple.Keychain = {
+								enabled = 1;
+							};
+						};
 					};
 					81062FB0196B6C7E0057D230 = {
 						CreatedOnToolsVersion = 6.0;
@@ -521,6 +535,7 @@
 				8158312F197479B40011D3CE /* ProfileViewController.swift in Sources */,
 				816FD445196F22B0003CCB1C /* SideNavigationViewController.swift in Sources */,
 				8158311F197477990011D3CE /* HistoryViewController.swift in Sources */,
+				81953480197857E6000B97A3 /* LocalUser.swift in Sources */,
 				815831271974786C0011D3CE /* FollowingViewController.swift in Sources */,
 				815831111974308E0011D3CE /* OneSound Colors.swift in Sources */,
 				8158314219748F730011D3CE /* PartyMembersViewController.swift in Sources */,
@@ -642,12 +657,16 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = OneSound/OneSound.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = NO;
 				GCC_SHORT_ENUMS = YES;
 				INFOPLIST_FILE = OneSound/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "OneSound/OneSound-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				TARGETED_DEVICE_FAMILY = 1;
@@ -661,12 +680,16 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = OneSound/OneSound.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = NO;
 				GCC_SHORT_ENUMS = YES;
 				INFOPLIST_FILE = OneSound/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "OneSound/OneSound-Bridging-Header.h";
 				TARGETED_DEVICE_FAMILY = 1;
 			};

@@ -58,6 +58,13 @@ class SideNavigationViewController: UITableViewController {
         nib = UINib(nibName: "SideNavigationUserCell", bundle: nil)
         tableView.registerNib(nib, forCellReuseIdentifier: userCellIdentifier)
     }
+    
+    override func viewWillAppear(animated: Bool) {
+        // Update the user cell when it appears
+        if userCell {
+            userCell!.refreshUserInformation()
+        }
+    }
 }
 
 extension SideNavigationViewController: UITableViewDataSource {

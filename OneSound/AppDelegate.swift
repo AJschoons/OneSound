@@ -12,6 +12,12 @@ import QuartzCore
 // Set to true to print everything in app to console
 var pG = false
 
+let service = "com.AdamSchoonmaker.OneSound"
+let userIDKeychainKey = "userID"
+let userAPITokenKeychainKey = "userAPIToken"
+let userFacebookUIDKeychainKey = "userFacebookUID"
+let userFacebookAuthenticationTokenKeychainKey = "userFacebookAuthenticationTokenKey"
+
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
                             
@@ -20,6 +26,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var revealViewController: SWRevealViewController?
     var panGestureStartedFrom: UInt32 = 1000000 // 1000000 so it won't init as an enum val
     
+    var localUser: LocalUser!
+    
     // Set to true to print everything in AppDelegate
     var pL = false
 
@@ -27,39 +35,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         window = UIWindow(frame: UIScreen.mainScreen().bounds)
         
         // Override point for customization after application launch.
+        setupAppWindowAndViewHierarchy()
         
-        let frontViewController = FrontViewController()
-        let rearViewController = SideNavigationViewController()
+        setupAppDefaultBarAppearances()
         
-        let frontNavigationController = FrontNavigationController(rootViewController: frontViewController)
+        setupAppAFNetworkingTools()
         
-        let rearNavigationController = UINavigationController(rootViewController: rearViewController)
+        // Create the user
+        localUser = LocalUser.sharedUser
         
-        let revealController = SWRevealViewController(rearViewController: rearViewController, frontViewController: frontNavigationController)
-        
-        revealController.delegate = self
-        revealController.rearViewRevealWidth = 200.0
-        revealController.rearViewRevealOverdraw = 0.0
-        revealController.frontViewShadowOpacity = 0.0
-        revealController.bounceBackOnOverdraw = false
-        revealController.bounceBackOnLeftOverdraw = false
-        revealController.quickFlickVelocity = 1000000 // Disables quick Flicks
-        revealViewController = revealController
-        
-        window!.rootViewController = revealViewController
-        
-        window!.backgroundColor = UIColor.whiteColor()
-        window!.makeKeyAndVisible()
-        
-        // Set navigation bar and tab bar shadows throughout app, plus other appearances
-        UINavigationBar.appearance().setBackgroundImage(UIImage(named: "navigationBarBackground"), forBarMetrics: UIBarMetrics.Default)
-        UINavigationBar.appearance().shadowImage = UIImage(named: "navigationBarShadow")
-        UINavigationBar.appearance().tintColor = UIColor.blue()
-        UINavigationBar.appearance().barTintColor = UIColor.white()
-        UITabBar.appearance().backgroundImage = UIImage(named: "tabBarBackground")
-        UITabBar.appearance().shadowImage = UIImage(named: "tabBarShadow")
-        
-        AFNetworkActivityIndicatorManager.sharedManager().enabled = true
+        // Login flow is handled by AFNetworkingReachability mangaer
         
         return true
     }
@@ -87,6 +72,116 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
 
+}
+
+extension AppDelegate {
+    // MARK: App launching related code
+    
+    func setupAppWindowAndViewHierarchy() {
+        // Setup side menu and general navigation hierarchy
+        
+        let frontViewController = FrontViewController()
+        let rearViewController = SideNavigationViewController()
+        
+        let frontNavigationController = FrontNavigationController(rootViewController: frontViewController)
+        
+        let rearNavigationController = UINavigationController(rootViewController: rearViewController)
+        
+        let revealController = SWRevealViewController(rearViewController: rearViewController, frontViewController: frontNavigationController)
+        
+        // Configure side menu
+        revealController.delegate = self
+        revealController.rearViewRevealWidth = 200.0
+        revealController.rearViewRevealOverdraw = 0.0
+        revealController.frontViewShadowOpacity = 0.0
+        revealController.bounceBackOnOverdraw = false
+        revealController.bounceBackOnLeftOverdraw = false
+        revealController.quickFlickVelocity = 1000000 // Disables quick Flicks
+        revealViewController = revealController
+        
+        window!.rootViewController = revealViewController
+        
+        window!.backgroundColor = UIColor.whiteColor()
+        window!.makeKeyAndVisible()
+    }
+    
+    func setupAppDefaultBarAppearances() {
+        // Set navigation bar and tab bar shadows throughout app, plus other appearances
+        
+        UINavigationBar.appearance().setBackgroundImage(UIImage(named: "navigationBarBackground"), forBarMetrics: UIBarMetrics.Default)
+        UINavigationBar.appearance().shadowImage = UIImage(named: "navigationBarShadow")
+        UINavigationBar.appearance().tintColor = UIColor.blue()
+        UINavigationBar.appearance().barTintColor = UIColor.white()
+        
+        UITabBar.appearance().backgroundImage = UIImage(named: "tabBarBackground")
+        UITabBar.appearance().shadowImage = UIImage(named: "tabBarShadow")
+        UITabBar.appearance().tintColor = UIColor.blue()
+        UITabBar.appearance().barTintColor = UIColor.white()
+        
+        UIToolbar.appearance().setBackgroundImage(UIImage(named: "toolbarBackground"), forToolbarPosition: UIBarPosition.Bottom, barMetrics: UIBarMetrics.Default)
+        UIToolbar.appearance().setShadowImage(UIImage(named: "toolbarShadow"), forToolbarPosition: UIBarPosition.Bottom)
+        UIToolbar.appearance().tintColor = UIColor.blue()
+        UIToolbar.appearance().barTintColor = UIColor.white()
+    }
+    
+    func setupAppAFNetworkingTools() {
+        // Start monitoring network reachability
+        AFNetworkReachabilityManager.sharedManager().startMonitoring()
+        
+        AFNetworkReachabilityManager.sharedManager().setReachabilityStatusChangeBlock({ reachability in
+            if reachability == AFNetworkReachabilityStatus.NotReachable {
+                println("Network has changed to UNreachable")
+                
+                let alertView = UIAlertView(title: "No Internet Connection", message: "Please connect to the internet to use OneSound", delegate: nil, cancelButtonTitle: "Ok")
+                alertView.show()
+            } else if (reachability == AFNetworkReachabilityStatus.ReachableViaWiFi) || (reachability == AFNetworkReachabilityStatus.ReachableViaWWAN) {
+                println("Network has changed to reachable")
+                
+                if !self.localUser.setup {
+                    // Try setting up the user if network reachable but still not setup
+                    self.setupAppLocalUserBySigningInWithLoginFlow()
+                }
+            }
+        })
+        
+        // Start logging AFNetworking activiy
+        AFNetworkActivityLogger.sharedLogger().startLogging()
+        
+        // Start showing network activity
+        AFNetworkActivityIndicatorManager.sharedManager().enabled = true
+    }
+    
+    func setupAppLocalUserBySigningInWithLoginFlow() {
+        // Always print login flow
+        pL = true
+        
+        // Check for user facebook credentials
+        var userFacebookUID: String? = SSKeychain.passwordForService(service, account: userFacebookUIDKeychainKey)
+        var userFacebookAuthenticationToken: String? = SSKeychain.passwordForService(service, account: userFacebookAuthenticationTokenKeychainKey)
+        
+        userFacebookUID ? printlnC(pL, pG, "app launched with userFacebookUID:\(userFacebookUID)") : printlnC(pL, pG, "app launched without userFacebookUID")
+        userFacebookAuthenticationToken ? printlnC(pL, pG, "app launched with userFacebookAuthenticationToken:\(userFacebookAuthenticationToken)") : printlnC(pL, pG, "app launched without userFacebookAuthenticationToken")
+        
+        if !userFacebookUID || !userFacebookAuthenticationToken {
+            // If no facebook credentials, check for guest user
+            printlnC(pL, pG, "facebook credentials unavailable, check for guest user")
+            
+            var userID: Int? = SSKeychain.passwordForService(service, account: userIDKeychainKey) ? SSKeychain.passwordForService(service, account: userIDKeychainKey).toInt() : nil
+            var userAPIToken: String? = SSKeychain.passwordForService(service, account: userAPITokenKeychainKey)
+            
+            if !userID || !userAPIToken {
+                // If no guest user, then request a guest user to be created, set it up, save in keychain, save to LocalUser
+                localUser.setupLocalGuestUser()
+            } else {
+                // Got guest user from keychain, request their information and save to LocalUser
+                localUser.fetchLocalGuestUser(userID!, apiToken: userAPIToken!)
+            }
+        } else {
+            // Got facebook credentials from keychain
+        }
+        
+        pL = false
+    }
 }
 
 extension AppDelegate: SWRevealViewControllerDelegate {

@@ -14,8 +14,14 @@ typealias AFHTTPSuccessBlock = ((task: NSURLSessionDataTask!, responseObject: An
 typealias AFHTTPFailureBlock = ((task: NSURLSessionDataTask!, error: NSError!) -> Void)?
 
 let defaultAFHTTPFailureBlock: AFHTTPFailureBlock = { task, error in
-    let alertView = UIAlertView(title: "Error retrieving user", message: error.localizedDescription, delegate: nil, cancelButtonTitle: "Ok")
+    let alertView = UIAlertView(title: "Error", message: error.localizedDescription, delegate: nil, cancelButtonTitle: "Ok")
     alertView.show()
+}
+
+let defaultAFHTTPFailureBlockForServerDown: AFHTTPFailureBlock = { task, error in
+    let alertView = UIAlertView(title: "OneSound Server Temporarily Down", message: "We're having some problems on our end, please try using OneSound again in a couple of minutes", delegate: nil, cancelButtonTitle: "Ok")
+    alertView.show()
+    println(error.localizedDescription)
 }
 
 let baseURLString = "http://sparty.onesoundapp.com/"
@@ -24,16 +30,18 @@ class OSAPI: AFHTTPSessionManager {
     
     class var sharedClient: OSAPI {
         struct Static {
-            static let api = OSAPI()
+            static let api = OSAPI.initalClient()
         }
         return Static.api
     }
-    /*
-    @lazy var manager: AFHTTPSessionManager = {
-        let sessionManager = AFHTTPSessionManager(baseURL: NSURL(string: baseURLString))
-        //sessionManager.responseSerializer = AFJSONResponseSerializer
-        return sessionManager
-    }()*/
+    
+    class func initalClient() -> OSAPI {
+        // Initialize and customize here
+        let api = OSAPI(baseURL: NSURL(string: baseURLString))
+        api.responseSerializer = AFJSONResponseSerializer()
+        api.requestSerializer = AFJSONRequestSerializer()
+        return api
+    }
 }
 
 extension OSAPI {
@@ -42,7 +50,6 @@ extension OSAPI {
     func GETUser(uid: Int, success: AFHTTPSuccessBlock, failure: AFHTTPFailureBlock) {
         // Create a URL string from the base URL string, then user/:uid
         let urlString = "\(baseURLString)user/\(uid)"
-        println("GETUser \(urlString)")
 
         GET(urlString, parameters: nil, success: success, failure: failure)
     }
@@ -50,7 +57,6 @@ extension OSAPI {
     func GETUserFollowing(uid: Int, success: AFHTTPSuccessBlock, failure: AFHTTPFailureBlock) {
         // Create a URL string from the base URL string, then user/following/:uid
         let urlString = "\(baseURLString)user/\(uid)/following"
-        println("GETUserFollowing \(urlString)")
         
         GET(urlString, parameters: nil, success: success, failure: failure)
     }
@@ -58,12 +64,25 @@ extension OSAPI {
     func GETUserFollowers(uid: Int, success: AFHTTPSuccessBlock, failure: AFHTTPFailureBlock) {
         // Create a URL string from the base URL string, then user/following/:uid
         let urlString = "\(baseURLString)user/\(uid)/followers"
-        println("GETUserFollowers \(urlString)")
         
         GET(urlString, parameters: nil, success: success, failure: failure)
     }
     
-    // func PUTUser
+    func PUTUser(uid: Int, apiToken: String, newName: String?, newColor: String?, success: AFHTTPSuccessBlock, failure: AFHTTPFailureBlock) {
+        // Only make put request if given value to change
+        if newName || newColor {
+            // Create a URL string from the base URL string, then user/:uid
+            let urlString = "\(baseURLString)user/\(uid)"
+            
+            // Create parameters to pass
+            var params = Dictionary<String, AnyObject>()
+            params.updateValue(apiToken, forKey: "api_token")
+            if newName { params.updateValue(newName!, forKey: "name") }
+            if newColor { params.updateValue(newColor!, forKey: "color") }
+            
+            PUT(urlString, parameters: params, success: success, failure: failure)
+        }
+    }
     
     // func POSTUserProvider
     
@@ -71,7 +90,12 @@ extension OSAPI {
     
     // func POSTUnfollowUser
     
-    // func GETGuestUser
+    func GETGuestUser(#success: AFHTTPSuccessBlock, failure: AFHTTPFailureBlock) {
+        // Create a URL string from the base URL string, then guest
+        let urlString = "\(baseURLString)guest"
+        
+        GET(urlString, parameters: nil, success: success, failure: failure)
+    }
     
     // func GETUserLoginProvider
 }
