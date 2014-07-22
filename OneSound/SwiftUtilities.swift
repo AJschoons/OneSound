@@ -45,7 +45,10 @@ extension String {
         let stringLength: Int = countElements(self)
         if (substringLength <= stringLength) && (substring != "") {
             for var i = 0; (i + substringLength) <= stringLength; ++i {
-                if (self.substringFromIndex(i).substringToIndex(substringLength)) == substring {
+                let indexToStartAt = advance(self.startIndex, i)
+                let indexToEndAt = advance(indexToStartAt, substringLength)
+                let range = indexToStartAt..<indexToEndAt
+                if self[range] == substring {
                     return true
                 }
             }
@@ -58,11 +61,14 @@ extension String {
     func hasSubstringCaseInsensitive(substring: String) -> Bool {
         let substringLowercase = substring.lowercaseString
         let stringLowercase = self.lowercaseString
-        let substringLength: Int = countElements(substringLowercase)
-        let stringLength: Int = countElements(stringLowercase)
+        let substringLength = countElements(substringLowercase)
+        let stringLength = countElements(stringLowercase)
         if (substringLength <= stringLength) && (substring != "") {
             for var i = 0; (i + substringLength) <= stringLength; ++i {
-                if (stringLowercase.substringFromIndex(i).substringToIndex(substringLength)) == substringLowercase {
+                let indexToStartAt = advance(stringLowercase.startIndex, i)
+                let indexToEndAt = advance(indexToStartAt, substringLength)
+                let range = indexToStartAt..<indexToEndAt
+                if stringLowercase[range] == substringLowercase {
                     return true
                 }
             }
@@ -79,24 +85,24 @@ extension UIColor {
         var cString:String = hex.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet()).uppercaseString
         
         if (cString.hasPrefix("#")) {
-            cString = cString.substringFromIndex(1)
+            cString = cString.substringFromIndex(advance(cString.startIndex, 1))
         }
         
         if (countElements(cString) != 6) {
             return UIColor.grayColor()
         }
         
-        var rString = cString.substringToIndex(2)
-        var gString = cString.substringFromIndex(2).substringToIndex(2)
-        var bString = cString.substringFromIndex(4).substringToIndex(2)
+        var rString = cString.substringToIndex(advance(cString.startIndex, 2))
+        var gString = cString.substringFromIndex(advance(cString.startIndex, 2)).substringToIndex(advance(cString.startIndex, 2))
+        var bString = cString.substringFromIndex(advance(cString.startIndex, 4)).substringToIndex(advance(cString.startIndex, 2))
         
-        var r:CUnsignedInt = 0, g:CUnsignedInt = 0, b:CUnsignedInt = 0;
+        //var r:CUnsignedInt = 0, g:CUnsignedInt = 0, b:CUnsignedInt = 0;
+        var r: UInt32 = 0, g: UInt32 = 0, b: UInt32 = 0
         NSScanner.scannerWithString(rString).scanHexInt(&r)
         NSScanner.scannerWithString(gString).scanHexInt(&g)
         NSScanner.scannerWithString(bString).scanHexInt(&b)
         
-        return UIColor(red: CGFloat(r) / 255.0, green: CGFloat(g) / 255.0, blue: CGFloat(b) / 255.0, alpha: CGFloat(1))
-        
+        return UIColor(red: CGFloat(Int(r)) / 255.0, green: CGFloat(Int(g)) / 255.0, blue: CGFloat(Int(b)) / 255.0, alpha: CGFloat(1))
     }
 }
 

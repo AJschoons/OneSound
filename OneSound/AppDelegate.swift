@@ -11,12 +11,7 @@ import QuartzCore
 
 // Set to true to print everything in app to console
 var pG = false
-
-let service = "com.AdamSchoonmaker.OneSound"
-let userIDKeychainKey = "userID"
-let userAPITokenKeychainKey = "userAPIToken"
-let userFacebookUIDKeychainKey = "userFacebookUID"
-let userFacebookAuthenticationTokenKeychainKey = "userFacebookAuthenticationTokenKey"
+let FacebookSessionChangeNotification = "FacebookSessionChangeNotification"
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -24,7 +19,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
     //var statusBarBackground: UIWindow?
     var revealViewController: SWRevealViewController?
-    var panGestureStartedFrom: UInt32 = 1000000 // 1000000 so it won't init as an enum val
+    var panGestureStartedFrom: FrontViewPosition = FrontViewPositionRightMostRemoved
+    // FrontViewPositionRightMostRemoved so it won't init as a used enum val
     
     var localUser: LocalUser!
     
@@ -46,6 +42,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         // Login flow is handled by AFNetworkingReachability mangaer
         
+        // Loads the FBLoginView before the view is shown
+        FBLoginView.self
+        
         return true
     }
 
@@ -65,6 +64,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func applicationDidBecomeActive(application: UIApplication!) {
         // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
+        FBAppCall.handleDidBecomeActive()
     }
 
     func applicationWillTerminate(application: UIApplication!) {
@@ -76,6 +76,51 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 extension AppDelegate {
     // MARK: App launching related code
+    
+    func setupAppLocalUserBySigningInWithLoginFlow() {
+        // Always print login flow
+        pL = true
+        
+        // Whenever a person opens the app, check for a cached session
+        if FBSession.activeSession().state == FBSessionStateCreatedTokenLoaded {
+            // If there IS one, just open the session silently, w/o showing the user the login UI
+            FBSession.openActiveSessionWithReadPermissions(["public_profile"], allowLoginUI: false,
+                completionHandler: { session, state, error in
+                    // Handler for session state changes
+                    // This method will be called EACH time the session state changes,
+                    // also for intermediate states and NOT just when the session open
+                    self.sessionStateChanged(session, state: state, error: error)
+                }
+            )
+        }
+        
+        // Check for user facebook credentials
+        var userFacebookUID: String? = SSKeychain.passwordForService(service, account: userFacebookUIDKeychainKey)
+        var userFacebookAuthenticationToken: String? = SSKeychain.passwordForService(service, account: userFacebookAuthenticationTokenKeychainKey)
+        
+        userFacebookUID ? printlnC(pL, pG, "app launched with userFacebookUID:\(userFacebookUID)") : printlnC(pL, pG, "app launched without userFacebookUID")
+        userFacebookAuthenticationToken ? printlnC(pL, pG, "app launched with userFacebookAuthenticationToken:\(userFacebookAuthenticationToken)") : printlnC(pL, pG, "app launched without userFacebookAuthenticationToken")
+        
+        if !userFacebookUID || !userFacebookAuthenticationToken {
+            // If no facebook credentials, check for guest user
+            printlnC(pL, pG, "facebook credentials unavailable, check for guest user")
+            
+            var userID: Int? = SSKeychain.passwordForService(service, account: userIDKeychainKey) ? SSKeychain.passwordForService(service, account: userIDKeychainKey).toInt() : nil
+            var userAPIToken: String? = SSKeychain.passwordForService(service, account: userAPITokenKeychainKey)
+            
+            if !userID || !userAPIToken {
+                // If no guest user, then request a guest user to be created, set it up, save in keychain, save to LocalUser
+                localUser.setupLocalGuestUser()
+            } else {
+                // Got guest user from keychain, request their information and save to LocalUser
+                localUser.fetchLocalGuestUser(userID!, apiToken: userAPIToken!)
+            }
+        } else {
+            // Got facebook credentials from keychain
+        }
+        
+        pL = false
+    }
     
     func setupAppWindowAndViewHierarchy() {
         // Setup side menu and general navigation hierarchy
@@ -150,45 +195,73 @@ extension AppDelegate {
         // Start showing network activity
         AFNetworkActivityIndicatorManager.sharedManager().enabled = true
     }
+}
+
+extension AppDelegate {
+    // MARK: Facebook SDK related code
     
-    func setupAppLocalUserBySigningInWithLoginFlow() {
-        // Always print login flow
-        pL = true
+    func sessionStateChanged(session: FBSession, state: FBSessionState, error: NSError!) {
+        // Handles ALL the session state changes in the app
         
-        // Check for user facebook credentials
-        var userFacebookUID: String? = SSKeychain.passwordForService(service, account: userFacebookUIDKeychainKey)
-        var userFacebookAuthenticationToken: String? = SSKeychain.passwordForService(service, account: userFacebookAuthenticationTokenKeychainKey)
-        
-        userFacebookUID ? printlnC(pL, pG, "app launched with userFacebookUID:\(userFacebookUID)") : printlnC(pL, pG, "app launched without userFacebookUID")
-        userFacebookAuthenticationToken ? printlnC(pL, pG, "app launched with userFacebookAuthenticationToken:\(userFacebookAuthenticationToken)") : printlnC(pL, pG, "app launched without userFacebookAuthenticationToken")
-        
-        if !userFacebookUID || !userFacebookAuthenticationToken {
-            // If no facebook credentials, check for guest user
-            printlnC(pL, pG, "facebook credentials unavailable, check for guest user")
-            
-            var userID: Int? = SSKeychain.passwordForService(service, account: userIDKeychainKey) ? SSKeychain.passwordForService(service, account: userIDKeychainKey).toInt() : nil
-            var userAPIToken: String? = SSKeychain.passwordForService(service, account: userAPITokenKeychainKey)
-            
-            if !userID || !userAPIToken {
-                // If no guest user, then request a guest user to be created, set it up, save in keychain, save to LocalUser
-                localUser.setupLocalGuestUser()
+        // Handle the session state
+        // Usually the only interesting states are opened session, closed session, and failed login
+        if !error && state == FBSessionStateOpen {
+            let accessTokenData = session.accessTokenData
+            let userFBAccessToken = accessTokenData.accessToken
+            let userFBID = accessTokenData.userID
+            println("accessToken:\(userFBAccessToken)   userID:\(userFBID)")
+        } else if (state == FBSessionStateClosed) || (state == FBSessionStateClosedLoginFailed) {
+            // If the session is closed
+            // Show the user the logged-out UI
+        } else if error {
+            var alertText: String?
+            var alertTitle: String?
+            // If the error requires people using an app to make an action outside of the app in order to recover
+            if FBErrorUtility.shouldNotifyUserForError(error) == true {
+                alertTitle = "Session Error"
+                alertText = FBErrorUtility.userMessageForError(error)
+                let alert = UIAlertView(title: alertTitle, message: alertText, delegate: nil, cancelButtonTitle: "Ok")
+                alert.show()
             } else {
-                // Got guest user from keychain, request their information and save to LocalUser
-                localUser.fetchLocalGuestUser(userID!, apiToken: userAPIToken!)
+                // If the user cancelled login, do nothing
+                if FBErrorUtility.errorCategoryForError(error) == FBErrorCategory.UserCancelled {
+                    println("User cancelled login")
+                } else if FBErrorUtility.errorCategoryForError(error) == FBErrorCategory.AuthenticationReopenSession {
+                    // If session closure outside of the app happened
+                    alertTitle = "Session Error"
+                    alertText = "Your Facebook current session is no longer valid. Please log in again."
+                    let alert = UIAlertView(title: alertTitle, message: alertText, delegate: nil, cancelButtonTitle: "Ok")
+                    alert.show()
+                } else {
+                    // All other errors handled with generic message
+                    // Get more info from the error
+                    let errorInformation = error.userInfo.bridgeToObjectiveC().objectForKey("com.facebook.sdk:ParsedJSONResponseKey").objectForKey("body").objectForKey("error") as NSDictionary
+                    let errorMessage = errorInformation.objectForKey("message") as String
+                    
+                    alertTitle = "Something went wrong"
+                    alertText = "Please retry. If the problem persists contact us and mention this error code: \(errorMessage)"
+                    let alert = UIAlertView(title: alertTitle, message: alertText, delegate: nil, cancelButtonTitle: "Ok")
+                    alert.show()
+                }
             }
-        } else {
-            // Got facebook credentials from keychain
+            // Clear the token for all errors
+            FBSession.activeSession().closeAndClearTokenInformation()
+            // Show the user the logged out UI
         }
-        
-        pL = false
+    }
+    
+    // Manages results of all the actions taken outside the app (successful login/auth or cancellation)
+    func application(application: UIApplication!, openURL url: NSURL!, sourceApplication: String!, annotation: AnyObject!) -> Bool {
+        return FBAppCall.handleOpenURL(url, sourceApplication: sourceApplication)
     }
 }
 
 extension AppDelegate: SWRevealViewControllerDelegate {
-    // MARK: Customizes fading of whatever Front Navigation Controller is conforming to FrontNavigationControllerWithOverlay protocol
+    // MARK: SWRevealViewController Delegate methods
+    // Customizes fading of whatever Front Navigation Controller is conforming to FrontNavigationControllerWithOverlay protocol
     
     func revealController(revealController: SWRevealViewController, animateToPosition position: FrontViewPosition) {
-        if position.value == FrontViewPositionRight.value {
+        if position == FrontViewPositionRight {
             // If will move to show side nav
             printlnC(pL, pG, "animate side nav to VISIBLE")
             
@@ -198,7 +271,7 @@ extension AppDelegate: SWRevealViewControllerDelegate {
                     fnc.setOverlayAlpha(0.5)
                     })
             }
-        } else if position.value == FrontViewPositionLeft.value {
+        } else if position == FrontViewPositionLeft {
             // If will move to hide side nav
             printlnC(pL, pG, "animate side nav to HIDDEN")
             if let fnc = revealController.frontViewController as? FrontNavigationControllerWithOverlay {
@@ -223,7 +296,7 @@ extension AppDelegate: SWRevealViewControllerDelegate {
         if location < revealController.rearViewRevealWidth / 2.0 {
             // If pan began with side nav hidden, set the most recent pan start to FrontViewPositionLeft
             printlnC(pL, pG, "pan began with side nav HIDDEN")
-            panGestureStartedFrom = FrontViewPositionLeft.value
+            panGestureStartedFrom = FrontViewPositionLeft
             
             let pgVelocity = revealController.panGestureRecognizer().velocityInView(revealController.frontViewController.view)
             if pgVelocity.x > 0 {
@@ -234,7 +307,7 @@ extension AppDelegate: SWRevealViewControllerDelegate {
         } else if location >= revealController.rearViewRevealWidth / 2.0 {
             // If pan began with side nav visible, set the most recent pan start to FrontViewPositionRight
             printlnC(pL, pG, "pan began with side nav VISIBLE")
-            panGestureStartedFrom = FrontViewPositionRight.value
+            panGestureStartedFrom = FrontViewPositionRight
         }
     }
     
@@ -242,7 +315,7 @@ extension AppDelegate: SWRevealViewControllerDelegate {
         // Seems that this is the val SFReveal uses to decide where a paritally moved pan should go
         let criticalWidthDenom = CGFloat(2.0)
         
-        if panGestureStartedFrom == FrontViewPositionLeft.value {
+        if panGestureStartedFrom == FrontViewPositionLeft {
             // If pan started with side nav HIDDEN
             printlnC(pL, pG, "pan ended after starting with side nav HIDDEN")
             if location >= revealController.rearViewRevealWidth / criticalWidthDenom {
@@ -254,7 +327,7 @@ extension AppDelegate: SWRevealViewControllerDelegate {
                 printlnC(pL, pG, "    pan didn't reach 1/\(criticalWidthDenom) of the way to side nav VISIBLE, animate side nav to HIDDEN")
                 revealController.setFrontViewPosition(FrontViewPositionLeft, animated: true)
             }
-        } else if panGestureStartedFrom == FrontViewPositionRight.value {
+        } else if panGestureStartedFrom == FrontViewPositionRight {
             // If pan started with side nav VISIBLE
             printlnC(pL, pG, "pan ended after starting with side nav VISIBLE")
             if location <= (revealController.rearViewRevealWidth - (revealController.rearViewRevealWidth / criticalWidthDenom)) {

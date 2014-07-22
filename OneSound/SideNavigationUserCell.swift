@@ -10,8 +10,8 @@ import UIKit
 
 class SideNavigationUserCell: UITableViewCell {
 
-    @IBOutlet var userImage: UIImageView
-    @IBOutlet var userLabel: UILabel
+    @IBOutlet weak var userImage: UIImageView!
+    @IBOutlet weak var userLabel: UILabel!
     
     override func awakeFromNib() {
         super.awakeFromNib()

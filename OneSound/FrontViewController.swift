@@ -11,7 +11,26 @@ import UIKit
 class FrontViewController: UIViewController {
     
     var pL = true
+    @IBAction func resetUserInfo(sender: AnyObject) {
+        println("deleted all user info")
+        let user = LocalUser.sharedUser
+        user.deleteAllSavedUserInformation()
+    }
     
+    @IBAction func tryLoggingIntoFacebook(sender: AnyObject) {
+        /*
+        let fbSession = FBSession.activeSession()
+        // Only sign in if not already signed in
+        if (fbSession.state != FBSessionStateOpen) && (fbSession.state != FBSessionStateOpenTokenExtended) {
+            FBSession.openActiveSessionWithReadPermissions(["public_profile", "email"], allowLoginUI: true, completionHandler: { session, state, error in
+                let delegate = UIApplication.sharedApplication().delegate as AppDelegate
+                // Call the app delegate's sessionStateChanged:state:error method to handle session state changes
+                delegate.sessionStateChanged(session, state: state, error: error)
+                }
+            )
+        }
+        */
+    }
     @IBAction func modal(sender: AnyObject) {
         let loginStoryboard = UIStoryboard(name: "Login", bundle: nil)
         let loginViewController = loginStoryboard.instantiateViewControllerWithIdentifier("LoginViewController") as LoginViewController
@@ -33,15 +52,6 @@ class FrontViewController: UIViewController {
         navigationItem.leftBarButtonItem = revealButtonItem
         
         /*
-        OSAPI.sharedClient.PUTUser(9, newName: nil, newColor: "p",
-            success: { data, responseObject in
-                let responseJSON = JSONValue(responseObject)
-                println(responseJSON)
-            },
-            failure: defaultAFHTTPFailureBlock)
-        */
-        
-        /*
         for i in 1...4 {
             OSAPI.sharedClient.GETUser(i,
                 success: { data, responseObject in
@@ -53,7 +63,7 @@ class FrontViewController: UIViewController {
                 failure: defaultAFHTTPFailureBlock
             )
         }
-        
+    
         for i in 1...4 {
             OSAPI.sharedClient.GETUserFollowing(i,
                 success: { data, responseObject in

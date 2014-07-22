@@ -19,7 +19,7 @@ let defaultAFHTTPFailureBlock: AFHTTPFailureBlock = { task, error in
 }
 
 let defaultAFHTTPFailureBlockForServerDown: AFHTTPFailureBlock = { task, error in
-    let alertView = UIAlertView(title: "OneSound Server Temporarily Down", message: "We're having some problems on our end, please try using OneSound again in a couple of minutes", delegate: nil, cancelButtonTitle: "Ok")
+    let alertView = UIAlertView(title: "Server Temporarily Down", message: "We're having some problems on our end, please try using OneSound again in a couple of minutes", delegate: nil, cancelButtonTitle: "Ok")
     alertView.show()
     println(error.localizedDescription)
 }
@@ -30,17 +30,14 @@ class OSAPI: AFHTTPSessionManager {
     
     class var sharedClient: OSAPI {
         struct Static {
-            static let api = OSAPI.initalClient()
+            static let api: OSAPI = {
+                let initAPI = OSAPI()
+                initAPI.requestSerializer = AFJSONRequestSerializer()
+                initAPI.responseSerializer = AFJSONResponseSerializer()
+                return initAPI
+            }()
         }
         return Static.api
-    }
-    
-    class func initalClient() -> OSAPI {
-        // Initialize and customize here
-        let api = OSAPI(baseURL: NSURL(string: baseURLString))
-        api.responseSerializer = AFJSONResponseSerializer()
-        api.requestSerializer = AFJSONRequestSerializer()
-        return api
     }
 }
 
@@ -97,5 +94,15 @@ extension OSAPI {
         GET(urlString, parameters: nil, success: success, failure: failure)
     }
     
-    // func GETUserLoginProvider
+    func GETUserLoginProvider(providerUID: String, providerToken: String, success: AFHTTPSuccessBlock, failure: AFHTTPFailureBlock) {
+        // Checks if facebook id already in the database. Called before creating user so user can login to old account
+        let urlString = "/login/facebook"
+        
+        // Create parameters to pass
+        var params = Dictionary<String, AnyObject>()
+        params.updateValue(providerUID, forKey: "p_uid")
+        params.updateValue(providerToken, forKey: "token")
+        
+        GET(urlString, parameters: params, success: success, failure: failure)
+    }
 }

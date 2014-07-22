@@ -1,44 +1,19 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="6185.7" systemVersion="14A261i" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="6185.11" systemVersion="14A261i" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6181.2"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6190.4"/>
     </dependencies>
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="FollowingViewController" customModule="OneSound" customModuleProvider="target">
             <connections>
-                <outlet property="messageLabel1" destination="Atg-Fz-eEK" id="ZVQ-Ua-SNf"/>
-                <outlet property="messageLabel2" destination="3vl-xF-ApU" id="TSd-0W-i5a"/>
                 <outlet property="view" destination="EVV-Oz-mYO" id="ftt-bA-K6p"/>
             </connections>
         </placeholder>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
         <view clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="EVV-Oz-mYO">
-            <rect key="frame" x="0.0" y="0.0" width="480" height="480"/>
+            <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-            <subviews>
-                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Some text for main line of message" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Atg-Fz-eEK">
-                    <rect key="frame" x="20" y="231.5" width="440" height="17"/>
-                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                    <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
-                    <nil key="highlightedColor"/>
-                </label>
-                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Some text below that further explains first message" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="3vl-xF-ApU">
-                    <rect key="frame" x="20" y="248.5" width="440" height="13.5"/>
-                    <fontDescription key="fontDescription" type="system" pointSize="11"/>
-                    <color key="textColor" red="0.51700145009999998" green="0.51698595290000005" blue="0.51699477429999996" alpha="1" colorSpace="calibratedRGB"/>
-                    <nil key="highlightedColor"/>
-                </label>
-            </subviews>
             <color key="backgroundColor" red="0.95075207949999996" green="0.95072358850000005" blue="0.95073968170000001" alpha="1" colorSpace="calibratedRGB"/>
-            <constraints>
-                <constraint firstItem="Atg-Fz-eEK" firstAttribute="leading" secondItem="EVV-Oz-mYO" secondAttribute="leading" constant="20" id="MtM-3O-zfv"/>
-                <constraint firstAttribute="centerX" secondItem="Atg-Fz-eEK" secondAttribute="centerX" id="j89-h6-wLT"/>
-                <constraint firstItem="3vl-xF-ApU" firstAttribute="leading" secondItem="EVV-Oz-mYO" secondAttribute="leading" constant="20" id="m8A-FI-nUm"/>
-                <constraint firstAttribute="centerY" secondItem="Atg-Fz-eEK" secondAttribute="centerY" id="sk0-6n-FZ9"/>
-                <constraint firstItem="3vl-xF-ApU" firstAttribute="top" secondItem="Atg-Fz-eEK" secondAttribute="bottom" id="uFE-83-ETC"/>
-                <constraint firstAttribute="trailing" secondItem="Atg-Fz-eEK" secondAttribute="trailing" constant="20" id="xZZ-pc-1sO"/>
-                <constraint firstAttribute="trailing" secondItem="3vl-xF-ApU" secondAttribute="trailing" constant="20" id="z6D-Ab-tmN"/>
-            </constraints>
         </view>
     </objects>
 </document>

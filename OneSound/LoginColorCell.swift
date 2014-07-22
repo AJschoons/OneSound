@@ -9,8 +9,8 @@
 import UIKit
 
 class LoginColorCell: UITableViewCell {
-    @IBOutlet var colorLabel: UILabel
-    @IBOutlet var colorView: UIView
+    @IBOutlet weak var colorLabel: UILabel!
+    @IBOutlet weak var colorView: UIView!
     
     override func awakeFromNib() {
         super.awakeFromNib()

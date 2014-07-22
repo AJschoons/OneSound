@@ -10,8 +10,8 @@ import UIKit
 
 class SideNavigationMenuCell: UITableViewCell {
 
-    @IBOutlet var sideMenuItemIcon: UIImageView
-    @IBOutlet var sideMenuItemLabel: UILabel
+    @IBOutlet weak var sideMenuItemIcon: UIImageView!
+    @IBOutlet weak var sideMenuItemLabel: UILabel!
     var selectedIcon: UIImage?
     var unselectedIcon: UIImage?
     

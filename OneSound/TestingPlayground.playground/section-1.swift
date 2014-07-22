@@ -8,8 +8,11 @@ extension String {
         let stringLength: Int = countElements(self)
         if (substringLength <= stringLength) && (substring != "") {
             for var i = 0; (i + substringLength) <= stringLength; ++i {
-                println(self.substringFromIndex(i).substringToIndex(substringLength))
-                if (self.substringFromIndex(i).substringToIndex(substringLength)) == substring {
+                let indexToStartAt = advance(self.startIndex, i)
+                let indexToEndAt = advance(indexToStartAt, substringLength)
+                let range = indexToStartAt..<indexToEndAt
+                println(self[range])
+                if self[range] == substring {
                     return true
                 }
             }
@@ -22,12 +25,15 @@ extension String {
     func hasSubstringCaseInsensitive(substring: String) -> Bool {
         let substringLowercase = substring.lowercaseString
         let stringLowercase = self.lowercaseString
-        let substringLength: Int = countElements(substringLowercase)
-        let stringLength: Int = countElements(stringLowercase)
+        let substringLength = countElements(substringLowercase)
+        let stringLength = countElements(stringLowercase)
         if (substringLength <= stringLength) && (substring != "") {
             for var i = 0; (i + substringLength) <= stringLength; ++i {
-                println(self.substringFromIndex(i).substringToIndex(substringLength))
-                if (stringLowercase.substringFromIndex(i).substringToIndex(substringLength)) == substringLowercase {
+                let indexToStartAt = advance(stringLowercase.startIndex, i)
+                let indexToEndAt = advance(indexToStartAt, substringLength)
+                let range = indexToStartAt..<indexToEndAt
+                println(stringLowercase[range])
+                if stringLowercase[range] == substringLowercase {
                     return true
                 }
             }
@@ -40,7 +46,7 @@ extension String {
 
 
 var str = "HelloPlayground"
-str.hasSubstringCaseInsensitive("play")
+str.hasSubstringCaseSensitive("play")
 let validCharacters = "abcdefhijklmnopqrstuvwxyz1234567890"
 validCharacters.hasSubstringCaseInsensitive("")
 

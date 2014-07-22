@@ -9,8 +9,6 @@
 import UIKit
 
 class PartyMainViewController: UIViewController {
-    @IBOutlet var messageLabel1: UILabel
-    @IBOutlet var messageLabel2: UILabel
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)

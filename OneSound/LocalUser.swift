@@ -9,6 +9,14 @@
 import Foundation
 
 let LocalUserDidGetSetupNotification = "LocalUserDidGetSetup"
+let service = "com.AdamSchoonmaker.OneSound"
+let userIDKeychainKey = "userID"
+let userAPITokenKeychainKey = "userAPIToken"
+let userFacebookUIDKeychainKey = "userFacebookUID"
+let userFacebookAuthenticationTokenKeychainKey = "userFacebookAuthenticationTokenKey"
+let userNameKey = "name"
+let userColorKey = "color"
+let userGuestKey = "guest"
 
 class LocalUser {
     
@@ -46,6 +54,10 @@ class LocalUser {
     //var email: String?
     
     var colorToUIColor: UIColor {
+    if !color {
+        setRandomColor()
+    }
+        
     if let userColor = UserColors.fromRaw(color) {
         switch userColor {
         case .Green:
@@ -61,8 +73,8 @@ class LocalUser {
         case .Orange:
             return UIColor.orange()
         }
-        }
-        return UIColor.brownColor()
+    }
+    return UIColor.brownColor()
     }
     
     class func colorToUIColor(color: String) -> UIColor {
@@ -85,9 +97,11 @@ class LocalUser {
         return UIColor.brownColor()
     }
     
-    class func randomColor() -> UserColors {
+    func randomColor() -> UserColors {
         // Generates a random number 0-(numberOfOneSoundColors - 1)
-        switch (Int(arc4random()) % numberOfOneSoundColors) {
+        let randomInt = Int(arc4random()) % numberOfOneSoundColors
+        println("randon int for color:\(randomInt)")
+        switch randomInt {
         case 0:
             return UserColors.Green
         case 1:
@@ -106,11 +120,7 @@ class LocalUser {
     }
     
     func setRandomColor() {
-        color = LocalUser.randomColor().toRaw()
-    }
-    
-    class func getRandomColor() -> String {
-        return LocalUser.randomColor().toRaw()
+        color = randomColor().toRaw()
     }
     
     func description() -> String {
@@ -174,15 +184,6 @@ extension LocalUser {
                 let guestUID = responseJSON["uid"].integer
                 let guestName = responseJSON["name"].string
                 
-                // Update server with guest's random color
-                OSAPI.sharedClient.PUTUser(guestUID!, apiToken: guestAPIToken!, newName: nil, newColor: LocalUser.getRandomColor(),
-                    success: { data, responseObject in
-                        let responseJSON = JSONValue(responseObject)
-                        println(responseJSON)
-                    },
-                    failure: defaultAFHTTPFailureBlockForServerDown
-                )
-                
                 // Get the new guest user info from the server after color updated
                 // Set that as the localUser, save their userID and userAPIToken in the keychain
                 OSAPI.sharedClient.GETUser(guestUID!,
@@ -211,6 +212,18 @@ extension LocalUser {
                 )
             },
             failure: defaultAFHTTPFailureBlockForServerDown
+        )
+    }
+    
+    func setupLocalFullUserFromGuestAccount(fbUID: String, fbAuthToken: String) {
+        printlnC(pL, pG, "upgrading guest to full account")
+        
+        OSAPI.sharedClient.GETUserLoginProvider(fbUID, providerToken: fbAuthToken,
+            success: { data, responseObject in
+                let responseJSON = JSONValue(responseObject)
+                println(responseJSON)
+
+            }, failure: defaultAFHTTPFailureBlockForServerDown
         )
     }
     
@@ -253,11 +266,25 @@ extension LocalUser {
         println("updating information for LocalUser in UserDefaults")
         
         let defaults = NSUserDefaults.standardUserDefaults()
-        defaults.setObject(name, forKey: "name")
-        defaults.setObject(color, forKey: "color")
-        defaults.setBool(guest, forKey: "guest")
+        defaults.setObject(name, forKey: userNameKey)
+        defaults.setObject(color, forKey: userColorKey)
+        defaults.setBool(guest, forKey: userGuestKey)
         if !guest {
             // Save the photo information
         }
+    }
+    
+    func deleteAllSavedUserInformation() {
+        SSKeychain.deletePasswordForService(service, account: userIDKeychainKey)
+        SSKeychain.deletePasswordForService(service, account: userAPITokenKeychainKey)
+        SSKeychain.deletePasswordForService(service, account: userFacebookUIDKeychainKey)
+        SSKeychain.deletePasswordForService(service, account: userFacebookAuthenticationTokenKeychainKey)
+        
+        let defaults = NSUserDefaults.standardUserDefaults()
+        defaults.removeObjectForKey(userNameKey)
+        defaults.removeObjectForKey(userColorKey)
+        defaults.removeObjectForKey(userGuestKey)
+        
+        FBSession.activeSession().closeAndClearTokenInformation()
     }
 }

@@ -9,3 +9,4 @@
 #import "AFNetworkActivityLogger.h"
 #import "SWRevealViewController.h"
 #import "SSKeychain.h"
+#import "FacebookSDK.h"

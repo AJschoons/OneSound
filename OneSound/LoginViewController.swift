@@ -13,11 +13,11 @@ class LoginViewController: UITableViewController {
     let validCharacters = "abcdefghijklmnopqrstuvwxyz1234567890"
     
     
-    @IBOutlet var nameCell: UITableViewCell
-    @IBOutlet var nameCellTextField: UITextField
-    @IBOutlet var nameCellTextFieldCount: UILabel
-    @IBOutlet var colorCell: UITableViewCell
-    @IBOutlet var colorCellColorLabel: UILabel
+    @IBOutlet weak var nameCell: UITableViewCell!
+    @IBOutlet weak var nameCellTextField: UITextField!
+    @IBOutlet weak var nameCellTextFieldCount: UILabel!
+    @IBOutlet weak var colorCell: UITableViewCell!
+    @IBOutlet weak var colorCellColorLabel: UILabel!
     
     var color: OneSoundColorOption = OneSoundColorOption.Random
     
@@ -58,11 +58,13 @@ class LoginViewController: UITableViewController {
     }
     
     func updateNameCellTextFieldCount() {
+        let numberOfCharacters = countElements(nameCellTextField.text as String)
+        
         // Update label
-        nameCellTextFieldCount.text = "\(nameCellTextField.text.utf16count)/15"
+        nameCellTextFieldCount.text = "\(numberOfCharacters)/15"
         
         // Change color based on number of characters
-        switch nameCellTextField.text.utf16count {
+        switch numberOfCharacters {
         case 1...10:
             nameCellTextFieldCount.textColor = UIColor.green()
         case 11...13:
@@ -128,7 +130,7 @@ extension LoginViewController: UITextFieldDelegate {
         }
     
         // Only allow change if 15 or less characters
-        let newLength = textField.text.utf16count + string.utf16count - range.length
+        let newLength = countElements(textField.text as String) + countElements(string as String) - range.length
         return ((newLength > 15) ? false : true)
     }
     

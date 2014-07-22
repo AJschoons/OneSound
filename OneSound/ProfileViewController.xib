@@ -1,62 +1,80 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="6185.7" systemVersion="14A261i" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="6185.11" systemVersion="14A261i" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6181.2"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6190.4"/>
     </dependencies>
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="ProfileViewController" customModule="OneSound" customModuleProvider="target">
             <connections>
-                <outlet property="messageLabel1" destination="uBI-A4-FvY" id="JBs-UB-jSD"/>
-                <outlet property="messageLabel2" destination="Nf6-Nc-dCj" id="vxd-Dd-QOl"/>
-                <outlet property="settingsButton" destination="Vs3-s6-wcB" id="HkX-Eh-yya"/>
-                <outlet property="signOutButton" destination="GtE-bC-VWa" id="PUe-Ux-oqO"/>
+                <outlet property="facebookSignInButton" destination="vck-ur-TSy" id="3cN-Cf-FYq"/>
+                <outlet property="messageLabel1" destination="veg-mN-gPm" id="WlD-Sf-cic"/>
+                <outlet property="messageLabel2" destination="7DP-hq-6m4" id="j8O-Qh-2dZ"/>
+                <outlet property="settingsButton" destination="PeV-fh-xly" id="o1t-1D-AEM"/>
+                <outlet property="signOutButton" destination="Rc6-12-fTh" id="Dse-ms-1KY"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
             </connections>
         </placeholder>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
         <view clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="i5M-Pr-FkT">
-            <rect key="frame" x="0.0" y="64" width="480" height="416"/>
+            <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
-                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Some text for main line of message" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="uBI-A4-FvY">
-                    <rect key="frame" x="20" y="177" width="440" height="17"/>
+                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" restorationIdentifier="message1" text="Some text for main line of message" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="veg-mN-gPm">
+                    <rect key="frame" x="20" y="269" width="560" height="17"/>
                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
                     <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                     <nil key="highlightedColor"/>
                 </label>
-                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Some text below that further explains first message" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Nf6-Nc-dCj">
-                    <rect key="frame" x="20" y="194.5" width="440" height="13.5"/>
+                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" restorationIdentifier="message2" text="Some text below that further explains first message" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7DP-hq-6m4">
+                    <rect key="frame" x="20" y="286" width="560" height="13.5"/>
                     <fontDescription key="fontDescription" type="system" pointSize="11"/>
                     <color key="textColor" red="0.5170014500617981" green="0.51698595285415649" blue="0.51699477434158325" alpha="1" colorSpace="calibratedRGB"/>
                     <nil key="highlightedColor"/>
                 </label>
-                <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="B8w-mW-KVj">
-                    <rect key="frame" x="0.0" y="372" width="480" height="44"/>
+                <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="shI-29-vIk">
+                    <rect key="frame" x="0.0" y="556" width="600" height="44"/>
                     <items>
-                        <barButtonItem width="8" style="plain" systemItem="fixedSpace" id="kV3-a9-PDx"/>
-                        <barButtonItem title="Sign Out" id="GtE-bC-VWa"/>
-                        <barButtonItem style="plain" systemItem="flexibleSpace" id="P9D-tA-nVt"/>
-                        <barButtonItem title="Settings" id="Vs3-s6-wcB"/>
-                        <barButtonItem width="8" style="plain" systemItem="fixedSpace" id="cjj-rA-LUX"/>
+                        <barButtonItem title="Sign Out" id="Rc6-12-fTh">
+                            <connections>
+                                <action selector="signOut:" destination="-1" id="Q1F-18-uw1"/>
+                            </connections>
+                        </barButtonItem>
+                        <barButtonItem style="plain" systemItem="flexibleSpace" id="9fJ-wJ-cuV"/>
+                        <barButtonItem title="Settings" id="PeV-fh-xly"/>
                     </items>
                 </toolbar>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="vck-ur-TSy">
+                    <rect key="frame" x="200" y="490" width="200" height="44"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="44" id="Hnm-00-0X9"/>
+                        <constraint firstAttribute="width" constant="200" id="ycw-62-asZ"/>
+                    </constraints>
+                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                    <state key="normal" title="Sign In With Facebook">
+                        <color key="titleColor" red="1" green="0.99997437000274658" blue="0.99999129772186279" alpha="1" colorSpace="calibratedRGB"/>
+                        <color key="titleShadowColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                    </state>
+                    <connections>
+                        <action selector="signIntoFacebook:" destination="-1" eventType="touchUpInside" id="I9x-dy-w61"/>
+                    </connections>
+                </button>
             </subviews>
             <color key="backgroundColor" red="0.95075207948684692" green="0.95072358846664429" blue="0.95073968172073364" alpha="1" colorSpace="calibratedRGB"/>
             <constraints>
-                <constraint firstAttribute="bottom" secondItem="B8w-mW-KVj" secondAttribute="bottom" id="2El-S2-0A7"/>
-                <constraint firstItem="uBI-A4-FvY" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" constant="20" id="4jU-1y-NVT"/>
-                <constraint firstAttribute="centerY" secondItem="uBI-A4-FvY" secondAttribute="centerY" constant="22.5" id="6S2-VJ-NCS"/>
-                <constraint firstAttribute="trailing" secondItem="uBI-A4-FvY" secondAttribute="trailing" constant="20" id="FAV-aH-bBV"/>
-                <constraint firstAttribute="centerX" secondItem="Nf6-Nc-dCj" secondAttribute="centerX" id="STn-FG-eER"/>
-                <constraint firstAttribute="centerX" secondItem="uBI-A4-FvY" secondAttribute="centerX" id="aIJ-Zd-Fgf"/>
-                <constraint firstAttribute="trailing" secondItem="B8w-mW-KVj" secondAttribute="trailing" id="hHp-I9-T4S"/>
-                <constraint firstItem="B8w-mW-KVj" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="ltA-yi-5oQ"/>
-                <constraint firstItem="Nf6-Nc-dCj" firstAttribute="top" secondItem="uBI-A4-FvY" secondAttribute="bottom" id="n69-7m-K3R"/>
-                <constraint firstAttribute="trailing" secondItem="Nf6-Nc-dCj" secondAttribute="trailing" constant="20" id="nBz-7N-OuO"/>
-                <constraint firstItem="Nf6-Nc-dCj" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" constant="20" id="pvt-Zx-8ek"/>
+                <constraint firstAttribute="bottom" secondItem="shI-29-vIk" secondAttribute="bottom" id="21Q-ky-foD"/>
+                <constraint firstItem="shI-29-vIk" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="2ZG-YY-FvN"/>
+                <constraint firstAttribute="centerX" secondItem="vck-ur-TSy" secondAttribute="centerX" id="3AK-Hh-Mur"/>
+                <constraint firstAttribute="trailing" secondItem="shI-29-vIk" secondAttribute="trailing" id="8Yr-vy-iAF"/>
+                <constraint firstItem="7DP-hq-6m4" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" constant="20" id="LE9-ag-XX9"/>
+                <constraint firstAttribute="trailing" secondItem="7DP-hq-6m4" secondAttribute="trailing" constant="20" id="Mn7-Uc-Cdb"/>
+                <constraint firstItem="7DP-hq-6m4" firstAttribute="top" secondItem="veg-mN-gPm" secondAttribute="bottom" id="TBu-CJ-oTu"/>
+                <constraint firstAttribute="centerX" secondItem="7DP-hq-6m4" secondAttribute="centerX" id="TIM-EV-XAw"/>
+                <constraint firstItem="veg-mN-gPm" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" constant="20" id="fUp-Bb-6PC"/>
+                <constraint firstItem="shI-29-vIk" firstAttribute="top" secondItem="vck-ur-TSy" secondAttribute="bottom" constant="22" id="hJF-tf-EMF"/>
+                <constraint firstAttribute="centerX" secondItem="veg-mN-gPm" secondAttribute="centerX" id="rXK-JI-S8D"/>
+                <constraint firstAttribute="centerY" secondItem="veg-mN-gPm" secondAttribute="centerY" constant="22" id="tjs-MZ-GH8"/>
+                <constraint firstAttribute="trailing" secondItem="veg-mN-gPm" secondAttribute="trailing" constant="20" id="yao-s2-JVt"/>
             </constraints>
-            <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" translucent="NO" prompted="NO"/>
-            <nil key="simulatedBottomBarMetrics"/>
         </view>
     </objects>
 </document>
