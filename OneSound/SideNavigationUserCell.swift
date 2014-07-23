@@ -24,8 +24,9 @@ class SideNavigationUserCell: UITableViewCell {
         
         refresh()
         
-        // Make view respond to network reachability changes
+        // Make view respond to network reachability changes and user information changes
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "refresh", name: AFNetworkingReachabilityDidChangeNotification, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "refresh", name: LocalUserInformationDidChangeNotification, object: nil)
     }
     
     func refresh() {
@@ -33,19 +34,22 @@ class SideNavigationUserCell: UITableViewCell {
         
         if user.setup {
             // If user exists
-            if user.guest {
-                // If user is a guest
+            userLabel.text = user.name
+            
+            if !user.guest && user.photo {
+                // If user isn't a guest and has a valid photo
+                userImage.image = user.photo
+            } else {
+                // If user guest or doesn't have valid photo
                 userImage.backgroundColor = user.colorToUIColor
-                userLabel.text = user.name
             }
         }
         else {
             // User isn't setup, check if any info saved in NSUserDefaults
             let defaults = NSUserDefaults.standardUserDefaults()
-            let userSavedName = defaults.objectForKey("name") as? String
-            let userSavedColor = defaults.objectForKey("color") as? String
-            let userSavedIsGuest = defaults.boolForKey("guest")
-            
+            let userSavedName = defaults.objectForKey(userNameKey) as? String
+            let userSavedColor = defaults.objectForKey(userColorKey) as? String
+            let userSavedIsGuest = defaults.boolForKey(userGuestKey)
             
             if userSavedName {
                 // If user information can be retreived (assumes getting ANY user info means the rest is saved)
@@ -59,6 +63,19 @@ class SideNavigationUserCell: UITableViewCell {
                     }
                 } else {
                     // Deal with non-guests here
+                    let imageData = defaults.objectForKey(userGuestKey) as? NSData
+                    if let image = UIImage(data: imageData) as UIImage? {
+                        userImage.image = user.photo
+                    } else {
+                        // Couldn't get image
+                        if userSavedColor {
+                            userImage.backgroundColor = LocalUser.colorToUIColor(userSavedColor!)
+                        } else {
+                            // In case the userSavedColor info can't be retrieved
+                            userImage.backgroundColor = UIColor.grayDark()
+                        }
+                    }
+                    
                 }
             } else {
                 // Can't retrieve any user info

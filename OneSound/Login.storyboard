@@ -13,7 +13,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                         <sections>
-                            <tableViewSection headerTitle="Name" footerTitle="Only a-z, A-Z, 0-9 allowed" id="Wyo-xR-7vY">
+                            <tableViewSection headerTitle="Name" footerTitle="Must have 3-15 characters. Only a-z, A-Z, 0-9 allowed" id="Wyo-xR-7vY">
                                 <cells>
                                     <tableViewCell contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" id="JXU-bm-gRK">
                                         <autoresizingMask key="autoresizingMask"/>
@@ -21,15 +21,15 @@
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Enter name" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="xCk-eN-exj">
-                                                    <rect key="frame" x="15" y="11.5" width="450" height="21"/>
+                                                    <rect key="frame" x="15" y="11" width="450" height="21"/>
                                                     <constraints>
                                                         <constraint firstAttribute="height" constant="21" id="FFp-AI-2OV"/>
                                                     </constraints>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                     <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" keyboardType="alphabet" returnKeyType="done"/>
                                                 </textField>
-                                                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="0/15" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ush-wc-gyX">
-                                                    <rect key="frame" x="411" y="14" width="54" height="17"/>
+                                                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="0/15" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ush-wc-gyX">
+                                                    <rect key="frame" x="531" y="14" width="54" height="17"/>
                                                     <constraints>
                                                         <constraint firstAttribute="width" constant="54" id="1QE-RU-LUw"/>
                                                     </constraints>

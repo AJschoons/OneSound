@@ -8,24 +8,27 @@
 
 import Foundation
 
-let LocalUserDidGetSetupNotification = "LocalUserDidGetSetup"
+let LocalUserInformationDidChangeNotification = "LocalUserInformationDidChange"
 let service = "com.AdamSchoonmaker.OneSound"
 let userIDKeychainKey = "userID"
 let userAPITokenKeychainKey = "userAPIToken"
+let userGuestBoolKeychainKey = "userGuestBool"
 let userFacebookUIDKeychainKey = "userFacebookUID"
 let userFacebookAuthenticationTokenKeychainKey = "userFacebookAuthenticationTokenKey"
 let userNameKey = "name"
 let userColorKey = "color"
 let userGuestKey = "guest"
+let userPhotoUIImageKey = "photo"
 
 class LocalUser {
-    
-    var setup = false
+
     var pL = true
     
     var apiToken: String!
     var facebookUID: String?
     var facebookAuthenticationToken: String?
+    
+    var setup = false
     
     var id: Int!
     var name: String!
@@ -100,7 +103,7 @@ class LocalUser {
     func randomColor() -> UserColors {
         // Generates a random number 0-(numberOfOneSoundColors - 1)
         let randomInt = Int(arc4random()) % numberOfOneSoundColors
-        println("randon int for color:\(randomInt)")
+        println("random int for color:\(randomInt)")
         switch randomInt {
         case 0:
             return UserColors.Green
@@ -124,7 +127,7 @@ class LocalUser {
     }
     
     func description() -> String {
-        var d = "[USER] id:\(id) name:'\(name)' color:\(color) guest:\(guest) f-ers:\(followers) f-ing:\(following) songs:\(songCount) votes:\(voteCount) photo:\(photo) apiToken: \(apiToken)"
+        var d = "[USER] id:\(id) name:'\(name)' color:\(color) guest:\(guest) f-ers:\(followers) f-ing:\(following) songs:\(songCount) votes:\(voteCount) photo:\(photo) apiToken:\(apiToken) setup:\(setup)"
         if facebookUID {
             d += " fUID:\(facebookUID)"
         }
@@ -139,39 +142,23 @@ class LocalUser {
 extension LocalUser {
     // MARK: Login flow relgated code
     
-    func fetchLocalGuestUser(id: Int, apiToken: String) {
+    func signIntoGuestAccount(id: Int, apiToken: String) {
         // For use in the login flow of signing a user in
         
-        printlnC(pL, pG, "app has GUEST with userID:\(id)")
-        printlnC(pL, pG, "app has GUEST with userAPIToken:\(apiToken)")
+        printlnC(pL, pG, "Signing in with GUEST information... userID:\(id)   userAPIToken:\(apiToken)")
         
-        OSAPI.sharedClient.GETUser(id,
-            success: { data, responseObject in
-                let responseJSON = JSONValue(responseObject)
-                println(responseJSON)
-                
-                // Instantiate guest user from response JSON
-                self.updateLocalUserFromJSON(responseJSON, apiToken: apiToken, fbUID: nil, fbAuthToken: nil)
-                println(self.description())
-                
-                // Update the guest user's defaults after fetching
-                self.updateUserDefaultsForLocalUser()
-                
-                // Send out LocalUserDidGetSetup notification
-                NSNotificationCenter.defaultCenter().postNotificationName(LocalUserDidGetSetupNotification, object: nil)
-            },
+        updateLocalUserInformationAfterSignIn(userID: id, userAPIToken: apiToken,
             failure: { task, error in
                 println("ERROR: Guest account no longer exists, creating new one")
                 println(error.localizedDescription)
-                self.setupLocalGuestUser()
+                self.setupGuestAccount()
             }
         )
     }
     
-    func setupLocalGuestUser() {
+    func setupGuestAccount() {
         // For use in the login flow of signing a user in
-        
-        printlnC(pL, pG, "app has no userID or guest, request GUEST user")
+        printlnC(pL, pG, "Setup local guest user")
         
         // Get the guest user creation info from the server
         OSAPI.sharedClient.GETGuestUser(
@@ -182,52 +169,103 @@ extension LocalUser {
                 // Get the guest response info
                 let guestAPIToken = responseJSON["api_token"].string
                 let guestUID = responseJSON["uid"].integer
-                let guestName = responseJSON["name"].string
                 
-                // Get the new guest user info from the server after color updated
-                // Set that as the localUser, save their userID and userAPIToken in the keychain
-                OSAPI.sharedClient.GETUser(guestUID!,
-                    success: { data, responseObject in
-                        let responseJSON = JSONValue(responseObject)
-                        println(responseJSON)
-                        
-                        // Instantiate guest user from response JSON
-                        self.updateLocalUserFromJSON(responseJSON, apiToken: guestAPIToken!, fbUID: nil, fbAuthToken: nil)
-                        println(self.description())
-                        
-                        printlnC(self.pL, pG, "CREATED GUEST userID:\(guestUID)")
-                        printlnC(self.pL, pG, "CREATED GUEST userAPIToken:\(guestAPIToken)")
-                        
-                        // Save the new guest's info in NSUserDefaults
-                        self.updateUserDefaultsForLocalUser()
-                        
-                        // Save the new guest's info in the keychain
-                        SSKeychain.setPassword(String(guestUID!), forService: service, account: userIDKeychainKey)
-                        SSKeychain.setPassword(guestAPIToken, forService: service, account: userAPITokenKeychainKey)
-                        
-                        // Send out LocalUserDidGetSetup notification
-                        NSNotificationCenter.defaultCenter().postNotificationName(LocalUserDidGetSetupNotification, object: nil)
-                    },
-                    failure: defaultAFHTTPFailureBlockForServerDown
-                )
+                printlnC(self.pL, pG, "Signing in with GUEST information... userID:\(guestUID)   userAPIToken:\(guestAPIToken)")
+                
+                self.updateLocalUserInformationAfterSignIn(userID: guestUID!, userAPIToken: guestAPIToken!)
             },
             failure: defaultAFHTTPFailureBlockForServerDown
         )
     }
     
-    func setupLocalFullUserFromGuestAccount(fbUID: String, fbAuthToken: String) {
-        printlnC(pL, pG, "upgrading guest to full account")
+    func signIntoFullAccount(userID: Int, userAPIToken: String, fbUID: String, fbAuthToken: String) {
         
-        OSAPI.sharedClient.GETUserLoginProvider(fbUID, providerToken: fbAuthToken,
+        OSAPI.sharedClient.GETUserLoginProvider(userID, userAPIToken: userAPIToken, providerUID: fbUID, providerToken: fbAuthToken,
             success: { data, responseObject in
+                println("Signing in with FULL ACCOUNT information... userID:\(userID)   userAPIToken:\(userAPIToken)")
                 let responseJSON = JSONValue(responseObject)
                 println(responseJSON)
-
+                let activeAccount = responseJSON["active"].bool
+                if activeAccount == false {
+                    // Haven't seen that Facebook account before
+                    println("Account is inactive; create account")
+                    
+                    let loginStoryboard = UIStoryboard(name: "Login", bundle: nil)
+                    let loginViewController = loginStoryboard.instantiateViewControllerWithIdentifier("LoginViewController") as LoginViewController
+                    let navC = UINavigationController(rootViewController: loginViewController)
+                    
+                    let delegate = UIApplication.sharedApplication().delegate as AppDelegate
+                    let fvc = delegate.revealViewController!.frontViewController
+                    fvc.presentViewController(navC, animated: true,
+                        completion: {
+                            loginViewController.userID = userID
+                            loginViewController.userAPIToken = userAPIToken
+                            loginViewController.userFacebookUID = fbUID
+                            loginViewController.userFacebookToken = fbAuthToken
+                        }
+                    )
+                } else {
+                    // Facebook account HAS been seen before
+                    println("Account is active; update information and sign in")
+                    
+                    let userAPIToken = responseJSON["api_token"].string
+                    let userID = responseJSON["uid"].integer
+                    
+                    self.updateLocalUserInformationAfterSignIn(userID: userID!, userAPIToken: userAPIToken!)
+                }
             }, failure: defaultAFHTTPFailureBlockForServerDown
         )
     }
     
-    func updateLocalUserFromJSON(json: JSONValue, apiToken: String, fbUID: String? = nil, fbAuthToken: String? = nil) {
+    func setupFullAccount(userName: String, userColor: String, userID: Int, userAPIToken: String, providerUID: String, providerToken: String, successAddOn: completionClosure? = nil, failure: AFHTTPFailureBlock = defaultAFHTTPFailureBlockForServerDown) {
+        
+        OSAPI.sharedClient.POSTUserProvider(userName, userColor: userColor, userID: userID, userAPIToken: userAPIToken, providerUID: providerUID, providerToken: providerToken,
+            success: { data, responseObject in
+                let responseJSON = JSONValue(responseObject)
+                println(responseJSON)
+                
+                // Update new user information
+                if let newUserAPIToken = responseJSON["api_token"].string {
+                    LocalUser.sharedUser.updateLocalUserInformationAfterSignIn(userID: userID, userAPIToken: newUserAPIToken, successAddOn: successAddOn, failure: failure)
+                }
+                
+                // TODO: Handle possible errors
+            },
+            failure: defaultAFHTTPFailureBlockForServerDown
+        )
+    }
+    
+    
+    func updateLocalUserInformationAfterSignIn(userID id: Int, userAPIToken token: String, successAddOn: completionClosure? = nil, failure: AFHTTPFailureBlock = defaultAFHTTPFailureBlockForServerDown) {
+        // Download the user's record for the userID, update the LocalUser info from that json, 
+        // update the UserDefaults, and update the Keychain info
+        
+        // Get the user's info from the server
+        OSAPI.sharedClient.GETUser(id,
+            success: { data, responseObject in
+                let responseJSON = JSONValue(responseObject)
+                println(responseJSON)
+                
+                // Update shared Local User's information, UserDefaults, and Keychain info
+                LocalUser.sharedUser.updateLocalUserFromJSON(responseJSON, apiToken: token,
+                    completion: {
+                        // Save the accounts info in the keychain
+                        self.updateKeychainInfoForLocalUser(id, userAPIToken: token)
+                        // Send out LocalUserInformationDidChangeNotification
+                        NSNotificationCenter.defaultCenter().postNotificationName(LocalUserInformationDidChangeNotification, object: nil)
+                        
+                        if successAddOn {
+                            successAddOn!()
+                        }
+                    }
+                )
+            }, failure: failure
+        )
+    }
+    
+    func updateLocalUserFromJSON(json: JSONValue, apiToken: String, completion: completionClosure? = nil, fbUID: String? = nil, fbAuthToken: String? = nil) {
+        println("Updating LocalUser from JSON")
+        
         setup = true
         
         self.apiToken = apiToken
@@ -238,16 +276,36 @@ extension LocalUser {
         name = json["name"].string
         color = json["color"].string
         guest = json["guest"].bool
-        photoURL = json["photo"].string
         songCount = json["song_count"].integer
         voteCount = json["vote_count"].integer
         followers = json["followers"].integer
         following = json["following"].integer
+        
+        if !guest && json["photo"].string && photoURL != json["photo"].string {
+            // If not a guest and a non-empty photoURL gets sent that's different from what it was
+            println("Setting new photo URL")
+            photoURL = json["photo"].string
+            downloadImageWithURLString(photoURL!,
+                { success, image in
+                    if success {
+                        self.photo = image
+                        println("Saved new photo for user")
+                        NSUserDefaults.standardUserDefaults().setObject(UIImagePNGRepresentation(self.photo), forKey: userPhotoUIImageKey)
+                    }
+                }
+            )
+        }
+        
+        updateUserDefaultsForLocalUser()
+        
+        if completion {
+            completion!()
+        }
     }
     
     func updateLocalUserInformationFromServer() {
         // For updating the local user when NOT in the login flow
-        printlnC(pL, pG, "updating user information from server")
+        printlnC(pL, pG, "Updating user information from server")
         
         OSAPI.sharedClient.GETUser(id,
             success: { data, responseObject in
@@ -263,18 +321,25 @@ extension LocalUser {
     }
     
     func updateUserDefaultsForLocalUser() {
-        println("updating information for LocalUser in UserDefaults")
+        println("Updating information for LocalUser in UserDefaults")
         
         let defaults = NSUserDefaults.standardUserDefaults()
         defaults.setObject(name, forKey: userNameKey)
         defaults.setObject(color, forKey: userColorKey)
         defaults.setBool(guest, forKey: userGuestKey)
-        if !guest {
-            // Save the photo information
-        }
     }
     
-    func deleteAllSavedUserInformation() {
+    func updateKeychainInfoForLocalUser(userID: Int, userAPIToken: String) {
+        // Save the account's info in the keychain
+        println("Updating information for LocalUser in Keychain")
+        println("Saved userID to keychain:\(userID)")
+        println("Saved userAPIToken to keychain:\(userAPIToken)")
+        
+        SSKeychain.setPassword(String(userID), forService: service, account: userIDKeychainKey)
+        SSKeychain.setPassword(userAPIToken, forService: service, account: userAPITokenKeychainKey)
+    }
+    
+    func deleteAllSavedUserInformation(completion: completionClosure? = nil) {
         SSKeychain.deletePasswordForService(service, account: userIDKeychainKey)
         SSKeychain.deletePasswordForService(service, account: userAPITokenKeychainKey)
         SSKeychain.deletePasswordForService(service, account: userFacebookUIDKeychainKey)
@@ -284,7 +349,12 @@ extension LocalUser {
         defaults.removeObjectForKey(userNameKey)
         defaults.removeObjectForKey(userColorKey)
         defaults.removeObjectForKey(userGuestKey)
+        defaults.removeObjectForKey(userPhotoUIImageKey)
         
         FBSession.activeSession().closeAndClearTokenInformation()
+        
+        if completion {
+            completion!()
+        }
     }
 }

@@ -12,14 +12,19 @@ class LoginViewController: UITableViewController {
     
     let validCharacters = "abcdefghijklmnopqrstuvwxyz1234567890"
     
-    
     @IBOutlet weak var nameCell: UITableViewCell!
     @IBOutlet weak var nameCellTextField: UITextField!
     @IBOutlet weak var nameCellTextFieldCount: UILabel!
     @IBOutlet weak var colorCell: UITableViewCell!
     @IBOutlet weak var colorCellColorLabel: UILabel!
     
+    var userID: Int!
+    var userAPIToken: String!
+    var userFacebookUID: String!
+    var userFacebookToken: String!
+    
     var color: OneSoundColorOption = OneSoundColorOption.Random
+    var accountAlreadyExists = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -46,15 +51,40 @@ class LoginViewController: UITableViewController {
     }
     
     func cancel() {
+        if !accountAlreadyExists {
+            LocalUser.sharedUser.setupGuestAccount()
+        }
+        tableView.endEditing(true)
         dismissViewControllerAnimated(true, completion: nil)
     }
     
     func done() {
-        dismissViewControllerAnimated(true, completion: nil)
+        //dismissViewControllerAnimated(true, completion: nil)
+        let userColor = color.OneSoundColorOptionToUserColor().toRaw()
+        let userName = nameCellTextField.text
+        
+        if !accountAlreadyExists {
+            println("Creating FULL account by sending following information...")
+            println("name:\(userName) color:\(userColor) id:\(userID) token:\(userAPIToken) fbUID:\(userFacebookUID) fbToken:\(userFacebookToken)")
+            
+            LocalUser.sharedUser.setupFullAccount(userName, userColor: userColor, userID: userID, userAPIToken: userAPIToken, providerUID: userFacebookUID, providerToken: userFacebookToken,
+                successAddOn: {
+                    self.tableView.endEditing(true)
+                    self.dismissViewControllerAnimated(true, nil)
+                }
+            )
+        } else {
+            // TODO: code for changing user settings
+        }
     }
     
     func textFieldDidChange() {
         updateNameCellTextFieldCount()
+        if countElements(nameCellTextField.text as String) > 2 {
+            navigationItem.rightBarButtonItem.enabled = true
+        } else {
+            navigationItem.rightBarButtonItem.enabled = false
+        }
     }
     
     func updateNameCellTextFieldCount() {
@@ -65,11 +95,13 @@ class LoginViewController: UITableViewController {
         
         // Change color based on number of characters
         switch numberOfCharacters {
-        case 1...10:
+        case 0...2:
+            nameCellTextFieldCount.textColor = UIColor.red()
+        case 3...10:
             nameCellTextFieldCount.textColor = UIColor.green()
         case 11...13:
             nameCellTextFieldCount.textColor = UIColor.orange()
-        case 13...15:
+        case 14...15:
             nameCellTextFieldCount.textColor = UIColor.red()
         default:
             nameCellTextFieldCount.textColor = UIColor.black()

@@ -12,6 +12,7 @@ import QuartzCore
 // Set to true to print everything in app to console
 var pG = false
 let FacebookSessionChangeNotification = "FacebookSessionChangeNotification"
+let facebookSessionPermissions = ["public_profile", "email"]
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -40,7 +41,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Create the user
         localUser = LocalUser.sharedUser
         
-        // Login flow is handled by AFNetworkingReachability mangaer
+        // Login flow is handled by AFNetworkingReachability manager and FBLogin stuff
         
         // Loads the FBLoginView before the view is shown
         FBLoginView.self
@@ -84,7 +85,9 @@ extension AppDelegate {
         // Whenever a person opens the app, check for a cached session
         if FBSession.activeSession().state == FBSessionStateCreatedTokenLoaded {
             // If there IS one, just open the session silently, w/o showing the user the login UI
-            FBSession.openActiveSessionWithReadPermissions(["public_profile"], allowLoginUI: false,
+            println("Cached facebook token found")
+            
+            FBSession.openActiveSessionWithReadPermissions(facebookSessionPermissions, allowLoginUI: false,
                 completionHandler: { session, state, error in
                     // Handler for session state changes
                     // This method will be called EACH time the session state changes,
@@ -92,31 +95,22 @@ extension AppDelegate {
                     self.sessionStateChanged(session, state: state, error: error)
                 }
             )
-        }
-        
-        // Check for user facebook credentials
-        var userFacebookUID: String? = SSKeychain.passwordForService(service, account: userFacebookUIDKeychainKey)
-        var userFacebookAuthenticationToken: String? = SSKeychain.passwordForService(service, account: userFacebookAuthenticationTokenKeychainKey)
-        
-        userFacebookUID ? printlnC(pL, pG, "app launched with userFacebookUID:\(userFacebookUID)") : printlnC(pL, pG, "app launched without userFacebookUID")
-        userFacebookAuthenticationToken ? printlnC(pL, pG, "app launched with userFacebookAuthenticationToken:\(userFacebookAuthenticationToken)") : printlnC(pL, pG, "app launched without userFacebookAuthenticationToken")
-        
-        if !userFacebookUID || !userFacebookAuthenticationToken {
-            // If no facebook credentials, check for guest user
-            printlnC(pL, pG, "facebook credentials unavailable, check for guest user")
+        } else {
+            // If no facebook token, check for guest user
+            printlnC(pL, pG, "Cached facebook token unavailable, check for guest user")
             
             var userID: Int? = SSKeychain.passwordForService(service, account: userIDKeychainKey) ? SSKeychain.passwordForService(service, account: userIDKeychainKey).toInt() : nil
             var userAPIToken: String? = SSKeychain.passwordForService(service, account: userAPITokenKeychainKey)
             
             if !userID || !userAPIToken {
                 // If no guest user, then request a guest user to be created, set it up, save in keychain, save to LocalUser
-                localUser.setupLocalGuestUser()
+                printlnC(pL, pG, "Guest user NOT found")
+                localUser.setupGuestAccount()
             } else {
                 // Got guest user from keychain, request their information and save to LocalUser
-                localUser.fetchLocalGuestUser(userID!, apiToken: userAPIToken!)
+                printlnC(pL, pG, "Guest user FOUND")
+                localUser.signIntoGuestAccount(userID!, apiToken: userAPIToken!)
             }
-        } else {
-            // Got facebook credentials from keychain
         }
         
         pL = false
@@ -206,14 +200,47 @@ extension AppDelegate {
         // Handle the session state
         // Usually the only interesting states are opened session, closed session, and failed login
         if !error && state == FBSessionStateOpen {
+            println("Facebook session state change: Open")
+            
             let accessTokenData = session.accessTokenData
             let userFBAccessToken = accessTokenData.accessToken
             let userFBID = accessTokenData.userID
-            println("accessToken:\(userFBAccessToken)   userID:\(userFBID)")
+            
+            println("Facebook session UID:\(userFBID)")
+            println("Facebook session access token:\(userFBAccessToken)")
+            
+            var userID: Int? = SSKeychain.passwordForService(service, account: userIDKeychainKey) ? SSKeychain.passwordForService(service, account: userIDKeychainKey).toInt() : nil
+            var userAPIToken: String? = SSKeychain.passwordForService(service, account: userAPITokenKeychainKey)
+            
+            if userID && userAPIToken {
+                println("Found userID and userAPIToken from keychain, sign in with Facebook account")
+                println("userID from keychain:\(userID)")
+                println("userAPIToken from keychain:\(userAPIToken)")
+                localUser.signIntoFullAccount(userID!, userAPIToken: userAPIToken!, fbUID: userFBID, fbAuthToken: userFBAccessToken)
+            } else {
+                println("UserID and userAPIToken NOT found from keychain, setup guest user")
+                localUser.setupGuestAccount()
+            }
         } else if (state == FBSessionStateClosed) || (state == FBSessionStateClosedLoginFailed) {
-            // If the session is closed
-            // Show the user the logged-out UI
+            // If the session is closed, delete all old info and setup a guest account if the user had a full account
+            println("Facebook session state change: Closed/Login Failed")
+            
+            if !localUser.guest {
+                println("User was NOT a guest; delete all their saved info & clear facebook token, setup new guest account")
+                localUser.deleteAllSavedUserInformation(
+                    completion: {
+                        self.localUser.setupGuestAccount()
+                    }
+                )
+            } else {
+                // If user was a guest (typically during sign in this occurs) then just delete the facebook info
+                println("User WAS a guest; clear facebook token")
+                
+                FBSession.activeSession().closeAndClearTokenInformation()
+            }
         } else if error {
+            println("Facebook session state change: Error")
+            
             var alertText: String?
             var alertTitle: String?
             // If the error requires people using an app to make an action outside of the app in order to recover
@@ -248,6 +275,7 @@ extension AppDelegate {
             FBSession.activeSession().closeAndClearTokenInformation()
             // Show the user the logged out UI
         }
+        NSNotificationCenter.defaultCenter().postNotificationName(FacebookSessionChangeNotification, object: nil)
     }
     
     // Manages results of all the actions taken outside the app (successful login/auth or cancellation)

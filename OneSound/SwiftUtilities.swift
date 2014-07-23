@@ -123,6 +123,20 @@ func dispatchAsyncToMainQueue(action closure:actionClosure) {
     }
 }
 
+func downloadImageWithURLString(urlString: String, completion: (success: Bool, image: UIImage?) -> () ) {
+    let request = NSMutableURLRequest(URL: NSURL(string: urlString))
+    NSURLConnection.sendAsynchronousRequest(request, queue: NSOperationQueue.mainQueue(),
+        completionHandler: { response, data, error in
+            if !error {
+                let image = UIImage(data: data)
+                completion(success: true, image: image)
+            } else {
+                completion(success: false, image: nil)
+            }
+        }
+    )
+}
+
 func customCurveEaseInOut(xVal: Double, alphaPower: Double = 2.0) -> Double {
     if (xVal <= 1) && (xVal >= 0) {
         return (pow(xVal, alphaPower) / ( pow(xVal, alphaPower) + pow((1 - xVal), alphaPower) ))

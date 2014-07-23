@@ -81,7 +81,21 @@ extension OSAPI {
         }
     }
     
-    // func POSTUserProvider
+    func POSTUserProvider(userName: String, userColor: String, userID: Int, userAPIToken: String, providerUID: String, providerToken: String, success: AFHTTPSuccessBlock, failure: AFHTTPFailureBlock) {
+        // Checks if facebook id already in the database. Called before creating user so user can login to old account
+        let urlString = "\(baseURLString)user/facebook"
+        
+        // Create parameters to pass
+        var params = Dictionary<String, AnyObject>()
+        params.updateValue(userName, forKey: "name")
+        params.updateValue(userColor, forKey: "color")
+        params.updateValue(userID, forKey: "uid")
+        params.updateValue(userAPIToken, forKey: "api_token")
+        params.updateValue(providerUID, forKey: "p_uid")
+        params.updateValue(providerToken, forKey: "token")
+        
+        POST(urlString, parameters: params, success: success, failure: failure)
+    }
     
     // func POSTFollowUser
     
@@ -94,12 +108,14 @@ extension OSAPI {
         GET(urlString, parameters: nil, success: success, failure: failure)
     }
     
-    func GETUserLoginProvider(providerUID: String, providerToken: String, success: AFHTTPSuccessBlock, failure: AFHTTPFailureBlock) {
+    func GETUserLoginProvider(userID: Int, userAPIToken: String, providerUID: String, providerToken: String, success: AFHTTPSuccessBlock, failure: AFHTTPFailureBlock) {
         // Checks if facebook id already in the database. Called before creating user so user can login to old account
-        let urlString = "/login/facebook"
+        let urlString = "\(baseURLString)login/facebook"
         
         // Create parameters to pass
         var params = Dictionary<String, AnyObject>()
+        params.updateValue(userID, forKey: "uid")
+        params.updateValue(userAPIToken, forKey: "api_token")
         params.updateValue(providerUID, forKey: "p_uid")
         params.updateValue(providerToken, forKey: "token")
         

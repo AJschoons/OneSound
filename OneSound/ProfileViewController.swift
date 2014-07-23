@@ -22,7 +22,7 @@ class ProfileViewController: UIViewController {
         let fbSession = FBSession.activeSession()
         // Only sign in if not already signed in
         if (fbSession.state != FBSessionStateOpen) && (fbSession.state != FBSessionStateOpenTokenExtended) {
-            FBSession.openActiveSessionWithReadPermissions(["public_profile", "email"], allowLoginUI: true, completionHandler: { session, state, error in
+            FBSession.openActiveSessionWithReadPermissions(facebookSessionPermissions, allowLoginUI: true, completionHandler: { session, state, error in
                 let delegate = UIApplication.sharedApplication().delegate as AppDelegate
                 // Call the app delegate's sessionStateChanged:state:error method to handle session state changes
                 delegate.sessionStateChanged(session, state: state, error: error)
@@ -40,7 +40,7 @@ class ProfileViewController: UIViewController {
                 alert.tag = 101
                 alert.show()
             } else {
-                // If full user
+                // TODO: If full user sign out
             }
         }
     }
@@ -69,8 +69,11 @@ class ProfileViewController: UIViewController {
         // Make view respond to network reachability changes
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "refresh", name: AFNetworkingReachabilityDidChangeNotification, object: nil)
         // Make sure view knows the user is setup so it won't keep displaying 'Not signed into account' when there is no  internet connection when app launches and then the network comes back and LocalUser is setup
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "refresh", name: LocalUserDidGetSetupNotification, object: nil)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "handleFBSessionStateChange:", name: FacebookSessionChangeNotification, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "refresh", name: LocalUserInformationDidChangeNotification, object: nil)
+        //NSNotificationCenter.defaultCenter().addObserver(self, selector: "refresh", name: FacebookSessionChangeNotification, object: nil)
+        
+        // Temporary testing code
+        //LocalUser.sharedUser.signIntoGuestAccount(118, apiToken: "BuQtw6ER8rZqmrdDmRLZpL5fgZbzwd9SQnI7LJb2")
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -98,8 +101,9 @@ class ProfileViewController: UIViewController {
                     facebookSignInButton!.hidden = false
                     signOutButton!.enabled = true
                 } else {
-                    // Full accounts don't need sign in with facebook button
+                    // Full accounts
                     facebookSignInButton!.hidden = true
+                    hideMessages()
                 }
             } else {
                 showMessages("Not signed into an account", message2: "Please connect to the internet and try again")
@@ -145,7 +149,7 @@ extension ProfileViewController: UIAlertViewDelegate {
             if buttonIndex == 1 {
                 // If guest wants to sign out, delete all info and get new guest account, then refresh
                 LocalUser.sharedUser.deleteAllSavedUserInformation()
-                LocalUser.sharedUser.setupLocalGuestUser()
+                LocalUser.sharedUser.setupGuestAccount()
                 refresh()
             }
         }

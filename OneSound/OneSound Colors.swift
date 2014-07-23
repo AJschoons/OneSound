@@ -16,6 +16,25 @@ enum OneSoundColorOption: String {
     case Red = "Red"
     case Orange = "Orange"
     case Yellow = "Yellow"
+    
+    func OneSoundColorOptionToUserColor() -> UserColors {
+        switch self {
+        case .Random:
+            return LocalUser.sharedUser.randomColor()
+        case .Green:
+            return UserColors.Green
+        case .Turquiose:
+            return UserColors.Turquoise
+        case .Purple:
+            return UserColors.Purple
+        case .Red:
+            return UserColors.Red
+        case .Orange:
+            return UserColors.Orange
+        case .Yellow:
+            return UserColors.Yellow
+        }
+    }
 }
 
 extension UIColor {
