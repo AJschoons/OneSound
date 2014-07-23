@@ -12,11 +12,23 @@ class ProfileViewController: UIViewController {
     
     @IBOutlet weak var signOutButton: UIBarButtonItem?
     @IBOutlet weak var settingsButton: UIBarButtonItem?
+    
     @IBOutlet weak var messageLabel1: UILabel?
     @IBOutlet weak var messageLabel2: UILabel?
     @IBOutlet weak var facebookSignInButton: UIButton?
     
-    var user: LocalUser?
+    @IBOutlet weak var userImage: UIImageView?
+    @IBOutlet weak var userNameLabel: UILabel?
+    @IBOutlet weak var userUpvoteLabel: UILabel?
+    @IBOutlet weak var userSongLabel: UILabel?
+    @IBOutlet weak var userHotnessLabel: UILabel?
+    @IBOutlet weak var userUpvoteIcon: UIImageView?
+    @IBOutlet weak var userSongIcon: UIImageView?
+    @IBOutlet weak var userHotnessIcon: UIImageView?
+    @IBOutlet weak var spacer1: UIView?
+    @IBOutlet weak var spacer2: UIView?
+    @IBOutlet weak var spacer3: UIView?
+    @IBOutlet weak var spacer4: UIView?
 
     @IBAction func signIntoFacebook(sender: AnyObject) {
         let fbSession = FBSession.activeSession()
@@ -34,15 +46,29 @@ class ProfileViewController: UIViewController {
     @IBAction func signOut(sender: AnyObject) {
         // Only proceeds if refresh leaves view controller with a valid user
         if refresh() {
-            if user!.guest {
+            if LocalUser.sharedUser.guest == true {
                 // Let the guest know that signing out a guest account doesn't really do anything
                 let alert = UIAlertView(title: "Signing Out Guest", message: "Signing out of guest account deletes current guest account and signs into a new guest account. To sign into a full account, login with Facebook, and your guest account is automatically signed out.", delegate: self, cancelButtonTitle: "Cancel", otherButtonTitles: "Ok")
                 alert.tag = 101
                 alert.show()
             } else {
                 // TODO: If full user sign out
+                let alert = UIAlertView(title: "Signing Out", message: "Continue signing out to sign in with a different Facebook account, or to downgrade to a guest account. Guests can only join and use parties, and do not have social features such as stat tracking, Stories, Following, etc.", delegate: self, cancelButtonTitle: "Cancel", otherButtonTitles: "Ok")
+                alert.tag = 102
+                alert.show()
             }
         }
+    }
+    
+    @IBAction func changeSettings(sender: AnyObject) {
+        let loginStoryboard = UIStoryboard(name: "Login", bundle: nil)
+        let loginViewController = loginStoryboard.instantiateViewControllerWithIdentifier("LoginViewController") as LoginViewController
+        loginViewController.accountAlreadyExists = true
+        let navC = UINavigationController(rootViewController: loginViewController)
+        
+        let delegate = UIApplication.sharedApplication().delegate as AppDelegate
+        let fvc = delegate.revealViewController!.frontViewController
+        fvc.presentViewController(navC, animated: true, completion: nil)
     }
     
     override func viewDidLoad() {
@@ -60,11 +86,12 @@ class ProfileViewController: UIViewController {
         
         disableButtons()
         hideMessages()
+        setUserInfoHidden(true)
         
-        // Can also add email and user_friends
+        userImage!.layer.cornerRadius = 5.0
+        
         facebookSignInButton!.backgroundColor = UIColor.blue()
         facebookSignInButton!.layer.cornerRadius = 3.0
-        //facebookLoginButton.readPermissions = ["public_profile"]
         
         // Make view respond to network reachability changes
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "refresh", name: AFNetworkingReachabilityDidChangeNotification, object: nil)
@@ -72,8 +99,7 @@ class ProfileViewController: UIViewController {
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "refresh", name: LocalUserInformationDidChangeNotification, object: nil)
         //NSNotificationCenter.defaultCenter().addObserver(self, selector: "refresh", name: FacebookSessionChangeNotification, object: nil)
         
-        // Temporary testing code
-        //LocalUser.sharedUser.signIntoGuestAccount(118, apiToken: "BuQtw6ER8rZqmrdDmRLZpL5fgZbzwd9SQnI7LJb2")
+        refresh()
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -88,33 +114,71 @@ class ProfileViewController: UIViewController {
     func refresh() -> Bool {
         // Returns true if refreshed with a valid user variable for controller
         var validUser = false
+        println("refreshing ProfileViewController")
         
         if AFNetworkReachabilityManager.sharedManager().reachable {
             let localUser = LocalUser.sharedUser
-            if localUser.setup {
-                user = localUser
-                user!.updateLocalUserInformationFromServer()
+            if LocalUser.sharedUser.setup == true {
                 validUser = true
-                
-                if user!.guest {
-                    showMessages("Guests can only join and use parties", message2: "Please sign in with Facebook to use social features")
-                    facebookSignInButton!.hidden = false
-                    signOutButton!.enabled = true
-                } else {
-                    // Full accounts
-                    facebookSignInButton!.hidden = true
-                    hideMessages()
-                }
+                LocalUser.sharedUser.updateLocalUserInformationFromServer(
+                    addToSuccess: {
+                        
+                        if LocalUser.sharedUser.guest == true {
+                            self.setUserInfoHidden(true)
+                            self.showMessages("Guests can only join and use parties", message2: "Please sign in with Facebook to use social features")
+                            self.facebookSignInButton!.hidden = false
+                            self.signOutButton!.enabled = true
+                            self.settingsButton!.enabled = false
+                        } else {
+                            // Full accounts
+                            self.facebookSignInButton!.hidden = true
+                            self.signOutButton!.enabled = true
+                            self.settingsButton!.enabled = true
+                            self.hideMessages()
+                            self.setUserInfoHidden(false)
+                        }
+                    }
+                )
             } else {
-                showMessages("Not signed into an account", message2: "Please connect to the internet and try again")
                 disableButtons()
+                setUserInfoHidden(true)
+                showMessages("Not signed into an account", message2: "Please connect to the internet and try again")
             }
         } else {
-            showMessages("Not connected to the internet", message2: "Please connect to the internet and try again")
             disableButtons()
+            setUserInfoHidden(true)
+            showMessages("Not connected to the internet", message2: "Please connect to the internet and try again")
         }
         
         return validUser
+    }
+    
+    func setUserInfoHidden(hidden: Bool) {
+        userImage!.hidden = hidden
+        userNameLabel!.hidden = hidden
+        userUpvoteLabel!.hidden = hidden
+        userSongLabel!.hidden = hidden
+        userHotnessLabel!.hidden = hidden
+        userUpvoteIcon!.hidden = hidden
+        userSongIcon!.hidden = hidden
+        userHotnessIcon!.hidden = hidden
+        spacer1!.hidden = hidden
+        spacer2!.hidden = hidden
+        spacer3!.hidden = hidden
+        spacer4!.hidden = hidden
+        
+        if !hidden {
+            userNameLabel!.text = LocalUser.sharedUser.name
+            userUpvoteLabel!.text = intFormattedToShortStringForDisplay(LocalUser.sharedUser.upvoteCount)
+            userSongLabel!.text = intFormattedToShortStringForDisplay(LocalUser.sharedUser.songCount)
+            userHotnessLabel!.text = "XX%"
+            
+            if LocalUser.sharedUser.photo {
+                userImage!.image = LocalUser.sharedUser.photo
+            } else {
+                userImage!.backgroundColor = LocalUser.sharedUser.colorToUIColor
+            }
+        }
     }
     
     func showMessages(message1: String?, message2: String?) {
@@ -150,6 +214,12 @@ extension ProfileViewController: UIAlertViewDelegate {
                 // If guest wants to sign out, delete all info and get new guest account, then refresh
                 LocalUser.sharedUser.deleteAllSavedUserInformation()
                 LocalUser.sharedUser.setupGuestAccount()
+                refresh()
+            }
+        } else if alertView.tag == 102 {
+            // If full user is trying to sign out, let the FB session state change handle sign out and updating to new guest account
+            if buttonIndex == 1 {
+                FBSession.activeSession().closeAndClearTokenInformation()
                 refresh()
             }
         }

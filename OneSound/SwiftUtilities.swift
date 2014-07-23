@@ -137,6 +137,92 @@ func downloadImageWithURLString(urlString: String, completion: (success: Bool, i
     )
 }
 
+func cropBiggestCenteredSquareImageFromImage(image: UIImage, sideLength side: CGFloat) -> UIImage {
+    // Get size of current image
+    let size = image.size
+    if (size.width == size.height) && (size.width == side) {
+        return image
+    }
+    
+    let newSize = CGSizeMake(side, side)
+    var ratio: Double
+    var delta: Double
+    var offset: CGPoint
+    
+    // Make a new square size that is the resized image width
+    let sz = CGSizeMake(newSize.width, newSize.width)
+    
+    // Figure out if the picture is landscape or portrait, then calculate scale factor and offset
+    if image.size.width > image.size.height {
+        ratio = Double(newSize.height / image.size.height)
+        delta = ratio * Double((image.size.width - image.size.height))
+        offset = CGPointMake(CGFloat(delta) / 2, 0)
+    } else {
+        ratio = Double(newSize.width / image.size.width)
+        delta = ratio * Double((image.size.height - image.size.width))
+        offset = CGPointMake(0, CGFloat(delta) / 2)
+    }
+    
+    // Make the final clipping rect based on the calculated values
+    let clipRect = CGRectMake(-offset.x, -offset.y, CGFloat(ratio) * image.size.width, CGFloat(ratio) * image.size.height)
+    
+    // Start a new context, with scale factor 0.0 so retina displays get high quality image
+    if UIScreen.mainScreen().respondsToSelector("scale") {
+        UIGraphicsBeginImageContextWithOptions(sz, true, 0.0)
+    } else {
+        UIGraphicsBeginImageContext(sz)
+    }
+    UIRectClip(clipRect)
+    image.drawInRect(clipRect)
+    let newImage = UIGraphicsGetImageFromCurrentImageContext()
+    UIGraphicsEndImageContext()
+    
+    return newImage
+}
+
+func formatFirstThreeDigitsOfIntFromBaseWithPostfix(numberToFormat num: Int, baseOfNumber base: Int, postfix: String) -> String {
+    let numWas1000OrGreater = (num > 999) ? true : false
+    
+    if numWas1000OrGreater {
+        let digitsFromBase = abs(Int(num / base))
+        
+        if digitsFromBase < 1000  {
+            switch digitsFromBase {
+            case 0...9:
+                let tenthsDigit = Int(num / (base / 10)) % 10
+                if tenthsDigit > 0 {
+                    return "\(digitsFromBase).\(tenthsDigit)\(postfix)"
+                } else {
+                    return "\(digitsFromBase)\(postfix)"
+                }
+            default:
+                return "\(digitsFromBase)\(postfix)"
+            }
+        } else {
+            println("Error: Int(num / base) must leave max of three leading integers from base")
+            return "ERR"
+        }
+        
+    } else {
+        // Num was 0-999, so just return the num
+        return "\(abs(num))"
+    }
+}
+
+func intFormattedToShortStringForDisplay(num: Int) -> String {
+    let posNum = abs(num)
+    switch posNum {
+    case 0...999:
+        return String(posNum)
+    case 1000...999999:
+        return formatFirstThreeDigitsOfIntFromBaseWithPostfix(numberToFormat: posNum, baseOfNumber: 100, "k")
+    case 1000000...999999999:
+        return formatFirstThreeDigitsOfIntFromBaseWithPostfix(numberToFormat: posNum, baseOfNumber: 100, "M")
+    default:
+        return "MAX"
+    }
+}
+
 func customCurveEaseInOut(xVal: Double, alphaPower: Double = 2.0) -> Double {
     if (xVal <= 1) && (xVal >= 0) {
         return (pow(xVal, alphaPower) / ( pow(xVal, alphaPower) + pow((1 - xVal), alphaPower) ))

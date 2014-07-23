@@ -13,6 +13,8 @@ class SideNavigationUserCell: UITableViewCell {
     @IBOutlet weak var userImage: UIImageView!
     @IBOutlet weak var userLabel: UILabel!
     
+    var pL = true
+    
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
@@ -27,25 +29,31 @@ class SideNavigationUserCell: UITableViewCell {
         // Make view respond to network reachability changes and user information changes
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "refresh", name: AFNetworkingReachabilityDidChangeNotification, object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "refresh", name: LocalUserInformationDidChangeNotification, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "refresh", name: FacebookSessionChangeNotification, object: nil)
     }
     
     func refresh() {
-        let user = LocalUser.sharedUser
+        println("refreshing SideNavigationUserCell")
         
-        if user.setup {
+        if LocalUser.sharedUser.setup == true {
             // If user exists
-            userLabel.text = user.name
+            println("user is setup")
+            userLabel.text = LocalUser.sharedUser.name
             
-            if !user.guest && user.photo {
+            if LocalUser.sharedUser.guest == false && LocalUser.sharedUser.photo {
                 // If user isn't a guest and has a valid photo
-                userImage.image = user.photo
+                println("full user with valid photo; use their photo")
+                userImage.image = LocalUser.sharedUser.photo
             } else {
                 // If user guest or doesn't have valid photo
-                userImage.backgroundColor = user.colorToUIColor
+                println("guest user or invalid photo, use user color")
+                userImage.image = nil
+                userImage.backgroundColor = LocalUser.sharedUser.colorToUIColor
             }
         }
         else {
             // User isn't setup, check if any info saved in NSUserDefaults
+            println("user isn't setup")
             let defaults = NSUserDefaults.standardUserDefaults()
             let userSavedName = defaults.objectForKey(userNameKey) as? String
             let userSavedColor = defaults.objectForKey(userColorKey) as? String
@@ -53,8 +61,12 @@ class SideNavigationUserCell: UITableViewCell {
             
             if userSavedName {
                 // If user information can be retreived (assumes getting ANY user info means the rest is saved)
+                println("found guest user info in user defaults")
                 userLabel.text = userSavedName
                 if userSavedIsGuest {
+                    println("saved user was guest")
+                    userImage.image = nil
+                    
                     if userSavedColor {
                         userImage.backgroundColor = LocalUser.colorToUIColor(userSavedColor!)
                     } else {
@@ -63,11 +75,16 @@ class SideNavigationUserCell: UITableViewCell {
                     }
                 } else {
                     // Deal with non-guests here
-                    let imageData = defaults.objectForKey(userGuestKey) as? NSData
-                    if let image = UIImage(data: imageData) as UIImage? {
-                        userImage.image = user.photo
+                    println("found full user info in user defaults")
+                    if let imageData = defaults.objectForKey(userPhotoUIImageKey) as? NSData! {
+                        println("image data valid, use their image")
+                        let image = UIImage(data: imageData)
+                        userImage.image = image
                     } else {
                         // Couldn't get image
+                        println("image data invalid, use their color")
+                        userImage.image = nil
+                        
                         if userSavedColor {
                             userImage.backgroundColor = LocalUser.colorToUIColor(userSavedColor!)
                         } else {
@@ -75,10 +92,10 @@ class SideNavigationUserCell: UITableViewCell {
                             userImage.backgroundColor = UIColor.grayDark()
                         }
                     }
-                    
                 }
             } else {
                 // Can't retrieve any user info
+                println("user isn't setup")
                 userLabel.text = "Not Signed In"
                 userImage.backgroundColor = UIColor.grayDark()
             }

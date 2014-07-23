@@ -8,6 +8,32 @@
 
 import Foundation
 
+enum UserColors: String {
+    case Green = "g"
+    case Turquoise = "t"
+    case Purple = "p"
+    case Red = "r"
+    case Orange = "o"
+    case Yellow = "y"
+    
+    func UserColorsToOneSoundColorOption() -> OneSoundColorOption {
+        switch self {
+        case .Green:
+            return OneSoundColorOption.Green
+        case .Turquoise:
+            return OneSoundColorOption.Turquiose
+        case .Purple:
+            return OneSoundColorOption.Purple
+        case .Red:
+            return OneSoundColorOption.Red
+        case .Orange:
+            return OneSoundColorOption.Orange
+        case .Yellow:
+            return OneSoundColorOption.Yellow
+        }
+    }
+}
+
 enum OneSoundColorOption: String {
     case Random = "Random"
     case Green = "Green"

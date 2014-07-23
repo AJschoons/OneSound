@@ -8,15 +8,6 @@
 
 import UIKit
 
-enum UserColors: String {
-    case Green = "g"
-    case Turquoise = "t"
-    case Purple = "p"
-    case Red = "r"
-    case Orange = "o"
-    case Yellow = "y"
-}
-
 let numberOfOneSoundColors = 6
 
 class User {
@@ -27,7 +18,7 @@ class User {
     var guest: Bool!
     var photoURL: String?
     var songCount: Int!
-    var voteCount: Int!
+    var upvoteCount: Int!
     var followers: Int!
     var following: Int!
     
@@ -58,13 +49,13 @@ class User {
         guest = json["guest"].bool
         photoURL = json["photo"].string
         songCount = json["song_count"].integer
-        voteCount = json["vote_count"].integer
+        upvoteCount = json["vote_count"].integer
         followers = json["followers"].integer
         following = json["following"].integer
     }
     
     func description() -> String {
-        return "[USER] id:\(id) name:'\(name)' color:\(color) guest:\(guest) f-ers:\(followers) f-ing:\(following) songs:\(songCount) votes:\(voteCount) photo:\(photoURL)"
+        return "[USER] id:\(id) name:'\(name)' color:\(color) guest:\(guest) f-ers:\(followers) f-ing:\(following) songs:\(songCount) votes:\(upvoteCount) photo:\(photoURL)"
     }
     
 }

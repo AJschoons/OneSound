@@ -25,8 +25,6 @@ class LocalUser {
     var pL = true
     
     var apiToken: String!
-    var facebookUID: String?
-    var facebookAuthenticationToken: String?
     
     var setup = false
     
@@ -36,7 +34,7 @@ class LocalUser {
     var guest: Bool!
     var photoURL: String?
     var songCount: Int!
-    var voteCount: Int!
+    var upvoteCount: Int!
     var followers: Int!
     var following: Int!
     
@@ -127,13 +125,7 @@ class LocalUser {
     }
     
     func description() -> String {
-        var d = "[USER] id:\(id) name:'\(name)' color:\(color) guest:\(guest) f-ers:\(followers) f-ing:\(following) songs:\(songCount) votes:\(voteCount) photo:\(photo) apiToken:\(apiToken) setup:\(setup)"
-        if facebookUID {
-            d += " fUID:\(facebookUID)"
-        }
-        if facebookAuthenticationToken {
-            d += " fToken:\(facebookAuthenticationToken)"
-        }
+        var d = "[USER] id:\(id) name:'\(name)' color:\(color) guest:\(guest) f-ers:\(followers) f-ing:\(following) songs:\(songCount) votes:\(upvoteCount) photo:\(photo) apiToken:\(apiToken) setup:\(setup)"
         
         return d
     }
@@ -229,12 +221,11 @@ extension LocalUser {
                     LocalUser.sharedUser.updateLocalUserInformationAfterSignIn(userID: userID, userAPIToken: newUserAPIToken, successAddOn: successAddOn, failure: failure)
                 }
                 
-                // TODO: Handle possible errors
+                // TODO: Handle possible errors?
             },
             failure: defaultAFHTTPFailureBlockForServerDown
         )
     }
-    
     
     func updateLocalUserInformationAfterSignIn(userID id: Int, userAPIToken token: String, successAddOn: completionClosure? = nil, failure: AFHTTPFailureBlock = defaultAFHTTPFailureBlockForServerDown) {
         // Download the user's record for the userID, update the LocalUser info from that json, 
@@ -257,43 +248,38 @@ extension LocalUser {
                         if successAddOn {
                             successAddOn!()
                         }
-                    }
+                    },
+                    forcePhotoUpdate: true
                 )
             }, failure: failure
         )
     }
     
-    func updateLocalUserFromJSON(json: JSONValue, apiToken: String, completion: completionClosure? = nil, fbUID: String? = nil, fbAuthToken: String? = nil) {
+    func updateLocalUserFromJSON(json: JSONValue, apiToken: String, completion: completionClosure? = nil, forcePhotoUpdate: Bool = false) {
         println("Updating LocalUser from JSON")
         
         setup = true
         
         self.apiToken = apiToken
-        self.facebookUID = fbUID
-        self.facebookAuthenticationToken = fbAuthToken
         
         id = json["uid"].integer
         name = json["name"].string
         color = json["color"].string
         guest = json["guest"].bool
         songCount = json["song_count"].integer
-        voteCount = json["vote_count"].integer
+        upvoteCount = json["vote_count"].integer
         followers = json["followers"].integer
         following = json["following"].integer
         
-        if !guest && json["photo"].string && photoURL != json["photo"].string {
-            // If not a guest and a non-empty photoURL gets sent that's different from what it was
+        if guest == false && json["photo"].string && (forcePhotoUpdate == true || photoURL != json["photo"].string) {
+            // If not a guest and a non-empty photoURL gets sent that's different from what it was (or forced)
             println("Setting new photo URL")
             photoURL = json["photo"].string
-            downloadImageWithURLString(photoURL!,
-                { success, image in
-                    if success {
-                        self.photo = image
-                        println("Saved new photo for user")
-                        NSUserDefaults.standardUserDefaults().setObject(UIImagePNGRepresentation(self.photo), forKey: userPhotoUIImageKey)
-                    }
-                }
-            )
+            updateLocalUserPhoto(photoURL!)
+        } else if guest == true {
+            // Guests don't have photos
+            photo = nil
+            NSUserDefaults.standardUserDefaults().removeObjectForKey(userPhotoUIImageKey)
         }
         
         updateUserDefaultsForLocalUser()
@@ -303,7 +289,21 @@ extension LocalUser {
         }
     }
     
-    func updateLocalUserInformationFromServer() {
+    func updateLocalUserPhoto(urlString: String) {
+        downloadImageWithURLString(urlString,
+            { success, image in
+                if success {
+                    let smallestSide = (image!.size.height > image!.size.width) ? image!.size.width : image!.size.height
+                    self.photo = cropBiggestCenteredSquareImageFromImage(image!, sideLength: smallestSide)
+                    println("Saved new photo for user")
+                    NSUserDefaults.standardUserDefaults().setObject(UIImagePNGRepresentation(self.photo), forKey: userPhotoUIImageKey)
+                    NSNotificationCenter.defaultCenter().postNotificationName(LocalUserInformationDidChangeNotification, object: nil)
+                }
+            }
+        )
+    }
+    
+    func updateLocalUserInformationFromServer(addToSuccess: completionClosure? = nil) {
         // For updating the local user when NOT in the login flow
         printlnC(pL, pG, "Updating user information from server")
         
@@ -312,12 +312,31 @@ extension LocalUser {
                 let responseJSON = JSONValue(responseObject)
                 println(responseJSON)
                 
-                // Instantiate guest user from response JSON
-                self.updateLocalUserFromJSON(responseJSON, apiToken: self.apiToken, fbUID: self.facebookUID, fbAuthToken:self.facebookAuthenticationToken)
+                self.updateLocalUserFromJSON(responseJSON, apiToken: self.apiToken)
                 println(self.description())
+                if addToSuccess {
+                    addToSuccess!()
+                }
             },
             failure: defaultAFHTTPFailureBlockForServerDown
         )
+    }
+    
+    func updateServerWithNewNameAndColor(name: String?, color: String?, respondToChangeAttempt: (Bool) -> () ) {
+        OSAPI.sharedClient.PUTUser(id, apiToken: apiToken, newName: name, newColor: color,
+            success: { data, responseObject in
+                let responseJSON = JSONValue(responseObject)
+                println(responseJSON)
+                let status = responseJSON["status"].string
+                
+                if status == "success" {
+                    NSNotificationCenter.defaultCenter().postNotificationName(LocalUserInformationDidChangeNotification, object: nil)
+                    self.updateLocalUserInformationFromServer()
+                    respondToChangeAttempt(true)
+                } else {
+                    respondToChangeAttempt(false)
+                }
+            }, failure: defaultAFHTTPFailureBlockForServerDown)
     }
     
     func updateUserDefaultsForLocalUser() {

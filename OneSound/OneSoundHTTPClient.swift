@@ -12,6 +12,7 @@ import Foundation
 typealias AFHTTPSuccessBlock = ((task: NSURLSessionDataTask!, responseObject: AnyObject!) -> Void)?
 // use "task, error in"
 typealias AFHTTPFailureBlock = ((task: NSURLSessionDataTask!, error: NSError!) -> Void)?
+typealias repeatBlock = () -> ()
 
 let defaultAFHTTPFailureBlock: AFHTTPFailureBlock = { task, error in
     let alertView = UIAlertView(title: "Error", message: error.localizedDescription, delegate: nil, cancelButtonTitle: "Ok")
@@ -121,4 +122,16 @@ extension OSAPI {
         
         GET(urlString, parameters: params, success: success, failure: failure)
     }
+}
+
+extension OSAPI {
+    // TODO: Error handling
+    // https://github.com/AFNetworking/AFNetworking/issues/596 << see danielr's comment
+    // http://stackoverflow.com/questions/2069039/error-handling-with-nsurlconnection-sendsynchronousrequest
+    // http://stackoverflow.com/questions/12893837/afnetworking-handle-error-globally-and-repeat-request
+    // https://developer.apple.com/library/mac/documentation/Cocoa/Reference/Foundation/Miscellaneous/Foundation_Constants/Reference/reference.html
+    
+    // http://stackoverflow.com/questions/16705934/keep-track-of-how-many-times-a-recursive-function-has-been-called-in-c
+    // http://stackoverflow.com/questions/22333020/afnetworking-2-0-unexpected-nsurlerrordomain-error-1012?rq=1
+    
 }

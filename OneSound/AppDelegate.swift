@@ -23,8 +23,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var panGestureStartedFrom: FrontViewPosition = FrontViewPositionRightMostRemoved
     // FrontViewPositionRightMostRemoved so it won't init as a used enum val
     
-    var localUser: LocalUser!
-    
     // Set to true to print everything in AppDelegate
     var pL = false
 
@@ -39,7 +37,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         setupAppAFNetworkingTools()
         
         // Create the user
-        localUser = LocalUser.sharedUser
+        LocalUser.sharedUser
         
         // Login flow is handled by AFNetworkingReachability manager and FBLogin stuff
         
@@ -105,11 +103,11 @@ extension AppDelegate {
             if !userID || !userAPIToken {
                 // If no guest user, then request a guest user to be created, set it up, save in keychain, save to LocalUser
                 printlnC(pL, pG, "Guest user NOT found")
-                localUser.setupGuestAccount()
+                LocalUser.sharedUser.setupGuestAccount()
             } else {
                 // Got guest user from keychain, request their information and save to LocalUser
                 printlnC(pL, pG, "Guest user FOUND")
-                localUser.signIntoGuestAccount(userID!, apiToken: userAPIToken!)
+                LocalUser.sharedUser.signIntoGuestAccount(userID!, apiToken: userAPIToken!)
             }
         }
         
@@ -176,7 +174,7 @@ extension AppDelegate {
             } else if (reachability == AFNetworkReachabilityStatus.ReachableViaWiFi) || (reachability == AFNetworkReachabilityStatus.ReachableViaWWAN) {
                 println("Network has changed to reachable")
                 
-                if !self.localUser.setup {
+                if LocalUser.sharedUser.setup == false {
                     // Try setting up the user if network reachable but still not setup
                     self.setupAppLocalUserBySigningInWithLoginFlow()
                 }
@@ -216,24 +214,24 @@ extension AppDelegate {
                 println("Found userID and userAPIToken from keychain, sign in with Facebook account")
                 println("userID from keychain:\(userID)")
                 println("userAPIToken from keychain:\(userAPIToken)")
-                localUser.signIntoFullAccount(userID!, userAPIToken: userAPIToken!, fbUID: userFBID, fbAuthToken: userFBAccessToken)
+                LocalUser.sharedUser.signIntoFullAccount(userID!, userAPIToken: userAPIToken!, fbUID: userFBID, fbAuthToken: userFBAccessToken)
             } else {
                 println("UserID and userAPIToken NOT found from keychain, setup guest user")
-                localUser.setupGuestAccount()
+                LocalUser.sharedUser.setupGuestAccount()
             }
         } else if (state == FBSessionStateClosed) || (state == FBSessionStateClosedLoginFailed) {
             // If the session is closed, delete all old info and setup a guest account if the user had a full account
             println("Facebook session state change: Closed/Login Failed")
             
-            if !localUser.guest {
+            if LocalUser.sharedUser.guest == false {
                 println("User was NOT a guest; delete all their saved info & clear facebook token, setup new guest account")
-                localUser.deleteAllSavedUserInformation(
+                LocalUser.sharedUser.deleteAllSavedUserInformation(
                     completion: {
-                        self.localUser.setupGuestAccount()
+                        LocalUser.sharedUser.setupGuestAccount()
                     }
                 )
             } else {
-                // If user was a guest (typically during sign in this occurs) then just delete the facebook info
+                // If user was a guest (could only occur during sign in...?) then just delete the facebook info
                 println("User WAS a guest; clear facebook token")
                 
                 FBSession.activeSession().closeAndClearTokenInformation()

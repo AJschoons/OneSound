@@ -30,7 +30,12 @@ class LoginViewController: UITableViewController {
         super.viewDidLoad()
         
         // Setup nav bar
-        navigationItem.title = "Create Account"
+        if accountAlreadyExists {
+            navigationItem.title = "Change Settings"
+        } else {
+            navigationItem.title = "Create Account"
+        }
+        
         navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Cancel, target: self, action: "cancel")
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Done, target: self, action: "done")
         navigationItem.rightBarButtonItem.enabled = false
@@ -41,7 +46,18 @@ class LoginViewController: UITableViewController {
         updateNameCellTextFieldCount()
         
         // Initialize color label to the initial color
-        colorCellColorLabel.text = color.toRaw()
+        if accountAlreadyExists {
+            color = UserColors.fromRaw(LocalUser.sharedUser.color)!.UserColorsToOneSoundColorOption()
+            colorCellColorLabel.text = color.toRaw()
+        } else {
+            colorCellColorLabel.text = color.toRaw()
+        }
+        
+        // Give the name text field the accounts name if it already exists
+        if accountAlreadyExists {
+            nameCellTextField.text = LocalUser.sharedUser.name
+            updateNameCellTextFieldCount()
+        }
         
         // Add tap gesture recognizer to dismiss keyboard when background touched
         // Make sure the tap doesn't interfere with touches in the table view
@@ -64,8 +80,7 @@ class LoginViewController: UITableViewController {
         let userName = nameCellTextField.text
         
         if !accountAlreadyExists {
-            println("Creating FULL account by sending following information...")
-            println("name:\(userName) color:\(userColor) id:\(userID) token:\(userAPIToken) fbUID:\(userFacebookUID) fbToken:\(userFacebookToken)")
+            println("Creating FULL account")
             
             LocalUser.sharedUser.setupFullAccount(userName, userColor: userColor, userID: userID, userAPIToken: userAPIToken, providerUID: userFacebookUID, providerToken: userFacebookToken,
                 successAddOn: {
@@ -74,16 +89,47 @@ class LoginViewController: UITableViewController {
                 }
             )
         } else {
-            // TODO: code for changing user settings
+            var newUserName: String? = nil
+            var newUserColor: String? = nil
+            if userName != LocalUser.sharedUser.name {
+                newUserName = userName
+            }
+            if userColor != LocalUser.sharedUser.color {
+                newUserColor = userColor
+            }
+            LocalUser.sharedUser.updateServerWithNewNameAndColor(newUserName, color: newUserColor, respondToChangeAttempt:
+                { nameIsValid in
+                    if nameIsValid {
+                        self.tableView.endEditing(true)
+                        self.dismissViewControllerAnimated(true, nil)
+                    } else {
+                        let alert = UIAlertView(title: "Name Already Taken", message: "Please try picking a new name and try again", delegate: nil, cancelButtonTitle: "Ok")
+                        alert.show()
+                    }
+                }
+            )
         }
     }
     
     func textFieldDidChange() {
         updateNameCellTextFieldCount()
-        if countElements(nameCellTextField.text as String) > 2 {
-            navigationItem.rightBarButtonItem.enabled = true
+        setDoneButtonState()
+    }
+    
+    func setDoneButtonState() {
+        if accountAlreadyExists {
+            // Only allow Done to be pressed if user information has changed from what is already is
+            if countElements(nameCellTextField.text as String) > 2 && nameCellTextField.text != LocalUser.sharedUser.name || color.OneSoundColorOptionToUserColor().toRaw() != LocalUser.sharedUser.color {
+                navigationItem.rightBarButtonItem.enabled = true
+            } else {
+                navigationItem.rightBarButtonItem.enabled = false
+            }
         } else {
-            navigationItem.rightBarButtonItem.enabled = false
+            if countElements(nameCellTextField.text as String) > 2 {
+                navigationItem.rightBarButtonItem.enabled = true
+            } else {
+                navigationItem.rightBarButtonItem.enabled = false
+            }
         }
     }
     
@@ -178,6 +224,10 @@ extension LoginViewController: LoginColorViewControllerDelegate {
         // Update color and color label, pop the LoginColorViewController
         color = selectedColor
         colorCellColorLabel.text = color.toRaw()
+        
+        if accountAlreadyExists {
+            setDoneButtonState()
+        }
         
         navigationController.popViewControllerAnimated(true)
     }
