@@ -18,7 +18,22 @@ typealias repeatBlock = () -> ()
 let defaultAFHTTPFailureBlock: AFHTTPFailureBlock = { task, error in
     if task {
         if error {
-            let alertView = UIAlertView(title: error.localizedDescription, message: error.localizedRecoverySuggestion, delegate: nil, cancelButtonTitle: "Ok")
+            var alertView: UIAlertView
+            let code = error.code
+            switch code {
+            case -1001:
+                alertView = UIAlertView(title: "Connection Timed Out", message: "Couldn't connect to the server in time, please try again with a better internet connection", delegate: nil, cancelButtonTitle: "Ok")
+            case -1003:
+              alertView = UIAlertView(title: "Cannot Find Host", message: "Couldn't find host to connect to, please try again with a better internet connection", delegate: nil, cancelButtonTitle: "Ok")
+            case -1004:
+                alertView = UIAlertView(title: "Cannot Connect To Host", message: "Couldn't find host to connect to, please try again with a better internet connection", delegate: nil, cancelButtonTitle: "Ok")
+            case -1005:
+                alertView = UIAlertView(title: "Network Connection Lost", message: "Internet connection was lost, please try again with a better connection", delegate: nil, cancelButtonTitle: "Ok")
+            case -1009:
+                alertView = UIAlertView(title: "Not Connected To Internet", message: "Internet connection was lost, please try again after reconnecting", delegate: nil, cancelButtonTitle: "Ok")
+            default:
+                alertView = UIAlertView(title: error.localizedDescription, message: error.localizedRecoverySuggestion, delegate: nil, cancelButtonTitle: "Ok")
+            }
             alertView.show()
         }
     }

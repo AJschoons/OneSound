@@ -8,6 +8,10 @@
 
 import UIKit
 
+protocol LoginViewControllerDelegate {
+    func loginViewControllerCancelled()
+}
+
 class LoginViewController: UITableViewController {
     
     let validCharacters = "abcdefghijklmnopqrstuvwxyz1234567890"
@@ -26,6 +30,8 @@ class LoginViewController: UITableViewController {
     
     var color: OneSoundColorOption = OneSoundColorOption.Random
     var accountAlreadyExists = false
+    
+    var delegate: LoginViewControllerDelegate?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -73,6 +79,9 @@ class LoginViewController: UITableViewController {
     func cancel() {
         if !accountAlreadyExists {
             LocalUser.sharedUser.setupGuestAccount()
+        }
+        if delegate {
+            delegate!.loginViewControllerCancelled()
         }
         tableView.endEditing(true)
         dismissViewControllerAnimated(true, completion: nil)

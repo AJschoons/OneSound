@@ -75,6 +75,7 @@ class ProfileViewController: UIViewController {
         let loginStoryboard = UIStoryboard(name: "Login", bundle: nil)
         let loginViewController = loginStoryboard.instantiateViewControllerWithIdentifier("LoginViewController") as LoginViewController
         loginViewController.accountAlreadyExists = true
+        loginViewController.delegate = self
         let navC = UINavigationController(rootViewController: loginViewController)
         
         let delegate = UIApplication.sharedApplication().delegate as AppDelegate
@@ -308,5 +309,11 @@ extension ProfileViewController: UIAlertViewDelegate {
                 refresh()
             }
         }
+    }
+}
+
+extension ProfileViewController: LoginViewControllerDelegate {
+    func loginViewControllerCancelled() {
+        refresh()
     }
 }

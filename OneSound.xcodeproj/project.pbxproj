@@ -352,12 +352,12 @@
 		8195347D19777A5C000B97A3 /* Modal */ = {
 			isa = PBXGroup;
 			children = (
-				8195347E19777A71000B97A3 /* Login */,
+				8195347E19777A71000B97A3 /* User Login / Settings */,
 			);
 			name = Modal;
 			sourceTree = "<group>";
 		};
-		8195347E19777A71000B97A3 /* Login */ = {
+		8195347E19777A71000B97A3 /* User Login / Settings */ = {
 			isa = PBXGroup;
 			children = (
 				8158314B1976D54F0011D3CE /* LoginViewController.swift */,
@@ -366,7 +366,7 @@
 				8195347919775FCE000B97A3 /* LoginColorCell.swift */,
 				8195347A19775FCE000B97A3 /* LoginColorCell.xib */,
 			);
-			name = Login;
+			name = "User Login / Settings";
 			sourceTree = "<group>";
 		};
 		F0954DF62FE441E2A671CB82 /* Frameworks */ = {
