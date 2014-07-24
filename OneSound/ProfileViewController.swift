@@ -29,6 +29,11 @@ class ProfileViewController: UIViewController {
     @IBOutlet weak var spacer2: UIView?
     @IBOutlet weak var spacer3: UIView?
     @IBOutlet weak var spacer4: UIView?
+    @IBOutlet weak var topSpacerViewOfMessages: UIView?
+    @IBOutlet weak var verticalSpaceConstraintForTopSpacerViewOfMessages: NSLayoutConstraint?
+
+    var loadedFullUserInfoFromDefaults = false
+    var numberOfTimesToOverrideInitialRefreshState = 5
 
     @IBAction func signIntoFacebook(sender: AnyObject) {
         let fbSession = FBSession.activeSession()
@@ -99,7 +104,9 @@ class ProfileViewController: UIViewController {
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "refresh", name: LocalUserInformationDidChangeNotification, object: nil)
         //NSNotificationCenter.defaultCenter().addObserver(self, selector: "refresh", name: FacebookSessionChangeNotification, object: nil)
         
-        refresh()
+        // Try getting saved info from UserDefaults for full users
+        // Makes it so data shows up right away instead of blank screen
+        loadedFullUserInfoFromDefaults = setUserProfileInfoFromUserDefaults()
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -122,10 +129,10 @@ class ProfileViewController: UIViewController {
                 validUser = true
                 LocalUser.sharedUser.updateLocalUserInformationFromServer(
                     addToSuccess: {
-                        
                         if LocalUser.sharedUser.guest == true {
                             self.setUserInfoHidden(true)
                             self.showMessages("Guests can only join and use parties", message2: "Please sign in with Facebook to use social features")
+                            self.updateMessageConstraintsForHiddenUserInfo(true)
                             self.facebookSignInButton!.hidden = false
                             self.signOutButton!.enabled = true
                             self.settingsButton!.enabled = false
@@ -136,36 +143,40 @@ class ProfileViewController: UIViewController {
                             self.settingsButton!.enabled = true
                             self.hideMessages()
                             self.setUserInfoHidden(false)
+                            self.updateMessageConstraintsForHiddenUserInfo(false)
                         }
                     }
                 )
             } else {
+                if loadedFullUserInfoFromDefaults {
+                    setVisibilityOfUserInfoToHidden(false)
+                    updateMessageConstraintsForHiddenUserInfo(false)
+                } else {
+                    setUserInfoHidden(true)
+                    updateMessageConstraintsForHiddenUserInfo(true)
+                }
+                
                 disableButtons()
-                setUserInfoHidden(true)
-                showMessages("Not signed into an account", message2: "Please connect to the internet and try again")
+                showMessages("Not signed into an account", message2: "Old account info, please restart app and try again")
             }
         } else {
+            if loadedFullUserInfoFromDefaults {
+                setVisibilityOfUserInfoToHidden(false)
+                updateMessageConstraintsForHiddenUserInfo(false)
+            } else {
+                setUserInfoHidden(true)
+                updateMessageConstraintsForHiddenUserInfo(true)
+            }
+            
             disableButtons()
-            setUserInfoHidden(true)
-            showMessages("Not connected to the internet", message2: "Please connect to the internet and try again")
+            showMessages("Not connected to the internet", message2: "Please connect to the internet to use One Sound")
         }
         
         return validUser
     }
     
     func setUserInfoHidden(hidden: Bool) {
-        userImage!.hidden = hidden
-        userNameLabel!.hidden = hidden
-        userUpvoteLabel!.hidden = hidden
-        userSongLabel!.hidden = hidden
-        userHotnessLabel!.hidden = hidden
-        userUpvoteIcon!.hidden = hidden
-        userSongIcon!.hidden = hidden
-        userHotnessIcon!.hidden = hidden
-        spacer1!.hidden = hidden
-        spacer2!.hidden = hidden
-        spacer3!.hidden = hidden
-        spacer4!.hidden = hidden
+        setVisibilityOfUserInfoToHidden(hidden)
         
         if !hidden {
             userNameLabel!.text = LocalUser.sharedUser.name
@@ -179,6 +190,55 @@ class ProfileViewController: UIViewController {
                 userImage!.backgroundColor = LocalUser.sharedUser.colorToUIColor
             }
         }
+    }
+    
+    func setVisibilityOfUserInfoToHidden(hidden: Bool) {
+        userImage!.hidden = hidden
+        userNameLabel!.hidden = hidden
+        userUpvoteLabel!.hidden = hidden
+        userSongLabel!.hidden = hidden
+        userHotnessLabel!.hidden = hidden
+        userUpvoteIcon!.hidden = hidden
+        userSongIcon!.hidden = hidden
+        userHotnessIcon!.hidden = hidden
+        spacer1!.hidden = hidden
+        spacer2!.hidden = hidden
+        spacer3!.hidden = hidden
+        spacer4!.hidden = hidden
+    }
+    
+    func setUserProfileInfoFromUserDefaults() -> Bool {
+        // Returns true if successfully set the info
+        var gotUserProfileInfo = false
+        
+        let defaults = NSUserDefaults.standardUserDefaults()
+        let userSavedName = defaults.objectForKey(userNameKey) as? String
+        if userSavedName {
+            // If user information can be retreived (assumes getting ANY user info means the rest is saved)
+            println("found userSavedName; assuming that means the rest of info is saved")
+            let userSavedIsGuest = defaults.boolForKey(userGuestKey)
+            if userSavedIsGuest == false {
+                // If a full user
+                println("saved user is a full user")
+                if let imageData = defaults.objectForKey(userPhotoUIImageKey) as? NSData! {
+                    println("image data for full user valid, use their image and set up other info")
+                    let userUpvoteCount = defaults.integerForKey(userUpvoteCountKey)
+                    let userSongCount = defaults.integerForKey(userSongCountKey)
+                    
+                    userImage!.image = UIImage(data: imageData)
+                    userNameLabel!.text = userSavedName
+                    userUpvoteLabel!.text = intFormattedToShortStringForDisplay(userUpvoteCount)
+                    userSongLabel!.text = intFormattedToShortStringForDisplay(userSongCount)
+                    userHotnessLabel!.text = "XX%"
+                    
+                    setVisibilityOfUserInfoToHidden(false)
+                    
+                    gotUserProfileInfo = true
+                }
+            }
+        }
+        
+        return gotUserProfileInfo
     }
     
     func showMessages(message1: String?, message2: String?) {
@@ -203,6 +263,15 @@ class ProfileViewController: UIViewController {
         signOutButton!.enabled = false
         settingsButton!.enabled = false
         facebookSignInButton!.hidden = true
+    }
+    
+    func updateMessageConstraintsForHiddenUserInfo(userInfoHidden: Bool) {
+        if userInfoHidden {
+            verticalSpaceConstraintForTopSpacerViewOfMessages = NSLayoutConstraint(item: topSpacerViewOfMessages, attribute: NSLayoutAttribute.Top, relatedBy: NSLayoutRelation.Equal, toItem: view, attribute: NSLayoutAttribute.Top, multiplier: 1, constant: 0)
+        } else {
+            verticalSpaceConstraintForTopSpacerViewOfMessages = NSLayoutConstraint(item: topSpacerViewOfMessages, attribute: NSLayoutAttribute.Top, relatedBy: NSLayoutRelation.Equal, toItem: userSongLabel, attribute: NSLayoutAttribute.Bottom, multiplier: 1, constant: 0)
+        }
+        view.layoutIfNeeded()
     }
 }
 

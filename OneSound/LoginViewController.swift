@@ -17,6 +17,7 @@ class LoginViewController: UITableViewController {
     @IBOutlet weak var nameCellTextFieldCount: UILabel!
     @IBOutlet weak var colorCell: UITableViewCell!
     @IBOutlet weak var colorCellColorLabel: UILabel!
+    @IBOutlet weak var nameAlreadyTakenLabel: UILabel!
     
     var userID: Int!
     var userAPIToken: String!
@@ -59,6 +60,9 @@ class LoginViewController: UITableViewController {
             updateNameCellTextFieldCount()
         }
         
+        // Initialize the name already taken label to invisible
+        nameAlreadyTakenLabel.alpha = 0.0
+        
         // Add tap gesture recognizer to dismiss keyboard when background touched
         // Make sure the tap doesn't interfere with touches in the table view
         let tap = UITapGestureRecognizer(target: self, action: "tap")
@@ -83,9 +87,13 @@ class LoginViewController: UITableViewController {
             println("Creating FULL account")
             
             LocalUser.sharedUser.setupFullAccount(userName, userColor: userColor, userID: userID, userAPIToken: userAPIToken, providerUID: userFacebookUID, providerToken: userFacebookToken,
-                successAddOn: {
-                    self.tableView.endEditing(true)
-                    self.dismissViewControllerAnimated(true, nil)
+                respondToChangeAttempt: { nameIsValid in
+                    if nameIsValid {
+                        self.tableView.endEditing(true)
+                        self.dismissViewControllerAnimated(true, nil)
+                    } else {
+                        self.notifyThatUserNameIsTaken()
+                    }
                 }
             )
         } else {
@@ -103,8 +111,7 @@ class LoginViewController: UITableViewController {
                         self.tableView.endEditing(true)
                         self.dismissViewControllerAnimated(true, nil)
                     } else {
-                        let alert = UIAlertView(title: "Name Already Taken", message: "Please try picking a new name and try again", delegate: nil, cancelButtonTitle: "Ok")
-                        alert.show()
+                        self.notifyThatUserNameIsTaken()
                     }
                 }
             )
@@ -152,6 +159,24 @@ class LoginViewController: UITableViewController {
         default:
             nameCellTextFieldCount.textColor = UIColor.black()
         }
+    }
+    
+    func notifyThatUserNameIsTaken() {
+        UIView.animateWithDuration(0.2, delay: 0.0, options: UIViewAnimationOptions.CurveEaseInOut,
+            animations: {
+                self.nameAlreadyTakenLabel.alpha = 1.0
+                self.nameCellTextField.alpha = 0.0
+                self.nameCellTextFieldCount.alpha = 0.0
+            }, completion: { boolValue in
+                UIView.animateWithDuration(0.2, delay: 0.4, options: UIViewAnimationOptions.CurveEaseInOut,
+                    animations: {
+                        self.nameAlreadyTakenLabel.alpha = 0.0
+                        self.nameCellTextField.alpha = 1.0
+                        self.nameCellTextFieldCount.alpha = 1.0
+                    }, completion: nil
+                )
+            }
+        )
     }
     
     func tap() {

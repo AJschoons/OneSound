@@ -19,6 +19,8 @@ let userNameKey = "name"
 let userColorKey = "color"
 let userGuestKey = "guest"
 let userPhotoUIImageKey = "photo"
+let userUpvoteCountKey = "upvote"
+let userSongCountKey = "song"
 
 class LocalUser {
 
@@ -139,8 +141,24 @@ extension LocalUser {
         
         printlnC(pL, pG, "Signing in with GUEST information... userID:\(id)   userAPIToken:\(apiToken)")
         
-        updateLocalUserInformationAfterSignIn(userID: id, userAPIToken: apiToken,
-            failure: { task, error in
+        OSAPI.sharedClient.GetUserLoginGuest(id, userAPIToken: apiToken,
+            success: { data, responseObject in
+                let responseJSON = JSONValue(responseObject)
+                println(responseJSON)
+                
+                // Get the guest's new api token
+                let newGuestToken = responseJSON["api_token"].string
+                let guestUserID = responseJSON["uid"].integer
+                
+                self.updateLocalUserInformationAfterSignIn(userID: guestUserID!, userAPIToken: newGuestToken!,
+                    failure: { task, error in
+                        println("ERROR: Guest account no longer exists, creating new one")
+                        println(error.localizedDescription)
+                        self.setupGuestAccount()
+                    }
+                )
+            
+            }, failure: { task, error in
                 println("ERROR: Guest account no longer exists, creating new one")
                 println(error.localizedDescription)
                 self.setupGuestAccount()
@@ -213,20 +231,23 @@ extension LocalUser {
         )
     }
     
-    func setupFullAccount(userName: String, userColor: String, userID: Int, userAPIToken: String, providerUID: String, providerToken: String, successAddOn: completionClosure? = nil, failure: AFHTTPFailureBlock = defaultAFHTTPFailureBlockForServerDown) {
+    func setupFullAccount(userName: String, userColor: String, userID: Int, userAPIToken: String, providerUID: String, providerToken: String, respondToChangeAttempt: (Bool) -> (), failure: AFHTTPFailureBlock = defaultAFHTTPFailureBlockForSigningIn) {
         
         OSAPI.sharedClient.POSTUserProvider(userName, userColor: userColor, userID: userID, userAPIToken: userAPIToken, providerUID: providerUID, providerToken: providerToken,
             success: { data, responseObject in
                 let responseJSON = JSONValue(responseObject)
                 println(responseJSON)
+                let status = responseJSON["status"].string
                 
-                // Update new user information
-                if let newUserAPIToken = responseJSON["api_token"].string {
-                    LocalUser.sharedUser.updateLocalUserInformationAfterSignIn(userID: userID, userAPIToken: newUserAPIToken, successAddOn: successAddOn, failure: failure)
+                if status == "success" {
+                    // Update new user information
+                    let newUserAPIToken = responseJSON["api_token"].string
+                    LocalUser.sharedUser.updateLocalUserInformationAfterSignIn(userID: userID, userAPIToken: newUserAPIToken!, respondToChangeAttempt: respondToChangeAttempt, failure: failure)
                 } else {
-                    // TODO: Handle possible errors?
-                    println("Error: Could't get newUserAPIToken while setting up full account")
+                    // Server didn't accept request for new account with that name / color
+                    respondToChangeAttempt(false)
                 }
+                
             },
             failure: { task, error in
                 println("ERROR: Guest account no longer exists, creating new one")
@@ -236,7 +257,7 @@ extension LocalUser {
         )
     }
     
-    func updateLocalUserInformationAfterSignIn(userID id: Int, userAPIToken token: String, successAddOn: completionClosure? = nil, failure: AFHTTPFailureBlock = defaultAFHTTPFailureBlockForSigningIn) {
+    func updateLocalUserInformationAfterSignIn(userID id: Int, userAPIToken token: String, respondToChangeAttempt: ((Bool) -> ())? = nil, failure: AFHTTPFailureBlock = defaultAFHTTPFailureBlockForSigningIn) {
         // Download the user's record for the userID, update the LocalUser info from that json, 
         // update the UserDefaults, and update the Keychain info
         
@@ -256,14 +277,31 @@ extension LocalUser {
                         // Let the app know it can it can nav away from the splash screen
                         NSNotificationCenter.defaultCenter().postNotificationName(FinishedLoginFlowNotification, object: nil)
                         
-                        if successAddOn {
-                            successAddOn!()
+                        if respondToChangeAttempt {
+                            respondToChangeAttempt!(true)
                         }
                     },
                     forcePhotoUpdate: true
                 )
             }, failure: failure
         )
+    }
+    
+    func updateServerWithNewNameAndColor(name: String?, color: String?, respondToChangeAttempt: (Bool) -> () ) {
+        OSAPI.sharedClient.PUTUser(id, apiToken: apiToken, newName: name, newColor: color,
+            success: { data, responseObject in
+                let responseJSON = JSONValue(responseObject)
+                println(responseJSON)
+                let status = responseJSON["status"].string
+                
+                if status == "success" {
+                    NSNotificationCenter.defaultCenter().postNotificationName(LocalUserInformationDidChangeNotification, object: nil)
+                    self.updateLocalUserInformationFromServer()
+                    respondToChangeAttempt(true)
+                } else {
+                    respondToChangeAttempt(false)
+                }
+            }, failure: defaultAFHTTPFailureBlockForServerDown)
     }
     
     func updateLocalUserFromJSON(json: JSONValue, apiToken: String, completion: completionClosure? = nil, forcePhotoUpdate: Bool = false) {
@@ -333,23 +371,6 @@ extension LocalUser {
         )
     }
     
-    func updateServerWithNewNameAndColor(name: String?, color: String?, respondToChangeAttempt: (Bool) -> () ) {
-        OSAPI.sharedClient.PUTUser(id, apiToken: apiToken, newName: name, newColor: color,
-            success: { data, responseObject in
-                let responseJSON = JSONValue(responseObject)
-                println(responseJSON)
-                let status = responseJSON["status"].string
-                
-                if status == "success" {
-                    NSNotificationCenter.defaultCenter().postNotificationName(LocalUserInformationDidChangeNotification, object: nil)
-                    self.updateLocalUserInformationFromServer()
-                    respondToChangeAttempt(true)
-                } else {
-                    respondToChangeAttempt(false)
-                }
-            }, failure: defaultAFHTTPFailureBlockForServerDown)
-    }
-    
     func updateUserDefaultsForLocalUser() {
         println("Updating information for LocalUser in UserDefaults")
         
@@ -357,6 +378,8 @@ extension LocalUser {
         defaults.setObject(name, forKey: userNameKey)
         defaults.setObject(color, forKey: userColorKey)
         defaults.setBool(guest, forKey: userGuestKey)
+        defaults.setInteger(upvoteCount, forKey: userUpvoteCountKey)
+        defaults.setInteger(songCount, forKey: userSongCountKey)
     }
     
     func updateKeychainInfoForLocalUser(userID: Int, userAPIToken: String) {
@@ -372,14 +395,14 @@ extension LocalUser {
     func deleteAllSavedUserInformation(completion: completionClosure? = nil) {
         SSKeychain.deletePasswordForService(service, account: userIDKeychainKey)
         SSKeychain.deletePasswordForService(service, account: userAPITokenKeychainKey)
-        SSKeychain.deletePasswordForService(service, account: userFacebookUIDKeychainKey)
-        SSKeychain.deletePasswordForService(service, account: userFacebookAuthenticationTokenKeychainKey)
         
         let defaults = NSUserDefaults.standardUserDefaults()
         defaults.removeObjectForKey(userNameKey)
         defaults.removeObjectForKey(userColorKey)
         defaults.removeObjectForKey(userGuestKey)
         defaults.removeObjectForKey(userPhotoUIImageKey)
+        defaults.removeObjectForKey(userUpvoteCountKey)
+        defaults.removeObjectForKey(userSongCountKey)
         
         FBSession.activeSession().closeAndClearTokenInformation()
         

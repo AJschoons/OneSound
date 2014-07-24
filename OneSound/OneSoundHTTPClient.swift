@@ -129,6 +129,18 @@ extension OSAPI {
         
         GET(urlString, parameters: params, success: success, failure: failure)
     }
+    
+    func GetUserLoginGuest(userID: Int, userAPIToken: String, success: AFHTTPSuccessBlock, failure: AFHTTPFailureBlock) {
+        // Refreshes the guest user's API Token
+        let urlString = "\(baseURLString)login/guest"
+        
+        // Create paramaters to pass
+        var params = Dictionary<String, AnyObject>()
+        params.updateValue(userID, forKey: "uid")
+        params.updateValue(userAPIToken, forKey: "api_token")
+        
+        GET(urlString, parameters: params, success: success, failure: failure)
+    }
 }
 
 extension OSAPI {

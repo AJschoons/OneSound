@@ -39,13 +39,6 @@ class LoggingInSpashViewController: UIViewController {
     }
     
     func finishedLoginFlow() {
-        let revealViewController = (UIApplication.sharedApplication().delegate as AppDelegate).revealViewController
-        let fnc = revealViewController!.frontViewController as FrontNavigationController
-        let snc = revealViewController!.rearViewController as SideNavigationViewController
-        
-        // By default start at the profile page (for now)
-        let viewControllerToNavTo = snc.menuViewControllers[6]!
-        
         dismissViewControllerAnimated(true, completion: nil)
     }
     
