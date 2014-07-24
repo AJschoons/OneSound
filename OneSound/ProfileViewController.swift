@@ -29,8 +29,8 @@ class ProfileViewController: UIViewController {
     @IBOutlet weak var spacer2: UIView?
     @IBOutlet weak var spacer3: UIView?
     @IBOutlet weak var spacer4: UIView?
-    @IBOutlet weak var topSpacerViewOfMessages: UIView?
-    @IBOutlet weak var verticalSpaceConstraintForTopSpacerViewOfMessages: NSLayoutConstraint?
+    @IBOutlet weak var messageLabel3: UILabel?
+    @IBOutlet weak var messageLabel4: UILabel?
 
     var loadedFullUserInfoFromDefaults = false
     var numberOfTimesToOverrideInitialRefreshState = 5
@@ -38,6 +38,12 @@ class ProfileViewController: UIViewController {
     @IBAction func signIntoFacebook(sender: AnyObject) {
         let fbSession = FBSession.activeSession()
         // Only sign in if not already signed in
+        
+        if LocalUser.sharedUser.guest == true {
+            // Make sure if a guest is clicking the button, they can try signing in
+            fbSession.closeAndClearTokenInformation()
+        }
+        
         if (fbSession.state != FBSessionStateOpen) && (fbSession.state != FBSessionStateOpenTokenExtended) {
             FBSession.openActiveSessionWithReadPermissions(facebookSessionPermissions, allowLoginUI: true, completionHandler: { session, state, error in
                 let delegate = UIApplication.sharedApplication().delegate as AppDelegate
@@ -131,8 +137,7 @@ class ProfileViewController: UIViewController {
                     addToSuccess: {
                         if LocalUser.sharedUser.guest == true {
                             self.setUserInfoHidden(true)
-                            self.showMessages("Guests can only join and use parties", message2: "Please sign in with Facebook to use social features")
-                            self.updateMessageConstraintsForHiddenUserInfo(true)
+                            self.showMessages("Guests can only join and use parties", detailLine: "Please sign in with Facebook to use social features", showMessageBelowUserInfo: false)
                             self.facebookSignInButton!.hidden = false
                             self.signOutButton!.enabled = true
                             self.settingsButton!.enabled = false
@@ -143,33 +148,29 @@ class ProfileViewController: UIViewController {
                             self.settingsButton!.enabled = true
                             self.hideMessages()
                             self.setUserInfoHidden(false)
-                            self.updateMessageConstraintsForHiddenUserInfo(false)
                         }
                     }
                 )
             } else {
                 if loadedFullUserInfoFromDefaults {
                     setVisibilityOfUserInfoToHidden(false)
-                    updateMessageConstraintsForHiddenUserInfo(false)
+                    showMessages("Could not connect to account", detailLine: "Please connect to the internet and restart One Sound", showMessageBelowUserInfo: true)
                 } else {
                     setUserInfoHidden(true)
-                    updateMessageConstraintsForHiddenUserInfo(true)
+                    showMessages("Not signed into an account", detailLine: "Please connect to the internet and restart One Sound", showMessageBelowUserInfo: false)
                 }
-                
                 disableButtons()
-                showMessages("Not signed into an account", message2: "Old account info, please restart app and try again")
             }
         } else {
             if loadedFullUserInfoFromDefaults {
                 setVisibilityOfUserInfoToHidden(false)
-                updateMessageConstraintsForHiddenUserInfo(false)
+                showMessages("Not connected to the internet", detailLine: "Please connect to the internet to use One Sound", showMessageBelowUserInfo: true)
             } else {
                 setUserInfoHidden(true)
-                updateMessageConstraintsForHiddenUserInfo(true)
+                showMessages("Not connected to the internet", detailLine: "Please connect to the internet to use One Sound", showMessageBelowUserInfo: false)
             }
             
             disableButtons()
-            showMessages("Not connected to the internet", message2: "Please connect to the internet to use One Sound")
         }
         
         return validUser
@@ -241,14 +242,34 @@ class ProfileViewController: UIViewController {
         return gotUserProfileInfo
     }
     
-    func showMessages(message1: String?, message2: String?) {
-        if message1 {
-            messageLabel1!.alpha = 1
-            messageLabel1!.text = message1
-        }
-        if message2 {
-            messageLabel2!.alpha = 1
-            messageLabel2!.text = message2
+    func showMessages(mainLine: String?, detailLine: String?, showMessageBelowUserInfo: Bool) {
+        if showMessageBelowUserInfo {
+            if mainLine {
+                messageLabel3!.alpha = 1
+                messageLabel3!.text = mainLine
+            }
+            if detailLine {
+                messageLabel4!.alpha = 1
+                messageLabel4!.text = detailLine
+            }
+            messageLabel1!.alpha = 0
+            messageLabel1!.text = ""
+            messageLabel2!.alpha = 0
+            messageLabel2!.text = ""
+            
+        } else {
+            if mainLine {
+                messageLabel1!.alpha = 1
+                messageLabel1!.text = mainLine
+            }
+            if detailLine {
+                messageLabel2!.alpha = 1
+                messageLabel2!.text = detailLine
+            }
+            messageLabel3!.alpha = 0
+            messageLabel3!.text = ""
+            messageLabel4!.alpha = 0
+            messageLabel4!.text = ""
         }
     }
     
@@ -257,21 +278,16 @@ class ProfileViewController: UIViewController {
         messageLabel1!.text = ""
         messageLabel2!.alpha = 0
         messageLabel2!.text = ""
+        messageLabel3!.alpha = 0
+        messageLabel3!.text = ""
+        messageLabel4!.alpha = 0
+        messageLabel4!.text = ""
     }
     
     func disableButtons() {
         signOutButton!.enabled = false
         settingsButton!.enabled = false
         facebookSignInButton!.hidden = true
-    }
-    
-    func updateMessageConstraintsForHiddenUserInfo(userInfoHidden: Bool) {
-        if userInfoHidden {
-            verticalSpaceConstraintForTopSpacerViewOfMessages = NSLayoutConstraint(item: topSpacerViewOfMessages, attribute: NSLayoutAttribute.Top, relatedBy: NSLayoutRelation.Equal, toItem: view, attribute: NSLayoutAttribute.Top, multiplier: 1, constant: 0)
-        } else {
-            verticalSpaceConstraintForTopSpacerViewOfMessages = NSLayoutConstraint(item: topSpacerViewOfMessages, attribute: NSLayoutAttribute.Top, relatedBy: NSLayoutRelation.Equal, toItem: userSongLabel, attribute: NSLayoutAttribute.Bottom, multiplier: 1, constant: 0)
-        }
-        view.layoutIfNeeded()
     }
 }
 

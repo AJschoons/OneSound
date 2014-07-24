@@ -152,7 +152,7 @@ extension LocalUser {
                 
                 self.updateLocalUserInformationAfterSignIn(userID: guestUserID!, userAPIToken: newGuestToken!,
                     failure: { task, error in
-                        println("ERROR: Guest account no longer exists, creating new one")
+                        println("ERROR: Couldn't sign into account, creating new one")
                         println(error.localizedDescription)
                         self.setupGuestAccount()
                     }

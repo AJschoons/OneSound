@@ -13,25 +13,24 @@ import UIKit
     func setOverlayAlpha(CGFloat)
 }
 
-
-
 class FrontNavigationController: UINavigationController {
     
     var overlay = UIView()
     var pL = false
     
+    var firstTimeAppearing = true
+    var overlayHasBeenSet = false
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
         
-        overlay.frame = CGRectMake(0, 20, UIScreen.mainScreen().bounds.height, UIScreen.mainScreen().bounds.height - 20)
-        overlay.backgroundColor = UIColor.blackColor()
-        overlay.alpha = 0.0
-        view.addSubview(overlay)
-        
         navigationBar.barTintColor = UIColor.white()
         navigationBar.tintColor = UIColor.blue()
         navigationBar.translucent = false
+    }
+    
+    override func viewWillAppear(animated: Bool) {
     }
 }
 

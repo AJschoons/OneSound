@@ -23,7 +23,11 @@ class SideNavigationViewController: UITableViewController {
     var userCell: SideNavigationUserCell?
     var menuViewControllers = [UIViewController?]()
     
+    // TODO: have this be saved when app closes
+    var initiallySelectedRow: SideMenuRow = .Profile
+    
     var pL = true
+    var firstTimeAppearing = true
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -57,8 +61,6 @@ class SideNavigationViewController: UITableViewController {
         
         nib = UINib(nibName: "SideNavigationUserCell", bundle: nil)
         tableView.registerNib(nib, forCellReuseIdentifier: userCellIdentifier)
-        
-        
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -66,6 +68,7 @@ class SideNavigationViewController: UITableViewController {
         if userCell {
             userCell!.refresh()
         }
+        super.viewWillAppear(animated)
     }
 }
 
@@ -90,6 +93,11 @@ extension SideNavigationViewController: UITableViewDataSource {
             menuCell.selectedIcon = sideMenuSelectedIcons[indexPath.row]
             menuCell.unselectedIcon = sideMenuUnselectedIcons[indexPath.row]
             menuCell.sideMenuItemIcon.image = menuCell.unselectedIcon
+            
+            if firstTimeAppearing && indexPath.row == initiallySelectedRow.toRaw() {
+                tableView.selectRowAtIndexPath(indexPath, animated: true, scrollPosition: UITableViewScrollPosition.None)
+                firstTimeAppearing = false
+            }
             
             cell = menuCell
         }

@@ -110,13 +110,11 @@ extension AppDelegate {
     
     func setupAppWindowAndViewHierarchy() {
         // Setup side menu and general navigation hierarchy
-        
-        //let frontViewController = FrontViewController()
-        let loggingInSplashViewController = LoggingInSpashViewController()
+    
         let rearViewController = SideNavigationViewController()
         
-        //let frontNavigationController = FrontNavigationController(rootViewController: loggingInSplashViewController)
         let frontNavigationController = FrontNavigationController()
+        let loggingInSplashViewController = LoggingInSpashViewController()
         
         let rearNavigationController = UINavigationController(rootViewController: rearViewController)
         
@@ -133,12 +131,13 @@ extension AppDelegate {
         revealViewController = revealController
         window!.rootViewController = revealViewController
         
-        // Setup the front nav controller to initially have the splash screen modally presented with a (determined) view controller as it's rootViewController
-        let snc = revealViewController!.rearViewController as SideNavigationViewController
-        // By default start at the profile page (for now)
-        let viewControllerToNavTo = snc.menuViewControllers[6]!
-        frontNavigationController.setViewControllers([viewControllerToNavTo], animated: false)
-        frontNavigationController.presentViewController(loggingInSplashViewController, animated: false, completion: nil)
+        // Setup the front nav controller to initially have the splash screen visible with a (determined) view controller as it's rootViewController
+        let snc = revealController.rearViewController as SideNavigationViewController
+        // By default starts at the profile page (for now)
+        // TODO: find the last saved row and nav to that
+        let rowInitiallySelected = snc.initiallySelectedRow.toRaw()
+        let viewControllerToNavTo = snc.menuViewControllers[rowInitiallySelected]!
+        frontNavigationController.setViewControllers([viewControllerToNavTo, loggingInSplashViewController], animated: false)
         
         window!.backgroundColor = UIColor.whiteColor()
         window!.makeKeyAndVisible()

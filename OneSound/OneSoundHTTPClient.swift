@@ -39,7 +39,8 @@ class OSAPI: AFHTTPSessionManager {
     class var sharedClient: OSAPI {
         struct Static {
             static let api: OSAPI = {
-                let initAPI = OSAPI()
+                NSURLSessionConfiguration()
+                let initAPI = OSAPI(baseURL: NSURL(string: baseURLString))
                 initAPI.requestSerializer = AFJSONRequestSerializer()
                 initAPI.responseSerializer = AFJSONResponseSerializer()
                 return initAPI
@@ -130,7 +131,7 @@ extension OSAPI {
         GET(urlString, parameters: params, success: success, failure: failure)
     }
     
-    func GetUserLoginGuest(userID: Int, userAPIToken: String, success: AFHTTPSuccessBlock, failure: AFHTTPFailureBlock) {
+    func GetUserLoginGuest(userID: Int, userAPIToken: String, success: AFHTTPSuccessBlock, failure: AFHTTPFailureBlock, numOfAttemptsBeforeFailure: Int = 10) {
         // Refreshes the guest user's API Token
         let urlString = "\(baseURLString)login/guest"
         
@@ -139,7 +140,29 @@ extension OSAPI {
         params.updateValue(userID, forKey: "uid")
         params.updateValue(userAPIToken, forKey: "api_token")
         
-        GET(urlString, parameters: params, success: success, failure: failure)
+        let failureWithTwoMoreSuccessAttempts: AFHTTPFailureBlock = { task, error in
+            var attemptingRequestAgain = false
+            
+            println("ERROR FOUND... \(error.description)")
+            
+            // If the task actually exists
+            if task {
+                // If the error exists
+                if error {
+                    if error.code == -1005 && numOfAttemptsBeforeFailure > 1 {
+                        println("Caught error with code -1005, trying again")
+                        attemptingRequestAgain = true
+                        self.GetUserLoginGuest(userID, userAPIToken: userAPIToken, success: success, failure: failure, numOfAttemptsBeforeFailure: (numOfAttemptsBeforeFailure - 1))
+                    }
+                }
+            }
+            
+            if !attemptingRequestAgain {
+                failure!(task: task, error: error)
+            }
+        }
+        
+        GET(urlString, parameters: params, success: success, failure: failureWithTwoMoreSuccessAttempts)
     }
 }
 

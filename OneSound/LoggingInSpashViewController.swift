@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import QuartzCore
 
 class LoggingInSpashViewController: UIViewController {
     
@@ -28,18 +29,36 @@ class LoggingInSpashViewController: UIViewController {
         modalTransitionStyle = UIModalTransitionStyle.CrossDissolve
     }
     
-    override func viewDidAppear(animated: Bool) {
-        super.viewDidAppear(animated)
+    override func viewWillAppear(animated: Bool) {
+        navigationController.setNavigationBarHidden(true, animated: animated)
         animatedOneSoundOne!.startAnimating()
+        super.viewWillAppear(animated)
+    }
+    
+    override func viewWillDisappear(animated: Bool) {
+        animatedOneSoundOne!.stopAnimating()
     }
     
     override func viewDidDisappear(animated: Bool) {
         super.viewDidDisappear(animated)
-        animatedOneSoundOne!.stopAnimating()
     }
     
     func finishedLoginFlow() {
-        dismissViewControllerAnimated(true, completion: nil)
+        let navC = navigationController as FrontNavigationController
+        
+        // Setup transition for going to nav controller and execute it by popping this view controller
+        let transtion = CATransition()
+        transtion.duration = 0.3
+        transtion.type = kCATransitionFade
+        navC.view.layer.addAnimation(transtion, forKey: kCATransition)
+        navC.setNavigationBarHidden(false, animated: false)
+        navC.popViewControllerAnimated(false)
+        
+        // Add the overlay to the frontNavController that's used with the side menu
+        navC.overlay.frame = CGRectMake(0, 20, UIScreen.mainScreen().bounds.height, UIScreen.mainScreen().bounds.height - 20)
+        navC.overlay.backgroundColor = UIColor.blackColor()
+        navC.overlay.alpha = 0.0
+        navC.view.addSubview(navC.overlay)
     }
     
     override func prefersStatusBarHidden() -> Bool {

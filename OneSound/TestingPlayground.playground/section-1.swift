@@ -140,3 +140,31 @@ intFormattedToShortStringForDisplay(123456789)
 intFormattedToShortStringForDisplay(1234567890)
 
 
+// Testing networking recursion
+let f: ()->() = { println("doing failure code") }
+let s: ()->() = { println("doing success code") }
+
+func actualRequestThang(shouldSucceed: Bool, success: ()->(), failure: ()->()) {
+    if shouldSucceed {
+        success()
+    } else {
+        failure()
+    }
+}
+
+func someNetworkingReqeustExample(success: ()->(), failure: ()->(), numOfAttemptsToMake: Int = 3) {
+    let fWithSucceess: ()->() = {
+        println("trying to execute request")
+        if numOfAttemptsToMake > 0 {
+            someNetworkingReqeustExample(success, failure, numOfAttemptsToMake: (numOfAttemptsToMake - 1))
+        } else {
+            failure()
+        }
+    }
+    
+    actualRequestThang(numOfAttemptsToMake == 1, success, fWithSucceess)
+}
+
+someNetworkingReqeustExample(s, f)
+
+
