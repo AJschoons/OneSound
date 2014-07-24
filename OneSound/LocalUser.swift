@@ -134,7 +134,7 @@ class LocalUser {
 }
 
 extension LocalUser {
-    // MARK: Login flow relgated code
+    // MARK: Login flow and other networking related code
     
     func signIntoGuestAccount(id: Int, apiToken: String) {
         // For use in the login flow of signing a user in
@@ -192,7 +192,6 @@ extension LocalUser {
         
         OSAPI.sharedClient.GETUserLoginProvider(userID, userAPIToken: userAPIToken, providerUID: fbUID, providerToken: fbAuthToken,
             success: { data, responseObject in
-                println("Signing in with FULL ACCOUNT information... userID:\(userID)   userAPIToken:\(userAPIToken)")
                 let responseJSON = JSONValue(responseObject)
                 println(responseJSON)
                 let activeAccount = responseJSON["active"].bool
@@ -224,7 +223,7 @@ extension LocalUser {
                     self.updateLocalUserInformationAfterSignIn(userID: userID!, userAPIToken: userAPIToken!)
                 }
             }, failure: { task, error in
-                println("ERROR: Guest account no longer exists, creating new one")
+                println("ERROR: Failed sign on for full account, setup a guest account")
                 println(error.localizedDescription)
                 self.setupGuestAccount()
             }
@@ -301,7 +300,7 @@ extension LocalUser {
                 } else {
                     respondToChangeAttempt(false)
                 }
-            }, failure: defaultAFHTTPFailureBlockForServerDown)
+            }, failure: defaultAFHTTPFailureBlock)
     }
     
     func updateLocalUserFromJSON(json: JSONValue, apiToken: String, completion: completionClosure? = nil, forcePhotoUpdate: Bool = false) {
@@ -367,7 +366,7 @@ extension LocalUser {
                     addToSuccess!()
                 }
             },
-            failure: defaultAFHTTPFailureBlockForServerDown
+            failure: defaultAFHTTPFailureBlock
         )
     }
     

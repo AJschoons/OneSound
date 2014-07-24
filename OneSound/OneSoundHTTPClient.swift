@@ -16,21 +16,41 @@ typealias AFHTTPFailureBlock = ((task: NSURLSessionDataTask!, error: NSError!) -
 typealias repeatBlock = () -> ()
 
 let defaultAFHTTPFailureBlock: AFHTTPFailureBlock = { task, error in
-    let alertView = UIAlertView(title: "Error", message: error.localizedDescription, delegate: nil, cancelButtonTitle: "Ok")
-    alertView.show()
+    if task {
+        if error {
+            let alertView = UIAlertView(title: error.localizedDescription, message: error.localizedRecoverySuggestion, delegate: nil, cancelButtonTitle: "Ok")
+            alertView.show()
+        }
+    }
 }
 
-let defaultAFHTTPFailureBlockForServerDown: AFHTTPFailureBlock = { task, error in
-    let alertView = UIAlertView(title: "Server Temporarily Down", message: "We're having some problems on our end, please try using OneSound again in a couple of minutes", delegate: nil, cancelButtonTitle: "Ok")
-    alertView.show()
-    println(error.localizedDescription)
+func errorShouldBeHandedWithRepeatedRequest(task: NSURLSessionDataTask!, error: NSError!, attemptsLeft: Int? = nil) -> Bool {
+    var shouldRepeatRequest = false
+    if task {
+        if error {
+            let code = error.code
+            if code == -1001 || code == -1003 || code == -1004 || code == -1005 || code == -1009 {
+                // If timed out, cannot find host, cannot connect to host, connection lost, not connected to internet
+                shouldRepeatRequest = true
+                println("SHOULD BE TRYING TO REPEAT ATTEMPT")
+            }
+        }
+    }
+    
+    if attemptsLeft {
+        return (shouldRepeatRequest && (attemptsLeft > 0))
+    } else {
+        return shouldRepeatRequest
+    }
 }
 
 let defaultAFHTTPFailureBlockForSigningIn: AFHTTPFailureBlock = { task, error in
     // Let the app know to stop showing the splash screen
     NSNotificationCenter.defaultCenter().postNotificationName(FinishedLoginFlowNotification, object: nil)
-    defaultAFHTTPFailureBlockForServerDown!(task: task, error: error)
+    defaultAFHTTPFailureBlock!(task: task, error: error)
 }
+
+let defaultEA = 2
 
 let baseURLString = "http://sparty.onesoundapp.com/"
 
@@ -53,28 +73,57 @@ class OSAPI: AFHTTPSessionManager {
 extension OSAPI {
     // MARK: User-related API
     
-    func GETUser(uid: Int, success: AFHTTPSuccessBlock, failure: AFHTTPFailureBlock) {
+    // Get a user's generic information that is available to everyone
+    func GETUser(uid: Int, success: AFHTTPSuccessBlock, failure: AFHTTPFailureBlock, extraAttempts: Int = defaultEA) {
         // Create a URL string from the base URL string, then user/:uid
         let urlString = "\(baseURLString)user/\(uid)"
+        
+        let failureWithExtraAttempt: AFHTTPFailureBlock = { task, error in
+            if errorShouldBeHandedWithRepeatedRequest(task, error, attemptsLeft: extraAttempts) {
+                self.GETUser(uid, success: success, failure: failure, extraAttempts: (extraAttempts - 1))
+            } else {
+                failure!(task: task, error: error)
+            }
+        }
 
         GET(urlString, parameters: nil, success: success, failure: failure)
     }
     
-    func GETUserFollowing(uid: Int, success: AFHTTPSuccessBlock, failure: AFHTTPFailureBlock) {
+    // Get a list of users the current user is following
+    func GETUserFollowing(uid: Int, success: AFHTTPSuccessBlock, failure: AFHTTPFailureBlock, extraAttempts: Int = defaultEA) {
         // Create a URL string from the base URL string, then user/following/:uid
         let urlString = "\(baseURLString)user/\(uid)/following"
         
-        GET(urlString, parameters: nil, success: success, failure: failure)
-    }
-
-    func GETUserFollowers(uid: Int, success: AFHTTPSuccessBlock, failure: AFHTTPFailureBlock) {
-        // Create a URL string from the base URL string, then user/following/:uid
-        let urlString = "\(baseURLString)user/\(uid)/followers"
+        let failureWithExtraAttempt: AFHTTPFailureBlock = { task, error in
+            if errorShouldBeHandedWithRepeatedRequest(task, error, attemptsLeft: extraAttempts) {
+                self.GETUserFollowing(uid, success: success, failure: failure, extraAttempts: (extraAttempts - 1))
+            } else {
+                failure!(task: task, error: error)
+            }
+        }
         
         GET(urlString, parameters: nil, success: success, failure: failure)
     }
     
-    func PUTUser(uid: Int, apiToken: String, newName: String?, newColor: String?, success: AFHTTPSuccessBlock, failure: AFHTTPFailureBlock) {
+    // Get a list of users the current user has following them
+    func GETUserFollowers(uid: Int, success: AFHTTPSuccessBlock, failure: AFHTTPFailureBlock, extraAttempts: Int = defaultEA) {
+        // Create a URL string from the base URL string, then user/following/:uid
+        let urlString = "\(baseURLString)user/\(uid)/followers"
+        
+        let failureWithExtraAttempt: AFHTTPFailureBlock = { task, error in
+            if errorShouldBeHandedWithRepeatedRequest(task, error, attemptsLeft: extraAttempts) {
+                self.GETUserFollowers(uid, success: success, failure: failure, extraAttempts: (extraAttempts
+                     - 1))
+            } else {
+                failure!(task: task, error: error)
+            }
+        }
+        
+        GET(urlString, parameters: nil, success: success, failure: failure)
+    }
+    
+    // Update the user's info with a new name and color
+    func PUTUser(uid: Int, apiToken: String, newName: String?, newColor: String?, success: AFHTTPSuccessBlock, failure: AFHTTPFailureBlock, extraAttempts: Int = defaultEA) {
         // Only make put request if given value to change
         if newName || newColor {
             // Create a URL string from the base URL string, then user/:uid
@@ -86,11 +135,20 @@ extension OSAPI {
             if newName { params.updateValue(newName!, forKey: "name") }
             if newColor { params.updateValue(newColor!, forKey: "color") }
             
+            let failureWithExtraAttempt: AFHTTPFailureBlock = { task, error in
+                if errorShouldBeHandedWithRepeatedRequest(task, error, attemptsLeft: extraAttempts) {
+                    self.PUTUser(uid, apiToken: apiToken, newName: newName, newColor: newColor, success: success, failure: failure, extraAttempts: (extraAttempts - 1))
+                } else {
+                    failure!(task: task, error: error)
+                }
+            }
+            
             PUT(urlString, parameters: params, success: success, failure: failure)
         }
     }
     
-    func POSTUserProvider(userName: String, userColor: String, userID: Int, userAPIToken: String, providerUID: String, providerToken: String, success: AFHTTPSuccessBlock, failure: AFHTTPFailureBlock) {
+    // Upgrade guest user to a full user. Provider can only be facebook, for now
+    func POSTUserProvider(userName: String, userColor: String, userID: Int, userAPIToken: String, providerUID: String, providerToken: String, success: AFHTTPSuccessBlock, failure: AFHTTPFailureBlock, extraAttempts: Int = defaultEA) {
         // Checks if facebook id already in the database. Called before creating user so user can login to old account
         let urlString = "\(baseURLString)user/facebook"
         
@@ -103,6 +161,14 @@ extension OSAPI {
         params.updateValue(providerUID, forKey: "p_uid")
         params.updateValue(providerToken, forKey: "token")
         
+        let failureWithExtraAttempt: AFHTTPFailureBlock = { task, error in
+            if errorShouldBeHandedWithRepeatedRequest(task, error, attemptsLeft: extraAttempts) {
+                self.POSTUserProvider(userName, userColor: userColor, userID: userID, userAPIToken: userAPIToken, providerUID: providerUID, providerToken: providerToken, success: success, failure: failure, extraAttempts: (extraAttempts - 1))
+            } else {
+                failure!(task: task, error: error)
+            }
+        }
+        
         POST(urlString, parameters: params, success: success, failure: failure)
     }
     
@@ -110,14 +176,17 @@ extension OSAPI {
     
     // func POSTUnfollowUser
     
-    func GETGuestUser(#success: AFHTTPSuccessBlock, failure: AFHTTPFailureBlock) {
+    // Creates a guest account
+    func GETGuestUser(#success: AFHTTPSuccessBlock, failure: AFHTTPFailureBlock, extraAttempts: Int = defaultEA) {
         // Create a URL string from the base URL string, then guest
         let urlString = "\(baseURLString)guest"
         
         GET(urlString, parameters: nil, success: success, failure: failure)
     }
     
-    func GETUserLoginProvider(userID: Int, userAPIToken: String, providerUID: String, providerToken: String, success: AFHTTPSuccessBlock, failure: AFHTTPFailureBlock) {
+    // Login full user from Facebook. Checks if Facebook ID is already in database / active
+    // If active, returns api_token and uid of user. If not, user must be setup
+    func GETUserLoginProvider(userID: Int, userAPIToken: String, providerUID: String, providerToken: String, success: AFHTTPSuccessBlock, failure: AFHTTPFailureBlock, extraAttempts: Int = defaultEA) {
         // Checks if facebook id already in the database. Called before creating user so user can login to old account
         let urlString = "\(baseURLString)login/facebook"
         
@@ -131,7 +200,8 @@ extension OSAPI {
         GET(urlString, parameters: params, success: success, failure: failure)
     }
     
-    func GetUserLoginGuest(userID: Int, userAPIToken: String, success: AFHTTPSuccessBlock, failure: AFHTTPFailureBlock, numOfAttemptsBeforeFailure: Int = 10) {
+    // Login guest user. Returns new token
+    func GetUserLoginGuest(userID: Int, userAPIToken: String, success: AFHTTPSuccessBlock, failure: AFHTTPFailureBlock, extraAttempts: Int = defaultEA) {
         // Refreshes the guest user's API Token
         let urlString = "\(baseURLString)login/guest"
         
@@ -140,29 +210,15 @@ extension OSAPI {
         params.updateValue(userID, forKey: "uid")
         params.updateValue(userAPIToken, forKey: "api_token")
         
-        let failureWithTwoMoreSuccessAttempts: AFHTTPFailureBlock = { task, error in
-            var attemptingRequestAgain = false
-            
-            println("ERROR FOUND... \(error.description)")
-            
-            // If the task actually exists
-            if task {
-                // If the error exists
-                if error {
-                    if error.code == -1005 && numOfAttemptsBeforeFailure > 1 {
-                        println("Caught error with code -1005, trying again")
-                        attemptingRequestAgain = true
-                        self.GetUserLoginGuest(userID, userAPIToken: userAPIToken, success: success, failure: failure, numOfAttemptsBeforeFailure: (numOfAttemptsBeforeFailure - 1))
-                    }
-                }
-            }
-            
-            if !attemptingRequestAgain {
+        let failureWithExtraAttempt: AFHTTPFailureBlock = { task, error in
+            if errorShouldBeHandedWithRepeatedRequest(task, error, attemptsLeft: extraAttempts) {
+                self.GetUserLoginGuest(userID, userAPIToken: userAPIToken, success: success, failure: failure, extraAttempts: (extraAttempts - 1))
+            } else {
                 failure!(task: task, error: error)
             }
         }
         
-        GET(urlString, parameters: params, success: success, failure: failureWithTwoMoreSuccessAttempts)
+        GET(urlString, parameters: params, success: success, failure: failureWithExtraAttempt)
     }
 }
 
