@@ -37,7 +37,7 @@ class SideNavigationViewController: UITableViewController {
         // Initialize the view controllers the sideMenu will navigate to
         // First item is nil so index will match table row
         menuViewControllers = [nil, PartyTabBarController(), HistoryViewController(),
-            SearchViewController(), FollowingViewController(), StoriesViewController(),
+            SearchViewController(), FollowingViewController(), FrontViewController(),
             ProfileViewController()]
         
         // First items are nil so index match table table row

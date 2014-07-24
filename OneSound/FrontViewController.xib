@@ -15,8 +15,8 @@
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Dfx-il-vXV">
-                    <rect key="frame" x="277" y="285" width="46" height="30"/>
-                    <state key="normal" title="Button">
+                    <rect key="frame" x="225.5" y="285" width="149" height="30"/>
+                    <state key="normal" title="Test Spash Animation">
                         <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                     </state>
                     <connections>
@@ -36,22 +36,11 @@
                         <action selector="resetUserInfo:" destination="-1" eventType="touchUpInside" id="h9y-Sj-0vC"/>
                     </connections>
                 </button>
-                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="VOv-BL-rLI">
-                    <rect key="frame" x="210" y="337" width="183" height="30"/>
-                    <state key="normal" title="Try Logging Into Facebook">
-                        <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                    </state>
-                    <connections>
-                        <action selector="tryLoggingIntoFacebook:" destination="-1" eventType="touchUpInside" id="eGG-dh-EN9"/>
-                    </connections>
-                </button>
             </subviews>
             <color key="backgroundColor" red="0.74117647058823533" green="0.062745098039215685" blue="0.8784313725490196" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
             <constraints>
-                <constraint firstItem="VOv-BL-rLI" firstAttribute="top" secondItem="ehS-1u-XJ4" secondAttribute="bottom" constant="-5" id="4ej-P9-JAO"/>
                 <constraint firstAttribute="centerX" secondItem="ehS-1u-XJ4" secondAttribute="centerX" constant="-0.5" id="KJJ-sI-aJv"/>
                 <constraint firstAttribute="centerY" secondItem="Dfx-il-vXV" secondAttribute="centerY" id="Ua5-zx-LWV"/>
-                <constraint firstAttribute="centerX" secondItem="VOv-BL-rLI" secondAttribute="centerX" constant="-1.5" id="nwR-3r-g4s"/>
                 <constraint firstItem="Dfx-il-vXV" firstAttribute="top" secondItem="ehS-1u-XJ4" secondAttribute="top" constant="-27" id="qk9-xI-KGe"/>
                 <constraint firstAttribute="centerX" secondItem="Dfx-il-vXV" secondAttribute="centerX" id="vsU-jW-RGl"/>
             </constraints>

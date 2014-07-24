@@ -166,7 +166,7 @@ extension LocalUser {
                 
                 self.updateLocalUserInformationAfterSignIn(userID: guestUID!, userAPIToken: guestAPIToken!)
             },
-            failure: defaultAFHTTPFailureBlockForServerDown
+            failure: defaultAFHTTPFailureBlockForSigningIn
         )
     }
     
@@ -205,7 +205,11 @@ extension LocalUser {
                     
                     self.updateLocalUserInformationAfterSignIn(userID: userID!, userAPIToken: userAPIToken!)
                 }
-            }, failure: defaultAFHTTPFailureBlockForServerDown
+            }, failure: { task, error in
+                println("ERROR: Guest account no longer exists, creating new one")
+                println(error.localizedDescription)
+                self.setupGuestAccount()
+            }
         )
     }
     
@@ -219,15 +223,20 @@ extension LocalUser {
                 // Update new user information
                 if let newUserAPIToken = responseJSON["api_token"].string {
                     LocalUser.sharedUser.updateLocalUserInformationAfterSignIn(userID: userID, userAPIToken: newUserAPIToken, successAddOn: successAddOn, failure: failure)
+                } else {
+                    // TODO: Handle possible errors?
+                    println("Error: Could't get newUserAPIToken while setting up full account")
                 }
-                
-                // TODO: Handle possible errors?
             },
-            failure: defaultAFHTTPFailureBlockForServerDown
+            failure: { task, error in
+                println("ERROR: Guest account no longer exists, creating new one")
+                println(error.localizedDescription)
+                self.setupGuestAccount()
+            }
         )
     }
     
-    func updateLocalUserInformationAfterSignIn(userID id: Int, userAPIToken token: String, successAddOn: completionClosure? = nil, failure: AFHTTPFailureBlock = defaultAFHTTPFailureBlockForServerDown) {
+    func updateLocalUserInformationAfterSignIn(userID id: Int, userAPIToken token: String, successAddOn: completionClosure? = nil, failure: AFHTTPFailureBlock = defaultAFHTTPFailureBlockForSigningIn) {
         // Download the user's record for the userID, update the LocalUser info from that json, 
         // update the UserDefaults, and update the Keychain info
         
@@ -244,6 +253,8 @@ extension LocalUser {
                         self.updateKeychainInfoForLocalUser(id, userAPIToken: token)
                         // Send out LocalUserInformationDidChangeNotification
                         NSNotificationCenter.defaultCenter().postNotificationName(LocalUserInformationDidChangeNotification, object: nil)
+                        // Let the app know it can it can nav away from the splash screen
+                        NSNotificationCenter.defaultCenter().postNotificationName(FinishedLoginFlowNotification, object: nil)
                         
                         if successAddOn {
                             successAddOn!()

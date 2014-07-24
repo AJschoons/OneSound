@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import UIKit
 
 // use "task, responseObject in"
 typealias AFHTTPSuccessBlock = ((task: NSURLSessionDataTask!, responseObject: AnyObject!) -> Void)?
@@ -23,6 +24,12 @@ let defaultAFHTTPFailureBlockForServerDown: AFHTTPFailureBlock = { task, error i
     let alertView = UIAlertView(title: "Server Temporarily Down", message: "We're having some problems on our end, please try using OneSound again in a couple of minutes", delegate: nil, cancelButtonTitle: "Ok")
     alertView.show()
     println(error.localizedDescription)
+}
+
+let defaultAFHTTPFailureBlockForSigningIn: AFHTTPFailureBlock = { task, error in
+    // Let the app know to stop showing the splash screen
+    NSNotificationCenter.defaultCenter().postNotificationName(FinishedLoginFlowNotification, object: nil)
+    defaultAFHTTPFailureBlockForServerDown!(task: task, error: error)
 }
 
 let baseURLString = "http://sparty.onesoundapp.com/"

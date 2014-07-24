@@ -17,26 +17,8 @@ class FrontViewController: UIViewController {
         user.deleteAllSavedUserInformation()
     }
     
-    @IBAction func tryLoggingIntoFacebook(sender: AnyObject) {
-        /*
-        let fbSession = FBSession.activeSession()
-        // Only sign in if not already signed in
-        if (fbSession.state != FBSessionStateOpen) && (fbSession.state != FBSessionStateOpenTokenExtended) {
-            FBSession.openActiveSessionWithReadPermissions(["public_profile", "email"], allowLoginUI: true, completionHandler: { session, state, error in
-                let delegate = UIApplication.sharedApplication().delegate as AppDelegate
-                // Call the app delegate's sessionStateChanged:state:error method to handle session state changes
-                delegate.sessionStateChanged(session, state: state, error: error)
-                }
-            )
-        }
-        */
-    }
     @IBAction func modal(sender: AnyObject) {
-        let loginStoryboard = UIStoryboard(name: "Login", bundle: nil)
-        let loginViewController = loginStoryboard.instantiateViewControllerWithIdentifier("LoginViewController") as LoginViewController
-        let navC = UINavigationController(rootViewController: loginViewController)
-        
-        presentViewController(navC, animated: true, completion: nil)
+        presentViewController(LoggingInSpashViewController(), animated: true, completion: nil)
     }
     
     

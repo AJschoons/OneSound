@@ -1,17 +1,14 @@
 {
   "images" : [
     {
-      "idiom" : "universal"
-    },
-    {
       "idiom" : "universal",
       "scale" : "1x",
-      "filename" : "upvoteIconSmall@1x.png"
+      "filename" : "splashScreenOneSoundOne1@1x.png"
     },
     {
       "idiom" : "universal",
       "scale" : "2x",
-      "filename" : "upvoteIconSmall@2x.png"
+      "filename" : "splashScreenOneSoundOne1@2x.png"
     }
   ],
   "info" : {

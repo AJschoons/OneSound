@@ -13,17 +13,16 @@ import QuartzCore
 var pG = false
 let FacebookSessionChangeNotification = "FacebookSessionChangeNotification"
 let facebookSessionPermissions = ["public_profile", "email"]
+let FinishedLoginFlowNotification = "FinishedLoginFlowNotification"
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
                             
     var window: UIWindow?
-    //var statusBarBackground: UIWindow?
     var revealViewController: SWRevealViewController?
     var panGestureStartedFrom: FrontViewPosition = FrontViewPositionRightMostRemoved
     // FrontViewPositionRightMostRemoved so it won't init as a used enum val
     
-    // Set to true to print everything in AppDelegate
     var pL = false
 
     func application(application: UIApplication!, didFinishLaunchingWithOptions launchOptions: NSDictionary!) -> Bool {
@@ -39,7 +38,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Create the user
         LocalUser.sharedUser
         
-        // Login flow is handled by AFNetworkingReachability manager and FBLogin stuff
+        // Login flow is handled by AFNetworkingReachability manager and FBLogin status change
         
         // Loads the FBLoginView before the view is shown
         FBLoginView.self
@@ -77,9 +76,6 @@ extension AppDelegate {
     // MARK: App launching related code
     
     func setupAppLocalUserBySigningInWithLoginFlow() {
-        // Always print login flow
-        pL = true
-        
         // Whenever a person opens the app, check for a cached session
         if FBSession.activeSession().state == FBSessionStateCreatedTokenLoaded {
             // If there IS one, just open the session silently, w/o showing the user the login UI
@@ -95,32 +91,32 @@ extension AppDelegate {
             )
         } else {
             // If no facebook token, check for guest user
-            printlnC(pL, pG, "Cached facebook token unavailable, check for guest user")
+            println("Cached facebook token unavailable, check for guest user")
             
             var userID: Int? = SSKeychain.passwordForService(service, account: userIDKeychainKey) ? SSKeychain.passwordForService(service, account: userIDKeychainKey).toInt() : nil
             var userAPIToken: String? = SSKeychain.passwordForService(service, account: userAPITokenKeychainKey)
             
             if !userID || !userAPIToken {
                 // If no guest user, then request a guest user to be created, set it up, save in keychain, save to LocalUser
-                printlnC(pL, pG, "Guest user NOT found")
+                println("Guest user NOT found")
                 LocalUser.sharedUser.setupGuestAccount()
             } else {
                 // Got guest user from keychain, request their information and save to LocalUser
-                printlnC(pL, pG, "Guest user FOUND")
+                println("Guest user FOUND")
                 LocalUser.sharedUser.signIntoGuestAccount(userID!, apiToken: userAPIToken!)
             }
         }
-        
-        pL = false
     }
     
     func setupAppWindowAndViewHierarchy() {
         // Setup side menu and general navigation hierarchy
         
-        let frontViewController = FrontViewController()
+        //let frontViewController = FrontViewController()
+        let loggingInSplashViewController = LoggingInSpashViewController()
         let rearViewController = SideNavigationViewController()
         
-        let frontNavigationController = FrontNavigationController(rootViewController: frontViewController)
+        //let frontNavigationController = FrontNavigationController(rootViewController: loggingInSplashViewController)
+        let frontNavigationController = FrontNavigationController()
         
         let rearNavigationController = UINavigationController(rootViewController: rearViewController)
         
@@ -135,8 +131,14 @@ extension AppDelegate {
         revealController.bounceBackOnLeftOverdraw = false
         revealController.quickFlickVelocity = 1000000 // Disables quick Flicks
         revealViewController = revealController
-        
         window!.rootViewController = revealViewController
+        
+        // Setup the front nav controller to initially have the splash screen modally presented with a (determined) view controller as it's rootViewController
+        let snc = revealViewController!.rearViewController as SideNavigationViewController
+        // By default start at the profile page (for now)
+        let viewControllerToNavTo = snc.menuViewControllers[6]!
+        frontNavigationController.setViewControllers([viewControllerToNavTo], animated: false)
+        frontNavigationController.presentViewController(loggingInSplashViewController, animated: false, completion: nil)
         
         window!.backgroundColor = UIColor.whiteColor()
         window!.makeKeyAndVisible()
@@ -168,6 +170,8 @@ extension AppDelegate {
         AFNetworkReachabilityManager.sharedManager().setReachabilityStatusChangeBlock({ reachability in
             if reachability == AFNetworkReachabilityStatus.NotReachable {
                 println("Network has changed to UNreachable")
+                // Make sure splash screen would get closed at this point in the Login Flow
+                NSNotificationCenter.defaultCenter().postNotificationName(FinishedLoginFlowNotification, object: nil)
                 
                 let alertView = UIAlertView(title: "No Internet Connection", message: "Please connect to the internet to use OneSound", delegate: nil, cancelButtonTitle: "Ok")
                 alertView.show()
@@ -203,17 +207,16 @@ extension AppDelegate {
             let accessTokenData = session.accessTokenData
             let userFBAccessToken = accessTokenData.accessToken
             let userFBID = accessTokenData.userID
-            
-            println("Facebook session UID:\(userFBID)")
-            println("Facebook session access token:\(userFBAccessToken)")
+            //println("Facebook session UID:\(userFBID)")
+            //println("Facebook session access token:\(userFBAccessToken)")
             
             var userID: Int? = SSKeychain.passwordForService(service, account: userIDKeychainKey) ? SSKeychain.passwordForService(service, account: userIDKeychainKey).toInt() : nil
             var userAPIToken: String? = SSKeychain.passwordForService(service, account: userAPITokenKeychainKey)
             
             if userID && userAPIToken {
                 println("Found userID and userAPIToken from keychain, sign in with Facebook account")
-                println("userID from keychain:\(userID)")
-                println("userAPIToken from keychain:\(userAPIToken)")
+                //println("userID from keychain:\(userID)")
+                //println("userAPIToken from keychain:\(userAPIToken)")
                 LocalUser.sharedUser.signIntoFullAccount(userID!, userAPIToken: userAPIToken!, fbUID: userFBID, fbAuthToken: userFBAccessToken)
             } else {
                 println("UserID and userAPIToken NOT found from keychain, setup guest user")
@@ -233,11 +236,14 @@ extension AppDelegate {
             } else {
                 // If user was a guest (could only occur during sign in...?) then just delete the facebook info
                 println("User WAS a guest; clear facebook token")
-                
                 FBSession.activeSession().closeAndClearTokenInformation()
+                // Make sure splash screen would get closed at this point in the Login Flow
+                NSNotificationCenter.defaultCenter().postNotificationName(FinishedLoginFlowNotification, object: nil)
             }
         } else if error {
             println("Facebook session state change: Error")
+            // Make sure splash screen would get closed at this point in the Login Flow
+            NSNotificationCenter.defaultCenter().postNotificationName(FinishedLoginFlowNotification, object: nil)
             
             var alertText: String?
             var alertTitle: String?

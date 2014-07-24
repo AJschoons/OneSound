@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		0C5C4B89C9B444C983D44940 /* libPods-OneSound.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 52F652D4E9264838BE2D4D5C /* libPods-OneSound.a */; };
+		8103D66B19805E9000AE5A27 /* LoggingInSpashViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8103D66919805E9000AE5A27 /* LoggingInSpashViewController.swift */; };
+		8103D66C19805E9000AE5A27 /* LoggingInSpashViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8103D66A19805E9000AE5A27 /* LoggingInSpashViewController.xib */; };
 		81062FA3196B6C7E0057D230 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81062FA2196B6C7E0057D230 /* AppDelegate.swift */; };
 		81062FAC196B6C7E0057D230 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 81062FAB196B6C7E0057D230 /* Images.xcassets */; };
 		81062FB8196B6C7E0057D230 /* OneSoundTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81062FB7196B6C7E0057D230 /* OneSoundTests.swift */; };
@@ -68,6 +70,8 @@
 /* Begin PBXFileReference section */
 		2B74F56C655F4716852A0B36 /* Pods-OneSound.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-OneSound.xcconfig"; path = "Pods/Pods-OneSound.xcconfig"; sourceTree = "<group>"; };
 		52F652D4E9264838BE2D4D5C /* libPods-OneSound.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-OneSound.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		8103D66919805E9000AE5A27 /* LoggingInSpashViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoggingInSpashViewController.swift; sourceTree = "<group>"; };
+		8103D66A19805E9000AE5A27 /* LoggingInSpashViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LoggingInSpashViewController.xib; sourceTree = "<group>"; };
 		81062F9D196B6C7E0057D230 /* OneSound.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OneSound.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		81062FA1196B6C7E0057D230 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		81062FA2196B6C7E0057D230 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -339,6 +343,8 @@
 				81062FC1196B6DAA0057D230 /* TestViewController.swift */,
 				81936FC6196C656F005E42F4 /* FrontViewController.swift */,
 				81936FC7196C656F005E42F4 /* FrontViewController.xib */,
+				8103D66919805E9000AE5A27 /* LoggingInSpashViewController.swift */,
+				8103D66A19805E9000AE5A27 /* LoggingInSpashViewController.xib */,
 			);
 			name = Other;
 			sourceTree = "<group>";
@@ -472,6 +478,7 @@
 				815CB6E31976D749000FD4B7 /* Login.storyboard in Resources */,
 				81062FAC196B6C7E0057D230 /* Images.xcassets in Resources */,
 				815831281974786C0011D3CE /* FollowingViewController.xib in Resources */,
+				8103D66C19805E9000AE5A27 /* LoggingInSpashViewController.xib in Resources */,
 				81414DD2197DF9CF00081132 /* ProfileViewController.xib in Resources */,
 				81583117197443940011D3CE /* SideNavigationUserCell.xib in Resources */,
 				81583120197477990011D3CE /* HistoryViewController.xib in Resources */,
@@ -529,6 +536,7 @@
 			files = (
 				815831451975CD450011D3CE /* SwiftUtilities.swift in Sources */,
 				81583123197477E30011D3CE /* SearchViewController.swift in Sources */,
+				8103D66B19805E9000AE5A27 /* LoggingInSpashViewController.swift in Sources */,
 				815831471975CD9B0011D3CE /* SwiftyJSON.swift in Sources */,
 				8158313E19748F080011D3CE /* PartySongsViewController.swift in Sources */,
 				81062FA3196B6C7E0057D230 /* AppDelegate.swift in Sources */,
