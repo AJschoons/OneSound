@@ -49,11 +49,11 @@ class PartyTabBarController: UITabBarController {
         // navigated from the side menu
         switch selectedIndex {
         case 0:
-            (viewControllers[0] as PartyMembersViewController).refresh()
+            (viewControllers[0] as PartyMembersViewController).viewWillAppear(animated)
         case 1:
-            (viewControllers[1] as PartyMainViewController).refresh()
+            (viewControllers[1] as PartyMainViewController).viewWillAppear(animated)
         case 2:
-            (viewControllers[2] as PartySongsViewController).refresh()
+            (viewControllers[2] as PartySongsViewController).viewWillAppear(animated)
         default:
             println("ERROR: selectedIndex for PartyTabBarController was out of range 0-2")
         }

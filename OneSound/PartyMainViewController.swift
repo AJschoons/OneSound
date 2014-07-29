@@ -17,19 +17,19 @@ class PartyMainViewController: UIViewController {
     @IBOutlet weak var volumeControl: UISlider?
     
     @IBAction func play(sender: AnyObject) {
-        audioPlayer.play()
+        audioPlayer!.play()
     }
     
     @IBAction func stop(sender: AnyObject) {
-        audioPlayer.stop()
+        audioPlayer!.stop()
     }
     
     @IBAction func adjustVolume(sender: AnyObject) {
-        audioPlayer.volume = volumeControl!.value
+        audioPlayer!.volume = volumeControl!.value
         println(volumeControl!.value)
     }
     
-    var audioPlayer = AVAudioPlayer()
+    var audioPlayer: AVAudioPlayer? = AVAudioPlayer()
     
     override func viewDidLoad() {
         // Make view respond to network reachability changes
@@ -45,6 +45,39 @@ class PartyMainViewController: UIViewController {
         super.viewWillAppear(animated)
         navigationController.visibleViewController.title = "Party"
         refresh()
+        
+        SCClient.sharedClient.downloadSoundCloudSongData(143553285,
+            completion: { data, response in
+                var errorPtr = NSErrorPointer()
+                self.audioPlayer = AVAudioPlayer(data: data, error: errorPtr)
+                if !errorPtr {
+                    println("no error")
+                    self.audioPlayer!.play()
+                } else {
+                    println("there was an error")
+                    println("ERROR: \(errorPtr)")
+                }
+            }
+        )
+        
+        SCClient.sharedClient.getSoundCloudSongByID(143553285,
+            success: {data, responseObject in
+                let responseJSON = JSONValue(responseObject)
+                println(responseJSON)
+            },
+            failure: defaultAFHTTPFailureBlock
+        )
+        
+        SCClient.sharedClient.searchSoundCloudForSongWithString("summer",
+            success: {data, responseObject in
+                let responseJSON = JSONValue(responseObject)
+                //println(responseJSON)
+                let songsArray = responseJSON.array
+                println(songsArray![0])
+                println(songsArray!.count)
+            },
+            failure: defaultAFHTTPFailureBlock
+        )
     }
     
     // Copy pasta'd from Profile view controller to have the same kind of refresh logic
@@ -60,20 +93,6 @@ class PartyMainViewController: UIViewController {
                 validUser = true
                 hideMessages()
                 LocalParty.sharedParty.joinAndOrRefreshParty(1)
-                if !audioPlayer.playing {
-                    SCClient.sharedClient.downloadSoundCloudSongData(143553285,
-                        completion: { data, response in
-                            var errorPtr = NSErrorPointer()
-                            self.audioPlayer = AVAudioPlayer(data: data, error: errorPtr)
-                            if !errorPtr {
-                                self.audioPlayer.play()
-                            } else {
-                                println("there was an error")
-                                println("ERROR: \(errorPtr)")
-                            }
-                        }
-                    )
-                }
             } else {
                 //setUserInfoHidden(true)
                 //setStoriesTableToHidden(true)
