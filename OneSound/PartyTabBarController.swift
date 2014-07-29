@@ -9,7 +9,7 @@
 import UIKit
 
 class PartyTabBarController: UITabBarController {
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -43,5 +43,19 @@ class PartyTabBarController: UITabBarController {
         revealController.tapGestureRecognizer()
         let revealButtonItem = UIBarButtonItem(image: UIImage(named: "sideMenuToggleIcon"), style: UIBarButtonItemStyle.Plain, target: revealController, action: "revealToggle:")
         navigationItem.leftBarButtonItem = revealButtonItem
+        
+        // Refresh the item at the selected index
+        // Otherwise they'd only refresh when another tab is selected, and not when 
+        // navigated from the side menu
+        switch selectedIndex {
+        case 0:
+            (viewControllers[0] as PartyMembersViewController).refresh()
+        case 1:
+            (viewControllers[1] as PartyMainViewController).refresh()
+        case 2:
+            (viewControllers[2] as PartySongsViewController).refresh()
+        default:
+            println("ERROR: selectedIndex for PartyTabBarController was out of range 0-2")
+        }
     }
 }

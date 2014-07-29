@@ -6,14 +6,45 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="PartyMembersViewController" customModule="OneSound" customModuleProvider="target">
             <connections>
-                <outlet property="view" destination="Q91-QU-UAG" id="Oyx-so-ZJJ"/>
+                <outlet property="messageLabel1" destination="f2k-N3-o3t" id="DEi-hm-ajL"/>
+                <outlet property="messageLabel2" destination="LI8-oy-bpz" id="UlQ-IV-W6q"/>
+                <outlet property="view" destination="Zdu-Sc-3fZ" id="TsZ-Lb-jiv"/>
             </connections>
         </placeholder>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
-        <view clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="Q91-QU-UAG">
+        <view clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="Zdu-Sc-3fZ">
             <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" alpha="0.0" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Some text that shows the main message" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="f2k-N3-o3t">
+                    <rect key="frame" x="20" y="284" width="560" height="17"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="17" id="CUx-oY-0rH"/>
+                    </constraints>
+                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                    <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                    <nil key="highlightedColor"/>
+                </label>
+                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" alpha="0.0" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Text for a more detailed message below the main message" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="LI8-oy-bpz">
+                    <rect key="frame" x="20" y="301" width="560" height="14"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="14" id="Qa5-9y-IbN"/>
+                    </constraints>
+                    <fontDescription key="fontDescription" type="system" pointSize="11"/>
+                    <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                    <nil key="highlightedColor"/>
+                </label>
+            </subviews>
             <color key="backgroundColor" red="0.95075207949999996" green="0.95072358850000005" blue="0.95073968170000001" alpha="1" colorSpace="calibratedRGB"/>
+            <constraints>
+                <constraint firstAttribute="centerX" secondItem="f2k-N3-o3t" secondAttribute="centerX" id="1cR-EB-sBM"/>
+                <constraint firstItem="LI8-oy-bpz" firstAttribute="leading" secondItem="Zdu-Sc-3fZ" secondAttribute="leading" constant="20" id="LxR-f4-N7k"/>
+                <constraint firstAttribute="trailing" secondItem="f2k-N3-o3t" secondAttribute="trailing" constant="20" id="OBx-3Z-OiY"/>
+                <constraint firstItem="f2k-N3-o3t" firstAttribute="leading" secondItem="Zdu-Sc-3fZ" secondAttribute="leading" constant="20" id="ZSP-nZ-rxx"/>
+                <constraint firstAttribute="centerY" secondItem="f2k-N3-o3t" secondAttribute="centerY" constant="7.5" id="ov4-yM-YSx"/>
+                <constraint firstAttribute="trailing" secondItem="LI8-oy-bpz" secondAttribute="trailing" constant="20" id="uQ3-mG-alY"/>
+                <constraint firstItem="LI8-oy-bpz" firstAttribute="top" secondItem="f2k-N3-o3t" secondAttribute="bottom" id="wU2-t5-neg"/>
+            </constraints>
         </view>
     </objects>
 </document>

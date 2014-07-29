@@ -1,43 +1,49 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="6185.7" systemVersion="14A261i" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="6185.11" systemVersion="14A261i" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6181.2"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6190.4"/>
     </dependencies>
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="HistoryViewController" customModule="OneSound" customModuleProvider="target">
             <connections>
-                <outlet property="messageLabel1" destination="ufd-NZ-SHc" id="JBM-YJ-OrW"/>
-                <outlet property="messageLabel2" destination="lvl-0N-Rrj" id="ny9-J3-vfh"/>
-                <outlet property="view" destination="qaW-Ec-fUK" id="If4-RF-Mec"/>
+                <outlet property="messageLabel1" destination="eEy-hd-IFO" id="oP5-Jy-raz"/>
+                <outlet property="messageLabel2" destination="6BJ-11-cKD" id="hBu-sI-ELY"/>
+                <outlet property="view" destination="j1r-gq-Ylb" id="9iz-ss-8Mc"/>
             </connections>
         </placeholder>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
-        <view clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="qaW-Ec-fUK">
-            <rect key="frame" x="0.0" y="0.0" width="480" height="480"/>
+        <view clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="j1r-gq-Ylb">
+            <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
-                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Some text for main line of message" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ufd-NZ-SHc">
-                    <rect key="frame" x="20" y="231.5" width="440" height="17"/>
+                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Some text that shows the main message" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="eEy-hd-IFO">
+                    <rect key="frame" x="20" y="284" width="560" height="17"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="17" id="gJ1-SC-fEz"/>
+                    </constraints>
                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
                     <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                     <nil key="highlightedColor"/>
                 </label>
-                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Some text below that further explains first message" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="lvl-0N-Rrj">
-                    <rect key="frame" x="20" y="248.5" width="440" height="13.5"/>
+                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Text for a more detailed message below the main message" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="6BJ-11-cKD">
+                    <rect key="frame" x="20" y="301" width="560" height="14"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="14" id="jEL-ca-HCH"/>
+                    </constraints>
                     <fontDescription key="fontDescription" type="system" pointSize="11"/>
-                    <color key="textColor" red="0.51700145009999998" green="0.51698595290000005" blue="0.51699477429999996" alpha="1" colorSpace="calibratedRGB"/>
+                    <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                     <nil key="highlightedColor"/>
                 </label>
             </subviews>
             <color key="backgroundColor" red="0.95075207949999996" green="0.95072358850000005" blue="0.95073968170000001" alpha="1" colorSpace="calibratedRGB"/>
             <constraints>
-                <constraint firstAttribute="centerX" secondItem="ufd-NZ-SHc" secondAttribute="centerX" id="0fg-8G-3De"/>
-                <constraint firstAttribute="trailing" secondItem="lvl-0N-Rrj" secondAttribute="trailing" constant="20" id="In0-RM-ZEb"/>
-                <constraint firstItem="lvl-0N-Rrj" firstAttribute="leading" secondItem="qaW-Ec-fUK" secondAttribute="leading" constant="20" id="PET-9h-UMN"/>
-                <constraint firstItem="lvl-0N-Rrj" firstAttribute="top" secondItem="ufd-NZ-SHc" secondAttribute="bottom" id="hlQ-bY-YEs"/>
-                <constraint firstItem="ufd-NZ-SHc" firstAttribute="leading" secondItem="qaW-Ec-fUK" secondAttribute="leading" constant="20" id="lSH-Bs-gBy"/>
-                <constraint firstAttribute="trailing" secondItem="ufd-NZ-SHc" secondAttribute="trailing" constant="20" id="lbf-jN-1Ex"/>
-                <constraint firstAttribute="centerY" secondItem="ufd-NZ-SHc" secondAttribute="centerY" id="vBh-Yv-Dd7"/>
+                <constraint firstItem="6BJ-11-cKD" firstAttribute="leading" secondItem="j1r-gq-Ylb" secondAttribute="leading" constant="20" id="605-27-wTq"/>
+                <constraint firstItem="eEy-hd-IFO" firstAttribute="leading" secondItem="j1r-gq-Ylb" secondAttribute="leading" constant="20" id="Mgf-uL-hDK"/>
+                <constraint firstItem="6BJ-11-cKD" firstAttribute="top" secondItem="eEy-hd-IFO" secondAttribute="bottom" id="O9t-NA-khF"/>
+                <constraint firstAttribute="trailing" secondItem="eEy-hd-IFO" secondAttribute="trailing" constant="20" id="TLd-Nl-Kfk"/>
+                <constraint firstAttribute="centerY" secondItem="eEy-hd-IFO" secondAttribute="centerY" constant="7.5" id="UZ6-D8-zRW"/>
+                <constraint firstAttribute="centerX" secondItem="eEy-hd-IFO" secondAttribute="centerX" id="d8a-Qe-RNS"/>
+                <constraint firstAttribute="trailing" secondItem="6BJ-11-cKD" secondAttribute="trailing" constant="20" id="e5d-w6-GA4"/>
             </constraints>
         </view>
     </objects>

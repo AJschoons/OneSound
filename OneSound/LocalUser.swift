@@ -141,7 +141,7 @@ extension LocalUser {
         
         printlnC(pL, pG, "Signing in with GUEST information... userID:\(id)   userAPIToken:\(apiToken)")
         
-        OSAPI.sharedClient.GetUserLoginGuest(id, userAPIToken: apiToken,
+        OSAPI.sharedClient.GETUserLoginGuest(id, userAPIToken: apiToken,
             success: { data, responseObject in
                 let responseJSON = JSONValue(responseObject)
                 println(responseJSON)

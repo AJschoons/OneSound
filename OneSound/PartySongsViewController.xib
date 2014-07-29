@@ -6,14 +6,45 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="PartySongsViewController" customModule="OneSound" customModuleProvider="target">
             <connections>
-                <outlet property="view" destination="9vV-Ux-saW" id="duo-Y4-D1y"/>
+                <outlet property="messageLabel1" destination="DQF-3K-MCX" id="cUp-JR-AoV"/>
+                <outlet property="messageLabel2" destination="FzJ-xu-4dw" id="jHi-Hb-B34"/>
+                <outlet property="view" destination="BKM-ln-KOa" id="KDE-vo-ZRh"/>
             </connections>
         </placeholder>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
-        <view clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="9vV-Ux-saW">
+        <view clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="BKM-ln-KOa">
             <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" alpha="0.0" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Some text that shows the main message" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="DQF-3K-MCX">
+                    <rect key="frame" x="20" y="284" width="560" height="17"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="17" id="PMF-jT-iKj"/>
+                    </constraints>
+                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                    <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                    <nil key="highlightedColor"/>
+                </label>
+                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" alpha="0.0" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Text for a more detailed message below the main message" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="FzJ-xu-4dw">
+                    <rect key="frame" x="20" y="301" width="560" height="14"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="14" id="bnj-Lk-gpc"/>
+                    </constraints>
+                    <fontDescription key="fontDescription" type="system" pointSize="11"/>
+                    <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                    <nil key="highlightedColor"/>
+                </label>
+            </subviews>
             <color key="backgroundColor" red="0.95075207949999996" green="0.95072358850000005" blue="0.95073968170000001" alpha="1" colorSpace="calibratedRGB"/>
+            <constraints>
+                <constraint firstAttribute="trailing" secondItem="FzJ-xu-4dw" secondAttribute="trailing" constant="20" id="TkM-Ba-BTx"/>
+                <constraint firstAttribute="centerX" secondItem="DQF-3K-MCX" secondAttribute="centerX" id="aiG-uF-qNK"/>
+                <constraint firstItem="FzJ-xu-4dw" firstAttribute="top" secondItem="DQF-3K-MCX" secondAttribute="bottom" id="bPY-Js-2om"/>
+                <constraint firstItem="FzJ-xu-4dw" firstAttribute="leading" secondItem="BKM-ln-KOa" secondAttribute="leading" constant="20" id="mSz-fV-eaI"/>
+                <constraint firstAttribute="centerY" secondItem="DQF-3K-MCX" secondAttribute="centerY" constant="7.5" id="uzx-MV-Jjt"/>
+                <constraint firstItem="DQF-3K-MCX" firstAttribute="leading" secondItem="BKM-ln-KOa" secondAttribute="leading" constant="20" id="ybg-Dp-JnV"/>
+                <constraint firstAttribute="trailing" secondItem="DQF-3K-MCX" secondAttribute="trailing" constant="20" id="yxw-G7-T5q"/>
+            </constraints>
         </view>
     </objects>
 </document>

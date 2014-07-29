@@ -17,10 +17,14 @@ typealias repeatBlock = () -> ()
 
 let defaultAFHTTPFailureBlock: AFHTTPFailureBlock = { task, error in
     if task {
+        //println(error.userInfo)
+        // TODO: find a way to get the status code server response from errors
         if error {
             var alertView: UIAlertView
             let code = error.code
             switch code {
+            case 500:
+                alertView = UIAlertView(title: "Down For Maintenance", message: "OneSound is currently down for maintenance, we will have it back up shortly. Please try again", delegate: nil, cancelButtonTitle: "Ok")
             case -1001:
                 alertView = UIAlertView(title: "Connection Timed Out", message: "Couldn't connect to the server in time, please try again with a better internet connection", delegate: nil, cancelButtonTitle: "Ok")
             case -1003:
@@ -216,7 +220,7 @@ extension OSAPI {
     }
     
     // Login guest user. Returns new token
-    func GetUserLoginGuest(userID: Int, userAPIToken: String, success: AFHTTPSuccessBlock, failure: AFHTTPFailureBlock, extraAttempts: Int = defaultEA) {
+    func GETUserLoginGuest(userID: Int, userAPIToken: String, success: AFHTTPSuccessBlock, failure: AFHTTPFailureBlock, extraAttempts: Int = defaultEA) {
         // Refreshes the guest user's API Token
         let urlString = "\(baseURLString)login/guest"
         
@@ -227,7 +231,7 @@ extension OSAPI {
         
         let failureWithExtraAttempt: AFHTTPFailureBlock = { task, error in
             if errorShouldBeHandedWithRepeatedRequest(task, error, attemptsLeft: extraAttempts) {
-                self.GetUserLoginGuest(userID, userAPIToken: userAPIToken, success: success, failure: failure, extraAttempts: (extraAttempts - 1))
+                self.GETUserLoginGuest(userID, userAPIToken: userAPIToken, success: success, failure: failure, extraAttempts: (extraAttempts - 1))
             } else {
                 failure!(task: task, error: error)
             }
@@ -238,13 +242,41 @@ extension OSAPI {
 }
 
 extension OSAPI {
-    // TODO: Error handling
-    // https://github.com/AFNetworking/AFNetworking/issues/596 << see danielr's comment
-    // http://stackoverflow.com/questions/2069039/error-handling-with-nsurlconnection-sendsynchronousrequest
-    // http://stackoverflow.com/questions/12893837/afnetworking-handle-error-globally-and-repeat-request
-    // https://developer.apple.com/library/mac/documentation/Cocoa/Reference/Foundation/Miscellaneous/Foundation_Constants/Reference/reference.html
+    // MARK: Party-related API
     
-    // http://stackoverflow.com/questions/16705934/keep-track-of-how-many-times-a-recursive-function-has-been-called-in-c
-    // http://stackoverflow.com/questions/22333020/afnetworking-2-0-unexpected-nsurlerrordomain-error-1012?rq=1
+    // Allows user to join a party
+    func GETParty(pid: Int, userID: Int, userAPIToken: String, success: AFHTTPSuccessBlock, failure: AFHTTPFailureBlock, extraAttempts: Int = defaultEA) {
+        
+        let urlString = "\(baseURLString)party/\(pid)"
+        
+        // Create paramaters to pass
+        var params = Dictionary<String, AnyObject>()
+        params.updateValue(userID, forKey: "uid")
+        params.updateValue(userAPIToken, forKey: "api_token")
+        
+        let failureWithExtraAttempt: AFHTTPFailureBlock = { task, error in
+            if errorShouldBeHandedWithRepeatedRequest(task, error, attemptsLeft: extraAttempts) {
+                self.GETParty(pid, userID: userID, userAPIToken: userAPIToken, success: success, failure: failure, extraAttempts: (extraAttempts - 1))
+            } else {
+                failure!(task: task, error: error)
+            }
+        }
+        
+        GET(urlString, parameters: params, success: success, failure: failureWithExtraAttempt)
+    }
     
+    // Get all of the party's current songs in the playlist
+    func GETPartyPlaylist(pid: Int, success: AFHTTPSuccessBlock, failure: AFHTTPFailureBlock, extraAttempts: Int = defaultEA) {
+        let urlString = "\(baseURLString)party/\(pid)/playlist"
+
+        let failureWithExtraAttempt: AFHTTPFailureBlock = { task, error in
+            if errorShouldBeHandedWithRepeatedRequest(task, error, attemptsLeft: extraAttempts) {
+                self.GETPartyPlaylist(pid, success: success, failure: failure, extraAttempts: (extraAttempts - 1))
+            } else {
+                failure!(task: task, error: error)
+            }
+        }
+        
+        GET(urlString, parameters: nil, success: success, failure: failureWithExtraAttempt)
+    }
 }

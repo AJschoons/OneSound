@@ -14,6 +14,9 @@
 		81062FAC196B6C7E0057D230 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 81062FAB196B6C7E0057D230 /* Images.xcassets */; };
 		81062FB8196B6C7E0057D230 /* OneSoundTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81062FB7196B6C7E0057D230 /* OneSoundTests.swift */; };
 		81062FC2196B6DAA0057D230 /* TestViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81062FC1196B6DAA0057D230 /* TestViewController.swift */; };
+		8130D7D21986B8BD00DD4B47 /* Party.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8130D7D11986B8BD00DD4B47 /* Party.swift */; };
+		8130D7D41986B8EB00DD4B47 /* LocalParty.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8130D7D31986B8EB00DD4B47 /* LocalParty.swift */; };
+		8130D7D6198714C900DD4B47 /* SoundCloudClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8130D7D5198714C900DD4B47 /* SoundCloudClient.swift */; };
 		813FCE081977583C00419097 /* LoginColorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 813FCE071977583C00419097 /* LoginColorViewController.swift */; };
 		81414DCE197DD1F800081132 /* EnumHackExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81414DCD197DD1F800081132 /* EnumHackExtensions.swift */; };
 		81414DD1197DF9CF00081132 /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81414DCF197DF9CF00081132 /* ProfileViewController.swift */; };
@@ -40,6 +43,8 @@
 		815831471975CD9B0011D3CE /* SwiftyJSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = 815831461975CD9B0011D3CE /* SwiftyJSON.swift */; };
 		8158314C1976D54F0011D3CE /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8158314B1976D54F0011D3CE /* LoginViewController.swift */; };
 		815CB6E31976D749000FD4B7 /* Login.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 815CB6E21976D749000FD4B7 /* Login.storyboard */; };
+		816DFB941982B85B007DA885 /* StoryTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 816DFB921982B85B007DA885 /* StoryTableViewCell.swift */; };
+		816DFB951982B85B007DA885 /* StoryTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 816DFB931982B85B007DA885 /* StoryTableViewCell.xib */; };
 		816FD445196F22B0003CCB1C /* SideNavigationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 816FD444196F22B0003CCB1C /* SideNavigationViewController.swift */; };
 		816FD447196F22DB003CCB1C /* FrontNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 816FD446196F22DB003CCB1C /* FrontNavigationController.swift */; };
 		81751FF5196DEB0F00B9F9A9 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 81751FF4196DEB0F00B9F9A9 /* Foundation.framework */; };
@@ -80,6 +85,9 @@
 		81062FB6196B6C7E0057D230 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		81062FB7196B6C7E0057D230 /* OneSoundTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OneSoundTests.swift; sourceTree = "<group>"; };
 		81062FC1196B6DAA0057D230 /* TestViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestViewController.swift; sourceTree = "<group>"; };
+		8130D7D11986B8BD00DD4B47 /* Party.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Party.swift; sourceTree = "<group>"; };
+		8130D7D31986B8EB00DD4B47 /* LocalParty.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocalParty.swift; sourceTree = "<group>"; };
+		8130D7D5198714C900DD4B47 /* SoundCloudClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SoundCloudClient.swift; sourceTree = "<group>"; };
 		813FCE0619774ECF00419097 /* TestingPlayground.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = TestingPlayground.playground; sourceTree = "<group>"; };
 		813FCE071977583C00419097 /* LoginColorViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginColorViewController.swift; sourceTree = "<group>"; };
 		81414DCD197DD1F800081132 /* EnumHackExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EnumHackExtensions.swift; sourceTree = "<group>"; };
@@ -107,6 +115,8 @@
 		815831461975CD9B0011D3CE /* SwiftyJSON.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftyJSON.swift; sourceTree = "<group>"; };
 		8158314B1976D54F0011D3CE /* LoginViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
 		815CB6E21976D749000FD4B7 /* Login.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Login.storyboard; sourceTree = "<group>"; };
+		816DFB921982B85B007DA885 /* StoryTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StoryTableViewCell.swift; sourceTree = "<group>"; };
+		816DFB931982B85B007DA885 /* StoryTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = StoryTableViewCell.xib; sourceTree = "<group>"; };
 		816FD444196F22B0003CCB1C /* SideNavigationViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SideNavigationViewController.swift; sourceTree = "<group>"; };
 		816FD446196F22DB003CCB1C /* FrontNavigationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FrontNavigationController.swift; sourceTree = "<group>"; };
 		81751FF4196DEB0F00B9F9A9 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -167,6 +177,8 @@
 			children = (
 				81527127196C5A8E00464068 /* User.swift */,
 				8195347F197857E6000B97A3 /* LocalUser.swift */,
+				8130D7D11986B8BD00DD4B47 /* Party.swift */,
+				8130D7D31986B8EB00DD4B47 /* LocalParty.swift */,
 			);
 			name = Models;
 			sourceTree = "<group>";
@@ -175,6 +187,7 @@
 			isa = PBXGroup;
 			children = (
 				81929C87196C2C2C006F336B /* OneSoundHTTPClient.swift */,
+				8130D7D5198714C900DD4B47 /* SoundCloudClient.swift */,
 			);
 			name = Networking;
 			sourceTree = "<group>";
@@ -291,6 +304,8 @@
 			children = (
 				81764518197EA192001BF7A7 /* StoriesViewController.swift */,
 				81764519197EA192001BF7A7 /* StoriesViewController.xib */,
+				816DFB921982B85B007DA885 /* StoryTableViewCell.swift */,
+				816DFB931982B85B007DA885 /* StoryTableViewCell.xib */,
 			);
 			name = Stories;
 			sourceTree = "<group>";
@@ -480,6 +495,7 @@
 				815831281974786C0011D3CE /* FollowingViewController.xib in Resources */,
 				8103D66C19805E9000AE5A27 /* LoggingInSpashViewController.xib in Resources */,
 				81414DD2197DF9CF00081132 /* ProfileViewController.xib in Resources */,
+				816DFB951982B85B007DA885 /* StoryTableViewCell.xib in Resources */,
 				81583117197443940011D3CE /* SideNavigationUserCell.xib in Resources */,
 				81583120197477990011D3CE /* HistoryViewController.xib in Resources */,
 				81583124197477E30011D3CE /* SearchViewController.xib in Resources */,
@@ -541,6 +557,7 @@
 				8158313E19748F080011D3CE /* PartySongsViewController.swift in Sources */,
 				81062FA3196B6C7E0057D230 /* AppDelegate.swift in Sources */,
 				81414DD1197DF9CF00081132 /* ProfileViewController.swift in Sources */,
+				8130D7D6198714C900DD4B47 /* SoundCloudClient.swift in Sources */,
 				81936FC8196C656F005E42F4 /* FrontViewController.swift in Sources */,
 				81527128196C5A8E00464068 /* User.swift in Sources */,
 				816FD445196F22B0003CCB1C /* SideNavigationViewController.swift in Sources */,
@@ -552,7 +569,9 @@
 				8158314219748F730011D3CE /* PartyMembersViewController.swift in Sources */,
 				8158313A19747F7B0011D3CE /* PartyTabBarController.swift in Sources */,
 				8195347B19775FCE000B97A3 /* LoginColorCell.swift in Sources */,
+				8130D7D21986B8BD00DD4B47 /* Party.swift in Sources */,
 				8176451A197EA192001BF7A7 /* StoriesViewController.swift in Sources */,
+				8130D7D41986B8EB00DD4B47 /* LocalParty.swift in Sources */,
 				8158314C1976D54F0011D3CE /* LoginViewController.swift in Sources */,
 				8158311A197471ED0011D3CE /* PartyMainViewController.swift in Sources */,
 				81583116197443940011D3CE /* SideNavigationUserCell.swift in Sources */,
@@ -561,6 +580,7 @@
 				816FD447196F22DB003CCB1C /* FrontNavigationController.swift in Sources */,
 				81B17D8F196F2A680062943C /* SideNavigationMenuCell.swift in Sources */,
 				813FCE081977583C00419097 /* LoginColorViewController.swift in Sources */,
+				816DFB941982B85B007DA885 /* StoryTableViewCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
