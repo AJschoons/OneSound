@@ -20,46 +20,25 @@ class PartyMainViewController: UIViewController {
     @IBOutlet weak var soundcloudLogo: UIImageView?
     @IBOutlet weak var playButton: UIButton?
     @IBOutlet weak var pauseButton: UIButton?
-    
-    @IBOutlet weak var volumeControl: UISlider?
+    @IBOutlet weak var songProgress: UIProgressView?
     
     @IBAction func play(sender: AnyObject) {
-        if audioSession {
-            var activationError = NSErrorPointer()
-            var success = audioSession!.setActive(true, error: activationError)
-            if !success {
-                println("not successful")
-                if activationError {
-                    println("ERROR")
-                    println(activationError)
-                }
-            }
-        }
-        setAudioPlayerButtonsForPlaying(true)
+        playSong()
+        println(audioPlayer!.duration)
+        println(audioPlayer!.currentTime)
     }
     
     @IBAction func pause(sender: AnyObject) {
-        setAudioPlayerButtonsForPlaying(false)
-    }
-    
-    /*
-    @IBAction func play(sender: AnyObject) {
-        audioPlayer!.play()
-    }
-    
-    @IBAction func stop(sender: AnyObject) {
-        audioPlayer!.stop()
-    }
-    */
-    
-    @IBAction func adjustVolume(sender: AnyObject) {
-        audioPlayer!.volume = volumeControl!.value
-        println(volumeControl!.value)
+        pauseSong()
     }
     
     var userIsHost = true
+    var audioPlayerHasAudioToPlay = false
+    var audioPlayerIsPlaying = false
+
     var audioPlayer: AVAudioPlayer?
     var audioSession: AVAudioSession?
+    var songProgressTimer: NSTimer?
     
     override func viewDidLoad() {
         // Make view respond to network reachability changes
@@ -68,6 +47,8 @@ class PartyMainViewController: UIViewController {
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "refresh", name: LocalUserInformationDidChangeNotification, object: nil)
         
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "audioPlayerInterruption:", name: AVAudioSessionInterruptionNotification, object: nil)
+        
+        songProgress!.progress = 0.0
         
         hideMessages()
         setPartyInfoHidden(true)
@@ -78,14 +59,23 @@ class PartyMainViewController: UIViewController {
         navigationController.visibleViewController.title = "Party"
         refresh()
         
-        /*
+        // Refresh stuff (temporarily doing this here while the server is down)
+        self.hideMessages()
+        self.setPartyInfoHidden(false)
+        self.setAudioPlayerButtonsForPlaying(true)
+        
         SCClient.sharedClient.downloadSoundCloudSongData(143553285,
             completion: { data, response in
                 var errorPtr = NSErrorPointer()
                 self.audioPlayer = AVAudioPlayer(data: data, error: errorPtr)
                 if !errorPtr {
-                    println("no error")
-                    //self.audioPlayer!.play()
+                    dispatchAsyncToMainQueue(
+                        action: {
+                            println("no error")
+                            self.audioPlayerHasAudioToPlay = true
+                            self.playSong()
+                        }
+                    )
                 } else {
                     println("there was an error")
                     println("ERROR: \(errorPtr)")
@@ -119,7 +109,6 @@ class PartyMainViewController: UIViewController {
             },
             failure: defaultAFHTTPFailureBlock
         )
-        */
         
         /*
         SCClient.sharedClient.searchSoundCloudForSongWithString("summer",
@@ -135,6 +124,7 @@ class PartyMainViewController: UIViewController {
     }
     
     func playSong() {
+        println("playSong")
         if audioSession {
             var setCategoryError = NSErrorPointer()
             var success1 = audioSession!.setCategory(AVAudioSessionCategoryPlayback, error: setCategoryError)
@@ -155,10 +145,61 @@ class PartyMainViewController: UIViewController {
                     println(activationError)
                 }
             }
+            
+            if audioPlayer && success1 && success2 {
+                if audioPlayerHasAudioToPlay {
+                    audioPlayer!.play()
+                    audioPlayerIsPlaying = true
+                    setAudioPlayerButtonsForPlaying(true)
+                    
+                    // Start the timer to be updating songProgress
+                    songTimerShouldBeActive(true)
+                } else {
+                    let alert = UIAlertView(title: "No Songs To Play", message: "Please add some songs to play, then press play again", delegate: nil, cancelButtonTitle: "Ok")
+                    alert.show()
+                }
+            } else {
+                let alert = UIAlertView(title: "Audio Session Problem", message: "Unable to setup an active audio session for audio playback. Double check nothing is overriding audio from One Sound", delegate: nil, cancelButtonTitle: "Ok")
+                alert.show()
+            }
         } else {
             println("ERROR no audio session")
         }
-        setAudioPlayerButtonsForPlaying(true)
+    }
+    
+    func pauseSong() {
+        println("pauseSong")
+        if audioSession && audioPlayer && audioPlayerHasAudioToPlay && audioPlayerIsPlaying {
+            audioPlayer!.pause()
+            audioPlayerIsPlaying = false
+            setAudioPlayerButtonsForPlaying(false)
+            
+            // Stop the timer from updating songProgress
+            songTimerShouldBeActive(false)
+        }
+    }
+    
+    func updateSongProgress(timer: NSTimer!) {
+        println("updatingSongProgress")
+        if audioPlayer && audioPlayerHasAudioToPlay {
+            let progress = Float(audioPlayer!.currentTime / audioPlayer!.duration)
+            songProgress!.progress = progress
+        } else {
+            songProgress!.progress = 0.0
+        }
+    }
+    
+    func songTimerShouldBeActive(shouldBeActive: Bool) {
+        if shouldBeActive {
+            if !songProgressTimer {
+                songProgressTimer = NSTimer.scheduledTimerWithTimeInterval(0.33, target: self, selector: "updateSongProgress:", userInfo: nil, repeats: true)
+            }
+        } else {
+            if songProgressTimer {
+                songProgressTimer!.invalidate()
+            }
+            songProgressTimer = nil
+        }
     }
     
     // Copy pasta'd from Profile view controller to have the same kind of refresh logic
@@ -222,14 +263,21 @@ class PartyMainViewController: UIViewController {
             playButton!.alpha = 0.0
             pauseButton!.hidden = hidden
             pauseButton!.alpha = 0.0
+            songProgress!.hidden = hidden
+            songProgress!.alpha = 0.0
+            songProgress!.progress = 0.0
         }
     }
     
     func setAudioPlayerButtonsForPlaying(audioPlayerIsPlaying: Bool) {
+        // The sog progress should always be visible when there's an audio player
+        songProgress!.hidden = false
+        songProgress!.alpha = 1.0
+        
         if audioPlayerIsPlaying {
-            // Make pause button visible
+            // Make pause button active
             if playButton!.hidden == false {
-                // Play button is visible; hide it and then show the pause button
+                // Play button is visible; hide it and then show the pause button, then fade it out again
                 UIView.animateWithDuration(PlayPauseButtonAnimationTime,
                     animations: {
                         self.playButton!.alpha = 0.0
@@ -237,49 +285,24 @@ class PartyMainViewController: UIViewController {
                     completion: { boolVal in
                         self.playButton!.hidden = true
                         self.pauseButton!.hidden = false
-                        UIView.animateWithDuration(PlayPauseButtonAnimationTime,
-                            animations: {
-                                self.pauseButton!.alpha = 1.0
-                            }
-                        )
-                    }
-                )
-            } else {
-                // Play button is not visible, so just show the pause button
-                self.pauseButton!.hidden = false
-                UIView.animateWithDuration(PlayPauseButtonAnimationTime,
-                    animations: {
                         self.pauseButton!.alpha = 1.0
                     }
                 )
+            } else {
+                // Play button is not visible, so just make the pause button active
+                self.pauseButton!.hidden = false
+                self.pauseButton!.alpha = 1.0
             }
         } else {
-            // Make play button visible
-            if pauseButton!.hidden == false {
-                // Pause button is visible; hide it and then show the play button
-                UIView.animateWithDuration(PlayPauseButtonAnimationTime,
-                    animations: {
-                        self.pauseButton!.alpha = 0.0
-                    },
-                    completion: { boolVal in
-                        self.pauseButton!.hidden = true
-                        self.playButton!.hidden = false
-                        UIView.animateWithDuration(PlayPauseButtonAnimationTime,
-                            animations: {
-                                self.playButton!.alpha = 1.0
-                            }
-                        )
-                    }
-                )
-            } else {
-                // Pause button is not visible, so just show the play button
-                self.playButton!.hidden = false
-                UIView.animateWithDuration(PlayPauseButtonAnimationTime,
-                    animations: {
-                        self.playButton!.alpha = 1.0
-                    }
-                )
-            }
+            // Make play button visible and the pause button inactive
+            pauseButton!.hidden = true
+            pauseButton!.alpha = 0.0
+            playButton!.hidden = false
+            UIView.animateWithDuration(PlayPauseButtonAnimationTime,
+                animations: {
+                    self.playButton!.alpha = 1.0
+                }
+            )
         }
     }
     

@@ -22,9 +22,9 @@ let defaultAFHTTPFailureBlock: AFHTTPFailureBlock = { task, error in
         if error {
             var alertView: UIAlertView
             let code = error.code
+            println("ERROR: has the following code... \(code)")
+            println(error.localizedDescription)
             switch code {
-            case 500:
-                alertView = UIAlertView(title: "Down For Maintenance", message: "OneSound is currently down for maintenance, we will have it back up shortly. Please try again", delegate: nil, cancelButtonTitle: "Ok")
             case -1001:
                 alertView = UIAlertView(title: "Connection Timed Out", message: "Couldn't connect to the server in time, please try again with a better internet connection", delegate: nil, cancelButtonTitle: "Ok")
             case -1003:
@@ -35,6 +35,9 @@ let defaultAFHTTPFailureBlock: AFHTTPFailureBlock = { task, error in
                 alertView = UIAlertView(title: "Network Connection Lost", message: "Internet connection was lost, please try again with a better connection", delegate: nil, cancelButtonTitle: "Ok")
             case -1009:
                 alertView = UIAlertView(title: "Not Connected To Internet", message: "Internet connection was lost, please try again after reconnecting", delegate: nil, cancelButtonTitle: "Ok")
+            case -1011:
+                // Should be getting this when the server sends a 500 response code
+                alertView = UIAlertView(title: "Down For Maintenance", message: "OneSound is currently down for maintenance, we will have it back up shortly. Please try again", delegate: nil, cancelButtonTitle: "Ok")
             default:
                 alertView = UIAlertView(title: error.localizedDescription, message: error.localizedRecoverySuggestion, delegate: nil, cancelButtonTitle: "Ok")
             }
@@ -48,8 +51,8 @@ func errorShouldBeHandedWithRepeatedRequest(task: NSURLSessionDataTask!, error: 
     if task {
         if error {
             let code = error.code
-            if code == -1001 || code == -1003 || code == -1004 || code == -1005 || code == -1009 {
-                // If timed out, cannot find host, cannot connect to host, connection lost, not connected to internet
+            if code == -1001 || code == -1003 || code == -1004 || code == -1005 || code == -1009 || code == -1011 {
+                // If timed out, cannot find host, cannot connect to host, connection lost, not connected to internet, server 500 code equivalent
                 shouldRepeatRequest = true
                 println("SHOULD BE TRYING TO REPEAT ATTEMPT")
             }
