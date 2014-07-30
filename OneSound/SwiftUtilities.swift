@@ -77,6 +77,24 @@ extension String {
         }
         return false
     }
+    
+    func replaceSubstringWithString(oldSubstring: String, newSubstring: String) -> String {
+        let oldSubstrL: Int = countElements(oldSubstring)
+        let stringL: Int = countElements(self)
+        if (oldSubstrL <= stringL) && (oldSubstring != "") {
+            for var i = 0; (i + oldSubstrL) <= stringL; ++i {
+                let indexToStartAt = advance(self.startIndex, i)
+                let indexToEndAt = advance(indexToStartAt, oldSubstrL)
+                let substringRange = indexToStartAt..<indexToEndAt
+                if self[substringRange] == oldSubstring {
+                    let firstPartOfStringRange = self.startIndex..<indexToStartAt
+                    let lastPartOfStringRange = indexToEndAt..<self.endIndex
+                    return self[firstPartOfStringRange] + newSubstring + self[lastPartOfStringRange]
+                }
+            }
+        }
+        return self
+    }
 }
 
 extension UIColor {
@@ -202,7 +220,6 @@ func formatFirstThreeDigitsOfIntFromBaseWithPostfix(numberToFormat num: Int, bas
             println("Error: Int(num / base) must leave max of three leading integers from base")
             return "ERR"
         }
-        
     } else {
         // Num was 0-999, so just return the num
         return "\(abs(num))"
@@ -239,7 +256,7 @@ func customExponentialEaseOut(xVal: Double) -> Double {
     }
 }
 
-// Convenient coditional printing
+// Convenient conditional printing
 func printlnC(l: Bool, g: Bool, m: String) {
     if l || g {
         println(m)

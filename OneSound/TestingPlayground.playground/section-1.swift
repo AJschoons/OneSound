@@ -167,4 +167,34 @@ func someNetworkingReqeustExample(success: ()->(), failure: ()->(), numOfAttempt
 
 someNetworkingReqeustExample(s, f)
 
+let SCstr = "https://i1.sndcdn.com/artworks-000075859755-jcijgn-large.jpg?e76cf77"
+
+extension String {
+    func replaceSubstringWithString(oldSubstring: String, newSubstring: String) -> String {
+        let oldSubstrL: Int = countElements(oldSubstring)
+        let stringL: Int = countElements(self)
+        if (oldSubstrL <= stringL) && (oldSubstring != "") {
+            for var i = 0; (i + oldSubstrL) <= stringL; ++i {
+                let indexToStartAt = advance(self.startIndex, i)
+                let indexToEndAt = advance(indexToStartAt, oldSubstrL)
+                let substringRange = indexToStartAt..<indexToEndAt
+                println(self[substringRange])
+                if self[substringRange] == oldSubstring {
+                    let firstPartOfStringRange = self.startIndex..<indexToStartAt
+                    let lastPartOfStringRange = indexToEndAt..<self.endIndex
+                    //println()
+                    //println(self[firstPartOfStringRange])
+                    //println(self[substringRange])
+                    //println(self[lastPartOfStringRange])
+                    //println()
+                    return self[firstPartOfStringRange] + newSubstring + self[lastPartOfStringRange]
+                }
+            }
+        }
+        return self
+    }
+}
+
+SCstr.replaceSubstringWithString("-large.jpg", newSubstring: "-t500x500.jpg")
+
 

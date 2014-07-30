@@ -29,17 +29,22 @@ class LocalParty {
 extension LocalParty {
     // MARK: Party networking related code for user's active party
     
-    func joinAndOrRefreshParty(pid: Int) {
+    func joinAndOrRefreshParty(pid: Int, JSONUpdateCompletion: completionClosure? = nil, failureAddOn: completionClosure? = nil) {
         let user = LocalUser.sharedUser
         OSAPI.sharedClient.GETParty(pid, userID: user.id, userAPIToken: user.apiToken,
             success: { data, responseObject in
                 let responseJSON = JSONValue(responseObject)
                 println(responseJSON)
                 
-                self.updateMainPartyInfoFromJSON(responseJSON)
+                self.updateMainPartyInfoFromJSON(responseJSON, JSONUpdateCompletion)
                 //self.updatePartySongs(pid)
             },
-            failure: defaultAFHTTPFailureBlock
+            failure: { task, error in
+                if failureAddOn {
+                    failureAddOn!()
+                }
+                defaultAFHTTPFailureBlock!(task: task, error: error)
+            }
         )
     }
     
@@ -57,7 +62,7 @@ extension LocalParty {
         
     }
     
-    func updateMainPartyInfoFromJSON(json: JSONValue) {
+    func updateMainPartyInfoFromJSON(json: JSONValue, completion: completionClosure? = nil) {
         setup = true
         
         partyID = json["pid"].integer
@@ -65,5 +70,9 @@ extension LocalParty {
         hostUserID = json["host"].integer
         name = json["name"].string
         strictness = json["strictness"].integer
+    
+        if completion {
+            completion!()
+        }
     }
 }
