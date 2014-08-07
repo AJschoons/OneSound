@@ -77,7 +77,7 @@ extension AppDelegate {
     
     func setupAppLocalUserBySigningInWithLoginFlow() {
         // Whenever a person opens the app, check for a cached session
-        if FBSession.activeSession().state == FBSessionStateCreatedTokenLoaded {
+        if FBSession.activeSession().state == FBSessionState.CreatedTokenLoaded { //FBSessionStateCreatedTokenLoaded {
             // If there IS one, just open the session silently, w/o showing the user the login UI
             println("Cached facebook token found")
             
@@ -201,7 +201,7 @@ extension AppDelegate {
         
         // Handle the session state
         // Usually the only interesting states are opened session, closed session, and failed login
-        if !error && state == FBSessionStateOpen {
+        if !error && state ==  FBSessionState.Open { //FBSessionStateOpen {
             println("Facebook session state change: Open")
             
             let accessTokenData = session.accessTokenData
@@ -235,7 +235,8 @@ extension AppDelegate {
                 println("UserID and userAPIToken NOT found from keychain, setup guest user")
                 LocalUser.sharedUser.setupGuestAccount()
             }
-        } else if (state == FBSessionStateClosed) || (state == FBSessionStateClosedLoginFailed) {
+        } else if (state == FBSessionState.Closed) || (state == FBSessionState.ClosedLoginFailed) {
+            // was using FBSessionStateClosed and FBSessionStateClosedLoginFailed until using forked facebook iOS SDK
             // If the session is closed, delete all old info and setup a guest account if the user had a full account
             println("Facebook session state change: Closed/Login Failed")
             

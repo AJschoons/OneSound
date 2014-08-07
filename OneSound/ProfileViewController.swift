@@ -49,7 +49,8 @@ class ProfileViewController: UIViewController {
             fbSession.closeAndClearTokenInformation()
         }
         
-        if (fbSession.state != FBSessionStateOpen) && (fbSession.state != FBSessionStateOpenTokenExtended) {
+        if (fbSession.state != FBSessionState.Open) && (fbSession.state != FBSessionState.OpenTokenExtended) {
+            // was using FBSessionStateOpen and FBSessionStateOpenTokenExtended before using forked Facebook SDK version for Swift
             FBSession.openActiveSessionWithReadPermissions(facebookSessionPermissions, allowLoginUI: true, completionHandler: { session, state, error in
                 let delegate = UIApplication.sharedApplication().delegate as AppDelegate
                 // Call the app delegate's sessionStateChanged:state:error method to handle session state changes
