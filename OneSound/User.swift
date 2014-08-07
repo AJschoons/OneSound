@@ -22,6 +22,8 @@ class User {
     var followers: Int!
     var following: Int!
     
+    var photo: UIImage?
+    
     var colorToUIColor: UIColor {
         if let userColor = UserColors.fromRaw(color) {
             switch userColor {
@@ -47,11 +49,33 @@ class User {
         name = json["name"].string
         color = json["color"].string
         guest = json["guest"].bool
-        photoURL = json["photo"].string
         songCount = json["song_count"].integer
         upvoteCount = json["vote_count"].integer
         followers = json["followers"].integer
         following = json["following"].integer
+        
+        // TODO: save the photo in an image store and check that
+        if guest == false && json["photo"].string != nil && (photoURL != json["photo"].string) {
+            // If not a guest and a non-empty photoURL gets sent that's different from what it was
+            println("getting a user's photo")
+            photoURL = json["photo"].string
+            getUserPhoto(photoURL!)
+        } else if guest == true {
+            // Guests don't have photos
+            photo = nil
+        }
+    }
+    
+    func getUserPhoto(urlString: String) {
+        downloadImageWithURLString(urlString,
+            { success, image in
+                if success {
+                    let smallestSide = (image!.size.height > image!.size.width) ? image!.size.width : image!.size.height
+                    self.photo = cropBiggestCenteredSquareImageFromImage(image!, sideLength: smallestSide)
+                    println("Got new photo for user")
+                }
+            }
+        )
     }
     
     func description() -> String {

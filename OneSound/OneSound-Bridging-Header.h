@@ -10,3 +10,4 @@
 #import "SWRevealViewController.h"
 #import "SSKeychain.h"
 #import "FacebookSDK.h"
+#import "THLabel.h"

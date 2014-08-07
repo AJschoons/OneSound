@@ -8,6 +8,8 @@
 
 import UIKit
 
+let PartyMembersViewControllerNibName = "PartyMembersViewController"
+
 class PartyMembersViewController: UIViewController {
     
     @IBOutlet weak var messageLabel1: UILabel?
@@ -19,7 +21,7 @@ class PartyMembersViewController: UIViewController {
         // Make sure view knows the user is setup so it won't keep displaying 'Not signed into account' when there is no  internet connection when app launches and then the network comes back and LocalUser is setup
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "refresh", name: LocalUserInformationDidChangeNotification, object: nil)
         
-        hideMessages()
+        //hideMessages()
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -76,11 +78,11 @@ class PartyMembersViewController: UIViewController {
     }
     
     func showMessages(mainLine: String?, detailLine: String?) {
-        if mainLine {
+        if mainLine != nil {
             messageLabel1!.alpha = 1
             messageLabel1!.text = mainLine
         }
-        if detailLine {
+        if detailLine != nil {
             messageLabel2!.alpha = 1
             messageLabel2!.text = detailLine
         }

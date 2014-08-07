@@ -59,7 +59,7 @@ func errorShouldBeHandedWithRepeatedRequest(task: NSURLSessionDataTask!, error: 
         }
     }
     
-    if attemptsLeft {
+    if attemptsLeft != nil {
         return (shouldRepeatRequest && (attemptsLeft > 0))
     } else {
         return shouldRepeatRequest
@@ -147,15 +147,15 @@ extension OSAPI {
     // Update the user's info with a new name and color
     func PUTUser(uid: Int, apiToken: String, newName: String?, newColor: String?, success: AFHTTPSuccessBlock, failure: AFHTTPFailureBlock, extraAttempts: Int = defaultEA) {
         // Only make put request if given value to change
-        if newName || newColor {
+        if newName != nil || newColor != nil {
             // Create a URL string from the base URL string, then user/:uid
             let urlString = "\(baseURLString)user/\(uid)"
             
             // Create parameters to pass
             var params = Dictionary<String, AnyObject>()
             params.updateValue(apiToken, forKey: "api_token")
-            if newName { params.updateValue(newName!, forKey: "name") }
-            if newColor { params.updateValue(newColor!, forKey: "color") }
+            if newName != nil { params.updateValue(newName!, forKey: "name") }
+            if newColor != nil { params.updateValue(newColor!, forKey: "color") }
             
             let failureWithExtraAttempt: AFHTTPFailureBlock = { task, error in
                 if errorShouldBeHandedWithRepeatedRequest(task, error, attemptsLeft: extraAttempts) {
@@ -275,6 +275,20 @@ extension OSAPI {
         let failureWithExtraAttempt: AFHTTPFailureBlock = { task, error in
             if errorShouldBeHandedWithRepeatedRequest(task, error, attemptsLeft: extraAttempts) {
                 self.GETPartyPlaylist(pid, success: success, failure: failure, extraAttempts: (extraAttempts - 1))
+            } else {
+                failure!(task: task, error: error)
+            }
+        }
+        
+        GET(urlString, parameters: nil, success: success, failure: failureWithExtraAttempt)
+    }
+    
+    func GETPartyMembers(pid: Int, success: AFHTTPSuccessBlock, failure: AFHTTPFailureBlock, extraAttempts: Int = defaultEA) {
+        let urlString = "\(baseURLString)party/\(pid)/members"
+        
+        let failureWithExtraAttempt: AFHTTPFailureBlock = { task, error in
+            if errorShouldBeHandedWithRepeatedRequest(task, error, attemptsLeft: extraAttempts) {
+                self.GETPartyMembers(pid, success: success, failure: failure, extraAttempts: (extraAttempts - 1))
             } else {
                 failure!(task: task, error: error)
             }

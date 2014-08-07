@@ -8,6 +8,8 @@
 
 import UIKit
 
+let ProfileViewControllerNibName = "ProfileViewController"
+
 class ProfileViewController: UIViewController {
     
     @IBOutlet weak var signOutButton: UIBarButtonItem?
@@ -125,13 +127,17 @@ class ProfileViewController: UIViewController {
     
     override func viewWillAppear(animated: Bool) {
         refresh()
+        super.viewWillAppear(animated)
     }
     
     override func viewWillDisappear(animated: Bool) {
+        super.viewWillDisappear(animated)
+        /*
         disableButtons()
         hideMessages()
         setUserInfoHidden(true)
         setStoriesTableToHidden(true)
+        */
     }
     
     func refresh() -> Bool {
@@ -201,7 +207,7 @@ class ProfileViewController: UIViewController {
             userSongLabel!.text = intFormattedToShortStringForDisplay(LocalUser.sharedUser.songCount)
             userHotnessLabel!.text = "XX%"
             
-            if LocalUser.sharedUser.photo {
+            if LocalUser.sharedUser.photo != nil {
                 userImage!.image = LocalUser.sharedUser.photo
             } else {
                 userImage!.backgroundColor = LocalUser.sharedUser.colorToUIColor
@@ -234,7 +240,7 @@ class ProfileViewController: UIViewController {
         
         let defaults = NSUserDefaults.standardUserDefaults()
         let userSavedName = defaults.objectForKey(userNameKey) as? String
-        if userSavedName {
+        if (userSavedName != nil) {
             // If user information can be retreived (assumes getting ANY user info means the rest is saved)
             println("found userSavedName; assuming that means the rest of info is saved")
             let userSavedIsGuest = defaults.boolForKey(userGuestKey)
@@ -264,11 +270,11 @@ class ProfileViewController: UIViewController {
     
     func showMessages(mainLine: String?, detailLine: String?, showMessageBelowUserInfo: Bool) {
         if showMessageBelowUserInfo {
-            if mainLine {
+            if mainLine != nil {
                 messageLabel3!.alpha = 1
                 messageLabel3!.text = mainLine
             }
-            if detailLine {
+            if detailLine != nil {
                 messageLabel4!.alpha = 1
                 messageLabel4!.text = detailLine
             }
@@ -278,11 +284,11 @@ class ProfileViewController: UIViewController {
             messageLabel2!.text = ""
             
         } else {
-            if mainLine {
+            if mainLine != nil {
                 messageLabel1!.alpha = 1
                 messageLabel1!.text = mainLine
             }
-            if detailLine {
+            if detailLine != nil {
                 messageLabel2!.alpha = 1
                 messageLabel2!.text = detailLine
             }

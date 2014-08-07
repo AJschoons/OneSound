@@ -15,6 +15,8 @@ typealias completionClosure = () -> ()
 typealias actionClosure = () -> ()
 
 extension Array {
+    // TODO: Update these array extensions to work w/o bridging to Obj C if they become needed
+    /*
     func contains(#object:AnyObject) -> Bool {
         return self.bridgeToObjectiveC().containsObject(object)
     }
@@ -22,6 +24,7 @@ extension Array {
     func indexOf(#object:AnyObject) -> Int {
         return self.bridgeToObjectiveC().indexOfObject(object)
     }
+    */
     
     mutating func moveObjectAtIndex(fromIndex: Int, toIndex: Int) {
         if ((fromIndex == toIndex) || (fromIndex > self.count) ||
@@ -237,6 +240,34 @@ func intFormattedToShortStringForDisplay(num: Int) -> String {
         return formatFirstThreeDigitsOfIntFromBaseWithPostfix(numberToFormat: posNum, baseOfNumber: 100, "M")
     default:
         return "MAX"
+    }
+}
+
+func timeInMillisecondsToFormattedMinSecondTimeLabelString(durationInMilliseconds: Int!) -> String {
+    if durationInMilliseconds {
+        let timeInSeconds: Int = durationInMilliseconds / 1000
+        let numberOfMinutes: Int = timeInSeconds / 60
+        let numberOfRemainingSeconds: Int = timeInSeconds % 60
+        if numberOfRemainingSeconds < 10 {
+            return "\(numberOfMinutes):0\(numberOfRemainingSeconds)"
+        } else {
+            return "\(numberOfMinutes):\(numberOfRemainingSeconds)"
+        }
+    } else {
+        return "no duration"
+    }
+}
+
+func setupTHLabelToDefaultDesiredLook(label: THLabel!) {
+    if label {
+        label.textColor = UIColor.white()
+        label.shadowColor = UIColor(white: 0, alpha: 0.5)
+        label.shadowOffset = CGSizeMake(0, 0)
+        label.shadowBlur = 3.0
+        label.strokeSize = 1.0
+        label.strokeColor = UIColor.black()
+        label.fadeTruncatingMode = THLabelFadeTruncatingMode.Tail
+        label.clipsToBounds = false
     }
 }
 

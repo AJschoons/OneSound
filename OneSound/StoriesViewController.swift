@@ -8,6 +8,8 @@
 
 import UIKit
 
+let StoriesViewControllerNibName = "StoriesViewController"
+
 class StoriesViewController: UIViewController {
     
     override func viewDidLoad() {

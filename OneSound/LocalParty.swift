@@ -16,6 +16,8 @@ class LocalParty {
     var name: String!
     var strictness: Int!
     
+    var songs = [Song?]()
+    
     var setup = false
     
     class var sharedParty: LocalParty {
@@ -37,10 +39,11 @@ extension LocalParty {
                 println(responseJSON)
                 
                 self.updateMainPartyInfoFromJSON(responseJSON, JSONUpdateCompletion)
+                self.updatePartyMembers(pid)
                 //self.updatePartySongs(pid)
             },
             failure: { task, error in
-                if failureAddOn {
+                if failureAddOn != nil {
                     failureAddOn!()
                 }
                 defaultAFHTTPFailureBlock!(task: task, error: error)
@@ -53,13 +56,36 @@ extension LocalParty {
             success: { data, responseObject in
                 let responseJSON = JSONValue(responseObject)
                 println(responseJSON)
+                self.updatePartySongInfoFromJSON(responseJSON)
+            },
+            failure: defaultAFHTTPFailureBlock
+        )
+    }
+    
+    func updatePartyMembers(pid: Int) {
+        OSAPI.sharedClient.GETPartyMembers(pid,
+            success: { data, responseObject in
+                let responseJSON = JSONValue(responseObject)
+                println(responseJSON)
+                //self.updatePartySongInfoFromJSON(responseJSON)
             },
             failure: defaultAFHTTPFailureBlock
         )
     }
     
     func updatePartySongInfoFromJSON(json: JSONValue) {
-        
+        songs.removeAll(keepCapacity: true)
+        var songsToGet = true
+        var i = 1
+        while songsToGet {
+            if let songDict = json["\(i)"].object {
+                self.songs.insert(Song(json: json), atIndex: (i-1))
+                i++
+            } else {
+                songsToGet = false
+            }
+        }
+        println("UPDATED PARTY WITH \(self.songs.count) SONGS")
     }
     
     func updateMainPartyInfoFromJSON(json: JSONValue, completion: completionClosure? = nil) {
@@ -71,7 +97,7 @@ extension LocalParty {
         name = json["name"].string
         strictness = json["strictness"].integer
     
-        if completion {
+        if completion != nil {
             completion!()
         }
     }

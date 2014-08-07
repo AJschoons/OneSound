@@ -161,7 +161,7 @@ enum JSONValue {
             var jsonValues = [JSONValue]()
             for possibleJsonValue : AnyObject in value {
                 let jsonValue = JSONValue(possibleJsonValue)
-                if  jsonValue {
+                if  jsonValue != nil {
                     jsonValues.append(jsonValue)
                 }
             }
@@ -171,7 +171,7 @@ enum JSONValue {
             for (possibleJsonKey : AnyObject, possibleJsonValue : AnyObject) in value {
                 if let key = possibleJsonKey as? NSString {
                     let jsonValue = JSONValue(possibleJsonValue)
-                    if jsonValue {
+                    if jsonValue != nil {
                         jsonObject[key] = jsonValue
                     }
                 }
@@ -320,14 +320,14 @@ extension JSONValue: Printable {
     }
 }
 
-extension JSONValue: LogicValue {
-    func getLogicValue() -> Bool {
+extension JSONValue: BooleanType {
+    var boolValue: Bool {
         switch self {
         case .JInvalid:
             return false
         default:
             return true
-        }
+            }
     }
 }
 

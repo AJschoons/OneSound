@@ -9,6 +9,7 @@
 import UIKit
 import AVFoundation
 
+let PartyMainViewControllerNibName = "PartyMainViewController"
 let PlayPauseButtonAnimationTime = 0.2
 
 class PartyMainViewController: UIViewController {
@@ -21,11 +22,12 @@ class PartyMainViewController: UIViewController {
     @IBOutlet weak var playButton: UIButton?
     @IBOutlet weak var pauseButton: UIButton?
     @IBOutlet weak var songProgress: UIProgressView?
+    @IBOutlet weak var songNameLabel: THLabel?
+    @IBOutlet weak var songArtistLabel: THLabel?
+    @IBOutlet weak var songTimeLabel: THLabel?
     
     @IBAction func play(sender: AnyObject) {
         playSong()
-        println(audioPlayer!.duration)
-        println(audioPlayer!.currentTime)
     }
     
     @IBAction func pause(sender: AnyObject) {
@@ -49,6 +51,16 @@ class PartyMainViewController: UIViewController {
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "audioPlayerInterruption:", name: AVAudioSessionInterruptionNotification, object: nil)
         
         songProgress!.progress = 0.0
+        
+        // Setup the labels
+        setupTHLabelToDefaultDesiredLook(songNameLabel!)
+        setupTHLabelToDefaultDesiredLook(songArtistLabel!)
+        setupTHLabelToDefaultDesiredLook(songTimeLabel!)
+        songNameLabel!.textInsets = UIEdgeInsets(top: 0, left: 5, bottom: 0, right: 0)
+        songArtistLabel!.textInsets = UIEdgeInsets(top: 0, left: 5, bottom: 0, right: 0)
+        songArtistLabel!.shadowColor = UIColor(white: 0, alpha: 0.3)
+        songTimeLabel!.textInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 5)
+        songTimeLabel!.shadowColor = UIColor(white: 0, alpha: 0.3)
         
         hideMessages()
         setPartyInfoHidden(true)
@@ -86,10 +98,12 @@ class PartyMainViewController: UIViewController {
         SCClient.sharedClient.getSoundCloudSongByID(143553285,
             success: {data, responseObject in
                 let responseJSON = JSONValue(responseObject)
+                println(responseJSON)
                 let SCSongName = responseJSON["title"].string
                 let SCUserName = responseJSON["user"]["username"].string
+                let SCSongDuration = responseJSON["duration"].integer
                 var SCArtworkURL = responseJSON["artwork_url"].string
-                if SCArtworkURL {
+                if SCArtworkURL != nil {
                     SCArtworkURL = SCArtworkURL!.replaceSubstringWithString("-large.jpg", newSubstring: "-t500x500.jpg")
                     downloadImageWithURLString(SCArtworkURL!,
                         { success, image in
@@ -104,7 +118,9 @@ class PartyMainViewController: UIViewController {
                     self.songImage!.backgroundColor = UIColor.red()
                 }
                 println("\(SCSongName)   \(SCUserName)   \(SCArtworkURL)")
-                
+                self.songNameLabel!.text = SCSongName!
+                self.songArtistLabel!.text = SCUserName
+                self.songTimeLabel!.text = timeInMillisecondsToFormattedMinSecondTimeLabelString(SCSongDuration!)
                 
             },
             failure: defaultAFHTTPFailureBlock
@@ -125,7 +141,7 @@ class PartyMainViewController: UIViewController {
     
     func playSong() {
         println("playSong")
-        if audioSession {
+        if (audioSession != nil) {
             var setCategoryError = NSErrorPointer()
             var success1 = audioSession!.setCategory(AVAudioSessionCategoryPlayback, error: setCategoryError)
             if !success1 {
@@ -146,7 +162,7 @@ class PartyMainViewController: UIViewController {
                 }
             }
             
-            if audioPlayer && success1 && success2 {
+            if audioPlayer != nil && success1 && success2 {
                 if audioPlayerHasAudioToPlay {
                     audioPlayer!.play()
                     audioPlayerIsPlaying = true
@@ -159,7 +175,7 @@ class PartyMainViewController: UIViewController {
                     alert.show()
                 }
             } else {
-                let alert = UIAlertView(title: "Audio Session Problem", message: "Unable to setup an active audio session for audio playback. Double check nothing is overriding audio from One Sound", delegate: nil, cancelButtonTitle: "Ok")
+                let alert = UIAlertView(title: "Audio Session Problem", message: "Unable to setup an active audio session for audio playback. Double check nothing is overriding audio from One Sound, then refresh the party. If that doesn't work then restart the app", delegate: nil, cancelButtonTitle: "Ok")
                 alert.show()
             }
         } else {
@@ -169,7 +185,7 @@ class PartyMainViewController: UIViewController {
     
     func pauseSong() {
         println("pauseSong")
-        if audioSession && audioPlayer && audioPlayerHasAudioToPlay && audioPlayerIsPlaying {
+        if audioSession != nil && audioPlayer != nil && audioPlayerHasAudioToPlay && audioPlayerIsPlaying {
             audioPlayer!.pause()
             audioPlayerIsPlaying = false
             setAudioPlayerButtonsForPlaying(false)
@@ -180,8 +196,7 @@ class PartyMainViewController: UIViewController {
     }
     
     func updateSongProgress(timer: NSTimer!) {
-        println("updatingSongProgress")
-        if audioPlayer && audioPlayerHasAudioToPlay {
+        if audioPlayer != nil && audioPlayerHasAudioToPlay {
             let progress = Float(audioPlayer!.currentTime / audioPlayer!.duration)
             songProgress!.progress = progress
         } else {
@@ -191,11 +206,11 @@ class PartyMainViewController: UIViewController {
     
     func songTimerShouldBeActive(shouldBeActive: Bool) {
         if shouldBeActive {
-            if !songProgressTimer {
+            if songProgressTimer == nil {
                 songProgressTimer = NSTimer.scheduledTimerWithTimeInterval(0.33, target: self, selector: "updateSongProgress:", userInfo: nil, repeats: true)
             }
         } else {
-            if songProgressTimer {
+            if songProgressTimer != nil {
                 songProgressTimer!.invalidate()
             }
             songProgressTimer = nil
@@ -210,12 +225,12 @@ class PartyMainViewController: UIViewController {
         println("refreshing PartyMainViewController")
         
         // Ensure audio session is initialized when the user is the host
-        if userIsHost && !audioSession {
+        if userIsHost && audioSession == nil {
             audioSession = AVAudioSession.sharedInstance()
         }
         
         // Ensure the audio player is available when the user is the host
-        if userIsHost && !audioPlayer {
+        if userIsHost && audioPlayer == nil {
             audioPlayer = AVAudioPlayer()
         }
         
@@ -256,8 +271,12 @@ class PartyMainViewController: UIViewController {
     func setPartyInfoHidden(hidden: Bool) {
         songImage!.hidden = hidden
         soundcloudLogo!.hidden = hidden
+        songNameLabel!.hidden = hidden
+        songArtistLabel!.hidden = hidden
+        songTimeLabel!.hidden = hidden
         
         // Only set button visibility for hiding; to show them the player must be checked
+        // When hiding the party info, reset the song labels to empty and the song progress to 0
         if hidden == true {
             playButton!.hidden = hidden
             playButton!.alpha = 0.0
@@ -266,6 +285,10 @@ class PartyMainViewController: UIViewController {
             songProgress!.hidden = hidden
             songProgress!.alpha = 0.0
             songProgress!.progress = 0.0
+            
+            songNameLabel!.text = ""
+            songArtistLabel!.text = ""
+            songTimeLabel!.text = ""
         }
     }
     
@@ -307,11 +330,11 @@ class PartyMainViewController: UIViewController {
     }
     
     func showMessages(mainLine: String?, detailLine: String?) {
-        if mainLine {
+        if mainLine != nil {
             messageLabel1!.alpha = 1
             messageLabel1!.text = mainLine
         }
-        if detailLine {
+        if detailLine != nil {
             messageLabel2!.alpha = 1
             messageLabel2!.text = detailLine
         }

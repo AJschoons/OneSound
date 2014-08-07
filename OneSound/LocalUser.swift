@@ -276,7 +276,7 @@ extension LocalUser {
                         // Let the app know it can it can nav away from the splash screen
                         NSNotificationCenter.defaultCenter().postNotificationName(FinishedLoginFlowNotification, object: nil)
                         
-                        if respondToChangeAttempt {
+                        if respondToChangeAttempt != nil {
                             respondToChangeAttempt!(true)
                         }
                     },
@@ -319,7 +319,7 @@ extension LocalUser {
         followers = json["followers"].integer
         following = json["following"].integer
         
-        if guest == false && json["photo"].string && (forcePhotoUpdate == true || photoURL != json["photo"].string) {
+        if guest == false && json["photo"].string != nil && (forcePhotoUpdate == true || photoURL != json["photo"].string) {
             // If not a guest and a non-empty photoURL gets sent that's different from what it was (or forced)
             println("Setting new photo URL")
             photoURL = json["photo"].string
@@ -332,7 +332,7 @@ extension LocalUser {
         
         updateUserDefaultsForLocalUser()
         
-        if completion {
+        if completion != nil {
             completion!()
         }
     }
@@ -362,7 +362,7 @@ extension LocalUser {
                 
                 self.updateLocalUserFromJSON(responseJSON, apiToken: self.apiToken)
                 println(self.description())
-                if addToSuccess {
+                if addToSuccess != nil {
                     addToSuccess!()
                 }
             },
@@ -405,7 +405,7 @@ extension LocalUser {
         
         FBSession.activeSession().closeAndClearTokenInformation()
         
-        if completion {
+        if completion != nil {
             completion!()
         }
     }

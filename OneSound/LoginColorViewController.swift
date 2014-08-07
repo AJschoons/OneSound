@@ -20,12 +20,19 @@ class LoginColorViewController: UITableViewController {
                                         UIColor.red(), UIColor.orange(), UIColor.yellow()]
     var selectedColor: OneSoundColorOption
     var selectedIndex: Int!
-    var delegate: LoginColorViewControllerDelegate
+    var delegate: LoginColorViewControllerDelegate?
     
     init(delegate initDelegate: LoginColorViewControllerDelegate, selectedColor color: OneSoundColorOption) {
         delegate = initDelegate
         selectedColor = color
         super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init(coder aDecoder: NSCoder!) {
+        // TODO: find a way to actually save the delegate in color; simply forced to do this for now so did this garbage work
+        delegate = nil
+        selectedColor = .Random
+        super.init(coder: aDecoder)
     }
 
     override func viewDidLoad() {
@@ -85,6 +92,6 @@ extension LoginColorViewController: UITableViewDelegate {
         
         // Update the selectedColor, return that color to the delegate
         selectedColor = colorNames[indexPath.row]
-        delegate.loginColorViewController(self, didSelectColor: selectedColor)
+        delegate!.loginColorViewController(self, didSelectColor: selectedColor)
     }
 }

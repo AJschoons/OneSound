@@ -96,7 +96,7 @@ extension AppDelegate {
             var userID: Int? = SSKeychain.passwordForService(service, account: userIDKeychainKey) ? SSKeychain.passwordForService(service, account: userIDKeychainKey).toInt() : nil
             var userAPIToken: String? = SSKeychain.passwordForService(service, account: userAPITokenKeychainKey)
             
-            if !userID || !userAPIToken {
+            if userID == nil || userAPIToken == nil {
                 // If no guest user, then request a guest user to be created, set it up, save in keychain, save to LocalUser
                 println("Guest user NOT found")
                 LocalUser.sharedUser.setupGuestAccount()
@@ -114,7 +114,7 @@ extension AppDelegate {
         let rearViewController = SideNavigationViewController()
         
         let frontNavigationController = FrontNavigationController()
-        let loggingInSplashViewController = LoggingInSpashViewController()
+        let loggingInSplashViewController = LoggingInSpashViewController(nibName: LoggingInSpashViewControllerNibName, bundle: nil)
         
         let rearNavigationController = UINavigationController(rootViewController: rearViewController)
         
@@ -129,16 +129,17 @@ extension AppDelegate {
         revealController.bounceBackOnLeftOverdraw = false
         revealController.quickFlickVelocity = 1000000 // Disables quick Flicks
         revealViewController = revealController
-        window!.rootViewController = revealViewController
-        
+
         // Setup the front nav controller to initially have the splash screen visible with a (determined) view controller as it's rootViewController
         let snc = revealController.rearViewController as SideNavigationViewController
         // By default starts at the profile page (for now)
         // TODO: find the last saved row and nav to that
-        let rowInitiallySelected = snc.initiallySelectedRow.toRaw()
+        let rowInitiallySelected = snc.initiallySelectedRow
+        println(rowInitiallySelected)
         let viewControllerToNavTo = snc.menuViewControllers[rowInitiallySelected]!
         frontNavigationController.setViewControllers([viewControllerToNavTo, loggingInSplashViewController], animated: false)
         
+        window!.rootViewController = revealViewController
         window!.backgroundColor = UIColor.whiteColor()
         window!.makeKeyAndVisible()
     }
@@ -212,11 +213,24 @@ extension AppDelegate {
             var userID: Int? = SSKeychain.passwordForService(service, account: userIDKeychainKey) ? SSKeychain.passwordForService(service, account: userIDKeychainKey).toInt() : nil
             var userAPIToken: String? = SSKeychain.passwordForService(service, account: userAPITokenKeychainKey)
             
-            if userID && userAPIToken {
+            if userID != nil && userAPIToken != nil {
                 println("Found userID and userAPIToken from keychain, sign in with Facebook account")
                 //println("userID from keychain:\(userID)")
                 //println("userAPIToken from keychain:\(userAPIToken)")
-                LocalUser.sharedUser.signIntoFullAccount(userID!, userAPIToken: userAPIToken!, fbUID: userFBID, fbAuthToken: userFBAccessToken)
+                println("user fbUID: \(userFBID)")
+                println("userfbAuthToken: \(userFBAccessToken)")
+                if userFBID != nil && userFBAccessToken != nil {
+                    LocalUser.sharedUser.signIntoFullAccount(userID!, userAPIToken: userAPIToken!, fbUID: userFBID, fbAuthToken: userFBAccessToken)
+                } else {
+                    // Reset all data and let user know to sign back into facebook
+                    // The Facebook SDK session state will change to closed / login failed, and will be handled accordingly
+                    LocalUser.sharedUser.deleteAllSavedUserInformation(
+                        completion: {
+                            let alert = UIAlertView(title: "Facebook Information Expired", message: "The Facebook login information has expired. Please restart the app and sign in again. The temporary new guest account that has been provided does not have any information from the Facebook verified account", delegate: nil, cancelButtonTitle: "Ok")
+                            alert.show()
+                        }
+                    )
+                }
             } else {
                 println("UserID and userAPIToken NOT found from keychain, setup guest user")
                 LocalUser.sharedUser.setupGuestAccount()
@@ -239,7 +253,7 @@ extension AppDelegate {
                 // Make sure splash screen would get closed at this point in the Login Flow
                 NSNotificationCenter.defaultCenter().postNotificationName(FinishedLoginFlowNotification, object: nil)
             }
-        } else if error {
+        } else if (error != nil) {
             println("Facebook session state change: Error")
             // Make sure splash screen would get closed at this point in the Login Flow
             NSNotificationCenter.defaultCenter().postNotificationName(FinishedLoginFlowNotification, object: nil)
@@ -265,13 +279,14 @@ extension AppDelegate {
                 } else {
                     // All other errors handled with generic message
                     // Get more info from the error
-                    let errorInformation = error.userInfo.bridgeToObjectiveC().objectForKey("com.facebook.sdk:ParsedJSONResponseKey").objectForKey("body").objectForKey("error") as NSDictionary
-                    let errorMessage = errorInformation.objectForKey("message") as String
+                    let errorMessageObject: AnyObject? = error.userInfo["com.facebook.sdk:ParsedJSONResponseKey"]?["body"]?["error"]?["message"]
                     
-                    alertTitle = "Something went wrong"
-                    alertText = "Please retry. If the problem persists contact us and mention this error code: \(errorMessage)"
-                    let alert = UIAlertView(title: alertTitle, message: alertText, delegate: nil, cancelButtonTitle: "Ok")
-                    alert.show()
+                    if let errorMessage = errorMessageObject as? String {
+                        alertTitle = "Something went wrong"
+                        alertText = "Please retry. If the problem persists contact us and mention this error code: \(errorMessage)"
+                        let alert = UIAlertView(title: alertTitle, message: alertText, delegate: nil, cancelButtonTitle: "Ok")
+                        alert.show()
+                    }
                 }
             }
             // Clear the token for all errors

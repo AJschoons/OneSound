@@ -10,9 +10,9 @@ import UIKit
 
 class SideNavigationViewController: UITableViewController {
     
-    enum SideMenuRow: Int {
-        case Party = 1, History, Search, Following, Stories, Profile
-    }
+    //enum SideMenuRow: Int {
+    //    case Party = 1, History, Search, Following, Stories, Profile
+    //}
     
     let menuCellIdentifier = "sideNavigationMenuCell"
     let userCellIdentifier = "sideNavigationUserCell"
@@ -21,15 +21,24 @@ class SideNavigationViewController: UITableViewController {
     var sideMenuUnselectedIcons = [UIImage?]()
     var sideMenuItemLabels = [String?]()
     var userCell: SideNavigationUserCell?
-    var menuViewControllers = [UIViewController?]()
+    var menuViewControllers: [UIViewController?] = [nil, PartyTabBarController(nibName: PartyTabBarControllerNibName, bundle: nil), HistoryViewController(nibName: HistoryViewControllerNibName, bundle: nil),
+        SearchViewController(nibName: SearchViewControllerNibName, bundle: nil), FollowingViewController(nibName: FollowingViewControllerNibName, bundle: nil), FrontViewController(nibName: FrontViewControllerNibName, bundle: nil),
+        ProfileViewController(nibName: ProfileViewControllerNibName, bundle: nil)]
     
     // TODO: have this be saved when app closes
-    var initiallySelectedRow: SideMenuRow = .Profile
+    var initiallySelectedRow = 6
     
     var pL = true
     var firstTimeAppearing = true
 
     override func viewDidLoad() {
+        /*
+        let fnc = (UIApplication.sharedApplication().delegate as AppDelegate).revealViewController!.frontViewController as FrontNavigationController
+        let viewControllerToNavTo = menuViewControllers[initiallySelectedRow]!
+        let loggingInSplashViewController = LoggingInSpashViewController(nibName: LoggingInSpashViewControllerNibName, bundle: nil)
+        fnc.setViewControllers([viewControllerToNavTo, loggingInSplashViewController], animated: false)
+        */
+
         super.viewDidLoad()
         
         clearsSelectionOnViewWillAppear = false
@@ -37,12 +46,6 @@ class SideNavigationViewController: UITableViewController {
         // Customize the tableView
         tableView.scrollEnabled = false
         tableView.separatorStyle = UITableViewCellSeparatorStyle.None
-        
-        // Initialize the view controllers the sideMenu will navigate to
-        // First item is nil so index will match table row
-        menuViewControllers = [nil, PartyTabBarController(), HistoryViewController(),
-            SearchViewController(), FollowingViewController(), FrontViewController(),
-            ProfileViewController()]
         
         // First items are nil so index match table table row
         sideMenuSelectedIcons = [nil, UIImage(named: "sideMenuPartyIconSelected"),
@@ -65,7 +68,7 @@ class SideNavigationViewController: UITableViewController {
     
     override func viewWillAppear(animated: Bool) {
         // Update the user cell when it appears
-        if userCell {
+        if userCell != nil {
             userCell!.refresh()
         }
         super.viewWillAppear(animated)
@@ -94,7 +97,7 @@ extension SideNavigationViewController: UITableViewDataSource {
             menuCell.unselectedIcon = sideMenuUnselectedIcons[indexPath.row]
             menuCell.sideMenuItemIcon.image = menuCell.unselectedIcon
             
-            if firstTimeAppearing && indexPath.row == initiallySelectedRow.toRaw() {
+            if firstTimeAppearing && indexPath.row == initiallySelectedRow {
                 tableView.selectRowAtIndexPath(indexPath, animated: true, scrollPosition: UITableViewScrollPosition.None)
                 firstTimeAppearing = false
             }
@@ -127,7 +130,7 @@ extension SideNavigationViewController: UITableViewDelegate {
         if indexPath.row == 0   {
             return topCellHeight
         } else {
-            return ((view.window.bounds.height - topCellHeight - 20) / 6.0)
+            return ((view.window!.bounds.height - topCellHeight - 20) / 6.0)
         }
     }
     

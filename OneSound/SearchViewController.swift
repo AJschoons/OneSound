@@ -8,13 +8,11 @@
 
 import UIKit
 
+let SearchViewControllerNibName = "SearchViewController"
+
 class SearchViewController: UIViewController {
-    @IBOutlet weak var messageLabel1: UILabel!
-    @IBOutlet weak var messageLabel2: UILabel!
-    
-    init() {
-        super.init(nibName: nil, bundle: nil)
-    }
+    @IBOutlet weak var messageLabel1: UILabel?
+    @IBOutlet weak var messageLabel2: UILabel?
 
     override func viewDidLoad() {
         super.viewDidLoad()

@@ -40,7 +40,7 @@ class SideNavigationUserCell: UITableViewCell {
             println("user is setup")
             userLabel.text = LocalUser.sharedUser.name
             
-            if LocalUser.sharedUser.guest == false && LocalUser.sharedUser.photo {
+            if LocalUser.sharedUser.guest == false && LocalUser.sharedUser.photo != nil {
                 // If user isn't a guest and has a valid photo
                 println("full user with valid photo; use their photo")
                 userImage.image = LocalUser.sharedUser.photo
@@ -59,7 +59,7 @@ class SideNavigationUserCell: UITableViewCell {
             let userSavedColor = defaults.objectForKey(userColorKey) as? String
             let userSavedIsGuest = defaults.boolForKey(userGuestKey)
             
-            if userSavedName {
+            if userSavedName != nil {
                 // If user information can be retreived (assumes getting ANY user info means the rest is saved)
                 println("found guest user info in user defaults")
                 userLabel.text = userSavedName
@@ -67,7 +67,7 @@ class SideNavigationUserCell: UITableViewCell {
                     println("saved user was guest")
                     userImage.image = nil
                     
-                    if userSavedColor {
+                    if userSavedColor != nil {
                         userImage.backgroundColor = LocalUser.colorToUIColor(userSavedColor!)
                     } else {
                         // In case the userSavedColor info can't be retrieved
@@ -85,7 +85,7 @@ class SideNavigationUserCell: UITableViewCell {
                         println("image data invalid, use their color")
                         userImage.image = nil
                         
-                        if userSavedColor {
+                        if userSavedColor != nil  {
                             userImage.backgroundColor = LocalUser.colorToUIColor(userSavedColor!)
                         } else {
                             // In case the userSavedColor info can't be retrieved

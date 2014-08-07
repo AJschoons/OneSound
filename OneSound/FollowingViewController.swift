@@ -8,6 +8,8 @@
 
 import UIKit
 
+let FollowingViewControllerNibName = "FollowingViewController"
+
 class FollowingViewController: UIViewController {
 
     override func viewDidLoad() {

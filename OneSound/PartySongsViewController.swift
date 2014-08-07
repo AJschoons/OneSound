@@ -8,6 +8,8 @@
 
 import UIKit
 
+let PartySongsViewControllerNibName = "PartySongsViewController"
+
 class PartySongsViewController: UIViewController {
 
     @IBOutlet weak var messageLabel1: UILabel?
@@ -76,11 +78,11 @@ class PartySongsViewController: UIViewController {
     }
     
     func showMessages(mainLine: String?, detailLine: String?) {
-        if mainLine {
+        if mainLine != nil {
             messageLabel1!.alpha = 1
             messageLabel1!.text = mainLine
         }
-        if detailLine {
+        if detailLine != nil {
             messageLabel2!.alpha = 1
             messageLabel2!.text = detailLine
         }

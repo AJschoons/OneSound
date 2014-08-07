@@ -8,6 +8,8 @@
 
 import UIKit
 
+let FrontViewControllerNibName = "FrontViewController"
+
 class FrontViewController: UIViewController {
     
     var pL = true
@@ -18,7 +20,7 @@ class FrontViewController: UIViewController {
     }
     
     @IBAction func modal(sender: AnyObject) {
-        presentViewController(LoggingInSpashViewController(), animated: true, completion: nil)
+        presentViewController(LoggingInSpashViewController(nibName: LoggingInSpashViewControllerNibName, bundle: nil), animated: true, completion: nil)
     }
     
     

@@ -80,7 +80,7 @@ class LoginViewController: UITableViewController {
         if !accountAlreadyExists {
             LocalUser.sharedUser.setupGuestAccount()
         }
-        if delegate {
+        if delegate != nil {
             delegate!.loginViewControllerCancelled()
         }
         tableView.endEditing(true)
@@ -235,7 +235,7 @@ extension LoginViewController: UITableViewDelegate {
 extension LoginViewController: UITextFieldDelegate {
     func textField(textField: UITextField!, shouldChangeCharactersInRange range: NSRange, replacementString string: String!) -> Bool {
         // Returns false if any of the replacementString characters are invalid
-        for c in String(string) {
+        for c in string {
             if !validCharacters.hasSubstringCaseInsensitive(String(c)) {
                 return false
             }

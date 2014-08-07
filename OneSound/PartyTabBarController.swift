@@ -8,6 +8,8 @@
 
 import UIKit
 
+let PartyTabBarControllerNibName = "PartyTabBarController"
+
 class PartyTabBarController: UITabBarController {
     
     override func viewDidLoad() {
@@ -17,15 +19,15 @@ class PartyTabBarController: UITabBarController {
         tabBar.tintColor = UIColor.blue()
         tabBar.translucent = false
         
-        let partyMembersViewController = PartyMembersViewController()
+        let partyMembersViewController = PartyMembersViewController(nibName: PartyMembersViewControllerNibName, bundle: nil)
         partyMembersViewController.tabBarItem.title = "Members"
         partyMembersViewController.tabBarItem.image = UIImage(named: "partyTabBarMembersIcon")
         
-        let partyMainViewController = PartyMainViewController()
+        let partyMainViewController = PartyMainViewController(nibName: PartyMainViewControllerNibName, bundle: nil)
         partyMainViewController.tabBarItem.title = "Party"
         partyMainViewController.tabBarItem.image = UIImage(named: "partyTabBarPartyIcon")
         
-        let partySongsViewController = PartySongsViewController()
+        let partySongsViewController = PartySongsViewController(nibName: PartySongsViewControllerNibName, bundle: nil)
         partySongsViewController.tabBarItem.title = "Songs"
         partySongsViewController.tabBarItem.image = UIImage(named: "partyTabBarSongsIcon")
         

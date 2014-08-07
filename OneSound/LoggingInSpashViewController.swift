@@ -9,6 +9,8 @@
 import UIKit
 import QuartzCore
 
+let LoggingInSpashViewControllerNibName = "LoggingInSpashViewController"
+
 class LoggingInSpashViewController: UIViewController {
     
     @IBOutlet weak var animatedOneSoundOne: UIImageView?
