@@ -83,9 +83,10 @@ class PartyMainViewController: UIViewController {
     }
     
     func refresh() {
-        println("refreshing PartyMainViewController")
-        
-        LocalParty.sharedParty.refresh()
+        //println("refreshing PartyMainViewController")
+        if LocalParty.sharedParty.setup == false {
+            LocalParty.sharedParty.refresh()
+        }
     }
     
     func setPartySongInfo(songName: String, songArtist: String, songTime: String) {
@@ -130,7 +131,7 @@ class PartyMainViewController: UIViewController {
     }
     
     func setAudioPlayerButtonsForPlaying(audioPlayerIsPlaying: Bool) {
-        // The sog progress should always be visible when there's an audio player
+        // The song progress should always be visible when there's an audio player
         songProgress!.hidden = false
         songProgress!.alpha = 1.0
         

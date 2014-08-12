@@ -29,7 +29,8 @@ class LocalParty: NSObject {
     var name: String!
     var strictness: Int!
     
-    var songs = [Song?]()
+    var songs = [Song]()
+    var members = [User]()
     
     var setup = false
     
@@ -41,6 +42,7 @@ class LocalParty: NSObject {
     var userIsHost = true
     var audioPlayerHasAudioToPlay = false
     var audioPlayerIsPlaying = false
+    var playingSongID: Int?
     
     var songCache = [Int : NSData]()
     
@@ -56,13 +58,16 @@ class LocalParty: NSObject {
     override init() {
         super.init()
         
-        partyRefreshTimer = NSTimer.scheduledTimerWithTimeInterval(60, target: self, selector: "refresh", userInfo: nil, repeats: true)
+        partyRefreshTimer = NSTimer.scheduledTimerWithTimeInterval(30, target: self, selector: "refresh", userInfo: nil, repeats: true)
         
         // Should help the AVAudioPlayer move to the next song when in background?
         // http://stackoverflow.com/questions/9660488/ios-avaudioplayer-doesnt-continue-to-next-song-while-in-background
         UIApplication.sharedApplication().beginReceivingRemoteControlEvents()
         
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "audioPlayerInterruption:", name: AVAudioSessionInterruptionNotification, object: nil)
+        
+        // Refresh the party info when the user info changes
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "refreshForUserInfoChange", name: LocalUserInformationDidChangeNotification, object: nil)
         
         audioSession = AVAudioSession.sharedInstance()
         audioPlayer = AVAudioPlayer()
@@ -78,87 +83,85 @@ class LocalParty: NSObject {
         }
     }
     
+    func refreshForUserInfoChange() {
+        setup = false
+        refresh()
+    }
+    
     func refresh() {
         println("refreshing LocalParty")
         
         if AFNetworkReachabilityManager.sharedManager().reachable {
             if LocalUser.sharedUser.setup == true {
-                joinAndOrRefreshParty(1,
-                    JSONUpdateCompletion: {
-                        if self.setup == true {
-                            // Actually refresh stuff
-                            self.delegate.hideMessages()
-                            self.delegate.setPartyInfoHidden(false)
-                            
-                            println("audioPlayerIsPlaying (in refresh): \(self.audioPlayerIsPlaying)")
-                            
-                            if self.audioPlayerIsPlaying {
-                                self.delegate.setAudioPlayerButtonsForPlaying(false)
-                            } else {
-                                if self.numOfTimesToSetStuff > 0 {
-                                    self.numOfTimesToSetStuff -= 1
-                                    
-                                    // Need to download next song ASAP...?
-                                    SCClient.sharedClient.downloadSoundCloudSongData(143553285,
-                                        completion: { data, response in
-                                            var errorPtr = NSErrorPointer()
-                                            println("*** SONG IS \(((Double(data.length) / 1024.0) / 1024.0)) Mb ***")
-                                            dispatchAsyncToMainQueue(
-                                                action: {
-                                                    self.audioPlayer = AVAudioPlayer(data: data, error: errorPtr)
-                                                    if !errorPtr {
-                                                        println("no error")
-                                                        self.audioPlayerHasAudioToPlay = true
-                                                        //self.playSong()
-                                                        self.delegate.setAudioPlayerButtonsForPlaying(false)
-                                                    } else {
-                                                        println("there was an error")
-                                                        println("ERROR: \(errorPtr)")
-                                                        self.delegate.setAudioPlayerButtonsForPlaying(false)
-                                                    }
+                if LocalUser.sharedUser.party != nil {
+                    joinAndOrRefreshParty(LocalUser.sharedUser.party!,
+                        JSONUpdateCompletion: {
+                            if self.setup == true {
+                                println("party is setup")
+                                // Actually refresh stuff
+                                self.delegate.hideMessages()
+                                self.delegate.setPartyInfoHidden(false)
+                                
+                                println("audioPlayerIsPlaying (in refresh): \(self.audioPlayerIsPlaying)")
+                                
+                                if self.audioPlayerIsPlaying {
+                                    self.delegate.setAudioPlayerButtonsForPlaying(true)
+                                    println("party audio is playing, no need to change anything")
+                                } else {
+                                    if self.playingSongID == nil || self.playingSongID != 143553285 {
+                                        // Need to get the song and update info
+                                        println("need to get the song and update info")
+                                        // TODO: check for upcoming songs
+                                        // TODO: add image that says to add a song
+                                        
+                                        SongStore.sharedStore.songForKey(143553285, completion: {
+                                            song in
+                                            if song != nil {
+                                                println("song was not nil")
+                                                var errorPtr = NSErrorPointer()
+                                                self.audioPlayer = AVAudioPlayer(data: song!, error: errorPtr)
+                                                println("*** SONG IS \(((Double(song!.length) / 1024.0) / 1024.0)) Mb ***")
+                                                
+                                                if !errorPtr {
+                                                    println("no error")
+                                                    self.updateDelegateSongInformation(143553285)
+                                                    self.playingSongID = 143553285
+                                                    self.audioPlayerHasAudioToPlay = true
+                                                    self.delegate.setAudioPlayerButtonsForPlaying(false)
+                                                } else {
+                                                    println("there was an error")
+                                                    println("ERROR: \(errorPtr)")
+                                                    self.delegate.showMessages("Well, this is awkward", detailLine: "The song could not be played, please try adding another")
+                                                    self.delegate.setPartyInfoHidden(true)
                                                 }
-                                            )
-                                        }
-                                    )
-                                    
-                                    SCClient.sharedClient.getSoundCloudSongByID(143553285,
-                                        success: {data, responseObject in
-                                            let responseJSON = JSONValue(responseObject)
-                                            //println(responseJSON)
-                                            let SCSongName = responseJSON["title"].string
-                                            let SCUserName = responseJSON["user"]["username"].string
-                                            let SCSongDuration = responseJSON["duration"].integer
-                                            var SCArtworkURL = responseJSON["artwork_url"].string
-                                            if SCArtworkURL != nil {
-                                                SCArtworkURL = SCArtworkURL!.replaceSubstringWithString("-large.jpg", newSubstring: "-t500x500.jpg")
-                                                downloadImageWithURLString(SCArtworkURL!,
-                                                    { success, image in
-                                                        if success {
-                                                            self.delegate.setPartySongImage(image, backgroundColor: nil)
-                                                        } else {
-                                                            self.delegate.setPartySongImage(nil, backgroundColor: UIColor.orange())
-                                                        }
-                                                    }
-                                                )
                                             } else {
-                                                self.delegate.setPartySongImage(nil, backgroundColor: UIColor.red())
+                                                println("song WAS nil")
+                                                // TODO: check for the next available song
+                                                self.delegate.showMessages("Well, this is awkward", detailLine: "The song was unavailable for download, please try adding another")
+                                                self.delegate.setPartyInfoHidden(true)
                                             }
-                                            println("\(SCSongName)   \(SCUserName)   \(SCArtworkURL)")
-                                            self.delegate.setPartySongInfo(SCSongName!, songArtist: SCUserName!, songTime: timeInMillisecondsToFormattedMinSecondTimeLabelString(SCSongDuration!))
-                                        },
-                                        failure: defaultAFHTTPFailureBlock
-                                    )
+                                            }
+                                        )
+                                        
+                                    } else {
+                                        // Don't need to get the song info
+                                        self.delegate.setAudioPlayerButtonsForPlaying(false)
+                                        println("don't need to get the song info")
+                                    }
                                 }
+                            } else {
+                                self.delegate.showMessages("Well, this is awkward", detailLine: "We're not really sure what happened, try refreshing the party!")
+                                self.delegate.setPartyInfoHidden(true)
                             }
-                        } else {
-                            self.delegate.showMessages("Well, this is awkward", detailLine: "We're not really sure what happened, try refreshing the party!")
+                        }, failureAddOn: {
                             self.delegate.setPartyInfoHidden(true)
+                            self.delegate.showMessages("Unable to load party", detailLine: "Please connect to the internet and refresh the party")
                         }
-                    }, failureAddOn: {
-                        self.delegate.setPartyInfoHidden(true)
-                        self.delegate.showMessages("Unable to load party", detailLine: "Please connect to the internet and refresh the party")
-                    }
-                )
+                    )
+                } else {
+                    self.delegate.showMessages("Not member of a party", detailLine: "Become a party member by joining or creating a party")
+                    delegate.setPartyInfoHidden(true)
+                }
             } else {
                 //setUserInfoHidden(true)
                 //setStoriesTableToHidden(true)
@@ -290,6 +293,36 @@ extension LocalParty {
         )
     }
     
+    func updateDelegateSongInformation(id: Int) {
+        SCClient.sharedClient.getSoundCloudSongByID(id,
+            success: {data, responseObject in
+                let responseJSON = JSONValue(responseObject)
+                //println(responseJSON)
+                let SCSongName = responseJSON["title"].string
+                let SCUserName = responseJSON["user"]["username"].string
+                let SCSongDuration = responseJSON["duration"].integer
+                var SCArtworkURL = responseJSON["artwork_url"].string
+                if SCArtworkURL != nil {
+                    SCArtworkURL = SCArtworkURL!.replaceSubstringWithString("-large.jpg", newSubstring: "-t500x500.jpg")
+                    downloadImageWithURLString(SCArtworkURL!,
+                        { success, image in
+                            if success {
+                                self.delegate.setPartySongImage(image, backgroundColor: nil)
+                            } else {
+                                self.delegate.setPartySongImage(nil, backgroundColor: UIColor.orange())
+                            }
+                        }
+                    )
+                } else {
+                    self.delegate.setPartySongImage(nil, backgroundColor: UIColor.red())
+                }
+                println("\(SCSongName)   \(SCUserName)   \(SCArtworkURL)")
+                self.delegate.setPartySongInfo(SCSongName!, songArtist: SCUserName!, songTime: timeInMillisecondsToFormattedMinSecondTimeLabelString(SCSongDuration!))
+            },
+            failure: defaultAFHTTPFailureBlock
+        )
+    }
+    
     func updatePartySongs(pid: Int) {
         OSAPI.sharedClient.GETPartyPlaylist(pid,
             success: { data, responseObject in
@@ -305,35 +338,36 @@ extension LocalParty {
         OSAPI.sharedClient.GETPartyMembers(pid,
             success: { data, responseObject in
                 let responseJSON = JSONValue(responseObject)
-                //println(responseJSON)
-                //self.updatePartySongInfoFromJSON(responseJSON)
+                println(responseJSON)
+                self.updatePartyMembersInfoFromJSON(responseJSON)
             },
             failure: defaultAFHTTPFailureBlock
         )
     }
-    /*
+    
     func updatePartyMembersInfoFromJSON(json: JSONValue) {
-        .removeAll(keepCapacity: true)
-        var songsToGet = true
+        var newMembersArray = [User]()
+        
+        var membersArray = json.array
         var i = 1
-        while songsToGet {
-            if let songDict = json["\(i)"].object {
-                self.songs.insert(Song(json: json), atIndex: (i-1))
-                i++
-            } else {
-                songsToGet = false
+        if membersArray != nil {
+            for user in membersArray! {
+                newMembersArray.append(User(json: user))
             }
+            members = newMembersArray
         }
-        println("UPDATED PARTY WITH \(self.songs.count) SONGS")
-    }*/
+        println("UPDATED PARTY WITH \(self.members.count) MEMBERS")
+    }
     
     func updatePartySongInfoFromJSON(json: JSONValue) {
-        songs.removeAll(keepCapacity: true)
+        var newSongsArray = [Song]()
+        
         var songsArray = json.array
         if songsArray != nil {
             for song in songsArray! {
-                songs.append(Song(json: song))
+                newSongsArray.append(Song(json: song))
             }
+            songs = newSongsArray
         }
         /*
         while songsToGet {

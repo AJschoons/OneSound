@@ -10,7 +10,8 @@ import Foundation
 
 let SCClientID = "d9b5ddf849438ccddca1256ba5c03067"
 let SCBaseURL = "https://api.soundcloud.com/"
-typealias DataTaskCompletionHandlerForNoError = ((NSData!, NSURLResponse!) -> ()) // response, responseObject
+typealias DataTaskCompletionHandlerForNoError = ((NSData!, NSURLResponse!) -> ()) // data, response
+typealias DataTaskCompletionHandler = ((NSData!, NSURLResponse!, NSError!) -> ()) // data, response, error
 
 class SCClient {
     
@@ -36,17 +37,10 @@ class SCClient {
 
 extension SCClient {
     // MARK: downloading songs
-    func downloadSoundCloudSongData(songID: Int, completion: DataTaskCompletionHandlerForNoError) {
+    func downloadSoundCloudSongData(songID: Int, completion: DataTaskCompletionHandler) {
         let songURL = NSURL(string: "\(SCBaseURL)tracks/\(songID)/stream?client_id=\(SCClientID)")
         
-        let dataTask = urlSessionManager.session.dataTaskWithURL(songURL,
-            completionHandler: { data, response, error in
-                if error {
-                    println("ERROR: \(error)")
-                } else {
-                    completion(data, response)
-                }
-            })
+        let dataTask = urlSessionManager.session.dataTaskWithURL(songURL, completionHandler: completion)
         dataTask.resume()
     }
 }

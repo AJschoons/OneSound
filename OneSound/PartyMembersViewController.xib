@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="6185.11" systemVersion="14A261i" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="6205" systemVersion="14A283o" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6190.4"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6198"/>
     </dependencies>
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="PartyMembersViewController" customModule="OneSound" customModuleProvider="target">
             <connections>
+                <outlet property="membersTable" destination="eW5-tb-wtB" id="dkQ-O1-5eO"/>
                 <outlet property="messageLabel1" destination="f2k-N3-o3t" id="DEi-hm-ajL"/>
                 <outlet property="messageLabel2" destination="LI8-oy-bpz" id="UlQ-IV-W6q"/>
                 <outlet property="view" destination="Zdu-Sc-3fZ" id="TsZ-Lb-jiv"/>
@@ -34,13 +35,25 @@
                     <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                     <nil key="highlightedColor"/>
                 </label>
+                <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" style="plain" separatorStyle="none" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="eW5-tb-wtB">
+                    <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    <connections>
+                        <outlet property="dataSource" destination="-1" id="kEV-I0-ncU"/>
+                        <outlet property="delegate" destination="-1" id="pgv-wO-2k5"/>
+                    </connections>
+                </tableView>
             </subviews>
             <color key="backgroundColor" red="0.95075207949999996" green="0.95072358850000005" blue="0.95073968170000001" alpha="1" colorSpace="calibratedRGB"/>
             <constraints>
                 <constraint firstAttribute="centerX" secondItem="f2k-N3-o3t" secondAttribute="centerX" id="1cR-EB-sBM"/>
+                <constraint firstItem="eW5-tb-wtB" firstAttribute="top" secondItem="Zdu-Sc-3fZ" secondAttribute="top" id="8mn-UC-RzG"/>
+                <constraint firstItem="eW5-tb-wtB" firstAttribute="leading" secondItem="Zdu-Sc-3fZ" secondAttribute="leading" id="Gtj-nr-ZdL"/>
+                <constraint firstAttribute="bottom" secondItem="eW5-tb-wtB" secondAttribute="bottom" id="J6i-oe-2DJ"/>
                 <constraint firstItem="LI8-oy-bpz" firstAttribute="leading" secondItem="Zdu-Sc-3fZ" secondAttribute="leading" constant="20" id="LxR-f4-N7k"/>
                 <constraint firstAttribute="trailing" secondItem="f2k-N3-o3t" secondAttribute="trailing" constant="20" id="OBx-3Z-OiY"/>
                 <constraint firstItem="f2k-N3-o3t" firstAttribute="leading" secondItem="Zdu-Sc-3fZ" secondAttribute="leading" constant="20" id="ZSP-nZ-rxx"/>
+                <constraint firstAttribute="trailing" secondItem="eW5-tb-wtB" secondAttribute="trailing" id="i6C-dW-1K5"/>
                 <constraint firstAttribute="centerY" secondItem="f2k-N3-o3t" secondAttribute="centerY" constant="7.5" id="ov4-yM-YSx"/>
                 <constraint firstAttribute="trailing" secondItem="LI8-oy-bpz" secondAttribute="trailing" constant="20" id="uQ3-mG-alY"/>
                 <constraint firstItem="LI8-oy-bpz" firstAttribute="top" secondItem="f2k-N3-o3t" secondAttribute="bottom" id="wU2-t5-neg"/>

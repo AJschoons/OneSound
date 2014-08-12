@@ -43,6 +43,8 @@
 		815831471975CD9B0011D3CE /* SwiftyJSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = 815831461975CD9B0011D3CE /* SwiftyJSON.swift */; };
 		8158314C1976D54F0011D3CE /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8158314B1976D54F0011D3CE /* LoginViewController.swift */; };
 		815CB6E31976D749000FD4B7 /* Login.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 815CB6E21976D749000FD4B7 /* Login.storyboard */; };
+		81631F3419994BB000C55A6F /* PartyMemberCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81631F3219994BB000C55A6F /* PartyMemberCell.swift */; };
+		81631F3519994BB000C55A6F /* PartyMemberCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 81631F3319994BB000C55A6F /* PartyMemberCell.xib */; };
 		816DFB941982B85B007DA885 /* StoryTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 816DFB921982B85B007DA885 /* StoryTableViewCell.swift */; };
 		816DFB951982B85B007DA885 /* StoryTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 816DFB931982B85B007DA885 /* StoryTableViewCell.xib */; };
 		816FD445196F22B0003CCB1C /* SideNavigationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 816FD444196F22B0003CCB1C /* SideNavigationViewController.swift */; };
@@ -117,6 +119,8 @@
 		815831461975CD9B0011D3CE /* SwiftyJSON.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftyJSON.swift; sourceTree = "<group>"; };
 		8158314B1976D54F0011D3CE /* LoginViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
 		815CB6E21976D749000FD4B7 /* Login.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Login.storyboard; sourceTree = "<group>"; };
+		81631F3219994BB000C55A6F /* PartyMemberCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PartyMemberCell.swift; sourceTree = "<group>"; };
+		81631F3319994BB000C55A6F /* PartyMemberCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PartyMemberCell.xib; sourceTree = "<group>"; };
 		816DFB921982B85B007DA885 /* StoryTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StoryTableViewCell.swift; sourceTree = "<group>"; };
 		816DFB931982B85B007DA885 /* StoryTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = StoryTableViewCell.xib; sourceTree = "<group>"; };
 		816FD444196F22B0003CCB1C /* SideNavigationViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SideNavigationViewController.swift; sourceTree = "<group>"; };
@@ -354,6 +358,8 @@
 				8158313D19748F080011D3CE /* PartySongsViewController.xib */,
 				8158314019748F730011D3CE /* PartyMembersViewController.swift */,
 				8158314119748F730011D3CE /* PartyMembersViewController.xib */,
+				81631F3219994BB000C55A6F /* PartyMemberCell.swift */,
+				81631F3319994BB000C55A6F /* PartyMemberCell.xib */,
 			);
 			name = Party;
 			sourceTree = "<group>";
@@ -503,6 +509,7 @@
 				81414DD2197DF9CF00081132 /* ProfileViewController.xib in Resources */,
 				816DFB951982B85B007DA885 /* StoryTableViewCell.xib in Resources */,
 				81583117197443940011D3CE /* SideNavigationUserCell.xib in Resources */,
+				81631F3519994BB000C55A6F /* PartyMemberCell.xib in Resources */,
 				81583120197477990011D3CE /* HistoryViewController.xib in Resources */,
 				81583124197477E30011D3CE /* SearchViewController.xib in Resources */,
 				8158313B19747F7B0011D3CE /* PartyTabBarController.xib in Resources */,
@@ -588,6 +595,7 @@
 				81B17D8F196F2A680062943C /* SideNavigationMenuCell.swift in Sources */,
 				813FCE081977583C00419097 /* LoginColorViewController.swift in Sources */,
 				81EAC5F91998132000F02894 /* SongStore.swift in Sources */,
+				81631F3419994BB000C55A6F /* PartyMemberCell.swift in Sources */,
 				816DFB941982B85B007DA885 /* StoryTableViewCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

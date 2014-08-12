@@ -42,6 +42,8 @@ class LocalUser {
     
     var photo: UIImage?
     
+    var party: Int?
+    
     class var sharedUser: LocalUser {
     struct Static {
         static let localUser = LocalUser()
@@ -318,6 +320,12 @@ extension LocalUser {
         upvoteCount = json["vote_count"].integer
         followers = json["followers"].integer
         following = json["following"].integer
+        
+        if let usersParty = json["party"].integer {
+            party = usersParty
+        } else {
+            party = nil
+        }
         
         if guest == false && json["photo"].string != nil && (forcePhotoUpdate == true || photoURL != json["photo"].string) {
             // If not a guest and a non-empty photoURL gets sent that's different from what it was (or forced)

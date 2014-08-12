@@ -42,6 +42,39 @@ extension Array {
     }
 }
 
+class SwiftSet<T: Hashable> {
+    var _underlyingSet: Dictionary<T, Bool>
+    
+    init() {
+        _underlyingSet = Dictionary<T, Bool>()
+    }
+    
+    subscript(k: T) -> Bool {
+        if _underlyingSet[k] != nil {
+            return true
+        }
+        else {
+            return false
+            }
+    }
+    
+    func contains(k: T) -> Bool {
+        return self[k]
+    }
+    
+    func add(k: T) {
+        _underlyingSet[k] = true
+    }
+    
+    func remove(k: T) {
+        _underlyingSet[k] = nil
+    }
+    
+    func allObjects() -> [T] {
+        return Array(_underlyingSet.keys)
+    }
+}
+
 extension String {
     func hasSubstringCaseSensitive(substring: String) -> Bool {
         let substringLength: Int = countElements(substring)
