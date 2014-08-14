@@ -10,7 +10,7 @@ pod 'Facebook-iOS-SDK', :git => 'https://github.com/pgaspar/facebook-ios-sdk.git
 pod 'AFNetworkActivityLogger', '~> 2.0'
 pod 'SSKeychain', '~> 1.2'
 pod 'THLabel', '~> 1.3'
-pod 'Haneke', '~> 0.1'
+pod 'SDWebImage', '~> 3.7'
 
 end
 

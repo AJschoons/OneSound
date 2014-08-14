@@ -48,7 +48,12 @@ class PartyMembersViewController: UIViewController {
                         // Actually show members stuff
                         hideMessages()
                         hideMembersTable(false)
-                        membersTable.reloadData()
+                        
+                        LocalParty.sharedParty.updatePartyMembers(LocalParty.sharedParty.partyID!,
+                            completion: {
+                                self.membersTable.reloadData()
+                            }
+                        )
                     } else {
                         showMessages("Well, this is awkward", detailLine: "We're not really sure what happened, try refreshing the party!")
                         hideMembersTable(true)
@@ -112,10 +117,12 @@ extension PartyMembersViewController: UITableViewDataSource {
             membersCell.userSongLabel.text = intFormattedToShortStringForDisplay(user.songCount)
             //membersCell.userHotnessLabel.text = intFormattedToShortStringForDisplay(user.upvoteCount)
             membersCell.backgroundColor = user.colorToUIColor
-            membersCell.userImage.image = UIImage(named: "guestUserImageForUserCell")
+            membersCell.userImage.image = guestUserImageForUserCell
             
-            if user.guest == false && user.photo != nil {
-                membersCell.userImage.image = user.photo
+            SDWebImageManager.sharedManager().delegate = self
+            
+            if user.guest == false && user.photoURL != nil {
+                membersCell.userImage.sd_setImageWithURL(NSURL(string: user.photoURL!), placeholderImage: guestUserImageForUserCell)
             }
         }
         
@@ -126,5 +133,12 @@ extension PartyMembersViewController: UITableViewDataSource {
 extension PartyMembersViewController: UITableViewDelegate {
     func tableView(tableView: UITableView!, heightForRowAtIndexPath indexPath: NSIndexPath!) -> CGFloat {
         return 64.0
+    }
+}
+
+extension PartyMembersViewController: SDWebImageManagerDelegate {
+    func imageManager(imageManager: SDWebImageManager!, transformDownloadedImage image: UIImage!, withURL imageURL: NSURL!) -> UIImage! {
+        println("transforming downloaded image")
+        return cropBiggestCenteredSquareImageFromImage(image, sideLength: 50)
     }
 }

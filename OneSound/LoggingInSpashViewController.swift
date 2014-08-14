@@ -10,6 +10,7 @@ import UIKit
 import QuartzCore
 
 let LoggingInSpashViewControllerNibName = "LoggingInSpashViewController"
+let delayTimeInSeconds = 1.0
 
 class LoggingInSpashViewController: UIViewController {
     
@@ -17,7 +18,7 @@ class LoggingInSpashViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "finishedLoginFlow", name: FinishedLoginFlowNotification, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "removeSplashAfterDelay", name: FinishedLoginFlowNotification, object: nil)
         
         let OSLogo0 = UIImage(named: "splashScreenOneSoundOne0")
         let OSLogo1 = UIImage(named: "splashScreenOneSoundOne1")
@@ -43,6 +44,10 @@ class LoggingInSpashViewController: UIViewController {
     
     override func viewDidDisappear(animated: Bool) {
         super.viewDidDisappear(animated)
+    }
+    
+    func removeSplashAfterDelay() {
+        NSTimer.scheduledTimerWithTimeInterval(delayTimeInSeconds, target: self, selector: "finishedLoginFlow", userInfo: nil, repeats: false)
     }
     
     func finishedLoginFlow() {

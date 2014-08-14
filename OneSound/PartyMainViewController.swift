@@ -18,6 +18,7 @@ class PartyMainViewController: UIViewController {
     @IBOutlet weak var messageLabel2: UILabel?
     
     @IBOutlet weak var songImage: UIImageView?
+    @IBOutlet weak var songImageForNoSong: UIImageView!
     @IBOutlet weak var soundcloudLogo: UIImageView?
     @IBOutlet weak var playButton: UIButton?
     @IBOutlet weak var pauseButton: UIButton?
@@ -61,7 +62,15 @@ class PartyMainViewController: UIViewController {
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
-        navigationController.visibleViewController.title = "Party"
+        if LocalParty.sharedParty.setup == true {
+            if LocalParty.sharedParty.name != nil {
+                navigationController.visibleViewController.title = LocalParty.sharedParty.name
+            } else {
+                navigationController.visibleViewController.title = "Party"
+            }
+        } else {
+            navigationController.visibleViewController.title = "Party"
+        }
         refresh()
         
         /*
@@ -83,10 +92,8 @@ class PartyMainViewController: UIViewController {
     }
     
     func refresh() {
-        //println("refreshing PartyMainViewController")
-        if LocalParty.sharedParty.setup == false {
-            LocalParty.sharedParty.refresh()
-        }
+        println("refreshing PartyMainViewController")
+        LocalParty.sharedParty.refresh()
     }
     
     func setPartySongInfo(songName: String, songArtist: String, songTime: String) {
@@ -106,6 +113,14 @@ class PartyMainViewController: UIViewController {
         }
     }
     
+    func setSongImageForNoSongHidden(shouldBeHidden: Bool) {
+        if shouldBeHidden {
+            songImageForNoSong.hidden = true
+        } else {
+            songImageForNoSong.hidden = false
+        }
+    }
+    
     func setPartyInfoHidden(hidden: Bool) {
         songImage!.hidden = hidden
         soundcloudLogo!.hidden = hidden
@@ -114,8 +129,11 @@ class PartyMainViewController: UIViewController {
         songTimeLabel!.hidden = hidden
         
         // Only set button visibility for hiding; to show them the player must be checked
+        // Only set the songImageForNoSongPlaying to hidden, don't set it to visible with everything else
         // When hiding the party info, reset the song labels to empty and the song progress to 0
         if hidden == true {
+            songImageForNoSong.hidden = hidden
+            
             playButton!.hidden = hidden
             playButton!.alpha = 0.0
             pauseButton!.hidden = hidden

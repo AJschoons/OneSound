@@ -271,6 +271,17 @@ extension LocalUser {
                 // Update shared Local User's information, UserDefaults, and Keychain info
                 LocalUser.sharedUser.updateLocalUserFromJSON(responseJSON, apiToken: token,
                     completion: {
+                        // Join the party that the user is in
+                        if LocalUser.sharedUser.party != nil {
+                            LocalParty.sharedParty.joinParty(LocalUser.sharedUser.party!,
+                                JSONUpdateCompletion: {
+                                    LocalParty.sharedParty.refresh()
+                                }, failureAddOn: {
+                                    LocalParty.sharedParty.refresh()
+                                }
+                            )
+                        }
+                        
                         // Save the accounts info in the keychain
                         self.updateKeychainInfoForLocalUser(id, userAPIToken: token)
                         // Send out LocalUserInformationDidChangeNotification

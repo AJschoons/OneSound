@@ -296,4 +296,55 @@ extension OSAPI {
         
         GET(urlString, parameters: nil, success: success, failure: failureWithExtraAttempt)
     }
+    
+    // Get the party's current song
+    func GETCurrentSong(pid: Int, success: AFHTTPSuccessBlock, failure: AFHTTPFailureBlock, extraAttempts: Int = defaultEA) {
+        let urlString = "\(baseURLString)party/\(pid)/currentsong"
+        
+        let failureWithExtraAttempt: AFHTTPFailureBlock = { task, error in
+            var shouldConsiderRepeatedRequest = true
+            
+            // Don't try extra attempts for a 404; will be handled by noCurrentSong404
+            if let response = task.response as? NSHTTPURLResponse {
+                if response.statusCode == 404 {
+                    shouldConsiderRepeatedRequest = false
+                    failure!(task: task, error: error)
+                }
+            }
+            
+            if shouldConsiderRepeatedRequest {
+                if errorShouldBeHandedWithRepeatedRequest(task, error, attemptsLeft: extraAttempts) {
+                    self.GETCurrentSong(pid, success: success, failure: failure, extraAttempts: (extraAttempts - 1))
+                } else {
+                    failure!(task: task, error: error)
+                }
+            }
+        }
+        
+        GET(urlString, parameters: nil, success: success, failure: failureWithExtraAttempt)
+    }
+    
+    // Create a new party
+    func POSTParty(partyName: String, partyPrivacy: Bool, partyStrictness: Int, userID: Int, userAPIToken: String, success: AFHTTPSuccessBlock, failure: AFHTTPFailureBlock, extraAttempts: Int = defaultEA) {
+
+        let urlString = "\(baseURLString)party"
+        
+        // Create parameters to pass
+        var params = Dictionary<String, AnyObject>()
+        params.updateValue(partyName, forKey: "name")
+        params.updateValue(partyPrivacy, forKey: "privacy")
+        params.updateValue(partyStrictness, forKey: "strictness")
+        params.updateValue(userID, forKey: "uid")
+        params.updateValue(userAPIToken, forKey: "api_token")
+        
+        let failureWithExtraAttempt: AFHTTPFailureBlock = { task, error in
+            if errorShouldBeHandedWithRepeatedRequest(task, error, attemptsLeft: extraAttempts) {
+                self.POSTParty(partyName, partyPrivacy: partyPrivacy, partyStrictness: partyStrictness, userID: userID, userAPIToken: userAPIToken, success: success, failure: failure, extraAttempts: (extraAttempts - 1))
+            } else {
+                failure!(task: task, error: error)
+            }
+        }
+        
+        POST(urlString, parameters: params, success: success, failure: failure)
+    }
 }

@@ -17,6 +17,27 @@ protocol LocalPartyDelegate {
     func hideMessages()
     func setPartySongInfo(songName: String, songArtist: String, songTime: String)
     func setPartySongImage(image: UIImage?, backgroundColor: UIColor?)
+    func setSongImageForNoSongHidden(shouldBeHidden: Bool)
+}
+
+enum PartyStrictnessOption: Int {
+    case Off = 0
+    case Low = 1
+    case Default = 2
+    case Strict = 3
+    
+    func PartyStrictnessOptionToString() -> String {
+        switch self {
+        case .Off:
+            return "Off"
+        case .Low:
+            return "Low"
+        case .Default:
+            return "Default"
+        case .Strict:
+            return "Strict"
+        }
+    }
 }
 
 class LocalParty: NSObject {
@@ -31,6 +52,8 @@ class LocalParty: NSObject {
     
     var songs = [Song]()
     var members = [User]()
+    var currentSong: Song?
+    var songCache = [Int : NSData]()
     
     var setup = false
     
@@ -39,12 +62,12 @@ class LocalParty: NSObject {
     var songProgressTimer: NSTimer?
     var partyRefreshTimer: NSTimer!
     
-    var userIsHost = true
+    var userIsHost = false
     var audioPlayerHasAudioToPlay = false
     var audioPlayerIsPlaying = false
     var playingSongID: Int?
     
-    var songCache = [Int : NSData]()
+    var shouldTryAnotherRefresh = true
     
     class var sharedParty: LocalParty {
     struct Static {
@@ -52,8 +75,6 @@ class LocalParty: NSObject {
         }
         return Static.localParty
     }
-    
-    var numOfTimesToSetStuff = 1
     
     override init() {
         super.init()
@@ -94,14 +115,14 @@ class LocalParty: NSObject {
         if AFNetworkReachabilityManager.sharedManager().reachable {
             if LocalUser.sharedUser.setup == true {
                 if LocalUser.sharedUser.party != nil {
-                    joinAndOrRefreshParty(LocalUser.sharedUser.party!,
-                        JSONUpdateCompletion: {
-                            if self.setup == true {
-                                println("party is setup")
-                                // Actually refresh stuff
-                                self.delegate.hideMessages()
-                                self.delegate.setPartyInfoHidden(false)
-                                
+                    if setup == true {
+                        // Party is actually setup
+                        println("party is setup")
+                        delegate.hideMessages()
+                        delegate.setPartyInfoHidden(false)
+                        
+                        updateCurrentSong(LocalUser.sharedUser.party!,
+                            completion: {
                                 println("audioPlayerIsPlaying (in refresh): \(self.audioPlayerIsPlaying)")
                                 
                                 if self.audioPlayerIsPlaying {
@@ -114,7 +135,7 @@ class LocalParty: NSObject {
                                         // TODO: check for upcoming songs
                                         // TODO: add image that says to add a song
                                         
-                                        SongStore.sharedStore.songForKey(143553285, completion: {
+                                        SongStore.sharedStore.songAudioForKey(143553285, completion: {
                                             song in
                                             if song != nil {
                                                 println("song was not nil")
@@ -146,34 +167,50 @@ class LocalParty: NSObject {
                                     } else {
                                         // Don't need to get the song info
                                         self.delegate.setAudioPlayerButtonsForPlaying(false)
-                                        println("don't need to get the song info")
+                                        println("don't need to get the song audio")
                                     }
                                 }
-                            } else {
-                                self.delegate.showMessages("Well, this is awkward", detailLine: "We're not really sure what happened, try refreshing the party!")
+                            }, noCurrentSong: {
+                                self.delegate.setSongImageForNoSongHidden(false)
+                            }, failureAddOn: {
                                 self.delegate.setPartyInfoHidden(true)
+                                self.delegate.showMessages("Unable to load current song", detailLine: "Please check internet connection and refresh the party")
                             }
-                        }, failureAddOn: {
-                            self.delegate.setPartyInfoHidden(true)
-                            self.delegate.showMessages("Unable to load party", detailLine: "Please connect to the internet and refresh the party")
+                        )
+                    } else {
+                        if shouldTryAnotherRefresh {
+                            shouldTryAnotherRefresh = false
+                            // If the party is valid but not setup, try joining it and then refreshing it once more
+                            joinParty(LocalUser.sharedUser.party!,
+                                JSONUpdateCompletion: {
+                                    // TODO: find a better way to accomplish this
+                                    self.shouldTryAnotherRefresh = true
+                                    self.refresh()
+                                }, failureAddOn: {
+                                    self.refresh()
+                                }
+                            )
+                        } else {
+                            delegate.showMessages("Well, this is awkward", detailLine: "We're not really sure what happened, try refreshing the party!")
+                            delegate.setPartyInfoHidden(true)
                         }
-                    )
+                    }
                 } else {
-                    self.delegate.showMessages("Not member of a party", detailLine: "Become a party member by joining or creating a party")
+                    delegate.showMessages("Not member of a party", detailLine: "Become a party member by joining or creating a party")
                     delegate.setPartyInfoHidden(true)
                 }
             } else {
                 //setUserInfoHidden(true)
                 //setStoriesTableToHidden(true)
-                self.delegate.showMessages("Not signed into an account", detailLine: "Please connect to the internet and restart One Sound")
+                delegate.showMessages("Not signed into an account", detailLine: "Please connect to the internet and restart One Sound")
                 delegate.setPartyInfoHidden(true)
                 //disableButtons()
             }
         } else {
             //setUserInfoHidden(true)
             //setStoriesTableToHidden(true)
-            self.delegate.showMessages("Not connected to the internet", detailLine: "Please connect to the internet to use One Sound")
-            self.delegate.setPartyInfoHidden(true)
+            delegate.showMessages("Not connected to the internet", detailLine: "Please connect to the internet to use One Sound")
+            delegate.setPartyInfoHidden(true)
             //disableButtons()
         }
     }
@@ -272,8 +309,35 @@ class LocalParty: NSObject {
 
 extension LocalParty {
     // MARK: Party networking related code for user's active party
+    func updateCurrentSong(pid: Int, completion: completionClosure? = nil, noCurrentSong: completionClosure? = nil, failureAddOn: completionClosure? = nil) {
+        OSAPI.sharedClient.GETCurrentSong(pid,
+            success: { data, responseObject in
+                let responseJSON = JSONValue(responseObject)
+                self.currentSong = Song(json: responseJSON)
+                SongStore.sharedStore.songInformationForSong(&self.currentSong!, completion: completion, failureAddOn: failureAddOn)
+            }, failure: { task, error in
+                var shouldDoDefaultFailureBlock = true
+                
+                if let response = task.response as? NSHTTPURLResponse {
+                    println("errorResponseCode:\(response.statusCode)")
+                    if response.statusCode == 404 && noCurrentSong != nil {
+                        shouldDoDefaultFailureBlock = false
+                        noCurrentSong!()
+                    }
+                    
+                }
+                
+                if shouldDoDefaultFailureBlock == true {
+                    if failureAddOn != nil {
+                        failureAddOn!()
+                    }
+                    defaultAFHTTPFailureBlock!(task: task, error: error)
+                }
+            }
+        )
+    }
     
-    func joinAndOrRefreshParty(pid: Int, JSONUpdateCompletion: completionClosure? = nil, failureAddOn: completionClosure? = nil) {
+    func joinParty(pid: Int, JSONUpdateCompletion: completionClosure? = nil, failureAddOn: completionClosure? = nil) {
         let user = LocalUser.sharedUser
         OSAPI.sharedClient.GETParty(pid, userID: user.id, userAPIToken: user.apiToken,
             success: { data, responseObject in
@@ -283,8 +347,7 @@ extension LocalParty {
                 self.updateMainPartyInfoFromJSON(responseJSON, JSONUpdateCompletion)
                 self.updatePartyMembers(pid)
                 self.updatePartySongs(pid)
-            },
-            failure: { task, error in
+            }, failure: { task, error in
                 if failureAddOn != nil {
                     failureAddOn!()
                 }
@@ -323,7 +386,7 @@ extension LocalParty {
         )
     }
     
-    func updatePartySongs(pid: Int) {
+    func updatePartySongs(pid: Int, completion: completionClosure? = nil) {
         OSAPI.sharedClient.GETPartyPlaylist(pid,
             success: { data, responseObject in
                 let responseJSON = JSONValue(responseObject)
@@ -334,7 +397,7 @@ extension LocalParty {
         )
     }
     
-    func updatePartyMembers(pid: Int) {
+    func updatePartyMembers(pid: Int, completion: completionClosure? = nil) {
         OSAPI.sharedClient.GETPartyMembers(pid,
             success: { data, responseObject in
                 let responseJSON = JSONValue(responseObject)
@@ -345,21 +408,51 @@ extension LocalParty {
         )
     }
     
-    func updatePartyMembersInfoFromJSON(json: JSONValue) {
+    func createNewParty(partyName: String, partyPrivacy: Bool, partyStrictness: Int, respondToChangeAttempt: (Bool) -> (), failure: AFHTTPFailureBlock = defaultAFHTTPFailureBlockForSigningIn) {
+        let user = LocalUser.sharedUser
+        
+        OSAPI.sharedClient.POSTParty(partyName, partyPrivacy: partyPrivacy, partyStrictness: partyStrictness, userID: user.id, userAPIToken: user.apiToken,
+            success: { data, responseObject in
+                let responseJSON = JSONValue(responseObject)
+                println(responseJSON)
+                let status = responseJSON["status"].string
+                
+                if status == "success" {
+                    // Update new party information
+                    let pid = responseJSON["pid"].integer
+                    self.joinParty(pid!,
+                        JSONUpdateCompletion: {
+                            respondToChangeAttempt(true)
+                            LocalUser.sharedUser.party = pid
+                        }, failureAddOn: {
+                            respondToChangeAttempt(false)
+                        }
+                    )
+                } else {
+                    // Server didn't accept request for new party with supplied information
+                    respondToChangeAttempt(false)
+                }
+            }, failure: defaultAFHTTPFailureBlock)
+    }
+    
+    func updatePartyMembersInfoFromJSON(json: JSONValue, completion: completionClosure? = nil) {
         var newMembersArray = [User]()
         
         var membersArray = json.array
-        var i = 1
         if membersArray != nil {
             for user in membersArray! {
                 newMembersArray.append(User(json: user))
             }
             members = newMembersArray
         }
+        
+        if completion != nil {
+            completion!()
+        }
         println("UPDATED PARTY WITH \(self.members.count) MEMBERS")
     }
     
-    func updatePartySongInfoFromJSON(json: JSONValue) {
+    func updatePartySongInfoFromJSON(json: JSONValue, completion: completionClosure? = nil) {
         var newSongsArray = [Song]()
         
         var songsArray = json.array
@@ -369,6 +462,11 @@ extension LocalParty {
             }
             songs = newSongsArray
         }
+        
+        if completion != nil {
+            completion!()
+        }
+        
         /*
         while songsToGet {
             if let songDict = json["\(i)"].object {
@@ -390,6 +488,13 @@ extension LocalParty {
         hostUserID = json["host"].integer
         name = json["name"].string
         strictness = json["strictness"].integer
+        
+        if hostUserID == LocalUser.sharedUser.id {
+            userIsHost == true
+            println("*** USER IS HOST ***")
+        } else {
+            userIsHost == false
+        }
     
         if completion != nil {
             completion!()

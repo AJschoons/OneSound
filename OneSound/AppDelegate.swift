@@ -14,6 +14,8 @@ var pG = false
 let FacebookSessionChangeNotification = "FacebookSessionChangeNotification"
 let facebookSessionPermissions = ["public_profile", "email"]
 let FinishedLoginFlowNotification = "FinishedLoginFlowNotification"
+let UserTableCellSmallFormat = "userTableCellSmall"
+let guestUserImageForUserCell = UIImage(named: "guestUserImageForUserCell")
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {

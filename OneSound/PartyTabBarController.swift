@@ -14,7 +14,7 @@ class PartyTabBarController: UITabBarController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        delegate = self
         tabBar.barTintColor = UIColor.white()
         tabBar.tintColor = UIColor.blue()
         tabBar.translucent = false
@@ -28,7 +28,7 @@ class PartyTabBarController: UITabBarController {
         partyMainViewController.tabBarItem.image = UIImage(named: "partyTabBarPartyIcon")
         
         let partySongsViewController = PartySongsViewController(nibName: PartySongsViewControllerNibName, bundle: nil)
-        partySongsViewController.tabBarItem.title = "Songs"
+        partySongsViewController.tabBarItem.title = "Playlist"
         partySongsViewController.tabBarItem.image = UIImage(named: "partyTabBarSongsIcon")
         
         viewControllers = [partyMembersViewController, partyMainViewController,
@@ -51,13 +51,34 @@ class PartyTabBarController: UITabBarController {
         // navigated from the side menu
         switch selectedIndex {
         case 0:
-            (viewControllers[0] as PartyMembersViewController).viewWillAppear(animated)
+            let partyMembersViewController = viewControllers[0] as PartyMembersViewController
+            partyMembersViewController.viewWillAppear(animated)
         case 1:
-            (viewControllers[1] as PartyMainViewController).viewWillAppear(animated)
+            let partyMainViewController = viewControllers[1] as PartyMainViewController
+            partyMainViewController.viewWillAppear(animated)
         case 2:
-            (viewControllers[2] as PartySongsViewController).viewWillAppear(animated)
+            let partySongsViewController = viewControllers[2] as PartySongsViewController
+            partySongsViewController.viewWillAppear(animated)
         default:
             println("ERROR: selectedIndex for PartyTabBarController was out of range 0-2")
+        }
+    }
+}
+
+extension PartyTabBarController: UITabBarControllerDelegate {
+    func tabBarController(tabBarController: UITabBarController!, didSelectViewController viewController: UIViewController!) {
+        if let ptbc = tabBarController as? PartyTabBarController {
+            if let pMembVC = viewController as? PartyMembersViewController {
+                ptbc.navigationItem.rightBarButtonItem = nil
+            } else if let pMainVC = viewController as? PartyMainViewController {
+                ptbc.navigationItem.rightBarButtonItem = nil
+            } else if let pSongVC = viewController as? PartySongsViewController {
+                ptbc.navigationItem.rightBarButtonItem = pSongVC.addSongButton
+            } else {
+                println("selected a tab that wasn't in the PartyTabBarController")
+            }
+        } else {
+            println("selected a TabBarController that wasn't the PartyTabBarController")
         }
     }
 }

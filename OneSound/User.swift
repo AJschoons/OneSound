@@ -22,8 +22,6 @@ class User {
     var followers: Int!
     var following: Int!
     
-    var photo: UIImage?
-    
     var colorToUIColor: UIColor {
         if let userColor = UserColors.fromRaw(color) {
             switch userColor {
@@ -54,19 +52,17 @@ class User {
         followers = json["followers"].integer
         following = json["following"].integer
         
-        // TODO: save the photo in an image store and check that
-        if guest == false && json["photo"].string != nil && (photoURL != json["photo"].string) {
+        if guest == false && json["photo"].string != nil {
             // If not a guest and a non-empty photoURL gets sent that's different from what it was
-            println("getting a user's photo")
             photoURL = json["photo"].string
-            getUserPhoto(photoURL!)
-        } else if guest == true {
-            // Guests don't have photos
-            photo = nil
+        } else {
+            // Guests and users w/p valid photo URL don't have photo URLs
+            photoURL = nil
         }
     }
-    
+    /*
     func getUserPhoto(urlString: String) {
+        self.photo!
         downloadImageWithURLString(urlString,
             { success, image in
                 if success {
@@ -77,6 +73,7 @@ class User {
             }
         )
     }
+    */
     
     func description() -> String {
         return "[USER] id:\(id) name:'\(name)' color:\(color) guest:\(guest) f-ers:\(followers) f-ing:\(following) songs:\(songCount) votes:\(upvoteCount) photo:\(photoURL)"

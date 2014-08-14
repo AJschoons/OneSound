@@ -15,7 +15,15 @@ class PartySongsViewController: UIViewController {
     @IBOutlet weak var messageLabel1: UILabel?
     @IBOutlet weak var messageLabel2: UILabel?
     
+    var addSongButton: UIBarButtonItem!
+    
+    func addSong() {
+        // TODO: add song
+    }
+    
     override func viewDidLoad() {
+        addSongButton = UIBarButtonItem(title: "Add", style: UIBarButtonItemStyle.Plain, target: self, action: "addSong")
+        
         // Make view respond to network reachability changes
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "refresh", name: AFNetworkingReachabilityDidChangeNotification, object: nil)
         // Make sure view knows the user is setup so it won't keep displaying 'Not signed into account' when there is no  internet connection when app launches and then the network comes back and LocalUser is setup
@@ -26,7 +34,7 @@ class PartySongsViewController: UIViewController {
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
-        navigationController.visibleViewController.title = "Songs"
+        navigationController.visibleViewController.title = "Playlist"
         refresh()
     }
     

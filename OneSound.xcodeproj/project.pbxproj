@@ -14,6 +14,9 @@
 		81062FAC196B6C7E0057D230 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 81062FAB196B6C7E0057D230 /* Images.xcassets */; };
 		81062FB8196B6C7E0057D230 /* OneSoundTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81062FB7196B6C7E0057D230 /* OneSoundTests.swift */; };
 		81062FC2196B6DAA0057D230 /* TestViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81062FC1196B6DAA0057D230 /* TestViewController.swift */; };
+		8108DF94199BBBE70040B8E7 /* CreateParty.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8108DF93199BBBE70040B8E7 /* CreateParty.storyboard */; };
+		8108DF97199BBC900040B8E7 /* CreatePartyViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8108DF96199BBC900040B8E7 /* CreatePartyViewController.swift */; };
+		8108DF9A199BDD150040B8E7 /* CreatePartyStrictnessViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8108DF98199BDD150040B8E7 /* CreatePartyStrictnessViewController.swift */; };
 		8130D7D21986B8BD00DD4B47 /* Party.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8130D7D11986B8BD00DD4B47 /* Party.swift */; };
 		8130D7D41986B8EB00DD4B47 /* LocalParty.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8130D7D31986B8EB00DD4B47 /* LocalParty.swift */; };
 		8130D7D6198714C900DD4B47 /* SoundCloudClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8130D7D5198714C900DD4B47 /* SoundCloudClient.swift */; };
@@ -89,6 +92,9 @@
 		81062FB6196B6C7E0057D230 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		81062FB7196B6C7E0057D230 /* OneSoundTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OneSoundTests.swift; sourceTree = "<group>"; };
 		81062FC1196B6DAA0057D230 /* TestViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestViewController.swift; sourceTree = "<group>"; };
+		8108DF93199BBBE70040B8E7 /* CreateParty.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = CreateParty.storyboard; sourceTree = "<group>"; };
+		8108DF96199BBC900040B8E7 /* CreatePartyViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CreatePartyViewController.swift; sourceTree = "<group>"; };
+		8108DF98199BDD150040B8E7 /* CreatePartyStrictnessViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CreatePartyStrictnessViewController.swift; sourceTree = "<group>"; };
 		8130D7D11986B8BD00DD4B47 /* Party.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Party.swift; sourceTree = "<group>"; };
 		8130D7D31986B8EB00DD4B47 /* LocalParty.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocalParty.swift; sourceTree = "<group>"; };
 		8130D7D5198714C900DD4B47 /* SoundCloudClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SoundCloudClient.swift; sourceTree = "<group>"; };
@@ -287,6 +293,16 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
+		8108DF95199BBBF90040B8E7 /* Create Party */ = {
+			isa = PBXGroup;
+			children = (
+				8108DF93199BBBE70040B8E7 /* CreateParty.storyboard */,
+				8108DF96199BBC900040B8E7 /* CreatePartyViewController.swift */,
+				8108DF98199BDD150040B8E7 /* CreatePartyStrictnessViewController.swift */,
+			);
+			name = "Create Party";
+			sourceTree = "<group>";
+		};
 		8158311C197472000011D3CE /* MainViewControllers */ = {
 			isa = PBXGroup;
 			children = (
@@ -379,6 +395,7 @@
 		8195347D19777A5C000B97A3 /* Modal */ = {
 			isa = PBXGroup;
 			children = (
+				8108DF95199BBBF90040B8E7 /* Create Party */,
 				8195347E19777A71000B97A3 /* User Login / Settings */,
 			);
 			name = Modal;
@@ -499,6 +516,7 @@
 				8195347C19775FCE000B97A3 /* LoginColorCell.xib in Resources */,
 				8176451B197EA192001BF7A7 /* StoriesViewController.xib in Resources */,
 				8158314319748F730011D3CE /* PartyMembersViewController.xib in Resources */,
+				8108DF94199BBBE70040B8E7 /* CreateParty.storyboard in Resources */,
 				81936FC9196C656F005E42F4 /* FrontViewController.xib in Resources */,
 				8158313F19748F080011D3CE /* PartySongsViewController.xib in Resources */,
 				8158311B197471ED0011D3CE /* PartyMainViewController.xib in Resources */,
@@ -572,6 +590,7 @@
 				81414DD1197DF9CF00081132 /* ProfileViewController.swift in Sources */,
 				8130D7D6198714C900DD4B47 /* SoundCloudClient.swift in Sources */,
 				81936FC8196C656F005E42F4 /* FrontViewController.swift in Sources */,
+				8108DF9A199BDD150040B8E7 /* CreatePartyStrictnessViewController.swift in Sources */,
 				81527128196C5A8E00464068 /* User.swift in Sources */,
 				816FD445196F22B0003CCB1C /* SideNavigationViewController.swift in Sources */,
 				8158311F197477990011D3CE /* HistoryViewController.swift in Sources */,
@@ -582,6 +601,7 @@
 				8158314219748F730011D3CE /* PartyMembersViewController.swift in Sources */,
 				8158313A19747F7B0011D3CE /* PartyTabBarController.swift in Sources */,
 				8195347B19775FCE000B97A3 /* LoginColorCell.swift in Sources */,
+				8108DF97199BBC900040B8E7 /* CreatePartyViewController.swift in Sources */,
 				8130D7D21986B8BD00DD4B47 /* Party.swift in Sources */,
 				8176451A197EA192001BF7A7 /* StoriesViewController.swift in Sources */,
 				8130D7D41986B8EB00DD4B47 /* LocalParty.swift in Sources */,

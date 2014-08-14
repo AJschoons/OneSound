@@ -16,22 +16,17 @@ class Song {
     var userID: Int!
     var partyID: Int!
     
+    // Stuff that comes from SoundCloud
+    var name: String?
+    var artistName: String?
+    var duration: Int?
+    var artworkURL: String?
+    
     init(json: JSONValue) {
         songID = json["sid"].integer
         source = json["source"].string
         externalID = json["external_id"].integer
         voteCount = json["vote_count"].integer
-        if let uid = json["uid"].integer {
-            userID = uid
-        } else {
-            // defaults to my account (for now)
-            userID = 61
-        }
-        if let pid = json["pid"].integer {
-            partyID = pid
-        } else {
-            // defaults to the first party (for now)
-            partyID = 0
-        }
+        userID = json["uid"].integer
     }
 }
