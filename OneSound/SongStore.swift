@@ -52,7 +52,7 @@ class SongStore: NSObject {
     }
     
     func songInformationForSong(inout song: Song, completion: completionClosure? = nil, failureAddOn: completionClosure? = nil) {
-        let key = song.songID
+        let key = song.externalID
         
         // If possible, get it from the dictionary
         var result = _privateSongDictionary[key]

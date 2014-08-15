@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="6185.11" systemVersion="14A261i" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="6205" systemVersion="14A283o" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6190.4"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6198"/>
     </dependencies>
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="PartySongsViewController" customModule="OneSound" customModuleProvider="target">
             <connections>
                 <outlet property="messageLabel1" destination="DQF-3K-MCX" id="cUp-JR-AoV"/>
                 <outlet property="messageLabel2" destination="FzJ-xu-4dw" id="jHi-Hb-B34"/>
+                <outlet property="songsTable" destination="GGV-Mo-yh6" id="gPR-Fp-n3c"/>
                 <outlet property="view" destination="BKM-ln-KOa" id="KDE-vo-ZRh"/>
             </connections>
         </placeholder>
@@ -34,14 +35,26 @@
                     <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                     <nil key="highlightedColor"/>
                 </label>
+                <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" style="plain" separatorStyle="none" showsSelectionImmediatelyOnTouchBegin="NO" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="GGV-Mo-yh6">
+                    <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                    <color key="backgroundColor" red="0.95075207948684692" green="0.95072358846664429" blue="0.95073968172073364" alpha="1" colorSpace="calibratedRGB"/>
+                    <connections>
+                        <outlet property="dataSource" destination="-1" id="GDw-Yw-kho"/>
+                        <outlet property="delegate" destination="-1" id="wVk-mn-c1x"/>
+                    </connections>
+                </tableView>
             </subviews>
             <color key="backgroundColor" red="0.95075207949999996" green="0.95072358850000005" blue="0.95073968170000001" alpha="1" colorSpace="calibratedRGB"/>
             <constraints>
+                <constraint firstItem="GGV-Mo-yh6" firstAttribute="leading" secondItem="BKM-ln-KOa" secondAttribute="leading" id="0XF-jk-Iwb"/>
+                <constraint firstAttribute="bottom" secondItem="GGV-Mo-yh6" secondAttribute="bottom" id="E7o-mL-w3V"/>
                 <constraint firstAttribute="trailing" secondItem="FzJ-xu-4dw" secondAttribute="trailing" constant="20" id="TkM-Ba-BTx"/>
                 <constraint firstAttribute="centerX" secondItem="DQF-3K-MCX" secondAttribute="centerX" id="aiG-uF-qNK"/>
                 <constraint firstItem="FzJ-xu-4dw" firstAttribute="top" secondItem="DQF-3K-MCX" secondAttribute="bottom" id="bPY-Js-2om"/>
                 <constraint firstItem="FzJ-xu-4dw" firstAttribute="leading" secondItem="BKM-ln-KOa" secondAttribute="leading" constant="20" id="mSz-fV-eaI"/>
+                <constraint firstAttribute="trailing" secondItem="GGV-Mo-yh6" secondAttribute="trailing" id="uYq-1z-Fki"/>
                 <constraint firstAttribute="centerY" secondItem="DQF-3K-MCX" secondAttribute="centerY" constant="7.5" id="uzx-MV-Jjt"/>
+                <constraint firstItem="GGV-Mo-yh6" firstAttribute="top" secondItem="BKM-ln-KOa" secondAttribute="top" id="wvY-hT-dZq"/>
                 <constraint firstItem="DQF-3K-MCX" firstAttribute="leading" secondItem="BKM-ln-KOa" secondAttribute="leading" constant="20" id="ybg-Dp-JnV"/>
                 <constraint firstAttribute="trailing" secondItem="DQF-3K-MCX" secondAttribute="trailing" constant="20" id="yxw-G7-T5q"/>
             </constraints>

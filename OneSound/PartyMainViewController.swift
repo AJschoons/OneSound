@@ -71,20 +71,8 @@ class PartyMainViewController: UIViewController {
         } else {
             navigationController.visibleViewController.title = "Party"
         }
-        refresh()
         
-        /*
-        SCClient.sharedClient.searchSoundCloudForSongWithString("summer",
-            success: {data, responseObject in
-                let responseJSON = JSONValue(responseObject)
-                println(responseJSON)
-                let songsArray = responseJSON.array
-                //println(songsArray!)
-                println(songsArray!.count)
-            },
-            failure: defaultAFHTTPFailureBlock
-        )
-        */
+        refresh()
     }
     
     func updateSongProgress(progress: Float) {

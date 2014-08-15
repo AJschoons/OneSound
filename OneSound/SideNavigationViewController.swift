@@ -73,6 +73,11 @@ class SideNavigationViewController: UITableViewController {
         }
         super.viewWillAppear(animated)
     }
+    
+    func programaticallySelectRow(row: Int) {
+        let indexPath = NSIndexPath(forRow: row, inSection: 0)
+        tableView(tableView, didSelectRowAtIndexPath: indexPath)
+    }
 }
 
 extension SideNavigationViewController: UITableViewDataSource {

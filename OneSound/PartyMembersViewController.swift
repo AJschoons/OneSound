@@ -24,7 +24,10 @@ class PartyMembersViewController: UIViewController {
         // Make sure view knows the user is setup so it won't keep displaying 'Not signed into account' when there is no  internet connection when app launches and then the network comes back and LocalUser is setup
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "refresh", name: LocalUserInformationDidChangeNotification, object: nil)
         
-        let nib = UINib(nibName: "PartyMemberCell", bundle: nil)
+        // Creating an (empty) footer stops table from showing empty cells
+        membersTable.tableFooterView = UIView(frame: CGRectZero)
+        
+        let nib = UINib(nibName: PartyMemberCellNibName, bundle: nil)
         membersTable.registerNib(nib, forCellReuseIdentifier: PartyMemberCellIdentifier)
     }
     
@@ -44,7 +47,6 @@ class PartyMembersViewController: UIViewController {
             if LocalUser.sharedUser.setup == true {
                 if LocalUser.sharedUser.party != nil {
                     if LocalParty.sharedParty.setup == true {
-                        println("party is setup")
                         // Actually show members stuff
                         hideMessages()
                         hideMembersTable(false)

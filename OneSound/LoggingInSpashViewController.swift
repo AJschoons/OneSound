@@ -61,6 +61,12 @@ class LoggingInSpashViewController: UIViewController {
         navC.setNavigationBarHidden(false, animated: false)
         navC.popViewControllerAnimated(false)
         
+        if LocalParty.sharedParty.setup == true {
+            let delegate = UIApplication.sharedApplication().delegate as AppDelegate
+            let snvc = delegate.revealViewController!.rearViewController as SideNavigationViewController
+            snvc.programaticallySelectRow(1)
+        }
+        
         // Add the overlay to the frontNavController that's used with the side menu
         navC.overlay.frame = CGRectMake(0, 20, UIScreen.mainScreen().bounds.height, UIScreen.mainScreen().bounds.height - 20)
         navC.overlay.backgroundColor = UIColor.blackColor()

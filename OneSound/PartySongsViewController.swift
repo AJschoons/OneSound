@@ -9,16 +9,23 @@
 import UIKit
 
 let PartySongsViewControllerNibName = "PartySongsViewController"
+let PartySongCellIndentifier = "PartySongCell"
 
 class PartySongsViewController: UIViewController {
 
+    let songCellImagePlaceholder = UIImage(named: "songCellImagePlaceholder")
+    
     @IBOutlet weak var messageLabel1: UILabel?
     @IBOutlet weak var messageLabel2: UILabel?
+    
+    @IBOutlet weak var songsTable: UITableView!
     
     var addSongButton: UIBarButtonItem!
     
     func addSong() {
-        // TODO: add song
+        let addSongViewController = AddSongViewController(nibName: AddSongViewControllerNibName, bundle: nil)
+        let navC = UINavigationController(rootViewController: addSongViewController)
+        presentViewController(navC, animated: true, completion: nil)
     }
     
     override func viewDidLoad() {
@@ -28,6 +35,12 @@ class PartySongsViewController: UIViewController {
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "refresh", name: AFNetworkingReachabilityDidChangeNotification, object: nil)
         // Make sure view knows the user is setup so it won't keep displaying 'Not signed into account' when there is no  internet connection when app launches and then the network comes back and LocalUser is setup
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "refresh", name: LocalUserInformationDidChangeNotification, object: nil)
+        
+        // Creating an (empty) footer stops table from showing empty cells
+        songsTable.tableFooterView = UIView(frame: CGRectZero)
+        
+        let nib = UINib(nibName: PartySongCellNibName, bundle: nil)
+        songsTable.registerNib(nib, forCellReuseIdentifier: PartySongCellIndentifier)
         
         hideMessages()
     }
@@ -41,48 +54,48 @@ class PartySongsViewController: UIViewController {
     // Copy pasta'd from Profile view controller to have the same kind of refresh logic
     // Keeping the commented out things for now to show what kind of changes were made for that
     // TODO: update the refresh to remove comments irrelevant to this controller when finished w/ it
-    func refresh() -> Bool {
-        // Returns true if refreshed with a valid user
-        var validUser = false
-        println("refreshing PartySongsViewController")
+    func refresh() {
+        println("refreshing PartySongViewController")
         
         if AFNetworkReachabilityManager.sharedManager().reachable {
             if LocalUser.sharedUser.setup == true {
-                validUser = true
-                LocalUser.sharedUser.updateLocalUserInformationFromServer(
-                    addToSuccess: {
-                        if LocalUser.sharedUser.guest == true {
-                            //self.setUserInfoHidden(true)
-                            //self.setStoriesTableToHidden(true)
-                            self.hideMessages()
-                            //self.facebookSignInButton!.hidden = false
-                            //self.signOutButton!.enabled = false
-                            //self.settingsButton!.enabled = false
-                        } else {
-                            // Full accounts
-                            //self.facebookSignInButton!.hidden = true
-                            //self.signOutButton!.enabled = true
-                            //self.settingsButton!.enabled = true
-                            //self.setStoriesTableToHidden(false)
-                            self.hideMessages()
-                            //self.setUserInfoHidden(false)
-                        }
+                if LocalUser.sharedUser.party != nil {
+                    if LocalParty.sharedParty.setup == true {
+                        // Actually show songs stuff
+                        hideMessages()
+                        hideSongsTable(false)
+                        
+                        LocalParty.sharedParty.updatePartySongs(LocalParty.sharedParty.partyID!,
+                            completion: {
+                                self.songsTable.reloadData()
+                            }
+                        )
+                    } else {
+                        showMessages("Well, this is awkward", detailLine: "We're not really sure what happened, try refreshing the party!")
+                        hideSongsTable(true)
                     }
-                )
+                } else {
+                    showMessages("Not member of a party", detailLine: "Become a party member by joining or creating a party")
+                    hideSongsTable(true)
+                }
             } else {
                 //setUserInfoHidden(true)
                 //setStoriesTableToHidden(true)
                 showMessages("Not signed into an account", detailLine: "Please connect to the internet and restart One Sound")
+                hideSongsTable(true)
                 //disableButtons()
             }
         } else {
             //setUserInfoHidden(true)
             //setStoriesTableToHidden(true)
             showMessages("Not connected to the internet", detailLine: "Please connect to the internet to use One Sound")
+            hideSongsTable(true)
             //disableButtons()
         }
-        
-        return validUser
+    }
+    
+    func hideSongsTable(hidden: Bool) {
+        songsTable.hidden = hidden
     }
     
     func showMessages(mainLine: String?, detailLine: String?) {
@@ -101,5 +114,69 @@ class PartySongsViewController: UIViewController {
         messageLabel1!.text = ""
         messageLabel2!.alpha = 0
         messageLabel2!.text = ""
+    }
+}
+
+extension PartySongsViewController: UITableViewDataSource {
+    func tableView(tableView: UITableView!, numberOfRowsInSection section: Int) -> Int {
+        return LocalParty.sharedParty.songs.count
+    }
+    
+    func tableView(tableView: UITableView!, cellForRowAtIndexPath indexPath: NSIndexPath!) -> UITableViewCell! {
+        let songCell = songsTable.dequeueReusableCellWithIdentifier(PartySongCellIndentifier, forIndexPath: indexPath) as PartySongCell
+        
+        if indexPath.row <= LocalParty.sharedParty.songs.count {
+            var song = LocalParty.sharedParty.songs[indexPath.row]
+            
+            songCell.songID = song.songID
+            
+            songCell.songName.text = ""
+            songCell.songArtist.text = ""
+            
+            SongStore.sharedStore.songInformationForSong(&song,
+                completion: {
+                    // The cell could be reused before the information is ready, so make sure the correct one is being set
+                    var correctCell = self.songsTable.cellForRowAtIndexPath(indexPath) as PartySongCell
+                    
+                    if song.name != nil {
+                        correctCell.songName.text = song.name!
+                        
+                        // Make the label text be left-aligned if the text is too big
+                        let stringSize = (song.name! as NSString).sizeWithAttributes([NSFontAttributeName: correctCell.songName.font])
+                        if (stringSize.width + 3) > correctCell.songName.frame.width {
+                            correctCell.songName.textAlignment = NSTextAlignment.Left
+                        }
+                    }
+                    
+                    if song.artistName != nil {
+                        correctCell.songArtist.text = song.artistName!
+                    }
+                    
+                    if song.artworkURL != nil {
+                        SDWebImageManager.sharedManager().downloadImageWithURL(NSURL(string: song.artworkURL!), options: nil, progress: nil,
+                            completed: { image, error, cacheType, boolValue, url in
+                                if error == nil {
+                                    // Make sure it's still the correct cell
+                                    correctCell = self.songsTable.cellForRowAtIndexPath(indexPath) as PartySongCell
+                                    correctCell.songImage.image = cropImageCenterFromSideEdgesWhilePreservingAspectRatio(withWidth: 640, withHeight: 128, image: image)
+                                    
+                                }
+                            }
+                        )
+                    }
+                }, failureAddOn: {
+                    songCell.songName.text = "Could Not Download"
+                    songCell.songArtist.text = "Try refreshing the page"
+                }
+            )
+        }
+        
+        return songCell
+    }
+}
+
+extension PartySongsViewController: UITableViewDelegate {
+    func tableView(tableView: UITableView!, heightForRowAtIndexPath indexPath: NSIndexPath!) -> CGFloat {
+        return 64.0
     }
 }

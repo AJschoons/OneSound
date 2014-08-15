@@ -1,0 +1,188 @@
+//
+//  AddSongViewController.swift
+//  OneSound
+//
+//  Created by adam on 8/14/14.
+//  Copyright (c) 2014 Adam Schoonmaker. All rights reserved.
+//
+
+import UIKit
+
+let AddSongViewControllerNibName = "AddSongViewController"
+let SongSearchResultCellIdentifier = "SongSearchResultCell"
+
+class AddSongViewController: UIViewController {
+
+    @IBOutlet weak var songSearchTextField: UITextField!
+    @IBOutlet weak var searchResultsTable: UITableView!
+    @IBOutlet weak var animatedOneSoundOne: UIImageView!
+    
+    var searchResultsArray = [SongSearchResult]()
+    
+    let thousandsFormatter: NSNumberFormatter = {
+        let formatter = NSNumberFormatter()
+        formatter.numberStyle = NSNumberFormatterStyle.DecimalStyle
+        formatter.formatterBehavior = NSNumberFormatterBehavior.BehaviorDefault
+        return formatter
+    }()
+    
+    func search() {
+        searchResultsArray = [SongSearchResult]()
+        searchResultsTable.reloadData()
+        loadingAnimationShouldBeAnimating(true)
+        
+        SCClient.sharedClient.searchSoundCloudForSongWithString(replaceSpacesWithASCIISpaceCodeForURL(songSearchTextField.text),
+            success: {data, responseObject in
+                let responseJSON = JSONValue(responseObject)
+                //println(responseJSON)
+                let songsArray = responseJSON.array
+                println(songsArray!)
+                println(songsArray!.count)
+                
+                var newSongSearchResults = [SongSearchResult]()
+                
+                if songsArray != nil {
+                    for result in songsArray! {
+                        let source = "sc"
+                        let id = result["id"].integer
+                        let name = result["title"].string
+                        let artistName = result["user"]["username"].string
+                        let duration = result["duration"].integer
+                        let playbacks = result["playback_count"].integer
+                        
+                        newSongSearchResults.append(SongSearchResult(source: source, externalID: id!, name: name, artistName: artistName, duration: duration, numberOfPlaybacks: playbacks))
+                    }
+                }
+                
+                self.searchResultsArray = newSongSearchResults
+                self.searchResultsTable.reloadData()
+                self.loadingAnimationShouldBeAnimating(false)
+            },
+            failure: { task, error in
+                self.loadingAnimationShouldBeAnimating(false)
+                defaultAFHTTPFailureBlock!(task: task, error: error)
+            }
+        )
+    }
+    
+    func cancel() {
+        view.endEditing(true)
+        dismissViewControllerAnimated(true, completion: nil)
+    }
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        // Setup nav bar
+        navigationItem.title = "Add Song"
+        navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Cancel, target: self, action: "cancel")
+        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Search", style: UIBarButtonItemStyle.Plain, target: self, action: "search")
+        navigationItem.rightBarButtonItem.enabled = false
+
+        let nib = UINib(nibName: SongSearchResultCellNibName, bundle: nil)
+        searchResultsTable.registerNib(nib, forCellReuseIdentifier: SongSearchResultCellIdentifier)
+        // Creating an (empty) footer stops table from showing empty cells
+        searchResultsTable.tableFooterView = UIView(frame: CGRectZero)
+        
+        songSearchTextField.delegate = self
+        songSearchTextField.enablesReturnKeyAutomatically = true
+        songSearchTextField.addTarget(self, action: "textFieldDidChange", forControlEvents: UIControlEvents.EditingChanged)
+        
+        let tap = UITapGestureRecognizer(target: self, action: "tap")
+        tap.cancelsTouchesInView = false
+        view.addGestureRecognizer(tap)
+        
+        // Setup loading animation
+        animatedOneSoundOne.animationImages = [loadingOSLogo2, loadingOSLogo1, loadingOSLogo0, loadingOSLogo1]
+        animatedOneSoundOne.animationDuration = 1.5
+        animatedOneSoundOne.hidden = true
+    }
+    
+    func textFieldDidChange() {
+        if countElements(songSearchTextField.text as String) > 0 {
+            navigationItem.rightBarButtonItem.enabled = true
+        } else {
+            navigationItem.rightBarButtonItem.enabled = false
+        }
+    }
+    
+    func tap() {
+        // Dismiss the keyboard whenever the background is touched while editing
+        view.endEditing(true)
+    }
+    
+    func loadingAnimationShouldBeAnimating(shouldBeAnimating: Bool) {
+        if shouldBeAnimating {
+            animatedOneSoundOne.hidden = false
+            animatedOneSoundOne.startAnimating()
+        } else {
+            animatedOneSoundOne.hidden = true
+            animatedOneSoundOne.stopAnimating()
+        }
+    }
+}
+
+extension AddSongViewController: UITableViewDataSource {
+    func tableView(tableView: UITableView!, numberOfRowsInSection section: Int) -> Int {
+        return searchResultsArray.count
+    }
+    
+    func tableView(tableView: UITableView!, cellForRowAtIndexPath indexPath: NSIndexPath!) -> UITableViewCell! {
+        let cell = searchResultsTable.dequeueReusableCellWithIdentifier(SongSearchResultCellIdentifier, forIndexPath: indexPath) as SongSearchResultCell
+        let result = searchResultsArray[indexPath.row]
+
+        var nameText: String = (result.name != nil) ? result.name! : ""
+        var artistText: String = (result.artistName != nil) ? "Uploaded by \(result.artistName!)" : ""
+        var durationText: String = (result.duration != nil) ? timeInMillisecondsToFormattedMinSecondTimeLabelString(result.duration!) : ""
+        var popularityText: String = (result.numberOfPlaybacks != nil) ? "\(thousandsFormatter.stringFromNumber(NSNumber(integer: result.numberOfPlaybacks!))) playbacks" : ""
+        
+        cell.nameLabel.text = nameText
+        cell.artistNameLabel.text = artistText
+        cell.durationLabel.text = durationText
+        cell.popularityLabel.text = popularityText
+        
+        return cell
+    }
+}
+
+extension AddSongViewController: UITableViewDelegate {
+    func tableView(tableView: UITableView!, didSelectRowAtIndexPath indexPath: NSIndexPath!) {
+        let selectedSong = searchResultsArray[indexPath.row]
+        let source = "sc"
+        
+        if LocalUser.sharedUser.setup == true {
+            if LocalParty.sharedParty.setup == true {
+                OSAPI.sharedClient.POSTSong(LocalParty.sharedParty.partyID, externalID: selectedSong.externalID, source: source, userID: LocalUser.sharedUser.id, userAPIToken: LocalUser.sharedUser.apiToken,
+                    success: { data, responseObject in
+                        self.dismissViewControllerAnimated(true, completion: nil)
+                    }, failure: { task, error in
+                        self.dismissViewControllerAnimated(true, completion: nil)
+                        let alert = UIAlertView(title: "Problem Adding Song", message: "The song could not be added to the playlist, please try a different song", delegate: nil, cancelButtonTitle: "Ok")
+                        alert.show()
+                    }
+                )
+            } else {
+                let alert = UIAlertView(title: "Not A Party Member", message: "Please join a party before adding a song", delegate: nil, cancelButtonTitle: "Ok")
+                alert.show()
+            }
+        } else {
+            let alert = UIAlertView(title: "Not Signed In", message: "Please sign into an account before adding a song", delegate: nil, cancelButtonTitle: "Ok")
+            alert.show()
+        }
+    }
+    
+    func tableView(tableView: UITableView!, heightForRowAtIndexPath indexPath: NSIndexPath!) -> CGFloat {
+        return 64.0
+    }
+}
+
+extension AddSongViewController: UITextFieldDelegate {
+    func textFieldShouldReturn(textField: UITextField!) -> Bool {
+        // Hide keyboard when user presses "Search", initiate the search
+        songSearchTextField.resignFirstResponder()
+        search()
+        return true
+    }
+}
+
+

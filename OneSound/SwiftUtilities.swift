@@ -191,6 +191,24 @@ func downloadImageWithURLString(urlString: String, completion: (success: Bool, i
     )
 }
 
+func cropImageCenterFromSideEdgesWhilePreservingAspectRatio(withWidth width: CGFloat, withHeight height: CGFloat, image originalImage: UIImage) -> UIImage {
+    
+    let originalSize = originalImage.size
+    let scaleFactorForHeight = originalSize.width / width
+    let newHeight = scaleFactorForHeight * height
+    
+    let posX: CGFloat = 0
+    let posY: CGFloat = (originalSize.height / 2.0 ) + (newHeight / 2.0)
+    
+    let cropSquare = CGRectMake(posX, posY, originalSize.width, newHeight)
+    
+    // Performs the image cropping
+    let imageRef = CGImageCreateWithImageInRect(originalImage.CGImage, cropSquare) // Automatically memory managed
+    let newImage = UIImage(CGImage: imageRef, scale: originalImage.scale, orientation: originalImage.imageOrientation)
+
+    return newImage
+}
+
 func cropBiggestCenteredSquareImageFromImage(image: UIImage, sideLength side: CGFloat) -> UIImage {
     // Get size of current image
     let size = image.size
@@ -291,8 +309,12 @@ func timeInMillisecondsToFormattedMinSecondTimeLabelString(durationInMillisecond
     }
 }
 
+func replaceSpacesWithASCIISpaceCodeForURL(urlString: String) -> String {
+    return urlString.stringByReplacingOccurrencesOfString(" ", withString: "%20", options: nil, range: nil)
+}
+
 func setupTHLabelToDefaultDesiredLook(label: THLabel!) {
-    if label {
+    if label != nil {
         label.textColor = UIColor.white()
         label.shadowColor = UIColor(white: 0, alpha: 0.5)
         label.shadowOffset = CGSizeMake(0, 0)

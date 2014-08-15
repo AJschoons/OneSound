@@ -17,6 +17,10 @@ let FinishedLoginFlowNotification = "FinishedLoginFlowNotification"
 let UserTableCellSmallFormat = "userTableCellSmall"
 let guestUserImageForUserCell = UIImage(named: "guestUserImageForUserCell")
 
+let loadingOSLogo0 = UIImage(named: "loadingOneSoundOne0")
+let loadingOSLogo1 = UIImage(named: "loadingOneSoundOne1")
+let loadingOSLogo2 = UIImage(named: "loadingOneSoundOne2")
+
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
                             

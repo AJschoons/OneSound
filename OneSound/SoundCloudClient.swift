@@ -56,7 +56,7 @@ extension SCClient {
         params.updateValue(SCClientID, forKey: "consumer_key")
         
         let failureWithExtraAttempt: AFHTTPFailureBlock = { task, error in
-            if errorShouldBeHandedWithRepeatedRequest(task, error, attemptsLeft: extraAttempts) {
+            if errorShouldBeHandledWithRepeatedRequest(task, error, attemptsLeft: extraAttempts) {
                 self.getSoundCloudSongByID(songID, success: success, failure: failure, extraAttempts: (extraAttempts - 1))
             } else {
                 failure!(task: task, error: error)
@@ -78,7 +78,7 @@ extension SCClient {
         params.updateValue("600000", forKey: "duration-to") // 10 minute max
         
         let failureWithExtraAttempt: AFHTTPFailureBlock = { task, error in
-            if errorShouldBeHandedWithRepeatedRequest(task, error, attemptsLeft: extraAttempts) {
+            if errorShouldBeHandledWithRepeatedRequest(task, error, attemptsLeft: extraAttempts) {
                 self.searchSoundCloudForSongWithString(str, success: success, failure: failure, extraAttempts: (extraAttempts - 1))
             } else {
                 failure!(task: task, error: error)

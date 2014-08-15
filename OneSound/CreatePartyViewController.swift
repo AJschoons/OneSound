@@ -115,6 +115,8 @@ class CreatePartyViewController: UITableViewController {
             )
         } else {
             println("updating party")
+            // TODO: updating party code
+            
             /*
             var newUserName: String? = nil
             var newUserColor: String? = nil

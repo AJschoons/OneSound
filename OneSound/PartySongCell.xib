@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="6205" systemVersion="14A283o" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6198"/>
+        <capability name="Constraints with attributes relative to the layout margin" minToolsVersion="6.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="KGk-i7-Jjw" customClass="PartySongCell" customModule="OneSound" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="320" height="64"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+            <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="KGk-i7-Jjw" id="H2p-sc-9uM">
+                <rect key="frame" x="0.0" y="0.0" width="320" height="43"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="songCellImagePlaceholder" translatesAutoresizingMaskIntoConstraints="NO" id="iHF-mJ-W5v">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="64"/>
+                        <color key="backgroundColor" red="0.8304140567779541" green="0.83038914203643799" blue="0.83040332794189453" alpha="1" colorSpace="calibratedRGB"/>
+                    </imageView>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="The Name Of The Song" textAlignment="center" lineBreakMode="middleTruncation" baselineAdjustment="alignBaselines" minimumFontSize="10" translatesAutoresizingMaskIntoConstraints="NO" id="G1e-Xo-VN3" customClass="THLabel">
+                        <rect key="frame" x="40" y="15" width="240" height="18"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="18" id="BGc-fB-7XW"/>
+                        </constraints>
+                        <fontDescription key="fontDescription" type="boldSystem" pointSize="16"/>
+                        <color key="textColor" red="1" green="0.99997437000274658" blue="0.99999129772186279" alpha="1" colorSpace="calibratedRGB"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="The Name Of The Artist" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="10" translatesAutoresizingMaskIntoConstraints="NO" id="U75-J6-gKG" customClass="THLabel">
+                        <rect key="frame" x="40" y="35" width="240" height="14"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="14" id="ULJ-db-VTf"/>
+                        </constraints>
+                        <fontDescription key="fontDescription" type="boldSystem" pointSize="12"/>
+                        <color key="textColor" red="1" green="0.99997437000274658" blue="0.99999129772186279" alpha="1" colorSpace="calibratedRGB"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                </subviews>
+                <color key="backgroundColor" red="0.8304140567779541" green="0.83038914203643799" blue="0.83040332794189453" alpha="1" colorSpace="calibratedRGB"/>
+                <constraints>
+                    <constraint firstAttribute="trailingMargin" secondItem="U75-J6-gKG" secondAttribute="trailing" constant="32" id="6jD-fb-Zjr"/>
+                    <constraint firstItem="iHF-mJ-W5v" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="topMargin" constant="-8" id="HkW-1f-pgG"/>
+                    <constraint firstAttribute="trailingMargin" secondItem="G1e-Xo-VN3" secondAttribute="trailing" constant="32" id="OGG-st-7Jm"/>
+                    <constraint firstItem="G1e-Xo-VN3" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="topMargin" constant="7" id="Vc9-id-JNR"/>
+                    <constraint firstAttribute="bottomMargin" secondItem="iHF-mJ-W5v" secondAttribute="bottom" constant="-8" id="Vjq-vj-if0"/>
+                    <constraint firstAttribute="trailingMargin" secondItem="iHF-mJ-W5v" secondAttribute="trailing" constant="-8" id="cDH-Ht-uqv"/>
+                    <constraint firstItem="iHF-mJ-W5v" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leadingMargin" constant="-8" id="ghT-q3-P1v"/>
+                    <constraint firstItem="U75-J6-gKG" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leadingMargin" constant="32" id="lsi-oi-02G"/>
+                    <constraint firstItem="G1e-Xo-VN3" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leadingMargin" constant="32" id="owj-Rq-jm0"/>
+                    <constraint firstAttribute="bottomMargin" secondItem="U75-J6-gKG" secondAttribute="bottom" constant="6" id="ttm-uD-33z"/>
+                </constraints>
+            </tableViewCellContentView>
+            <connections>
+                <outlet property="songArtist" destination="U75-J6-gKG" id="yhr-t4-g7f"/>
+                <outlet property="songImage" destination="iHF-mJ-W5v" id="T1b-jI-FZY"/>
+                <outlet property="songName" destination="G1e-Xo-VN3" id="Nua-R3-jDW"/>
+            </connections>
+        </tableViewCell>
+    </objects>
+    <resources>
+        <image name="songCellImagePlaceholder" width="320" height="64"/>
+    </resources>
+</document>

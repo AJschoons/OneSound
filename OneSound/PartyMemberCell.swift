@@ -8,6 +8,8 @@
 
 import UIKit
 
+let PartyMemberCellNibName = "PartyMemberCell"
+
 class PartyMemberCell: UITableViewCell {
     
     @IBOutlet weak var userImage: UIImageView!
@@ -21,6 +23,8 @@ class PartyMemberCell: UITableViewCell {
         // Initialization code
         userImage.layer.cornerRadius = 3.0
         userImage.layer.masksToBounds = true
+        
+        selectionStyle = UITableViewCellSelectionStyle.None
     }
 
     override func setSelected(selected: Bool, animated: Bool) {

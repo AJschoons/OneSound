@@ -197,4 +197,8 @@ extension String {
 
 SCstr.replaceSubstringWithString("-large.jpg", newSubstring: "-t500x500.jpg")
 
+func replaceSpacesWithASCIISpaceCodeForURL(urlString: String) -> String {
+    return urlString.stringByReplacingOccurrencesOfString(" ", withString: "%20", options: nil, range: nil)
+}
+
 
