@@ -27,7 +27,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
     var revealViewController: SWRevealViewController?
     var panGestureStartedFrom: FrontViewPosition = FrontViewPositionRightMostRemoved
-    // FrontViewPositionRightMostRemoved so it won't init as a used enum val
+    // FrontViewPositionRightMostRemoved so it won't init as a used/relevant enum val
     
     var pL = false
 

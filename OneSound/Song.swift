@@ -16,10 +16,10 @@ class Song {
     var userID: Int!
     var partyID: Int!
     
-    // Stuff that comes from SoundCloud
-    var name: String?
-    var artistName: String?
-    var duration: Int?
+    // Display data
+    var name: String!
+    var artistName: String!
+    var duration: Int!
     var artworkURL: String?
     
     init(json: JSONValue) {
@@ -28,5 +28,10 @@ class Song {
         externalID = json["external_id"].integer
         voteCount = json["vote_count"].integer
         userID = json["uid"].integer
+        
+        name = json["title"].string
+        artistName = json["artist"].string
+        duration = json["length"].integer
+        artworkURL = json["album"].string
     }
 }

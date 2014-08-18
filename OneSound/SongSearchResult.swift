@@ -13,18 +13,21 @@ class SongSearchResult {
     var source: String!
     var externalID: Int!
     
-    var name: String?
-    var artistName: String?
-    var duration: Int?
+    var name: String!
+    var artistName: String!
+    var duration: Int!
+    
+    var artworkURL: String?
     
     var numberOfPlaybacks: Int?
     
-    init(source: String, externalID: Int, name: String?, artistName: String?, duration: Int?, numberOfPlaybacks: Int?) {
+    init(source: String, externalID: Int, name: String, artistName: String, duration: Int, artworkURL: String?, numberOfPlaybacks: Int?) {
         self.source = source
         self.externalID = externalID
         self.name = name
         self.artistName = artistName
         self.duration = duration
+        self.artworkURL = artworkURL
         self.numberOfPlaybacks = numberOfPlaybacks
     }
 }

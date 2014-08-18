@@ -51,7 +51,7 @@ class SongStore: NSObject {
         _privateSongAudioDictionary.updateValue(audio, forKey: key)
     }
     
-    func songInformationForSong(inout song: Song, completion: completionClosure? = nil, failureAddOn: completionClosure? = nil) {
+    func songInformationForSong(song: Song, completion: (Song) -> (), failureAddOn: completionClosure? = nil) {
         let key = song.externalID
         
         // If possible, get it from the dictionary
@@ -89,9 +89,7 @@ class SongStore: NSObject {
                         
                         self._privateSongDictionary.updateValue(song, forKey: key)
                         
-                        if completion != nil {
-                            completion!()
-                        }
+                        completion(self._privateSongDictionary[key]!)
                     },
                     failure: { task, error in
                         self.songsWithAttributesBeingDownloaded.remove(key)
@@ -103,11 +101,8 @@ class SongStore: NSObject {
                 )
             }
         } else {
-            song = result!
             songsWithAttributesBeingDownloaded.remove(key)
-            if completion != nil {
-                completion!()
-            }
+            completion(result!)
         }
     }
     

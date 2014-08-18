@@ -81,10 +81,14 @@ class OSAPI: AFHTTPSessionManager {
     class var sharedClient: OSAPI {
         struct Static {
             static let api: OSAPI = {
-                NSURLSessionConfiguration()
-                let initAPI = OSAPI(baseURL: NSURL(string: baseURLString))
+                let config = NSURLSessionConfiguration.defaultSessionConfiguration()
+                config.HTTPAdditionalHeaders = ["X_API_KEY": "05a41855c009ff2cbcd280e965e8e417a907e29c447dcfebb8"]
+                
+                let initAPI = OSAPI(baseURL: NSURL(string: baseURLString), sessionConfiguration: config)
+                
                 initAPI.requestSerializer = AFJSONRequestSerializer()
                 initAPI.responseSerializer = AFJSONResponseSerializer()
+                
                 return initAPI
             }()
         }
@@ -369,7 +373,7 @@ extension OSAPI {
 // MARK: Song-related API
     
     // Add a song to a party playlist
-    func POSTSong(pid: Int, externalID: Int, source: String, userID: Int, userAPIToken: String, success: AFHTTPSuccessBlock, failure: AFHTTPFailureBlock, extraAttempts: Int = defaultEA) {
+    func POSTSong(pid: Int, externalID: Int, source: String, title: String, artist: String, duration: Int, artworkURL: String?, userID: Int, userAPIToken: String, success: AFHTTPSuccessBlock, failure: AFHTTPFailureBlock, extraAttempts: Int = defaultEA) {
         
         let urlString = "\(baseURLString)song"
         
@@ -378,17 +382,48 @@ extension OSAPI {
         params.updateValue(pid, forKey: "pid")
         params.updateValue(externalID, forKey: "external_id")
         params.updateValue(source, forKey: "source")
+        params.updateValue(title, forKey: "title")
+        params.updateValue(artist, forKey: "artist")
+        params.updateValue(duration, forKey: "length")
+        
+        if artworkURL != nil {
+            params.updateValue(artworkURL!, forKey: "album")
+        } else {
+            params.updateValue("", forKey: "album")
+        }
+        
         params.updateValue(userID, forKey: "uid")
         params.updateValue(userAPIToken, forKey: "api_token")
         
         let failureWithExtraAttempt: AFHTTPFailureBlock = { task, error in
             if errorShouldBeHandledWithRepeatedRequest(task, error, attemptsLeft: extraAttempts) {
-                self.POSTSong(pid, externalID: externalID, source: source, userID: userID, userAPIToken: userAPIToken, success: success, failure: failure, extraAttempts: (extraAttempts - 1))
+                self.POSTSong(pid, externalID: externalID, source: source, title: title, artist: artist, duration: duration, artworkURL: artworkURL, userID: userID, userAPIToken: userAPIToken, success: success, failure: failure, extraAttempts: (extraAttempts - 1))
             } else {
                 failure!(task: task, error: error)
             }
         }
         
         POST(urlString, parameters: params, success: success, failure: failure)
+    }
+    
+    func GETNextSong(pid: Int, userID: Int, userAPIToken: String, success: AFHTTPSuccessBlock, failure: AFHTTPFailureBlock, extraAttempts: Int = defaultEA) {
+        
+        let urlString = "\(pid)/nextsong"
+        
+        // Create parameters to pass
+        var params = Dictionary<String, AnyObject>()
+        params.updateValue(userID, forKey: "uid")
+        params.updateValue(userAPIToken, forKey: "api_token")
+        
+        let failureWithExtraAttempt: AFHTTPFailureBlock = { task, error in
+            if errorShouldBeHandledWithRepeatedRequest(task, error, attemptsLeft: extraAttempts) {
+                self.GETNextSong(pid, userID: userID, userAPIToken: userAPIToken, success: success, failure: failure, extraAttempts: (extraAttempts - 1))
+            } else {
+                failure!(task: task, error: error)
+            }
+        }
+        
+        POST(urlString, parameters: params, success: success, failure: failure)
+        
     }
 }

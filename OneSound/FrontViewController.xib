@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="6205" systemVersion="14A261i" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="6205" systemVersion="14A283o" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6198"/>
     </dependencies>
@@ -15,7 +15,7 @@
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Dfx-il-vXV">
-                    <rect key="frame" x="225.5" y="285" width="149" height="30"/>
+                    <rect key="frame" x="225" y="285" width="149" height="30"/>
                     <state key="normal" title="Test Spash Animation">
                         <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                     </state>
@@ -36,13 +36,24 @@
                         <action selector="resetUserInfo:" destination="-1" eventType="touchUpInside" id="h9y-Sj-0vC"/>
                     </connections>
                 </button>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="dL1-hJ-I9t">
+                    <rect key="frame" x="233" y="350" width="135" height="30"/>
+                    <state key="normal" title="Reset Image Cache">
+                        <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                    </state>
+                    <connections>
+                        <action selector="resetImageCache:" destination="-1" eventType="touchUpInside" id="ZiZ-K2-y3j"/>
+                    </connections>
+                </button>
             </subviews>
             <color key="backgroundColor" red="0.74117647058823533" green="0.062745098039215685" blue="0.8784313725490196" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
             <constraints>
                 <constraint firstAttribute="centerX" secondItem="ehS-1u-XJ4" secondAttribute="centerX" constant="-0.5" id="KJJ-sI-aJv"/>
                 <constraint firstAttribute="centerY" secondItem="Dfx-il-vXV" secondAttribute="centerY" id="Ua5-zx-LWV"/>
+                <constraint firstItem="dL1-hJ-I9t" firstAttribute="top" secondItem="ehS-1u-XJ4" secondAttribute="bottom" constant="8" id="cCg-kl-DBB"/>
                 <constraint firstItem="Dfx-il-vXV" firstAttribute="top" secondItem="ehS-1u-XJ4" secondAttribute="top" constant="-27" id="qk9-xI-KGe"/>
                 <constraint firstAttribute="centerX" secondItem="Dfx-il-vXV" secondAttribute="centerX" id="vsU-jW-RGl"/>
+                <constraint firstAttribute="centerX" secondItem="dL1-hJ-I9t" secondAttribute="centerX" constant="-0.5" id="zaL-Iv-wv1"/>
             </constraints>
         </view>
     </objects>

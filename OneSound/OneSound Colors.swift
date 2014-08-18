@@ -63,6 +63,25 @@ enum OneSoundColorOption: String {
     }
 }
 
+func randomOneSoundUIColor() -> UIColor {
+    switch (arc4random() % 6) {
+    case 0:
+        return UIColor.green()
+    case 1:
+        return UIColor.turquoise()
+    case 2:
+        return UIColor.purple()
+    case 3:
+        return UIColor.red()
+    case 4:
+        return UIColor.orange()
+    case 5:
+        return UIColor.yellow()
+    default:
+        return UIColor.brownColor()
+    }
+}
+
 extension UIColor {
     
     class func black() -> UIColor {

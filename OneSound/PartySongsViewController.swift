@@ -15,12 +15,16 @@ class PartySongsViewController: UIViewController {
 
     let songCellImagePlaceholder = UIImage(named: "songCellImagePlaceholder")
     
+    let partySongsCacheImageManager = SDWebImageManager()
+    
     @IBOutlet weak var messageLabel1: UILabel?
     @IBOutlet weak var messageLabel2: UILabel?
     
     @IBOutlet weak var songsTable: UITableView!
     
     var addSongButton: UIBarButtonItem!
+    
+    let heightForRows: CGFloat = 64.0
     
     func addSong() {
         let addSongViewController = AddSongViewController(nibName: AddSongViewControllerNibName, bundle: nil)
@@ -35,6 +39,9 @@ class PartySongsViewController: UIViewController {
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "refresh", name: AFNetworkingReachabilityDidChangeNotification, object: nil)
         // Make sure view knows the user is setup so it won't keep displaying 'Not signed into account' when there is no  internet connection when app launches and then the network comes back and LocalUser is setup
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "refresh", name: LocalUserInformationDidChangeNotification, object: nil)
+        // Should update when a party song is added
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "refresh", name: PartySongWasAddedNotification, object: nil)
+        //NSNotificationCenter.defaultCenter().addObserver(self, selector: "reloadTableData", name: LocalPartySongInformationDidChangeNotification, object: nil)
         
         // Creating an (empty) footer stops table from showing empty cells
         songsTable.tableFooterView = UIView(frame: CGRectZero)
@@ -51,6 +58,15 @@ class PartySongsViewController: UIViewController {
         refresh()
     }
     
+    func refreshAfterDelay() {
+        println("should be refreshing after delay")
+        NSTimer.scheduledTimerWithTimeInterval(2, target: self, selector: "refresh", userInfo: nil, repeats: false)
+    }
+    
+    func reloadTableData() {
+        songsTable.reloadData()
+    }
+    
     // Copy pasta'd from Profile view controller to have the same kind of refresh logic
     // Keeping the commented out things for now to show what kind of changes were made for that
     // TODO: update the refresh to remove comments irrelevant to this controller when finished w/ it
@@ -65,11 +81,7 @@ class PartySongsViewController: UIViewController {
                         hideMessages()
                         hideSongsTable(false)
                         
-                        LocalParty.sharedParty.updatePartySongs(LocalParty.sharedParty.partyID!,
-                            completion: {
-                                self.songsTable.reloadData()
-                            }
-                        )
+                        LocalParty.sharedParty.updatePartySongs(LocalParty.sharedParty.partyID!)
                     } else {
                         showMessages("Well, this is awkward", detailLine: "We're not really sure what happened, try refreshing the party!")
                         hideSongsTable(true)
@@ -123,52 +135,57 @@ extension PartySongsViewController: UITableViewDataSource {
     }
     
     func tableView(tableView: UITableView!, cellForRowAtIndexPath indexPath: NSIndexPath!) -> UITableViewCell! {
-        let songCell = songsTable.dequeueReusableCellWithIdentifier(PartySongCellIndentifier, forIndexPath: indexPath) as PartySongCell
+        var songCell = songsTable.dequeueReusableCellWithIdentifier(PartySongCellIndentifier, forIndexPath: indexPath) as PartySongCell
         
         if indexPath.row <= LocalParty.sharedParty.songs.count {
             var song = LocalParty.sharedParty.songs[indexPath.row]
-            
+        
             songCell.songID = song.songID
             
-            songCell.songName.text = ""
-            songCell.songArtist.text = ""
+            if song.name != nil {
+                songCell.songName.text = song.name!
+                
+                // Make the label text be left-aligned if the text is too big
+                let stringSize = (song.name! as NSString).sizeWithAttributes([NSFontAttributeName: songCell.songName.font])
+                if (stringSize.width + 3) > songCell.songName.frame.width {
+                    songCell.songName.textAlignment = NSTextAlignment.Left
+                }
+            }
             
-            SongStore.sharedStore.songInformationForSong(&song,
-                completion: {
-                    // The cell could be reused before the information is ready, so make sure the correct one is being set
-                    var correctCell = self.songsTable.cellForRowAtIndexPath(indexPath) as PartySongCell
-                    
-                    if song.name != nil {
-                        correctCell.songName.text = song.name!
+            if song.artistName != nil {
+                songCell.songArtist.text = song.artistName!
+                
+                // Make the label text be left-aligned if the text is too big
+                let stringSize = (song.artistName! as NSString).sizeWithAttributes([NSFontAttributeName: songCell.songArtist.font])
+                if (stringSize.width + 3) > songCell.songArtist.frame.width {
+                    songCell.songArtist.textAlignment = NSTextAlignment.Left
+                }
+            }
+            
+            if song.artworkURL != nil {
+                let largerArtworkURL = song.artworkURL!.replaceSubstringWithString("-large.jpg", newSubstring: "-t500x500.jpg")
+                
+                SDWebImageManager.sharedManager().downloadImageWithURL(NSURL(string: largerArtworkURL), options: nil, progress: nil,
+                    completed: { image, error, cacheType, boolValue, url in
+                        // Make sure it's still the correct cell
+                        let updateCell = self.songsTable.cellForRowAtIndexPath(indexPath) as? PartySongCell
                         
-                        // Make the label text be left-aligned if the text is too big
-                        let stringSize = (song.name! as NSString).sizeWithAttributes([NSFontAttributeName: correctCell.songName.font])
-                        if (stringSize.width + 3) > correctCell.songName.frame.width {
-                            correctCell.songName.textAlignment = NSTextAlignment.Left
+                        if updateCell != nil {
+                            // If the cell for that row is still visible and correct
+                            
+                            if error == nil && image != nil {
+                                updateCell!.songImage.image = cropImageCenterFromSideEdgesWhilePreservingAspectRatio(withWidth: 640, withHeight: self.heightForRows * 2.0, image: image)
+                            } else {
+                                updateCell!.songImage.image = nil
+                                updateCell!.songImage.backgroundColor = randomOneSoundUIColor()
+                            }
                         }
                     }
-                    
-                    if song.artistName != nil {
-                        correctCell.songArtist.text = song.artistName!
-                    }
-                    
-                    if song.artworkURL != nil {
-                        SDWebImageManager.sharedManager().downloadImageWithURL(NSURL(string: song.artworkURL!), options: nil, progress: nil,
-                            completed: { image, error, cacheType, boolValue, url in
-                                if error == nil {
-                                    // Make sure it's still the correct cell
-                                    correctCell = self.songsTable.cellForRowAtIndexPath(indexPath) as PartySongCell
-                                    correctCell.songImage.image = cropImageCenterFromSideEdgesWhilePreservingAspectRatio(withWidth: 640, withHeight: 128, image: image)
-                                    
-                                }
-                            }
-                        )
-                    }
-                }, failureAddOn: {
-                    songCell.songName.text = "Could Not Download"
-                    songCell.songArtist.text = "Try refreshing the page"
-                }
-            )
+                )
+            } else {
+                songCell.songImage.image = nil
+                songCell.songImage.backgroundColor = randomOneSoundUIColor()
+            }
         }
         
         return songCell
@@ -177,6 +194,6 @@ extension PartySongsViewController: UITableViewDataSource {
 
 extension PartySongsViewController: UITableViewDelegate {
     func tableView(tableView: UITableView!, heightForRowAtIndexPath indexPath: NSIndexPath!) -> CGFloat {
-        return 64.0
+        return heightForRows
     }
 }

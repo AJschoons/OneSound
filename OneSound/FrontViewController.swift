@@ -13,6 +13,12 @@ let FrontViewControllerNibName = "FrontViewController"
 class FrontViewController: UIViewController {
     
     var pL = true
+    
+    @IBAction func resetImageCache(sender: AnyObject) {
+        SDWebImageManager.sharedManager().imageCache.clearMemory()
+        SDWebImageManager.sharedManager().imageCache.clearDisk()
+    }
+    
     @IBAction func resetUserInfo(sender: AnyObject) {
         println("deleted all user info")
         let user = LocalUser.sharedUser
@@ -34,40 +40,6 @@ class FrontViewController: UIViewController {
         revealController.tapGestureRecognizer()
         let revealButtonItem = UIBarButtonItem(image: UIImage(named: "sideMenuToggleIcon"), style: UIBarButtonItemStyle.Plain, target: revealController, action: "revealToggle:")
         navigationItem.leftBarButtonItem = revealButtonItem
-        
-        /*
-        for i in 1...4 {
-            OSAPI.sharedClient.GETUser(i,
-                success: { data, responseObject in
-                    let responseJSON = JSONValue(responseObject)
-                    println(responseJSON)
-                    let user = User(json: responseJSON)
-                    println(user.description())
-                },
-                failure: defaultAFHTTPFailureBlock
-            )
-        }
-    
-        for i in 1...4 {
-            OSAPI.sharedClient.GETUserFollowing(i,
-                success: { data, responseObject in
-                    let responseJSON = JSONValue(responseObject)
-                    println(responseJSON)
-                },
-                failure: defaultAFHTTPFailureBlock
-            )
-        }
-        
-        for i in 1...4 {
-            OSAPI.sharedClient.GETUserFollowers(i,
-                success: { data, responseObject in
-                    let responseJSON = JSONValue(responseObject)
-                    println(responseJSON)
-                },
-                failure: defaultAFHTTPFailureBlock
-            )
-        }
-        */
     }
 }
 

@@ -198,7 +198,7 @@ func cropImageCenterFromSideEdgesWhilePreservingAspectRatio(withWidth width: CGF
     let newHeight = scaleFactorForHeight * height
     
     let posX: CGFloat = 0
-    let posY: CGFloat = (originalSize.height / 2.0 ) + (newHeight / 2.0)
+    let posY: CGFloat = (originalSize.height / 2.0 ) - (newHeight / 2.0)
     
     let cropSquare = CGRectMake(posX, posY, originalSize.width, newHeight)
     
@@ -291,6 +291,20 @@ func intFormattedToShortStringForDisplay(num: Int) -> String {
         return formatFirstThreeDigitsOfIntFromBaseWithPostfix(numberToFormat: posNum, baseOfNumber: 100, "M")
     default:
         return "MAX"
+    }
+}
+
+func timeInSecondsToFormattedMinSecondTimeLabelString(durationInSeconds: Int!) -> String {
+    if durationInSeconds {
+        let numberOfMinutes: Int = durationInSeconds / 60
+        let numberOfRemainingSeconds: Int = durationInSeconds % 60
+        if numberOfRemainingSeconds < 10 {
+            return "\(numberOfMinutes):0\(numberOfRemainingSeconds)"
+        } else {
+            return "\(numberOfMinutes):\(numberOfRemainingSeconds)"
+        }
+    } else {
+        return "no duration"
     }
 }
 

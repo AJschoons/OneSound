@@ -40,6 +40,9 @@ enum PartyStrictnessOption: Int {
     }
 }
 
+let LocalPartySongInformationDidChangeNotification = "LocalPartySongInformationDidChange"
+let LocalPartyMemberInformationDidChangeNotification = "LocalPartyMemberInformationDidChange"
+
 class LocalParty: NSObject {
     
     var delegate: LocalPartyDelegate!
@@ -314,7 +317,12 @@ extension LocalParty {
             success: { data, responseObject in
                 let responseJSON = JSONValue(responseObject)
                 self.currentSong = Song(json: responseJSON)
-                SongStore.sharedStore.songInformationForSong(&self.currentSong!, completion: completion, failureAddOn: failureAddOn)
+                SongStore.sharedStore.songInformationForSong(self.currentSong!,
+                    completion: { song in
+                        if completion != nil {
+                            completion!()
+                        }
+                    }, failureAddOn: failureAddOn)
             }, failure: { task, error in
                 var shouldDoDefaultFailureBlock = true
                 
@@ -449,6 +457,9 @@ extension LocalParty {
         if completion != nil {
             completion!()
         }
+        
+        NSNotificationCenter.defaultCenter().postNotificationName(LocalPartySongInformationDidChangeNotification, object: nil)
+        
         println("UPDATED PARTY WITH \(self.members.count) MEMBERS")
     }
     
@@ -466,6 +477,8 @@ extension LocalParty {
         if completion != nil {
             completion!()
         }
+        
+        NSNotificationCenter.defaultCenter().postNotificationName(LocalPartySongInformationDidChangeNotification, object: nil)
         
         /*
         while songsToGet {

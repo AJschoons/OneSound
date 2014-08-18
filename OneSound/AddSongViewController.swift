@@ -10,6 +10,7 @@ import UIKit
 
 let AddSongViewControllerNibName = "AddSongViewController"
 let SongSearchResultCellIdentifier = "SongSearchResultCell"
+let PartySongWasAddedNotification = "PartySongWasAdded"
 
 class AddSongViewController: UIViewController {
 
@@ -26,31 +27,40 @@ class AddSongViewController: UIViewController {
         return formatter
     }()
     
+    let heightForRows: CGFloat = 64.0
+    
     func search() {
         searchResultsArray = [SongSearchResult]()
         searchResultsTable.reloadData()
         loadingAnimationShouldBeAnimating(true)
         
-        SCClient.sharedClient.searchSoundCloudForSongWithString(replaceSpacesWithASCIISpaceCodeForURL(songSearchTextField.text),
+        SCClient.sharedClient.searchSoundCloudForSongWithString(songSearchTextField.text,
             success: {data, responseObject in
                 let responseJSON = JSONValue(responseObject)
                 //println(responseJSON)
                 let songsArray = responseJSON.array
-                println(songsArray!)
-                println(songsArray!.count)
+                //println(songsArray!)
+                //println(songsArray!.count)
                 
                 var newSongSearchResults = [SongSearchResult]()
                 
                 if songsArray != nil {
                     for result in songsArray! {
+                        println(result)
                         let source = "sc"
                         let id = result["id"].integer
                         let name = result["title"].string
                         let artistName = result["user"]["username"].string
-                        let duration = result["duration"].integer
+                        var duration = result["duration"].integer
+                        let artworkURL = result["artwork_url"].string
                         let playbacks = result["playback_count"].integer
                         
-                        newSongSearchResults.append(SongSearchResult(source: source, externalID: id!, name: name, artistName: artistName, duration: duration, numberOfPlaybacks: playbacks))
+                        if duration != nil {
+                            // Soundcloud duration is returned in milliseconds; convert to seconds
+                            duration! /= 1000
+                        }
+                        
+                        newSongSearchResults.append(SongSearchResult(source: source, externalID: id!, name: name!, artistName: artistName!, duration: duration!, artworkURL: artworkURL, numberOfPlaybacks: playbacks))
                     }
                 }
                 
@@ -133,7 +143,7 @@ extension AddSongViewController: UITableViewDataSource {
 
         var nameText: String = (result.name != nil) ? result.name! : ""
         var artistText: String = (result.artistName != nil) ? "Uploaded by \(result.artistName!)" : ""
-        var durationText: String = (result.duration != nil) ? timeInMillisecondsToFormattedMinSecondTimeLabelString(result.duration!) : ""
+        var durationText: String = (result.duration != nil) ? timeInSecondsToFormattedMinSecondTimeLabelString(result.duration!) : ""
         var popularityText: String = (result.numberOfPlaybacks != nil) ? "\(thousandsFormatter.stringFromNumber(NSNumber(integer: result.numberOfPlaybacks!))) playbacks" : ""
         
         cell.nameLabel.text = nameText
@@ -152,9 +162,11 @@ extension AddSongViewController: UITableViewDelegate {
         
         if LocalUser.sharedUser.setup == true {
             if LocalParty.sharedParty.setup == true {
-                OSAPI.sharedClient.POSTSong(LocalParty.sharedParty.partyID, externalID: selectedSong.externalID, source: source, userID: LocalUser.sharedUser.id, userAPIToken: LocalUser.sharedUser.apiToken,
+
+                OSAPI.sharedClient.POSTSong(LocalParty.sharedParty.partyID, externalID: selectedSong.externalID, source: source, title: selectedSong.name, artist: selectedSong.artistName, duration: selectedSong.duration, artworkURL: selectedSong.artworkURL, userID: LocalUser.sharedUser.id, userAPIToken: LocalUser.sharedUser.apiToken,
                     success: { data, responseObject in
                         self.dismissViewControllerAnimated(true, completion: nil)
+                        NSNotificationCenter.defaultCenter().postNotificationName(PartySongWasAddedNotification, object: nil)
                     }, failure: { task, error in
                         self.dismissViewControllerAnimated(true, completion: nil)
                         let alert = UIAlertView(title: "Problem Adding Song", message: "The song could not be added to the playlist, please try a different song", delegate: nil, cancelButtonTitle: "Ok")
@@ -172,7 +184,7 @@ extension AddSongViewController: UITableViewDelegate {
     }
     
     func tableView(tableView: UITableView!, heightForRowAtIndexPath indexPath: NSIndexPath!) -> CGFloat {
-        return 64.0
+        return heightForRows
     }
 }
 
