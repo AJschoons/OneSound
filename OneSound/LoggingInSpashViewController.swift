@@ -33,7 +33,7 @@ class LoggingInSpashViewController: UIViewController {
     }
     
     override func viewWillAppear(animated: Bool) {
-        navigationController.setNavigationBarHidden(true, animated: animated)
+        navigationController!.setNavigationBarHidden(true, animated: animated)
         animatedOneSoundOne!.startAnimating()
         super.viewWillAppear(animated)
     }

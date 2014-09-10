@@ -16,16 +16,6 @@ typealias actionClosure = () -> ()
 
 extension Array {
     // TODO: Update these array extensions to work w/o bridging to Obj C if they become needed
-    /*
-    func contains(#object:AnyObject) -> Bool {
-        return self.bridgeToObjectiveC().containsObject(object)
-    }
-    
-    func indexOf(#object:AnyObject) -> Int {
-        return self.bridgeToObjectiveC().indexOfObject(object)
-    }
-    */
-    
     mutating func moveObjectAtIndex(fromIndex: Int, toIndex: Int) {
         if ((fromIndex == toIndex) || (fromIndex > self.count) ||
             (toIndex > self.count)) {
@@ -181,7 +171,7 @@ func downloadImageWithURLString(urlString: String, completion: (success: Bool, i
     let request = NSMutableURLRequest(URL: NSURL(string: urlString))
     NSURLConnection.sendAsynchronousRequest(request, queue: NSOperationQueue.mainQueue(),
         completionHandler: { response, data, error in
-            if !error {
+            if error != nil {
                 let image = UIImage(data: data)
                 completion(success: true, image: image)
             } else {
@@ -295,7 +285,7 @@ func intFormattedToShortStringForDisplay(num: Int) -> String {
 }
 
 func timeInSecondsToFormattedMinSecondTimeLabelString(durationInSeconds: Int!) -> String {
-    if durationInSeconds {
+    if durationInSeconds != nil {
         let numberOfMinutes: Int = durationInSeconds / 60
         let numberOfRemainingSeconds: Int = durationInSeconds % 60
         if numberOfRemainingSeconds < 10 {
@@ -309,7 +299,7 @@ func timeInSecondsToFormattedMinSecondTimeLabelString(durationInSeconds: Int!) -
 }
 
 func timeInMillisecondsToFormattedMinSecondTimeLabelString(durationInMilliseconds: Int!) -> String {
-    if durationInMilliseconds {
+    if durationInMilliseconds != nil {
         let timeInSeconds: Int = durationInMilliseconds / 1000
         let numberOfMinutes: Int = timeInSeconds / 60
         let numberOfRemainingSeconds: Int = timeInSeconds % 60

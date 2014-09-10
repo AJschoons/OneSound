@@ -29,6 +29,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var panGestureStartedFrom: FrontViewPosition = FrontViewPositionRightMostRemoved
     // FrontViewPositionRightMostRemoved so it won't init as a used/relevant enum val
     
+    var songTableViewImageCache = SDImageCache(namespace: "songTableViewImages")
+    
     var pL = false
 
     func application(application: UIApplication!, didFinishLaunchingWithOptions launchOptions: NSDictionary!) -> Bool {
@@ -99,7 +101,7 @@ extension AppDelegate {
             // If no facebook token, check for guest user
             println("Cached facebook token unavailable, check for guest user")
             
-            var userID: Int? = SSKeychain.passwordForService(service, account: userIDKeychainKey) ? SSKeychain.passwordForService(service, account: userIDKeychainKey).toInt() : nil
+            var userID: Int? = SSKeychain.passwordForService(service, account: userIDKeychainKey) != nil ? SSKeychain.passwordForService(service, account: userIDKeychainKey).toInt() : nil
             var userAPIToken: String? = SSKeychain.passwordForService(service, account: userAPITokenKeychainKey)
             
             if userID == nil || userAPIToken == nil {
@@ -207,7 +209,7 @@ extension AppDelegate {
         
         // Handle the session state
         // Usually the only interesting states are opened session, closed session, and failed login
-        if !error && state ==  FBSessionState.Open { //FBSessionStateOpen {
+        if error == nil && state == FBSessionState.Open { //FBSessionStateOpen {
             println("Facebook session state change: Open")
             
             let accessTokenData = session.accessTokenData
@@ -216,7 +218,7 @@ extension AppDelegate {
             //println("Facebook session UID:\(userFBID)")
             //println("Facebook session access token:\(userFBAccessToken)")
             
-            var userID: Int? = SSKeychain.passwordForService(service, account: userIDKeychainKey) ? SSKeychain.passwordForService(service, account: userIDKeychainKey).toInt() : nil
+            var userID: Int? = SSKeychain.passwordForService(service, account: userIDKeychainKey) != nil ? SSKeychain.passwordForService(service, account: userIDKeychainKey).toInt() : nil
             var userAPIToken: String? = SSKeychain.passwordForService(service, account: userAPITokenKeychainKey)
             
             if userID != nil && userAPIToken != nil {
@@ -286,6 +288,8 @@ extension AppDelegate {
                 } else {
                     // All other errors handled with generic message
                     // Get more info from the error
+                    // TODO: figure out a way around this issue
+                    /*
                     let errorMessageObject: AnyObject? = error.userInfo["com.facebook.sdk:ParsedJSONResponseKey"]?["body"]?["error"]?["message"]
                     
                     if let errorMessage = errorMessageObject as? String {
@@ -293,7 +297,9 @@ extension AppDelegate {
                         alertText = "Please retry. If the problem persists contact us and mention this error code: \(errorMessage)"
                         let alert = UIAlertView(title: alertTitle, message: alertText, delegate: nil, cancelButtonTitle: "Ok")
                         alert.show()
+
                     }
+                    */
                 }
             }
             // Clear the token for all errors

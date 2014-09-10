@@ -15,7 +15,7 @@ class PartySongsViewController: UIViewController {
 
     let songCellImagePlaceholder = UIImage(named: "songCellImagePlaceholder")
     
-    let partySongsCacheImageManager = SDWebImageManager()
+    let songTableViewImageCache = (UIApplication.sharedApplication().delegate as AppDelegate).songTableViewImageCache
     
     @IBOutlet weak var messageLabel1: UILabel?
     @IBOutlet weak var messageLabel2: UILabel?
@@ -54,7 +54,7 @@ class PartySongsViewController: UIViewController {
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
-        navigationController.visibleViewController.title = "Playlist"
+        navigationController!.visibleViewController.title = "Playlist"
         refresh()
     }
     
@@ -130,16 +130,17 @@ class PartySongsViewController: UIViewController {
 }
 
 extension PartySongsViewController: UITableViewDataSource {
-    func tableView(tableView: UITableView!, numberOfRowsInSection section: Int) -> Int {
+    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return LocalParty.sharedParty.songs.count
     }
     
-    func tableView(tableView: UITableView!, cellForRowAtIndexPath indexPath: NSIndexPath!) -> UITableViewCell! {
+    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         var songCell = songsTable.dequeueReusableCellWithIdentifier(PartySongCellIndentifier, forIndexPath: indexPath) as PartySongCell
         
         if indexPath.row <= LocalParty.sharedParty.songs.count {
             var song = LocalParty.sharedParty.songs[indexPath.row]
-        
+            
+            songCell.songImage.image = songCellImagePlaceholder
             songCell.songID = song.songID
             
             if song.name != nil {
@@ -147,8 +148,10 @@ extension PartySongsViewController: UITableViewDataSource {
                 
                 // Make the label text be left-aligned if the text is too big
                 let stringSize = (song.name! as NSString).sizeWithAttributes([NSFontAttributeName: songCell.songName.font])
-                if (stringSize.width + 3) > songCell.songName.frame.width {
+                if (stringSize.width + 1) > songCell.songName.frame.width {
                     songCell.songName.textAlignment = NSTextAlignment.Left
+                } else {
+                    songCell.songName.textAlignment = NSTextAlignment.Center
                 }
             }
             
@@ -157,43 +160,122 @@ extension PartySongsViewController: UITableViewDataSource {
                 
                 // Make the label text be left-aligned if the text is too big
                 let stringSize = (song.artistName! as NSString).sizeWithAttributes([NSFontAttributeName: songCell.songArtist.font])
-                if (stringSize.width + 3) > songCell.songArtist.frame.width {
+                if (stringSize.width + 1) > songCell.songArtist.frame.width {
                     songCell.songArtist.textAlignment = NSTextAlignment.Left
+                } else {
+                    songCell.songArtist.textAlignment = NSTextAlignment.Center
                 }
             }
             
             if song.artworkURL != nil {
-                let largerArtworkURL = song.artworkURL!.replaceSubstringWithString("-large.jpg", newSubstring: "-t500x500.jpg")
-                
-                SDWebImageManager.sharedManager().downloadImageWithURL(NSURL(string: largerArtworkURL), options: nil, progress: nil,
-                    completed: { image, error, cacheType, boolValue, url in
-                        // Make sure it's still the correct cell
-                        let updateCell = self.songsTable.cellForRowAtIndexPath(indexPath) as? PartySongCell
-                        
-                        if updateCell != nil {
-                            // If the cell for that row is still visible and correct
-                            
-                            if error == nil && image != nil {
-                                updateCell!.songImage.image = cropImageCenterFromSideEdgesWhilePreservingAspectRatio(withWidth: 640, withHeight: self.heightForRows * 2.0, image: image)
-                            } else {
-                                updateCell!.songImage.image = nil
-                                updateCell!.songImage.backgroundColor = randomOneSoundUIColor()
+                if tableView.dragging == false && tableView.decelerating == false {
+                    dispatchAsyncToMainQueue(action: {
+                        let largerArtworkURL = song.artworkURL!.replaceSubstringWithString("-large.jpg", newSubstring: "-t500x500.jpg")
+
+                        self.songTableViewImageCache.queryDiskCacheForKey(largerArtworkURL,
+                            done: { image, imageCacheType in
+                                if image != nil {
+                                    let updateCell = self.songsTable.cellForRowAtIndexPath(indexPath) as? PartySongCell
+                                    
+                                    if updateCell != nil {
+                                        // If the cell for that row is still visible and correct
+                                        updateCell!.songImage.image = image
+                                    }
+                                } else {
+                                    self.startImageDownload(largerArtworkURL, forIndexPath: indexPath)
+                                }
                             }
-                        }
-                    }
-                )
+                        )
+                    })
+                }
             } else {
-                songCell.songImage.image = nil
-                songCell.songImage.backgroundColor = randomOneSoundUIColor()
+                songCell.songImage.image = songCellImagePlaceholder
             }
         }
         
         return songCell
+    }
+    
+    func startImageDownload(urlString: String, forIndexPath indexPath: NSIndexPath) {
+        
+        SDWebImageManager.sharedManager().downloadImageWithURL(NSURL(string: urlString), options: nil, progress: nil,
+            completed: { image, error, cacheType, boolValue, url in
+                // Make sure it's still the correct cell
+                let updateCell = self.songsTable.cellForRowAtIndexPath(indexPath) as? PartySongCell
+                
+                if updateCell != nil {
+                    // If the cell for that row is still visible and correct
+                    
+                    if error == nil && image != nil {
+                        let processedImage = cropImageCenterFromSideEdgesWhilePreservingAspectRatio(withWidth: 640, withHeight: self.heightForRows * 2.0, image: image)
+                        
+                        self.songTableViewImageCache.storeImage(processedImage, forKey: urlString)
+                        
+                        updateCell!.songImage.image = processedImage
+                        updateCell!.songImage.setNeedsLayout()
+                    } else {
+                        updateCell!.songImage.image = self.songCellImagePlaceholder
+                    }
+                }
+            }
+        )
+    }
+    
+    func loadImagesForOnScreenRows() {
+        let visiblePaths = songsTable.indexPathsForVisibleRows() as [NSIndexPath]
+        
+        for path in visiblePaths {
+            let song = LocalParty.sharedParty.songs[path.row]
+            
+            if song.artworkURL != nil {
+                let largerArtworkURL = song.artworkURL!.replaceSubstringWithString("-large.jpg", newSubstring: "-t500x500.jpg")
+                
+                songTableViewImageCache.queryDiskCacheForKey(largerArtworkURL,
+                    done: { image, imageCacheType in
+                        if image != nil {
+                            let updateCell = self.songsTable.cellForRowAtIndexPath(path) as? PartySongCell
+                            
+                            if updateCell != nil {
+                                // If the cell for that row is still visible and correct
+                                updateCell!.songImage.image = image
+                                updateCell!.songImage.setNeedsLayout()
+                            }
+                        } else {
+                            self.startImageDownload(largerArtworkURL, forIndexPath: path)
+                        }
+                    }
+                )
+            } else {
+                let updateCell = self.songsTable.cellForRowAtIndexPath(path) as? PartySongCell
+                
+                if updateCell != nil {
+                    // If the cell for that row is still visible and correct
+                    updateCell!.songImage.image = songCellImagePlaceholder
+                }
+            }
+        }
     }
 }
 
 extension PartySongsViewController: UITableViewDelegate {
     func tableView(tableView: UITableView!, heightForRowAtIndexPath indexPath: NSIndexPath!) -> CGFloat {
         return heightForRows
+    }
+}
+
+extension PartySongsViewController: UIScrollViewDelegate {
+    // Load the images for all onscreen rows when scrolling is finished
+    
+    // Called on finger up if the user dragged. Decelerate is true if it will continue moving afterwards
+    func scrollViewDidEndDragging(scrollView: UIScrollView!, willDecelerate decelerate: Bool) {
+        // Load the images for the cells if it won't be moving afterwards
+        if !decelerate {
+            loadImagesForOnScreenRows()
+        }
+    }
+    
+    // Called when the scroll view grinds to a halt
+    func scrollViewDidEndDecelerating(scrollView: UIScrollView!) {
+        loadImagesForOnScreenRows()
     }
 }

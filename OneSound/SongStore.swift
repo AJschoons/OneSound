@@ -118,7 +118,7 @@ class SongStore: NSObject {
                 songsWithAudioBeingDownloaded.add(key)
                 SCClient.sharedClient.downloadSoundCloudSongData(key,
                     completion: { data, response, error in
-                        if !error {
+                        if error == nil {
                             completion(data)
                             // If the song downloads w/o an error then cache it
                             self._privateSongAudioDictionary.updateValue(data, forKey: key)

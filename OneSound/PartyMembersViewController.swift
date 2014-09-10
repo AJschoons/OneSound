@@ -34,7 +34,7 @@ class PartyMembersViewController: UIViewController {
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
-        navigationController.visibleViewController.title = "Members"
+        navigationController!.visibleViewController.title = "Members"
         refresh()
     }
     
@@ -109,11 +109,11 @@ class PartyMembersViewController: UIViewController {
 }
 
 extension PartyMembersViewController: UITableViewDataSource {
-    func tableView(tableView: UITableView!, numberOfRowsInSection section: Int) -> Int {
+    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return LocalParty.sharedParty.members.count
     }
     
-    func tableView(tableView: UITableView!, cellForRowAtIndexPath indexPath: NSIndexPath!) -> UITableViewCell! {
+    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let membersCell = membersTable.dequeueReusableCellWithIdentifier(PartyMemberCellIdentifier, forIndexPath: indexPath) as PartyMemberCell
         
         if indexPath.row <= LocalParty.sharedParty.members.count {

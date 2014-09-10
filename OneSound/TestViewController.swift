@@ -17,7 +17,7 @@ class TestViewController: UIViewController {
         view.backgroundColor = UIColor.blueColor()
     }
     
-    override func touchesBegan(touches: NSSet!, withEvent event: UIEvent!) {
+    override func touchesBegan(touches: NSSet, withEvent event: UIEvent) {
         dismissViewControllerAnimated(true, completion: nil)
     }
 

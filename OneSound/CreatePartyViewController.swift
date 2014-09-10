@@ -47,7 +47,7 @@ class CreatePartyViewController: UITableViewController {
         
         navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Cancel, target: self, action: "cancel")
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Done, target: self, action: "done")
-        navigationItem.rightBarButtonItem.enabled = false
+        navigationItem.rightBarButtonItem!.enabled = false
         
         // Initialize the text field's delegate and character count label
         nameCellTextField.delegate = self
@@ -157,9 +157,9 @@ class CreatePartyViewController: UITableViewController {
             */
         } else {
             if countElements(nameCellTextField.text as String) > 2 {
-                navigationItem.rightBarButtonItem.enabled = true
+                navigationItem.rightBarButtonItem!.enabled = true
             } else {
-                navigationItem.rightBarButtonItem.enabled = false
+                navigationItem.rightBarButtonItem!.enabled = false
             }
         }
     }
@@ -192,11 +192,11 @@ class CreatePartyViewController: UITableViewController {
 }
 
 extension CreatePartyViewController: UITableViewDataSource {
-    override func tableView(tableView: UITableView!, numberOfRowsInSection section: Int) -> Int {
+    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return 1
     }
     
-    override func tableView(tableView: UITableView!, cellForRowAtIndexPath indexPath: NSIndexPath!) -> UITableViewCell! {
+    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         switch indexPath.section {
         case 0:
             return nameCell
@@ -210,13 +210,13 @@ extension CreatePartyViewController: UITableViewDataSource {
         }
     }
     
-    override func numberOfSectionsInTableView(tableView: UITableView!) -> Int {
+    override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
         return 3
     }
 }
 
 extension CreatePartyViewController: UITableViewDelegate {
-    override func tableView(tableView: UITableView!, didSelectRowAtIndexPath indexPath: NSIndexPath!) {
+    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         switch indexPath.section {
         case 0:
             // Selecting anywhere in the first cell will start editing text field
@@ -224,7 +224,7 @@ extension CreatePartyViewController: UITableViewDelegate {
             nameCellTextField.becomeFirstResponder()
         case 2:
             let createPartyStrictnessViewController = CreatePartyStrictnessViewController(delegate: self, selectedStrictness: strictness)
-            navigationController.pushViewController(createPartyStrictnessViewController, animated: true)
+            navigationController!.pushViewController(createPartyStrictnessViewController, animated: true)
         default:
             return
         }
@@ -262,6 +262,6 @@ extension CreatePartyViewController: CreatePartyStrictnessViewControllerDelegate
             setDoneButtonState()
         }
         
-        navigationController.popViewControllerAnimated(true)
+        navigationController!.popViewControllerAnimated(true)
     }
 }

@@ -64,12 +64,12 @@ class PartyMainViewController: UIViewController {
         super.viewWillAppear(animated)
         if LocalParty.sharedParty.setup == true {
             if LocalParty.sharedParty.name != nil {
-                navigationController.visibleViewController.title = LocalParty.sharedParty.name
+                navigationController!.visibleViewController.title = LocalParty.sharedParty.name
             } else {
-                navigationController.visibleViewController.title = "Party"
+                navigationController!.visibleViewController.title = "Party"
             }
         } else {
-            navigationController.visibleViewController.title = "Party"
+            navigationController!.visibleViewController.title = "Party"
         }
         
         refresh()

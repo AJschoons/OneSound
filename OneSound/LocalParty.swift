@@ -100,7 +100,7 @@ class LocalParty: NSObject {
         var success1 = audioSession!.setCategory(AVAudioSessionCategoryPlayback, error: setCategoryError)
         if !success1 {
             println("not successful 1")
-            if setCategoryError {
+            if setCategoryError != nil {
                 println("ERROR with set category")
                 println(setCategoryError)
             }
@@ -124,62 +124,68 @@ class LocalParty: NSObject {
                         delegate.hideMessages()
                         delegate.setPartyInfoHidden(false)
                         
-                        updateCurrentSong(LocalUser.sharedUser.party!,
-                            completion: {
-                                println("audioPlayerIsPlaying (in refresh): \(self.audioPlayerIsPlaying)")
+                        if userIsHost {
+                            if audioPlayerHasAudioToPlay == false {
                                 
-                                if self.audioPlayerIsPlaying {
-                                    self.delegate.setAudioPlayerButtonsForPlaying(true)
-                                    println("party audio is playing, no need to change anything")
-                                } else {
-                                    if self.playingSongID == nil || self.playingSongID != 143553285 {
-                                        // Need to get the song and update info
-                                        println("need to get the song and update info")
-                                        // TODO: check for upcoming songs
-                                        // TODO: add image that says to add a song
-                                        
-                                        SongStore.sharedStore.songAudioForKey(143553285, completion: {
-                                            song in
-                                            if song != nil {
-                                                println("song was not nil")
-                                                var errorPtr = NSErrorPointer()
-                                                self.audioPlayer = AVAudioPlayer(data: song!, error: errorPtr)
-                                                println("*** SONG IS \(((Double(song!.length) / 1024.0) / 1024.0)) Mb ***")
-                                                
-                                                if !errorPtr {
-                                                    println("no error")
-                                                    self.updateDelegateSongInformation(143553285)
-                                                    self.playingSongID = 143553285
-                                                    self.audioPlayerHasAudioToPlay = true
-                                                    self.delegate.setAudioPlayerButtonsForPlaying(false)
+                            }
+                        } else {
+                            updateCurrentSong(LocalUser.sharedUser.party!,
+                                completion: {
+                                    println("audioPlayerIsPlaying (in refresh): \(self.audioPlayerIsPlaying)")
+                                    
+                                    if self.audioPlayerIsPlaying {
+                                        self.delegate.setAudioPlayerButtonsForPlaying(true)
+                                        println("party audio is playing, no need to change anything")
+                                    } else {
+                                        if self.playingSongID == nil || self.playingSongID != 143553285 {
+                                            // Need to get the song and update info
+                                            println("need to get the song and update info")
+                                            // TODO: check for upcoming songs
+                                            // TODO: add image that says to add a song
+                                            
+                                            SongStore.sharedStore.songAudioForKey(143553285, completion: {
+                                                song in
+                                                if song != nil {
+                                                    println("song was not nil")
+                                                    var errorPtr = NSErrorPointer()
+                                                    self.audioPlayer = AVAudioPlayer(data: song!, error: errorPtr)
+                                                    println("*** SONG IS \(((Double(song!.length) / 1024.0) / 1024.0)) Mb ***")
+                                                    
+                                                    if errorPtr == nil {
+                                                        println("no error")
+                                                        self.updateDelegateSongInformation(143553285)
+                                                        self.playingSongID = 143553285
+                                                        self.audioPlayerHasAudioToPlay = true
+                                                        self.delegate.setAudioPlayerButtonsForPlaying(false)
+                                                    } else {
+                                                        println("there was an error")
+                                                        println("ERROR: \(errorPtr)")
+                                                        self.delegate.showMessages("Well, this is awkward", detailLine: "The song could not be played, please try adding another")
+                                                        self.delegate.setPartyInfoHidden(true)
+                                                    }
                                                 } else {
-                                                    println("there was an error")
-                                                    println("ERROR: \(errorPtr)")
-                                                    self.delegate.showMessages("Well, this is awkward", detailLine: "The song could not be played, please try adding another")
+                                                    println("song WAS nil")
+                                                    // TODO: check for the next available song
+                                                    self.delegate.showMessages("Well, this is awkward", detailLine: "The song was unavailable for download, please try adding another")
                                                     self.delegate.setPartyInfoHidden(true)
                                                 }
-                                            } else {
-                                                println("song WAS nil")
-                                                // TODO: check for the next available song
-                                                self.delegate.showMessages("Well, this is awkward", detailLine: "The song was unavailable for download, please try adding another")
-                                                self.delegate.setPartyInfoHidden(true)
-                                            }
-                                            }
-                                        )
-                                        
-                                    } else {
-                                        // Don't need to get the song info
-                                        self.delegate.setAudioPlayerButtonsForPlaying(false)
-                                        println("don't need to get the song audio")
+                                                }
+                                            )
+                                            
+                                        } else {
+                                            // Don't need to get the song info
+                                            self.delegate.setAudioPlayerButtonsForPlaying(false)
+                                            println("don't need to get the song audio")
+                                        }
                                     }
+                                }, noCurrentSong: {
+                                    self.delegate.setSongImageForNoSongHidden(false)
+                                }, failureAddOn: {
+                                    self.delegate.setPartyInfoHidden(true)
+                                    self.delegate.showMessages("Unable to load current song", detailLine: "Please check internet connection and refresh the party")
                                 }
-                            }, noCurrentSong: {
-                                self.delegate.setSongImageForNoSongHidden(false)
-                            }, failureAddOn: {
-                                self.delegate.setPartyInfoHidden(true)
-                                self.delegate.showMessages("Unable to load current song", detailLine: "Please check internet connection and refresh the party")
-                            }
-                        )
+                            )
+                        }
                     } else {
                         if shouldTryAnotherRefresh {
                             shouldTryAnotherRefresh = false
@@ -232,7 +238,7 @@ class LocalParty: NSObject {
             success1 = audioSession!.setCategory(AVAudioSessionCategoryPlayback, error: setCategoryError)
             if !success1 {
                 println("not successful 1")
-                if setCategoryError {
+                if setCategoryError != nil {
                     println("ERROR with set category")
                     println(setCategoryError)
                 }
@@ -242,7 +248,7 @@ class LocalParty: NSObject {
             success2 = audioSession!.setActive(true, error: activationError)
             if !success2 {
                 println("not successful 2")
-                if activationError {
+                if activationError != nil {
                     println("ERROR with set active")
                     println(activationError)
                 }
@@ -520,6 +526,8 @@ extension LocalParty {
     func audioPlayerInterruption(n: NSNotification) {
         println("AVAudioSessionInterruptionNotification")
         if userIsHost {
+            // TODO: figure out a way around this error
+            /*
             let userInfo = n.userInfo as NSDictionary
             let interruptionType = userInfo[AVAudioSessionInterruptionTypeKey] as UInt
             switch interruptionType {
@@ -547,6 +555,7 @@ extension LocalParty {
             default:
                 println("ERROR interruption type was neither began or ended")
             }
+            */
         }
     }
     

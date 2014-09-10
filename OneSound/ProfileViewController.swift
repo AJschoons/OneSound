@@ -345,7 +345,7 @@ extension ProfileViewController: LoginViewControllerDelegate {
 }
 
 extension ProfileViewController: UITableViewDataSource {
-    func tableView(tableView: UITableView!, numberOfRowsInSection section: Int) -> Int {
+    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if UIScreen.mainScreen().bounds.height < 500 {
             // For iPhones w/ shorter screen show 2 cells
             return 3
@@ -355,7 +355,7 @@ extension ProfileViewController: UITableViewDataSource {
         }
     }
     
-    func tableView(tableView: UITableView!, cellForRowAtIndexPath indexPath: NSIndexPath!) -> UITableViewCell! {
+    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         // TODO: add functionality for stories
         let cell = storiesTable!.dequeueReusableCellWithIdentifier(storyCellIdentifier, forIndexPath: indexPath) as StoryTableViewCell
         cell.storyLabel.text = storyTableStories[indexPath.row]

@@ -28,7 +28,7 @@ class LoginColorViewController: UITableViewController {
         super.init(nibName: nil, bundle: nil)
     }
     
-    required init(coder aDecoder: NSCoder!) {
+    required init(coder aDecoder: NSCoder) {
         // TODO: find a way to actually save the delegate in color; simply forced to do this for now so did this garbage work
         delegate = nil
         selectedColor = .Random
@@ -53,11 +53,11 @@ class LoginColorViewController: UITableViewController {
 }
 
 extension LoginColorViewController: UITableViewDataSource {
-    override func tableView(tableView: UITableView!, numberOfRowsInSection section: Int) -> Int {
+    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return colorNames.count
     }
     
-    override func tableView(tableView: UITableView!, cellForRowAtIndexPath indexPath: NSIndexPath!) -> UITableViewCell! {
+    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier(colorCellReuseIdentifier, forIndexPath: indexPath) as LoginColorCell
         cell.colorLabel.text = colorNames[indexPath.row].toRaw()
         cell.colorView.backgroundColor = colorViewColors[indexPath.row]
@@ -74,21 +74,21 @@ extension LoginColorViewController: UITableViewDataSource {
 }
 
 extension LoginColorViewController: UITableViewDelegate {
-    override func tableView(tableView: UITableView!, heightForRowAtIndexPath indexPath: NSIndexPath!) -> CGFloat {
+    override func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
         return 44
     }
     
-    override func tableView(tableView: UITableView!, didSelectRowAtIndexPath indexPath: NSIndexPath!) {
+    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         // Remove checkmark from previously selected cell
         let previousSelectedCell = tableView.cellForRowAtIndexPath(NSIndexPath(forRow: selectedIndex, inSection: 0))
-        previousSelectedCell.accessoryType = UITableViewCellAccessoryType.None
+        previousSelectedCell!.accessoryType = UITableViewCellAccessoryType.None
         
         // Update the selected index
         selectedIndex = indexPath.row
         
         // Add checkmark to selected cell
         let selectedCell = tableView.cellForRowAtIndexPath(indexPath)
-        selectedCell.accessoryType = UITableViewCellAccessoryType.Checkmark
+        selectedCell!.accessoryType = UITableViewCellAccessoryType.Checkmark
         
         // Update the selectedColor, return that color to the delegate
         selectedColor = colorNames[indexPath.row]

@@ -24,6 +24,8 @@ class PartySongCell: UITableViewCell {
         
         setupTHLabelToDefaultDesiredLook(songName)
         setupTHLabelToDefaultDesiredLook(songArtist)
+        songName.textInsets = UIEdgeInsets(top: 0, left: 2, bottom: 0, right: 2)
+        songArtist.textInsets = UIEdgeInsets(top: 0, left: 2, bottom: 0, right: 2)
         
         selectionStyle = UITableViewCellSelectionStyle.None
     }

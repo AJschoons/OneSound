@@ -59,7 +59,7 @@ class LocalUser {
     //var email: String?
     
     var colorToUIColor: UIColor {
-    if !color {
+    if color == nil {
         setRandomColor()
     }
         

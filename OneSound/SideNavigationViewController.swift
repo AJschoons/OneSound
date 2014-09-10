@@ -82,11 +82,11 @@ class SideNavigationViewController: UITableViewController {
 
 extension SideNavigationViewController: UITableViewDataSource {
     
-    override func tableView(tableView: UITableView!, numberOfRowsInSection section: Int) -> Int {
+    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return 7
     }
     
-    override func tableView(tableView: UITableView!, cellForRowAtIndexPath indexPath: NSIndexPath!) -> UITableViewCell? {
+    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         printlnC(pL, pG, "SideNavigationViewController: cellForRowAtIndexPath")
         var cell: UITableViewCell?
         
@@ -110,13 +110,13 @@ extension SideNavigationViewController: UITableViewDataSource {
             cell = menuCell
         }
         
-        return cell
+        return cell!
     }
 }
 
 extension SideNavigationViewController: UITableViewDelegate {
     
-    override func tableView(tableView: UITableView!, didSelectRowAtIndexPath indexPath: NSIndexPath!) {
+    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         
         // If a menu row
         if indexPath.row > 0 {
@@ -131,7 +131,7 @@ extension SideNavigationViewController: UITableViewDelegate {
         }
     }
     
-    override func tableView(tableView: UITableView!, heightForRowAtIndexPath indexPath: NSIndexPath!) -> CGFloat {
+    override func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
         if indexPath.row == 0   {
             return topCellHeight
         } else {
@@ -139,7 +139,7 @@ extension SideNavigationViewController: UITableViewDelegate {
         }
     }
     
-    override func tableView(tableView: UITableView!, shouldHighlightRowAtIndexPath indexPath: NSIndexPath!) -> Bool {
+    override func tableView(tableView: UITableView, shouldHighlightRowAtIndexPath indexPath: NSIndexPath) -> Bool {
         if indexPath.row == 0 {
             return false
         } else {

@@ -87,7 +87,7 @@ class AddSongViewController: UIViewController {
         navigationItem.title = "Add Song"
         navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Cancel, target: self, action: "cancel")
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Search", style: UIBarButtonItemStyle.Plain, target: self, action: "search")
-        navigationItem.rightBarButtonItem.enabled = false
+        navigationItem.rightBarButtonItem!.enabled = false
 
         let nib = UINib(nibName: SongSearchResultCellNibName, bundle: nil)
         searchResultsTable.registerNib(nib, forCellReuseIdentifier: SongSearchResultCellIdentifier)
@@ -110,9 +110,9 @@ class AddSongViewController: UIViewController {
     
     func textFieldDidChange() {
         if countElements(songSearchTextField.text as String) > 0 {
-            navigationItem.rightBarButtonItem.enabled = true
+            navigationItem.rightBarButtonItem!.enabled = true
         } else {
-            navigationItem.rightBarButtonItem.enabled = false
+            navigationItem.rightBarButtonItem!.enabled = false
         }
     }
     
@@ -133,11 +133,11 @@ class AddSongViewController: UIViewController {
 }
 
 extension AddSongViewController: UITableViewDataSource {
-    func tableView(tableView: UITableView!, numberOfRowsInSection section: Int) -> Int {
+    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return searchResultsArray.count
     }
     
-    func tableView(tableView: UITableView!, cellForRowAtIndexPath indexPath: NSIndexPath!) -> UITableViewCell! {
+    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = searchResultsTable.dequeueReusableCellWithIdentifier(SongSearchResultCellIdentifier, forIndexPath: indexPath) as SongSearchResultCell
         let result = searchResultsArray[indexPath.row]
 

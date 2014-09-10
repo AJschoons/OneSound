@@ -16,10 +16,10 @@ typealias AFHTTPFailureBlock = ((task: NSURLSessionDataTask!, error: NSError!) -
 typealias repeatBlock = () -> ()
 
 let defaultAFHTTPFailureBlock: AFHTTPFailureBlock = { task, error in
-    if task {
+    if task != nil {
         //println(error.userInfo)
         // TODO: find a way to get the status code server response from errors
-        if error {
+        if error != nil {
             var alertView: UIAlertView
             let code = error.code
             println("ERROR: has the following code... \(code)")
@@ -48,8 +48,8 @@ let defaultAFHTTPFailureBlock: AFHTTPFailureBlock = { task, error in
 
 func errorShouldBeHandledWithRepeatedRequest(task: NSURLSessionDataTask!, error: NSError!, attemptsLeft: Int? = nil) -> Bool {
     var shouldRepeatRequest = false
-    if task {
-        if error {
+    if task != nil {
+        if error != nil {
             let code = error.code
             if code == -1001 || code == -1003 || code == -1004 || code == -1005 || code == -1009 || code == -1011 {
                 // If timed out, cannot find host, cannot connect to host, connection lost, not connected to internet, server 500 code equivalent
