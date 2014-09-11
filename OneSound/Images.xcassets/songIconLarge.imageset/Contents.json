@@ -12,6 +12,11 @@
       "idiom" : "universal",
       "scale" : "2x",
       "filename" : "songIconLarge@2x.png"
+    },
+    {
+      "idiom" : "universal",
+      "scale" : "3x",
+      "filename" : "songIconLarge@3x.png"
     }
   ],
   "info" : {

@@ -12,6 +12,11 @@
       "idiom" : "universal",
       "scale" : "2x",
       "filename" : "toolbarShadow@2x.png"
+    },
+    {
+      "idiom" : "universal",
+      "scale" : "3x",
+      "filename" : "toolbarShadow@3x.png"
     }
   ],
   "info" : {

@@ -12,6 +12,11 @@
       "idiom" : "universal",
       "scale" : "2x",
       "filename" : "upvoteIconSmall@2x.png"
+    },
+    {
+      "idiom" : "universal",
+      "scale" : "3x",
+      "filename" : "upvoteIconSmall@3x.png"
     }
   ],
   "info" : {

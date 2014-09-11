@@ -12,6 +12,11 @@
       "idiom" : "universal",
       "scale" : "2x",
       "filename" : "partyTabBarPartyIcon@2x.png"
+    },
+    {
+      "idiom" : "universal",
+      "scale" : "3x",
+      "filename" : "partyTabBarPartyIcon@3x.png"
     }
   ],
   "info" : {

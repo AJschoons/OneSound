@@ -12,6 +12,11 @@
       "idiom" : "universal",
       "scale" : "2x",
       "filename" : "sideMenuFollowingIconUnselected@2x.png"
+    },
+    {
+      "idiom" : "universal",
+      "scale" : "3x",
+      "filename" : "sideMenuFollowingIconUnselected@3x.png"
     }
   ],
   "info" : {
