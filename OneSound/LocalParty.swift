@@ -17,7 +17,8 @@ protocol LocalPartyDelegate {
     func hideMessages()
     func setPartySongInfo(songName: String, songArtist: String, songTime: String)
     func setPartySongImage(image: UIImage?, backgroundColor: UIColor?)
-    func setSongImageOverlayHidden(shouldBeHidden: Bool, withImage image: UIImage?)
+    func setPartySongImageOverlayHidden(shouldBeHidden: Bool, withImage image: UIImage?)
+    func setPartySongImageOverlayToLoadingAnimation(isLoading: Bool)
 }
 
 enum PartyStrictnessOption: Int {
@@ -147,9 +148,9 @@ class LocalParty: NSObject {
                                 disallowGetNextSongCallTemporarily()
                                 getNextSongForDelegate()
                             } else if !audioPlayerHasAudioToPlay && audioIsDownloading {
-                                delegate.setSongImageOverlayHidden(true, withImage: nil)
+                                delegate.setPartySongImageOverlayHidden(true, withImage: nil)
                             } else {
-                                delegate.setSongImageOverlayHidden(true, withImage: nil)
+                                delegate.setPartySongImageOverlayHidden(true, withImage: nil)
                             }
                         } else {
                             updateCurrentSong(LocalUser.sharedUser.party!,
@@ -203,7 +204,7 @@ class LocalParty: NSObject {
                                         }
                                     }
                                 }, noCurrentSong: {
-                                    self.delegate.setSongImageOverlayHidden(false, withImage: songImageForNoSongToPlay)
+                                    self.delegate.setPartySongImageOverlayHidden(false, withImage: songImageForNoSongToPlay)
                                 }, failureAddOn: {
                                     self.delegate.setPartyInfoHidden(true)
                                     self.delegate.showMessages("Unable to load current song", detailLine: "Please check internet connection and refresh the party")
@@ -259,7 +260,7 @@ class LocalParty: NSObject {
                 )
             }, noCurrentSong: {
                 self.audioIsDownloading = false
-                self.delegate.setSongImageOverlayHidden(false, withImage: songImageForNoSongToPlay)
+                self.delegate.setPartySongImageOverlayHidden(false, withImage: songImageForNoSongToPlay)
             }, failureAddOn: {
                 self.audioIsDownloading = false
                 self.delegate.setPartyInfoHidden(true)
@@ -270,7 +271,7 @@ class LocalParty: NSObject {
     
     func setDelegatePreparedToPlaySong(songData: NSData?) {
         audioIsDownloading = false
-        delegate.setSongImageOverlayHidden(true, withImage: nil)
+        delegate.setPartySongImageOverlayHidden(true, withImage: nil)
         
         if songData != nil {
             println("song was not nil")
@@ -286,7 +287,7 @@ class LocalParty: NSObject {
                 self.playingSongID = self.currentSong!.externalID
                 self.audioPlayerHasAudioToPlay = true
                 self.delegate.setAudioPlayerButtonsForPlaying(true)
-                self.audioPlayer!.play()
+                self.playSong()
             } else {
                 println("there was an error")
                 println("ERROR: \(errorPtr)")
@@ -360,6 +361,7 @@ class LocalParty: NSObject {
     
     func pauseSong() {
         println("pauseSong")
+        println("audioSession:\(audioSession)   audioPlayer:\(audioPlayer != nil)   audioToPlay:\(audioPlayerHasAudioToPlay)   playing\(audioPlayerIsPlaying)")
         if audioSession != nil && audioPlayer != nil && audioPlayerHasAudioToPlay && audioPlayerIsPlaying {
             audioPlayer!.pause()
             audioPlayerIsPlaying = false
@@ -412,7 +414,7 @@ class LocalParty: NSObject {
                                     self.songImageCache.storeImage(image, forKey: largerArtworkURL)
                                     self.delegate.setPartySongImage(image, backgroundColor: nil)
                                 } else {
-                                    self.delegate.setPartySongImage(songImageForNoSongArtwork, backgroundColor: nil)
+                                    self.delegate.setPartySongImageOverlayHidden(false, withImage: songImageForNoSongArtwork)
                                 }
                             }
                         )

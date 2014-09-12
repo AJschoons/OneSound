@@ -27,6 +27,8 @@ class PartyMainViewController: UIViewController {
     @IBOutlet weak var songArtistLabel: THLabel?
     @IBOutlet weak var songTimeLabel: THLabel?
     
+    var songImageForLoadingSong: UIImageView!
+    
     @IBAction func play(sender: AnyObject) {
         LocalParty.sharedParty.playSong()
     }
@@ -55,6 +57,11 @@ class PartyMainViewController: UIViewController {
         songArtistLabel!.shadowColor = UIColor(white: 0, alpha: 0.3)
         songTimeLabel!.textInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 5)
         songTimeLabel!.shadowColor = UIColor(white: 0, alpha: 0.3)
+        
+        // Setup loading animation
+        songImageForLoadingSong = UIImageView()
+        songImageForLoadingSong.animationImages = [loadingSong2, loadingSong1, loadingSong0, loadingSong1]
+        songImageForLoadingSong.animationDuration = 1.5
         
         hideMessages()
         setPartyInfoHidden(true)
@@ -101,7 +108,7 @@ class PartyMainViewController: UIViewController {
         }
     }
     
-    func setSongImageOverlayHidden(shouldBeHidden: Bool, withImage image: UIImage? = nil) {
+    func setPartySongImageOverlayHidden(shouldBeHidden: Bool, withImage image: UIImage? = nil) {
         if shouldBeHidden {
             songImageOverlay.hidden = true
             songImageOverlay.image = nil
@@ -113,6 +120,15 @@ class PartyMainViewController: UIViewController {
                 songImageOverlay.image = nil
                 songImageOverlay.hidden = true
             }
+        }
+    }
+    
+    func setPartySongImageOverlayToLoadingAnimation(isLoading: Bool) {
+        if isLoading {
+            songImageOverlay = songImageForLoadingSong
+            songImageOverlay.startAnimating()
+        } else {
+            songImageOverlay.stopAnimating()
         }
     }
     

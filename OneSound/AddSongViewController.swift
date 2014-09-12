@@ -46,7 +46,7 @@ class AddSongViewController: UIViewController {
                 
                 if songsArray != nil {
                     for result in songsArray! {
-                        println(result)
+                        //println(result)
                         let source = "sc"
                         let id = result["id"].integer
                         let name = result["title"].string
