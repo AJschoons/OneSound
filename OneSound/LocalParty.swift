@@ -59,13 +59,11 @@ class LocalParty: NSObject {
     var songCache = [Int : NSData]()
     
     var setup = false
-    var shouldRefresh = false
     
     var audioPlayer: AVAudioPlayer?
     var audioSession: AVAudioSession?
     var songProgressTimer: NSTimer?
     var partyRefreshTimer: NSTimer!
-    var appStartDelayTimer: NSTimer!
     var recentNextSongCallTimer: NSTimer?
     
     var userIsHost = false
@@ -87,9 +85,7 @@ class LocalParty: NSObject {
     override init() {
         super.init()
         
-        appStartDelayTimer = NSTimer.scheduledTimerWithTimeInterval(5.0, target: self, selector: "allowRefreshing", userInfo: nil, repeats: false)
-        
-        partyRefreshTimer = NSTimer.scheduledTimerWithTimeInterval(15, target: self, selector: "refreshIfReady", userInfo: nil, repeats: true)
+        partyRefreshTimer = NSTimer.scheduledTimerWithTimeInterval(15, target: self, selector: "refresh", userInfo: nil, repeats: true)
         
         // Should help the AVAudioPlayer move to the next song when in background?
         // http://stackoverflow.com/questions/9660488/ios-avaudioplayer-doesnt-continue-to-next-song-while-in-background
@@ -116,28 +112,16 @@ class LocalParty: NSObject {
     
     func disallowGetNextSongCallTemporarily() {
         recentlyGotNextSong = true
-        NSTimer.scheduledTimerWithTimeInterval(3.0, target: self, selector: "allowGetNextSongCall", userInfo: nil, repeats: false)
+        NSTimer.scheduledTimerWithTimeInterval(1.0, target: self, selector: "allowGetNextSongCall", userInfo: nil, repeats: false)
     }
     
     func allowGetNextSongCall() {
         recentlyGotNextSong = false
     }
     
-    func allowRefreshing() {
-        shouldRefresh = true
-    }
-    
-    func refreshIfReady() {
-        if shouldRefresh {
-            refresh()
-        }
-    }
-    
     func refreshForUserInfoChange() {
         setup = false
-        if shouldRefresh {
-            refresh()
-        }
+        refresh()
     }
     
     func refresh() {
@@ -151,56 +135,16 @@ class LocalParty: NSObject {
                         println("party is setup")
                         delegate.hideMessages()
                         delegate.setPartyInfoHidden(false)
-                        
                         println("user is host: \(userIsHost)")
                         
                         if userIsHost {
                             if !audioPlayerHasAudioToPlay && !audioIsDownloading && !recentlyGotNextSong {
                                 disallowGetNextSongCallTemporarily()
-                                
-                                getNextSong(LocalUser.sharedUser.party!,
-                                    completion: {
-                                        self.audioIsDownloading = true
-                                        SongStore.sharedStore.songAudioForKey(self.currentSong!.externalID,
-                                            completion: { songData in
-                                                self.audioIsDownloading = false
-                                                
-                                                if songData != nil {
-                                                    println("song was not nil")
-                                                    
-                                                    var errorPtr = NSErrorPointer()
-                                                    self.audioPlayer = AVAudioPlayer(data: songData!, error: errorPtr)
-                                                    println("*** SONG IS \(((Double(songData!.length) / 1024.0) / 1024.0)) Mb ***")
-                                                    
-                                                    if errorPtr == nil {
-                                                        println("no error")
-                                                        self.updateDelegateSongInformation()
-                                                        self.playingSongID = self.currentSong!.externalID
-                                                        self.audioPlayerHasAudioToPlay = true
-                                                        self.delegate.setAudioPlayerButtonsForPlaying(false)
-                                                    } else {
-                                                        println("there was an error")
-                                                        println("ERROR: \(errorPtr)")
-                                                        self.delegate.showMessages("Well, this is awkward", detailLine: "The song could not be played, please try adding another")
-                                                        self.delegate.setPartyInfoHidden(true)
-                                                    }
-                                                } else {
-                                                    println("song WAS nil")
-                                                    // TODO: check for the next available song
-                                                    self.delegate.showMessages("Well, this is awkward", detailLine: "The song was unavailable for download, please try adding another")
-                                                    self.delegate.setPartyInfoHidden(true)
-                                                }
-                                            }
-                                        )
-                                    }, noCurrentSong: {
-                                        self.audioIsDownloading = false
-                                        self.delegate.setSongImageForNoSongHidden(false)
-                                    }, failureAddOn: {
-                                        self.audioIsDownloading = false
-                                        self.delegate.setPartyInfoHidden(true)
-                                        self.delegate.showMessages("Unable to load current song", detailLine: "Please check internet connection and refresh the party")
-                                    }
-                                )
+                                getNextSongForDelegate()
+                            } else if !audioPlayerHasAudioToPlay && audioIsDownloading {
+                                delegate.setSongImageForNoSongHidden(true)
+                            } else {
+                                delegate.setSongImageForNoSongHidden(true)
                             }
                         } else {
                             updateCurrentSong(LocalUser.sharedUser.party!,
@@ -296,6 +240,56 @@ class LocalParty: NSObject {
             delegate.showMessages("Not connected to the internet", detailLine: "Please connect to the internet to use One Sound")
             delegate.setPartyInfoHidden(true)
             //disableButtons()
+        }
+    }
+    
+    func getNextSongForDelegate() {
+        getNextSong(LocalUser.sharedUser.party!,
+            completion: {
+                self.audioIsDownloading = true
+                SongStore.sharedStore.songAudioForKey(self.currentSong!.externalID,
+                    completion: { songData in
+                        self.setDelegatePreparedToPlaySong(songData)
+                    }
+                )
+            }, noCurrentSong: {
+                self.audioIsDownloading = false
+                self.delegate.setSongImageForNoSongHidden(false)
+            }, failureAddOn: {
+                self.audioIsDownloading = false
+                self.delegate.setPartyInfoHidden(true)
+                self.delegate.showMessages("Unable to load current song", detailLine: "Please check internet connection and refresh the party")
+            }
+        )
+    }
+    
+    func setDelegatePreparedToPlaySong(songData: NSData?) {
+        self.audioIsDownloading = false
+        
+        if songData != nil {
+            println("song was not nil")
+            
+            var errorPtr = NSErrorPointer()
+            self.audioPlayer = AVAudioPlayer(data: songData!, error: errorPtr)
+            println("*** SONG IS \(((Double(songData!.length) / 1024.0) / 1024.0)) Mb ***")
+            
+            if errorPtr == nil {
+                println("no error")
+                self.updateDelegateSongInformation()
+                self.playingSongID = self.currentSong!.externalID
+                self.audioPlayerHasAudioToPlay = true
+                self.delegate.setAudioPlayerButtonsForPlaying(false)
+            } else {
+                println("there was an error")
+                println("ERROR: \(errorPtr)")
+                self.delegate.showMessages("Well, this is awkward", detailLine: "The song could not be played, please try adding another")
+                self.delegate.setPartyInfoHidden(true)
+            }
+        } else {
+            println("song WAS nil")
+            // TODO: check for the next available song
+            self.delegate.showMessages("Well, this is awkward", detailLine: "The song was unavailable for download, please try adding another")
+            self.delegate.setPartyInfoHidden(true)
         }
     }
     
