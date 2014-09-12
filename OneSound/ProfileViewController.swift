@@ -241,7 +241,7 @@ class ProfileViewController: UIViewController {
         
         let defaults = NSUserDefaults.standardUserDefaults()
         let userSavedName = defaults.objectForKey(userNameKey) as? String
-        if (userSavedName != nil) {
+        if userSavedName != nil {
             // If user information can be retreived (assumes getting ANY user info means the rest is saved)
             println("found userSavedName; assuming that means the rest of info is saved")
             let userSavedIsGuest = defaults.boolForKey(userGuestKey)
@@ -252,12 +252,23 @@ class ProfileViewController: UIViewController {
                     println("image data for full user valid, use their image and set up other info")
                     let userUpvoteCount = defaults.integerForKey(userUpvoteCountKey)
                     let userSongCount = defaults.integerForKey(userSongCountKey)
-                    
-                    userImage!.image = UIImage(data: imageData)
+    
                     userNameLabel!.text = userSavedName
                     userUpvoteLabel!.text = intFormattedToShortStringForDisplay(userUpvoteCount)
                     userSongLabel!.text = intFormattedToShortStringForDisplay(userSongCount)
                     userHotnessLabel!.text = "XX%"
+                    
+                    if imageData != nil {
+                        userImage!.image = UIImage(data: imageData)
+                    } else {
+                        let userSavedColor = defaults.objectForKey(userColorKey) as? String
+                        if userSavedColor != nil  {
+                            userImage!.backgroundColor = LocalUser.colorToUIColor(userSavedColor!)
+                        } else {
+                            // In case the userSavedColor info can't be retrieved
+                            userImage!.backgroundColor = UIColor.grayDark()
+                        }
+                    }
                     
                     setVisibilityOfUserInfoToHidden(false)
                     

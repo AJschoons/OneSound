@@ -77,9 +77,19 @@ class SideNavigationUserCell: UITableViewCell {
                     // Deal with non-guests here
                     println("found full user info in user defaults")
                     if let imageData = defaults.objectForKey(userPhotoUIImageKey) as? NSData! {
-                        println("image data valid, use their image")
-                        let image = UIImage(data: imageData)
-                        userImage.image = image
+                        if imageData != nil {
+                            println("image data valid, use their image")
+                            let image = UIImage(data: imageData)
+                            userImage.image = image
+                        } else {
+                            println("image data valid but was nil, try using their color")
+                            if userSavedColor != nil  {
+                                userImage.backgroundColor = LocalUser.colorToUIColor(userSavedColor!)
+                            } else {
+                                // In case the userSavedColor info can't be retrieved
+                                userImage.backgroundColor = UIColor.grayDark()
+                            }
+                        }
                     } else {
                         // Couldn't get image
                         println("image data invalid, use their color")

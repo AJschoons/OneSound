@@ -16,30 +16,31 @@ typealias AFHTTPFailureBlock = ((task: NSURLSessionDataTask!, error: NSError!) -
 typealias repeatBlock = () -> ()
 
 let defaultAFHTTPFailureBlock: AFHTTPFailureBlock = { task, error in
-    if task != nil {
+    if task != nil && errorAlertIsShowing == false {
         //println(error.userInfo)
         // TODO: find a way to get the status code server response from errors
         if error != nil {
+            errorAlertIsShowing = true
             var alertView: UIAlertView
             let code = error.code
             println("ERROR: has the following code... \(code)")
             println(error.localizedDescription)
             switch code {
             case -1001:
-                alertView = UIAlertView(title: "Connection Timed Out", message: "Couldn't connect to the server in time, please try again with a better internet connection", delegate: nil, cancelButtonTitle: "Ok")
+                alertView = UIAlertView(title: "Connection Timed Out", message: "Couldn't connect to the server in time, please try again with a better internet connection", delegate: OSAPI.sharedClient, cancelButtonTitle: "Ok")
             case -1003:
-              alertView = UIAlertView(title: "Cannot Find Host", message: "Couldn't find host to connect to, please try again with a better internet connection", delegate: nil, cancelButtonTitle: "Ok")
+              alertView = UIAlertView(title: "Cannot Find Host", message: "Couldn't find host to connect to, please try again with a better internet connection", delegate: OSAPI.sharedClient, cancelButtonTitle: "Ok")
             case -1004:
-                alertView = UIAlertView(title: "Cannot Connect To Host", message: "Couldn't find host to connect to, please try again with a better internet connection", delegate: nil, cancelButtonTitle: "Ok")
+                alertView = UIAlertView(title: "Cannot Connect To Host", message: "Couldn't find host to connect to, please try again with a better internet connection", delegate: OSAPI.sharedClient, cancelButtonTitle: "Ok")
             case -1005:
-                alertView = UIAlertView(title: "Network Connection Lost", message: "Internet connection was lost, please try again with a better connection", delegate: nil, cancelButtonTitle: "Ok")
+                alertView = UIAlertView(title: "Network Connection Lost", message: "Internet connection was lost, please try again with a better connection", delegate: OSAPI.sharedClient, cancelButtonTitle: "Ok")
             case -1009:
-                alertView = UIAlertView(title: "Not Connected To Internet", message: "Internet connection was lost, please try again after reconnecting", delegate: nil, cancelButtonTitle: "Ok")
+                alertView = UIAlertView(title: "Not Connected To Internet", message: "Internet connection was lost, please try again after reconnecting", delegate: OSAPI.sharedClient, cancelButtonTitle: "Ok")
             case -1011:
                 // Should be getting this when the server sends a 500 response code
-                alertView = UIAlertView(title: "Down For Maintenance", message: "OneSound is currently down for maintenance, we will have it back up shortly. Please try again", delegate: nil, cancelButtonTitle: "Ok")
+                alertView = UIAlertView(title: "Down For Maintenance", message: "OneSound is currently down for maintenance, we will have it back up shortly. Please try again", delegate: OSAPI.sharedClient, cancelButtonTitle: "Ok")
             default:
-                alertView = UIAlertView(title: error.localizedDescription, message: error.localizedRecoverySuggestion, delegate: nil, cancelButtonTitle: "Ok")
+                alertView = UIAlertView(title: error.localizedDescription, message: error.localizedRecoverySuggestion, delegate: OSAPI.sharedClient, cancelButtonTitle: "Ok")
             }
             alertView.show()
         }
@@ -317,33 +318,6 @@ extension OSAPI {
         GET(urlString, parameters: nil, success: success, failure: failureWithExtraAttempt)
     }
     
-    // Get the party's current song
-    func GETCurrentSong(pid: Int, success: AFHTTPSuccessBlock, failure: AFHTTPFailureBlock, extraAttempts: Int = defaultEA) {
-        let urlString = "\(baseURLString)party/\(pid)/currentsong"
-        
-        let failureWithExtraAttempt: AFHTTPFailureBlock = { task, error in
-            var shouldConsiderRepeatedRequest = true
-            
-            // Don't try extra attempts for a 404; will be handled by noCurrentSong404
-            if let response = task.response as? NSHTTPURLResponse {
-                if response.statusCode == 404 {
-                    shouldConsiderRepeatedRequest = false
-                    failure!(task: task, error: error)
-                }
-            }
-            
-            if shouldConsiderRepeatedRequest {
-                if errorShouldBeHandledWithRepeatedRequest(task, error, attemptsLeft: extraAttempts) {
-                    self.GETCurrentSong(pid, success: success, failure: failure, extraAttempts: (extraAttempts - 1))
-                } else {
-                    failure!(task: task, error: error)
-                }
-            }
-        }
-        
-        GET(urlString, parameters: nil, success: success, failure: failureWithExtraAttempt)
-    }
-    
     // Create a new party
     func POSTParty(partyName: String, partyPrivacy: Bool, partyStrictness: Int, userID: Int, userAPIToken: String, success: AFHTTPSuccessBlock, failure: AFHTTPFailureBlock, extraAttempts: Int = defaultEA) {
 
@@ -406,9 +380,36 @@ extension OSAPI {
         POST(urlString, parameters: params, success: success, failure: failure)
     }
     
+    // Get the party's current song
+    func GETCurrentSong(pid: Int, success: AFHTTPSuccessBlock, failure: AFHTTPFailureBlock, extraAttempts: Int = defaultEA) {
+        let urlString = "\(baseURLString)party/\(pid)/currentsong"
+        
+        let failureWithExtraAttempt: AFHTTPFailureBlock = { task, error in
+            var shouldConsiderRepeatedRequest = true
+            
+            // Don't try extra attempts for a 404; will be handled by noCurrentSong404
+            if let response = task.response as? NSHTTPURLResponse {
+                if response.statusCode == 404 {
+                    shouldConsiderRepeatedRequest = false
+                    failure!(task: task, error: error)
+                }
+            }
+            
+            if shouldConsiderRepeatedRequest {
+                if errorShouldBeHandledWithRepeatedRequest(task, error, attemptsLeft: extraAttempts) {
+                    self.GETCurrentSong(pid, success: success, failure: failure, extraAttempts: (extraAttempts - 1))
+                } else {
+                    failure!(task: task, error: error)
+                }
+            }
+        }
+        
+        GET(urlString, parameters: nil, success: success, failure: failureWithExtraAttempt)
+    }
+    
     func GETNextSong(pid: Int, userID: Int, userAPIToken: String, success: AFHTTPSuccessBlock, failure: AFHTTPFailureBlock, extraAttempts: Int = defaultEA) {
         
-        let urlString = "\(pid)/nextsong"
+        let urlString = "party/\(pid)/nextsong"
         
         // Create parameters to pass
         var params = Dictionary<String, AnyObject>()
@@ -423,7 +424,13 @@ extension OSAPI {
             }
         }
         
-        POST(urlString, parameters: params, success: success, failure: failure)
+        GET(urlString, parameters: params, success: success, failure: failure)
         
+    }
+}
+
+extension OSAPI: UIAlertViewDelegate {
+    func alertView(alertView: UIAlertView, clickedButtonAtIndex buttonIndex: Int) {
+        errorAlertIsShowing = false
     }
 }

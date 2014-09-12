@@ -51,6 +51,7 @@ class SongStore: NSObject {
         _privateSongAudioDictionary.updateValue(audio, forKey: key)
     }
     
+    /*
     func songInformationForSong(song: Song, completion: (Song) -> (), failureAddOn: completionClosure? = nil) {
         let key = song.externalID
         
@@ -105,6 +106,7 @@ class SongStore: NSObject {
             completion(result!)
         }
     }
+    */
     
     func songAudioForKey(key: Int, completion: (NSData?) -> () ) {
         // If possible, get it from the dictionary

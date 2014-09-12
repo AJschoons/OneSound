@@ -238,7 +238,7 @@ extension PartySongsViewController: UITableViewDataSource {
                             if updateCell != nil {
                                 // If the cell for that row is still visible and correct
                                 updateCell!.songImage.image = image
-                                updateCell!.songImage.setNeedsLayout()
+                                //updateCell!.songImage.setNeedsLayout()
                             }
                         } else {
                             self.startImageDownload(largerArtworkURL, forIndexPath: path)

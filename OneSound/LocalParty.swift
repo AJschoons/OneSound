@@ -59,15 +59,20 @@ class LocalParty: NSObject {
     var songCache = [Int : NSData]()
     
     var setup = false
+    var shouldRefresh = false
     
     var audioPlayer: AVAudioPlayer?
     var audioSession: AVAudioSession?
     var songProgressTimer: NSTimer?
     var partyRefreshTimer: NSTimer!
+    var appStartDelayTimer: NSTimer!
+    var recentNextSongCallTimer: NSTimer?
     
     var userIsHost = false
     var audioPlayerHasAudioToPlay = false
     var audioPlayerIsPlaying = false
+    var recentlyGotNextSong = false
+    var audioIsDownloading = false
     var playingSongID: Int?
     
     var shouldTryAnotherRefresh = true
@@ -82,7 +87,9 @@ class LocalParty: NSObject {
     override init() {
         super.init()
         
-        partyRefreshTimer = NSTimer.scheduledTimerWithTimeInterval(30, target: self, selector: "refresh", userInfo: nil, repeats: true)
+        appStartDelayTimer = NSTimer.scheduledTimerWithTimeInterval(5.0, target: self, selector: "allowRefreshing", userInfo: nil, repeats: false)
+        
+        partyRefreshTimer = NSTimer.scheduledTimerWithTimeInterval(15, target: self, selector: "refreshIfReady", userInfo: nil, repeats: true)
         
         // Should help the AVAudioPlayer move to the next song when in background?
         // http://stackoverflow.com/questions/9660488/ios-avaudioplayer-doesnt-continue-to-next-song-while-in-background
@@ -107,9 +114,30 @@ class LocalParty: NSObject {
         }
     }
     
+    func disallowGetNextSongCallTemporarily() {
+        recentlyGotNextSong = true
+        NSTimer.scheduledTimerWithTimeInterval(3.0, target: self, selector: "allowGetNextSongCall", userInfo: nil, repeats: false)
+    }
+    
+    func allowGetNextSongCall() {
+        recentlyGotNextSong = false
+    }
+    
+    func allowRefreshing() {
+        shouldRefresh = true
+    }
+    
+    func refreshIfReady() {
+        if shouldRefresh {
+            refresh()
+        }
+    }
+    
     func refreshForUserInfoChange() {
         setup = false
-        refresh()
+        if shouldRefresh {
+            refresh()
+        }
     }
     
     func refresh() {
@@ -124,9 +152,55 @@ class LocalParty: NSObject {
                         delegate.hideMessages()
                         delegate.setPartyInfoHidden(false)
                         
+                        println("user is host: \(userIsHost)")
+                        
                         if userIsHost {
-                            if audioPlayerHasAudioToPlay == false {
+                            if !audioPlayerHasAudioToPlay && !audioIsDownloading && !recentlyGotNextSong {
+                                disallowGetNextSongCallTemporarily()
                                 
+                                getNextSong(LocalUser.sharedUser.party!,
+                                    completion: {
+                                        self.audioIsDownloading = true
+                                        SongStore.sharedStore.songAudioForKey(self.currentSong!.externalID,
+                                            completion: { songData in
+                                                self.audioIsDownloading = false
+                                                
+                                                if songData != nil {
+                                                    println("song was not nil")
+                                                    
+                                                    var errorPtr = NSErrorPointer()
+                                                    self.audioPlayer = AVAudioPlayer(data: songData!, error: errorPtr)
+                                                    println("*** SONG IS \(((Double(songData!.length) / 1024.0) / 1024.0)) Mb ***")
+                                                    
+                                                    if errorPtr == nil {
+                                                        println("no error")
+                                                        self.updateDelegateSongInformation()
+                                                        self.playingSongID = self.currentSong!.externalID
+                                                        self.audioPlayerHasAudioToPlay = true
+                                                        self.delegate.setAudioPlayerButtonsForPlaying(false)
+                                                    } else {
+                                                        println("there was an error")
+                                                        println("ERROR: \(errorPtr)")
+                                                        self.delegate.showMessages("Well, this is awkward", detailLine: "The song could not be played, please try adding another")
+                                                        self.delegate.setPartyInfoHidden(true)
+                                                    }
+                                                } else {
+                                                    println("song WAS nil")
+                                                    // TODO: check for the next available song
+                                                    self.delegate.showMessages("Well, this is awkward", detailLine: "The song was unavailable for download, please try adding another")
+                                                    self.delegate.setPartyInfoHidden(true)
+                                                }
+                                            }
+                                        )
+                                    }, noCurrentSong: {
+                                        self.audioIsDownloading = false
+                                        self.delegate.setSongImageForNoSongHidden(false)
+                                    }, failureAddOn: {
+                                        self.audioIsDownloading = false
+                                        self.delegate.setPartyInfoHidden(true)
+                                        self.delegate.showMessages("Unable to load current song", detailLine: "Please check internet connection and refresh the party")
+                                    }
+                                )
                             }
                         } else {
                             updateCurrentSong(LocalUser.sharedUser.party!,
@@ -142,7 +216,7 @@ class LocalParty: NSObject {
                                             println("need to get the song and update info")
                                             // TODO: check for upcoming songs
                                             // TODO: add image that says to add a song
-                                            
+                                            /*
                                             SongStore.sharedStore.songAudioForKey(143553285, completion: {
                                                 song in
                                                 if song != nil {
@@ -171,6 +245,7 @@ class LocalParty: NSObject {
                                                 }
                                                 }
                                             )
+                                            */
                                             
                                         } else {
                                             // Don't need to get the song info
@@ -318,17 +393,17 @@ class LocalParty: NSObject {
 
 extension LocalParty {
     // MARK: Party networking related code for user's active party
-    func updateCurrentSong(pid: Int, completion: completionClosure? = nil, noCurrentSong: completionClosure? = nil, failureAddOn: completionClosure? = nil) {
-        OSAPI.sharedClient.GETCurrentSong(pid,
+    
+    func getNextSong(pid: Int, completion: completionClosure? = nil, noCurrentSong: completionClosure? = nil, failureAddOn: completionClosure? = nil) {
+        
+        let localUser = LocalUser.sharedUser
+        OSAPI.sharedClient.GETNextSong(pid, userID: localUser.id, userAPIToken: localUser.apiToken,
             success: { data, responseObject in
                 let responseJSON = JSONValue(responseObject)
                 self.currentSong = Song(json: responseJSON)
-                SongStore.sharedStore.songInformationForSong(self.currentSong!,
-                    completion: { song in
-                        if completion != nil {
-                            completion!()
-                        }
-                    }, failureAddOn: failureAddOn)
+                if completion != nil {
+                    completion!()
+                }
             }, failure: { task, error in
                 var shouldDoDefaultFailureBlock = true
                 
@@ -336,7 +411,40 @@ extension LocalParty {
                     println("errorResponseCode:\(response.statusCode)")
                     if response.statusCode == 404 && noCurrentSong != nil {
                         shouldDoDefaultFailureBlock = false
-                        noCurrentSong!()
+                        if noCurrentSong != nil {
+                            noCurrentSong!()
+                        }
+                    }
+                }
+                
+                if shouldDoDefaultFailureBlock == true {
+                    if failureAddOn != nil {
+                        failureAddOn!()
+                    }
+                    defaultAFHTTPFailureBlock!(task: task, error: error)
+                }
+            }
+        )
+    }
+    
+    func updateCurrentSong(pid: Int, completion: completionClosure? = nil, noCurrentSong: completionClosure? = nil, failureAddOn: completionClosure? = nil) {
+        OSAPI.sharedClient.GETCurrentSong(pid,
+            success: { data, responseObject in
+                let responseJSON = JSONValue(responseObject)
+                self.currentSong = Song(json: responseJSON)
+                if completion != nil {
+                    completion!()
+                }
+            }, failure: { task, error in
+                var shouldDoDefaultFailureBlock = true
+                
+                if let response = task.response as? NSHTTPURLResponse {
+                    println("errorResponseCode:\(response.statusCode)")
+                    if response.statusCode == 404 && noCurrentSong != nil {
+                        shouldDoDefaultFailureBlock = false
+                        if noCurrentSong != nil {
+                            noCurrentSong!()
+                        }
                     }
                     
                 }
@@ -370,7 +478,33 @@ extension LocalParty {
         )
     }
     
-    func updateDelegateSongInformation(id: Int) {
+    func updateDelegateSongInformation() {
+        delegate.setPartySongInfo(currentSong!.name, songArtist: currentSong!.artistName, songTime: timeInSecondsToFormattedMinSecondTimeLabelString(currentSong!.duration))
+        /*
+        SDWebImageManager.sharedManager().downloadImageWithURL(currentSong!., options: nil, progress: nil,
+            completed: { image, error, cacheType, boolValue, url in
+                // Make sure it's still the correct cell
+                let updateCell = self.songsTable.cellForRowAtIndexPath(indexPath) as? PartySongCell
+                
+                if updateCell != nil {
+                    // If the cell for that row is still visible and correct
+                    
+                    if error == nil && image != nil {
+                        let processedImage = cropImageCenterFromSideEdgesWhilePreservingAspectRatio(withWidth: 640, withHeight: self.heightForRows * 2.0, image: image)
+                        
+                        self.songTableViewImageCache.storeImage(processedImage, forKey: urlString)
+                        
+                        updateCell!.songImage.image = processedImage
+                        updateCell!.songImage.setNeedsLayout()
+                    } else {
+                        updateCell!.songImage.image = self.songCellImagePlaceholder
+                    }
+                }
+            }
+        )
+        */
+        
+        /*
         SCClient.sharedClient.getSoundCloudSongByID(id,
             success: {data, responseObject in
                 let responseJSON = JSONValue(responseObject)
@@ -398,6 +532,7 @@ extension LocalParty {
             },
             failure: defaultAFHTTPFailureBlock
         )
+        */
     }
     
     func updatePartySongs(pid: Int, completion: completionClosure? = nil) {
@@ -502,6 +637,8 @@ extension LocalParty {
     func updateMainPartyInfoFromJSON(json: JSONValue, completion: completionClosure? = nil) {
         setup = true
         
+        println(json)
+        
         partyID = json["pid"].integer
         isPrivate = json["privacy"].bool
         hostUserID = json["host"].integer
@@ -509,7 +646,7 @@ extension LocalParty {
         strictness = json["strictness"].integer
         
         if hostUserID == LocalUser.sharedUser.id {
-            userIsHost == true
+            userIsHost = true
             println("*** USER IS HOST ***")
         } else {
             userIsHost == false
