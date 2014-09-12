@@ -17,7 +17,7 @@ protocol LocalPartyDelegate {
     func hideMessages()
     func setPartySongInfo(songName: String, songArtist: String, songTime: String)
     func setPartySongImage(image: UIImage?, backgroundColor: UIColor?)
-    func setSongImageForNoSongHidden(shouldBeHidden: Bool)
+    func setSongImageOverlayHidden(shouldBeHidden: Bool, withImage image: UIImage?)
 }
 
 enum PartyStrictnessOption: Int {
@@ -43,7 +43,12 @@ enum PartyStrictnessOption: Int {
 let LocalPartySongInformationDidChangeNotification = "LocalPartySongInformationDidChange"
 let LocalPartyMemberInformationDidChangeNotification = "LocalPartyMemberInformationDidChange"
 
+let songImageForNoSongToPlay = UIImage(named: "songImageForNoSongToPlay")
+let songImageForNoSongArtwork = UIImage(named: "songImageForNoSongArtwork")
+
 class LocalParty: NSObject {
+    
+    let songImageCache = (UIApplication.sharedApplication().delegate as AppDelegate).songImageCache
     
     var delegate: LocalPartyDelegate!
     
@@ -142,9 +147,9 @@ class LocalParty: NSObject {
                                 disallowGetNextSongCallTemporarily()
                                 getNextSongForDelegate()
                             } else if !audioPlayerHasAudioToPlay && audioIsDownloading {
-                                delegate.setSongImageForNoSongHidden(true)
+                                delegate.setSongImageOverlayHidden(true, withImage: nil)
                             } else {
-                                delegate.setSongImageForNoSongHidden(true)
+                                delegate.setSongImageOverlayHidden(true, withImage: nil)
                             }
                         } else {
                             updateCurrentSong(LocalUser.sharedUser.party!,
@@ -198,7 +203,7 @@ class LocalParty: NSObject {
                                         }
                                     }
                                 }, noCurrentSong: {
-                                    self.delegate.setSongImageForNoSongHidden(false)
+                                    self.delegate.setSongImageOverlayHidden(false, withImage: songImageForNoSongToPlay)
                                 }, failureAddOn: {
                                     self.delegate.setPartyInfoHidden(true)
                                     self.delegate.showMessages("Unable to load current song", detailLine: "Please check internet connection and refresh the party")
@@ -254,7 +259,7 @@ class LocalParty: NSObject {
                 )
             }, noCurrentSong: {
                 self.audioIsDownloading = false
-                self.delegate.setSongImageForNoSongHidden(false)
+                self.delegate.setSongImageOverlayHidden(false, withImage: songImageForNoSongToPlay)
             }, failureAddOn: {
                 self.audioIsDownloading = false
                 self.delegate.setPartyInfoHidden(true)
@@ -264,21 +269,24 @@ class LocalParty: NSObject {
     }
     
     func setDelegatePreparedToPlaySong(songData: NSData?) {
-        self.audioIsDownloading = false
+        audioIsDownloading = false
+        delegate.setSongImageOverlayHidden(true, withImage: nil)
         
         if songData != nil {
             println("song was not nil")
             
             var errorPtr = NSErrorPointer()
             self.audioPlayer = AVAudioPlayer(data: songData!, error: errorPtr)
-            println("*** SONG IS \(((Double(songData!.length) / 1024.0) / 1024.0)) Mb ***")
+            self.audioPlayer!.delegate = self
+            println("*** SONG IS \(((Double(songData!.length) / 1024.0) / 1024.0)) MB ***")
             
             if errorPtr == nil {
                 println("no error")
                 self.updateDelegateSongInformation()
                 self.playingSongID = self.currentSong!.externalID
                 self.audioPlayerHasAudioToPlay = true
-                self.delegate.setAudioPlayerButtonsForPlaying(false)
+                self.delegate.setAudioPlayerButtonsForPlaying(true)
+                self.audioPlayer!.play()
             } else {
                 println("there was an error")
                 println("ERROR: \(errorPtr)")
@@ -383,6 +391,45 @@ class LocalParty: NSObject {
             songProgressTimer = nil
         }
     }
+    
+    func updateDelegateSongInformation() {
+        delegate.setPartySongInfo(currentSong!.name, songArtist: currentSong!.artistName, songTime: timeInSecondsToFormattedMinSecondTimeLabelString(currentSong!.duration))
+        updateDelegateSongImage()
+    }
+    
+    func updateDelegateSongImage() {
+        if currentSong!.artworkURL != nil {
+            let largerArtworkURL = currentSong!.artworkURL!.replaceSubstringWithString("-large.jpg", newSubstring: "-t500x500.jpg")
+            
+            songImageCache.queryDiskCacheForKey(largerArtworkURL,
+                done: { image, imageCacheType in
+                    if image != nil {
+                        self.delegate.setPartySongImage(image, backgroundColor: nil)
+                    } else {
+                        SDWebImageManager.sharedManager().downloadImageWithURL(NSURL(string: largerArtworkURL), options: nil, progress: nil,
+                            completed: { image, error, cacheType, boolValue, url in
+                                if error == nil && image != nil {
+                                    self.songImageCache.storeImage(image, forKey: largerArtworkURL)
+                                    self.delegate.setPartySongImage(image, backgroundColor: nil)
+                                } else {
+                                    self.delegate.setPartySongImage(songImageForNoSongArtwork, backgroundColor: nil)
+                                }
+                            }
+                        )
+                    }
+                }
+            )
+        } else {
+            delegate.setPartySongImage(songImageForNoSongArtwork, backgroundColor: nil)
+        }
+    }
+    
+    func resetAllPartyInfo() {
+        audioPlayer = nil
+        audioSession = nil
+        delegate.setPartyInfoHidden(true)
+        delegate.setPartySongImage(nil, backgroundColor: nil)
+    }
 }
 
 extension LocalParty {
@@ -454,6 +501,9 @@ extension LocalParty {
     }
     
     func joinParty(pid: Int, JSONUpdateCompletion: completionClosure? = nil, failureAddOn: completionClosure? = nil) {
+        // Makes it so none of the old info stays if you join a party from an old one
+        resetAllPartyInfo()
+        
         let user = LocalUser.sharedUser
         OSAPI.sharedClient.GETParty(pid, userID: user.id, userAPIToken: user.apiToken,
             success: { data, responseObject in
@@ -471,64 +521,7 @@ extension LocalParty {
             }
         )
     }
-    
-    func updateDelegateSongInformation() {
-        delegate.setPartySongInfo(currentSong!.name, songArtist: currentSong!.artistName, songTime: timeInSecondsToFormattedMinSecondTimeLabelString(currentSong!.duration))
-        /*
-        SDWebImageManager.sharedManager().downloadImageWithURL(currentSong!., options: nil, progress: nil,
-            completed: { image, error, cacheType, boolValue, url in
-                // Make sure it's still the correct cell
-                let updateCell = self.songsTable.cellForRowAtIndexPath(indexPath) as? PartySongCell
-                
-                if updateCell != nil {
-                    // If the cell for that row is still visible and correct
-                    
-                    if error == nil && image != nil {
-                        let processedImage = cropImageCenterFromSideEdgesWhilePreservingAspectRatio(withWidth: 640, withHeight: self.heightForRows * 2.0, image: image)
-                        
-                        self.songTableViewImageCache.storeImage(processedImage, forKey: urlString)
-                        
-                        updateCell!.songImage.image = processedImage
-                        updateCell!.songImage.setNeedsLayout()
-                    } else {
-                        updateCell!.songImage.image = self.songCellImagePlaceholder
-                    }
-                }
-            }
-        )
-        */
-        
-        /*
-        SCClient.sharedClient.getSoundCloudSongByID(id,
-            success: {data, responseObject in
-                let responseJSON = JSONValue(responseObject)
-                //println(responseJSON)
-                let SCSongName = responseJSON["title"].string
-                let SCUserName = responseJSON["user"]["username"].string
-                let SCSongDuration = responseJSON["duration"].integer
-                var SCArtworkURL = responseJSON["artwork_url"].string
-                if SCArtworkURL != nil {
-                    SCArtworkURL = SCArtworkURL!.replaceSubstringWithString("-large.jpg", newSubstring: "-t500x500.jpg")
-                    downloadImageWithURLString(SCArtworkURL!,
-                        { success, image in
-                            if success {
-                                self.delegate.setPartySongImage(image, backgroundColor: nil)
-                            } else {
-                                self.delegate.setPartySongImage(nil, backgroundColor: UIColor.orange())
-                            }
-                        }
-                    )
-                } else {
-                    self.delegate.setPartySongImage(nil, backgroundColor: UIColor.red())
-                }
-                println("\(SCSongName)   \(SCUserName)   \(SCArtworkURL)")
-                self.delegate.setPartySongInfo(SCSongName!, songArtist: SCUserName!, songTime: timeInMillisecondsToFormattedMinSecondTimeLabelString(SCSongDuration!))
-            },
-            failure: defaultAFHTTPFailureBlock
-        )
-        */
-    }
-    
+
     func updatePartySongs(pid: Int, completion: completionClosure? = nil) {
         OSAPI.sharedClient.GETPartyPlaylist(pid,
             success: { data, responseObject in
@@ -649,6 +642,16 @@ extension LocalParty {
         if completion != nil {
             completion!()
         }
+    }
+}
+
+extension LocalParty: AVAudioPlayerDelegate {
+    // MARK: respond to audio playback ENDING (interruptions are handled by avaudio session)
+    
+    func audioPlayerDidFinishPlaying(player: AVAudioPlayer!, successfully flag: Bool) {
+        audioPlayerHasAudioToPlay = false
+        disallowGetNextSongCallTemporarily()
+        getNextSongForDelegate()
     }
 }
 

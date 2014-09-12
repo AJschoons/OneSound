@@ -18,7 +18,7 @@ class PartyMainViewController: UIViewController {
     @IBOutlet weak var messageLabel2: UILabel?
     
     @IBOutlet weak var songImage: UIImageView?
-    @IBOutlet weak var songImageForNoSong: UIImageView!
+    @IBOutlet weak var songImageOverlay: UIImageView!
     @IBOutlet weak var soundcloudLogo: UIImageView?
     @IBOutlet weak var playButton: UIButton?
     @IBOutlet weak var pauseButton: UIButton?
@@ -101,11 +101,18 @@ class PartyMainViewController: UIViewController {
         }
     }
     
-    func setSongImageForNoSongHidden(shouldBeHidden: Bool) {
+    func setSongImageOverlayHidden(shouldBeHidden: Bool, withImage image: UIImage? = nil) {
         if shouldBeHidden {
-            songImageForNoSong.hidden = true
+            songImageOverlay.hidden = true
+            songImageOverlay.image = nil
         } else {
-            songImageForNoSong.hidden = false
+            if image != nil {
+                songImageOverlay.image = image
+                songImageOverlay.hidden = false
+            } else {
+                songImageOverlay.image = nil
+                songImageOverlay.hidden = true
+            }
         }
     }
     
@@ -117,10 +124,10 @@ class PartyMainViewController: UIViewController {
         songTimeLabel!.hidden = hidden
         
         // Only set button visibility for hiding; to show them the player must be checked
-        // Only set the songImageForNoSongPlaying to hidden, don't set it to visible with everything else
+        // Only set the songImageOverlay to hidden, don't set it to visible with everything else
         // When hiding the party info, reset the song labels to empty and the song progress to 0
         if hidden == true {
-            songImageForNoSong.hidden = hidden
+            songImageOverlay.hidden = hidden
             
             playButton!.hidden = hidden
             playButton!.alpha = 0.0
