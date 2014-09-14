@@ -12,13 +12,15 @@ import AVFoundation
 let PartyMainViewControllerNibName = "PartyMainViewController"
 let PlayPauseButtonAnimationTime = 0.2
 
+let songImageForNoSongToPlay = UIImage(named: "noSongToPlay")
+let songImageForNoSongArtwork = UIImage(named: "songImageForNoSongArtwork")
+
 class PartyMainViewController: UIViewController {
     
     @IBOutlet weak var messageLabel1: UILabel?
     @IBOutlet weak var messageLabel2: UILabel?
     
     @IBOutlet weak var songImage: UIImageView?
-    @IBOutlet weak var songImageOverlay: UIImageView!
     @IBOutlet weak var soundcloudLogo: UIImageView?
     @IBOutlet weak var playButton: UIButton?
     @IBOutlet weak var pauseButton: UIButton?
@@ -27,7 +29,8 @@ class PartyMainViewController: UIViewController {
     @IBOutlet weak var songArtistLabel: THLabel?
     @IBOutlet weak var songTimeLabel: THLabel?
     
-    var songImageForLoadingSong: UIImageView!
+    @IBOutlet weak var songImageForLoadingSong: UIImageView!
+    
     
     @IBAction func play(sender: AnyObject) {
         LocalParty.sharedParty.playSong()
@@ -59,9 +62,9 @@ class PartyMainViewController: UIViewController {
         songTimeLabel!.shadowColor = UIColor(white: 0, alpha: 0.3)
         
         // Setup loading animation
-        songImageForLoadingSong = UIImageView()
         songImageForLoadingSong.animationImages = [loadingSong2, loadingSong1, loadingSong0, loadingSong1]
         songImageForLoadingSong.animationDuration = 1.5
+        songImageForLoadingSong.hidden = true
         
         hideMessages()
         setPartyInfoHidden(true)
@@ -84,6 +87,7 @@ class PartyMainViewController: UIViewController {
     
     func updateSongProgress(progress: Float) {
         songProgress!.progress = progress
+        songProgress!.hidden = false
     }
     
     func refresh() {
@@ -91,50 +95,70 @@ class PartyMainViewController: UIViewController {
         LocalParty.sharedParty.refresh()
     }
     
+    func showPartySongInfo() {
+        songNameLabel!.hidden = false
+        songArtistLabel!.hidden = false
+        songTimeLabel!.hidden = false
+        songProgress!.hidden = false
+    }
+    
     func setPartySongInfo(songName: String, songArtist: String, songTime: String) {
-        songNameLabel!.text = songName
-        songArtistLabel!.text = songArtist
-        songTimeLabel!.text = songTime
+        dispatchAsyncToMainQueue(action: {
+            self.songNameLabel!.hidden = false
+            self.songArtistLabel!.hidden = false
+            self.songTimeLabel!.hidden = false
+            
+            self.songNameLabel!.text = songName
+            self.songArtistLabel!.text = songArtist
+            self.songTimeLabel!.text = songTime
+        })
     }
     
-    func setPartySongImage(image: UIImage?, backgroundColor: UIColor?) {
-        if image != nil {
-            songImage!.image = image
-        }
-        
-        if backgroundColor != nil {
-            songImage!.backgroundColor = backgroundColor
-            songImage!.image = nil
-        }
-    }
-    
-    func setPartySongImageOverlayHidden(shouldBeHidden: Bool, withImage image: UIImage? = nil) {
-        if shouldBeHidden {
-            songImageOverlay.hidden = true
-            songImageOverlay.image = nil
-        } else {
-            if image != nil {
-                songImageOverlay.image = image
-                songImageOverlay.hidden = false
+    func setPartySongImage(# songToPlay: Bool, artworkToShow: Bool, loadingSong: Bool, image: UIImage?) {
+        dispatchAsyncToMainQueue(action: {
+            if loadingSong {
+                self.songImage!.hidden = true
+                
+                self.songImageForLoadingSong.hidden = false
+                self.songImageForLoadingSong.startAnimating()
+                self.soundcloudLogo!.hidden = false
+                return
             } else {
-                songImageOverlay.image = nil
-                songImageOverlay.hidden = true
+                self.songImage!.hidden = false
+                
+                self.songImageForLoadingSong.hidden = true
+                self.songImageForLoadingSong.stopAnimating()
             }
-        }
-    }
-    
-    func setPartySongImageOverlayToLoadingAnimation(isLoading: Bool) {
-        if isLoading {
-            songImageOverlay = songImageForLoadingSong
-            songImageOverlay.startAnimating()
-        } else {
-            songImageOverlay.stopAnimating()
-        }
+            
+            if !songToPlay {
+                self.songImage!.image = songImageForNoSongToPlay
+                //songImage = UIImageView(image: songImageForNoSongToPlay)
+                self.soundcloudLogo!.hidden = true
+                return
+            }
+            
+            if !artworkToShow {
+                self.songImage!.image = songImageForNoSongArtwork
+                self.soundcloudLogo!.hidden = false
+                return
+            }
+            
+            self.soundcloudLogo!.hidden = false
+            
+            if image != nil {
+                self.songImage!.image = image
+                //songImage = UIImageView(image: image)
+            } else {
+                self.songImage!.image = songImageForNoSongArtwork
+            }
+        })
     }
     
     func setPartyInfoHidden(hidden: Bool) {
-        songImage!.hidden = hidden
-        soundcloudLogo!.hidden = hidden
+        if songImage != nil {
+            songImage!.hidden = hidden
+        }
+        
         songNameLabel!.hidden = hidden
         songArtistLabel!.hidden = hidden
         songTimeLabel!.hidden = hidden
@@ -143,7 +167,7 @@ class PartyMainViewController: UIViewController {
         // Only set the songImageOverlay to hidden, don't set it to visible with everything else
         // When hiding the party info, reset the song labels to empty and the song progress to 0
         if hidden == true {
-            songImageOverlay.hidden = hidden
+            songImageForLoadingSong.hidden = hidden
             
             playButton!.hidden = hidden
             playButton!.alpha = 0.0
@@ -160,6 +184,7 @@ class PartyMainViewController: UIViewController {
     }
     
     func setAudioPlayerButtonsForPlaying(audioPlayerIsPlaying: Bool) {
+        
         // The song progress should always be visible when there's an audio player
         songProgress!.hidden = false
         songProgress!.alpha = 1.0
@@ -197,21 +222,22 @@ class PartyMainViewController: UIViewController {
     }
     
     func showMessages(mainLine: String?, detailLine: String?) {
+        
         if mainLine != nil {
-            messageLabel1!.alpha = 1
-            messageLabel1!.text = mainLine
+            self.messageLabel1!.alpha = 1
+            self.messageLabel1!.text = mainLine
         }
         if detailLine != nil {
-            messageLabel2!.alpha = 1
-            messageLabel2!.text = detailLine
+            self.messageLabel2!.alpha = 1
+            self.messageLabel2!.text = detailLine
         }
     }
     
     func hideMessages() {
-        messageLabel1!.alpha = 0
-        messageLabel1!.text = ""
-        messageLabel2!.alpha = 0
-        messageLabel2!.text = ""
+        self.messageLabel1!.alpha = 0
+        self.messageLabel1!.text = ""
+        self.messageLabel2!.alpha = 0
+        self.messageLabel2!.text = ""
     }
 }
 
