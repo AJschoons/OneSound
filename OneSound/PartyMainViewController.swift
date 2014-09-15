@@ -103,55 +103,51 @@ class PartyMainViewController: UIViewController {
     }
     
     func setPartySongInfo(songName: String, songArtist: String, songTime: String) {
-        dispatchAsyncToMainQueue(action: {
-            self.songNameLabel!.hidden = false
-            self.songArtistLabel!.hidden = false
-            self.songTimeLabel!.hidden = false
-            
-            self.songNameLabel!.text = songName
-            self.songArtistLabel!.text = songArtist
-            self.songTimeLabel!.text = songTime
-        })
+        songNameLabel!.hidden = false
+        songArtistLabel!.hidden = false
+        songTimeLabel!.hidden = false
+        
+        songNameLabel!.text = songName
+        songArtistLabel!.text = songArtist
+        songTimeLabel!.text = songTime
     }
     
     func setPartySongImage(# songToPlay: Bool, artworkToShow: Bool, loadingSong: Bool, image: UIImage?) {
-        dispatchAsyncToMainQueue(action: {
-            if loadingSong {
-                self.songImage!.hidden = true
-                
-                self.songImageForLoadingSong.hidden = false
-                self.songImageForLoadingSong.startAnimating()
-                self.soundcloudLogo!.hidden = false
-                return
-            } else {
-                self.songImage!.hidden = false
-                
-                self.songImageForLoadingSong.hidden = true
-                self.songImageForLoadingSong.stopAnimating()
-            }
+        if loadingSong {
+            songImage!.hidden = true
             
-            if !songToPlay {
-                self.songImage!.image = songImageForNoSongToPlay
-                //songImage = UIImageView(image: songImageForNoSongToPlay)
-                self.soundcloudLogo!.hidden = true
-                return
-            }
+            songImageForLoadingSong.hidden = false
+            songImageForLoadingSong.startAnimating()
+            soundcloudLogo!.hidden = false
+            return
+        } else {
+            songImage!.hidden = false
             
-            if !artworkToShow {
-                self.songImage!.image = songImageForNoSongArtwork
-                self.soundcloudLogo!.hidden = false
-                return
-            }
-            
-            self.soundcloudLogo!.hidden = false
-            
-            if image != nil {
-                self.songImage!.image = image
-                //songImage = UIImageView(image: image)
-            } else {
-                self.songImage!.image = songImageForNoSongArtwork
-            }
-        })
+            songImageForLoadingSong.hidden = true
+            songImageForLoadingSong.stopAnimating()
+        }
+        
+        if !songToPlay {
+            songImage!.image = songImageForNoSongToPlay
+            //songImage = UIImageView(image: songImageForNoSongToPlay)
+            soundcloudLogo!.hidden = true
+            return
+        }
+        
+        if !artworkToShow {
+            songImage!.image = songImageForNoSongArtwork
+            soundcloudLogo!.hidden = false
+            return
+        }
+        
+        soundcloudLogo!.hidden = false
+        
+        if image != nil {
+            songImage!.image = image
+            //songImage = UIImageView(image: image)
+        } else {
+            songImage!.image = songImageForNoSongArtwork
+        }
     }
     
     func setPartyInfoHidden(hidden: Bool) {
@@ -184,7 +180,6 @@ class PartyMainViewController: UIViewController {
     }
     
     func setAudioPlayerButtonsForPlaying(audioPlayerIsPlaying: Bool) {
-        
         // The song progress should always be visible when there's an audio player
         songProgress!.hidden = false
         songProgress!.alpha = 1.0
@@ -205,8 +200,8 @@ class PartyMainViewController: UIViewController {
                 )
             } else {
                 // Play button is not visible, so just make the pause button active
-                self.pauseButton!.hidden = false
-                self.pauseButton!.alpha = 1.0
+                pauseButton!.hidden = false
+                pauseButton!.alpha = 1.0
             }
         } else {
             // Make play button visible and the pause button inactive
@@ -222,22 +217,21 @@ class PartyMainViewController: UIViewController {
     }
     
     func showMessages(mainLine: String?, detailLine: String?) {
-        
         if mainLine != nil {
-            self.messageLabel1!.alpha = 1
-            self.messageLabel1!.text = mainLine
+            messageLabel1!.alpha = 1
+            messageLabel1!.text = mainLine
         }
         if detailLine != nil {
-            self.messageLabel2!.alpha = 1
-            self.messageLabel2!.text = detailLine
+            messageLabel2!.alpha = 1
+            messageLabel2!.text = detailLine
         }
     }
     
     func hideMessages() {
-        self.messageLabel1!.alpha = 0
-        self.messageLabel1!.text = ""
-        self.messageLabel2!.alpha = 0
-        self.messageLabel2!.text = ""
+        messageLabel1!.alpha = 0
+        messageLabel1!.text = ""
+        messageLabel2!.alpha = 0
+        messageLabel2!.text = ""
     }
 }
 

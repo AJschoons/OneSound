@@ -80,8 +80,12 @@ class PartySongsViewController: UIViewController {
                         // Actually show songs stuff
                         hideMessages()
                         hideSongsTable(false)
-                        
-                        LocalParty.sharedParty.updatePartySongs(LocalParty.sharedParty.partyID!)
+                        LocalParty.sharedParty.updatePartySongs(LocalParty.sharedParty.partyID!, completion: {
+                            dispatchAsyncToMainQueue(action: {
+                                self.songsTable.reloadData()
+                                self.loadImagesForOnScreenRows()
+                            })
+                        })
                     } else {
                         showMessages("Well, this is awkward", detailLine: "We're not really sure what happened, try refreshing the party!")
                         hideSongsTable(true)
@@ -169,24 +173,22 @@ extension PartySongsViewController: UITableViewDataSource {
             
             if song.artworkURL != nil {
                 if tableView.dragging == false && tableView.decelerating == false {
-                    dispatchAsyncToMainQueue(action: {
-                        let largerArtworkURL = song.artworkURL!.replaceSubstringWithString("-large.jpg", newSubstring: "-t500x500.jpg")
+                    let largerArtworkURL = song.artworkURL!.replaceSubstringWithString("-large.jpg", newSubstring: "-t500x500.jpg")
 
-                        self.songTableViewImageCache.queryDiskCacheForKey(largerArtworkURL,
-                            done: { image, imageCacheType in
-                                if image != nil {
-                                    let updateCell = self.songsTable.cellForRowAtIndexPath(indexPath) as? PartySongCell
-                                    
-                                    if updateCell != nil {
-                                        // If the cell for that row is still visible and correct
-                                        updateCell!.songImage.image = image
-                                    }
-                                } else {
-                                    self.startImageDownload(largerArtworkURL, forIndexPath: indexPath)
+                    songTableViewImageCache.queryDiskCacheForKey(largerArtworkURL,
+                        done: { image, imageCacheType in
+                            if image != nil {
+                                let updateCell = self.songsTable.cellForRowAtIndexPath(indexPath) as? PartySongCell
+                                
+                                if updateCell != nil {
+                                    // If the cell for that row is still visible and correct
+                                    updateCell!.songImage.image = image
                                 }
+                            } else {
+                                self.startImageDownload(largerArtworkURL, forIndexPath: indexPath)
                             }
-                        )
-                    })
+                        }
+                    )
                 }
             } else {
                 songCell.songImage.image = songCellImagePlaceholder
@@ -211,10 +213,16 @@ extension PartySongsViewController: UITableViewDataSource {
                         
                         self.songTableViewImageCache.storeImage(processedImage, forKey: urlString)
                         
-                        updateCell!.songImage.image = processedImage
-                        updateCell!.songImage.setNeedsLayout()
+                        dispatchAsyncToMainQueue(action: {
+                            updateCell!.songImage.image = processedImage
+                            updateCell!.songImage.setNeedsLayout()
+                        })
+                        //updateCell!.songImage.setNeedsLayout()
                     } else {
-                        updateCell!.songImage.image = self.songCellImagePlaceholder
+                        dispatchAsyncToMainQueue(action: {
+                            updateCell!.songImage.image = self.songCellImagePlaceholder
+                            updateCell!.songImage.setNeedsLayout()
+                        })
                     }
                 }
             }
@@ -238,7 +246,7 @@ extension PartySongsViewController: UITableViewDataSource {
                             if updateCell != nil {
                                 // If the cell for that row is still visible and correct
                                 updateCell!.songImage.image = image
-                                //updateCell!.songImage.setNeedsLayout()
+                                updateCell!.songImage.setNeedsLayout()
                             }
                         } else {
                             self.startImageDownload(largerArtworkURL, forIndexPath: path)

@@ -115,7 +115,7 @@ class LocalParty: NSObject {
     
     func disallowGetNextSongCallTemporarily() {
         recentlyGotNextSong = true
-        NSTimer.scheduledTimerWithTimeInterval(1.0, target: self, selector: "allowGetNextSongCall", userInfo: nil, repeats: false)
+        NSTimer.scheduledTimerWithTimeInterval(0.3, target: self, selector: "allowGetNextSongCall", userInfo: nil, repeats: false)
     }
     
     func allowGetNextSongCall() {
@@ -136,17 +136,23 @@ class LocalParty: NSObject {
                     if setup == true {
                         // Party is actually setup
                         println("party is setup")
-                        delegate.hideMessages()
-                        delegate.setPartyInfoHidden(false)
+                        dispatchAsyncToMainQueue(action: {
+                            self.delegate.hideMessages()
+                            self.delegate.setPartyInfoHidden(false)
+                        })
                         println("user is host: \(userIsHost)")
                         
                         if userIsHost {
                             if !audioPlayerHasAudioToPlay && !audioIsDownloading && !recentlyGotNextSong {
-                                delegate.setPartySongImage(songToPlay: false, artworkToShow: false, loadingSong: false, image: nil)
+                                dispatchAsyncToMainQueue(action: {
+                                    self.delegate.setPartySongImage(songToPlay: false, artworkToShow: false, loadingSong: false, image: nil)
+                                })
                                 disallowGetNextSongCallTemporarily()
                                 getNextSongForDelegate()
                             } else if !audioPlayerHasAudioToPlay && audioIsDownloading {
-                                delegate.setPartySongImage(songToPlay: false, artworkToShow: false, loadingSong: true, image: nil)
+                                dispatchAsyncToMainQueue(action: {
+                                    self.delegate.setPartySongImage(songToPlay: false, artworkToShow: false, loadingSong: true, image: nil)
+                                })
                             } else {
                                 updateDelegateSongInformation()
                             }
@@ -156,7 +162,9 @@ class LocalParty: NSObject {
                                     println("audioPlayerIsPlaying (in refresh): \(self.audioPlayerIsPlaying)")
                                     
                                     if self.audioPlayerIsPlaying {
-                                        self.delegate.setAudioPlayerButtonsForPlaying(true)
+                                        dispatchAsyncToMainQueue(action: {
+                                            self.delegate.setAudioPlayerButtonsForPlaying(true)
+                                        })
                                         println("party audio is playing, no need to change anything")
                                     } else {
                                         /*
@@ -204,10 +212,14 @@ class LocalParty: NSObject {
                                         */
                                     }
                                 }, noCurrentSong: {
-                                    self.delegate.setPartySongImage(songToPlay: false, artworkToShow: false, loadingSong: false, image: nil)
+                                    dispatchAsyncToMainQueue(action: {
+                                        self.delegate.setPartySongImage(songToPlay: false, artworkToShow: false, loadingSong: false, image: nil)
+                                    })
                                 }, failureAddOn: {
-                                    self.delegate.setPartyInfoHidden(true)
-                                    self.delegate.showMessages("Unable to load current song", detailLine: "Please check internet connection and refresh the party")
+                                    dispatchAsyncToMainQueue(action: {
+                                        self.delegate.setPartyInfoHidden(true)
+                                        self.delegate.showMessages("Unable to load current song", detailLine: "Please check internet connection and refresh the party")
+                                    })
                                 }
                             )
                         }
@@ -225,26 +237,34 @@ class LocalParty: NSObject {
                                 }
                             )
                         } else {
-                            delegate.showMessages("Well, this is awkward", detailLine: "We're not really sure what happened, try refreshing the party!")
-                            delegate.setPartyInfoHidden(true)
+                            dispatchAsyncToMainQueue(action: {
+                                self.delegate.showMessages("Well, this is awkward", detailLine: "We're not really sure what happened, try refreshing the party!")
+                                self.delegate.setPartyInfoHidden(true)
+                            })
                         }
                     }
                 } else {
-                    delegate.showMessages("Not member of a party", detailLine: "Become a party member by joining or creating a party")
-                    delegate.setPartyInfoHidden(true)
+                    dispatchAsyncToMainQueue(action: {
+                        self.delegate.showMessages("Not member of a party", detailLine: "Become a party member by joining or creating a party")
+                        self.delegate.setPartyInfoHidden(true)
+                    })
                 }
             } else {
                 //setUserInfoHidden(true)
                 //setStoriesTableToHidden(true)
-                delegate.showMessages("Not signed into an account", detailLine: "Please connect to the internet and restart One Sound")
-                delegate.setPartyInfoHidden(true)
+                dispatchAsyncToMainQueue(action: {
+                    self.delegate.showMessages("Not signed into an account", detailLine: "Please connect to the internet and restart One Sound")
+                    self.delegate.setPartyInfoHidden(true)
+                })
                 //disableButtons()
             }
         } else {
             //setUserInfoHidden(true)
             //setStoriesTableToHidden(true)
-            delegate.showMessages("Not connected to the internet", detailLine: "Please connect to the internet to use One Sound")
-            delegate.setPartyInfoHidden(true)
+            dispatchAsyncToMainQueue(action: {
+                self.delegate.showMessages("Not connected to the internet", detailLine: "Please connect to the internet to use One Sound")
+                self.delegate.setPartyInfoHidden(true)
+            })
             //disableButtons()
         }
     }
@@ -253,7 +273,9 @@ class LocalParty: NSObject {
         getNextSong(LocalUser.sharedUser.party!,
             completion: {
                 self.audioIsDownloading = true
-                self.delegate.setPartySongImage(songToPlay: false, artworkToShow: false, loadingSong: true, image: nil)
+                dispatchAsyncToMainQueue(action: {
+                    self.delegate.setPartySongImage(songToPlay: false, artworkToShow: false, loadingSong: true, image: nil)
+                })
                 SongStore.sharedStore.songAudioForKey(self.currentSong!.externalID,
                     completion: { songData in
                         self.setDelegatePreparedToPlaySong(songData)
@@ -261,11 +283,17 @@ class LocalParty: NSObject {
                 )
             }, noCurrentSong: {
                 self.audioIsDownloading = false
-                self.delegate.setPartySongImage(songToPlay: false, artworkToShow: false, loadingSong: false, image: nil)
+                dispatchAsyncToMainQueue(action: {
+                    self.delegate.setPartySongImage(songToPlay: false, artworkToShow: false, loadingSong: false, image: nil)
+                    self.delegate.setPartySongInfo("", songArtist: "", songTime: "")
+                })
             }, failureAddOn: {
                 self.audioIsDownloading = false
-                self.delegate.setPartyInfoHidden(true)
-                self.delegate.showMessages("Unable to load current song", detailLine: "Please check internet connection and refresh the party")
+                dispatchAsyncToMainQueue(action: {
+                    self.delegate.setPartySongInfo("", songArtist: "", songTime: "")
+                    self.delegate.setPartyInfoHidden(true)
+                    self.delegate.showMessages("Unable to load current song", detailLine: "Please check internet connection and refresh the party")
+                })
             }
         )
     }
@@ -286,32 +314,41 @@ class LocalParty: NSObject {
                 println("no error")
                 self.updateDelegateSongInformation()
                 //self.playingSongID = self.currentSong!.externalID
-                self.delegate.setAudioPlayerButtonsForPlaying(true)
+                dispatchAsyncToMainQueue(action: {
+                    self.delegate.setAudioPlayerButtonsForPlaying(true)
+                })
                 //self.delegate.showPartySongInfo()
                 self.audioPlayerHasAudioToPlay = true
                 self.playSong()
             } else {
                 println("there was an error")
                 println("ERROR: \(errorPtr)")
-                self.delegate.showMessages("Well, this is awkward", detailLine: "The song could not be played, please try adding another")
-                self.delegate.setPartyInfoHidden(true)
+                dispatchAsyncToMainQueue(action: {
+                    self.delegate.showMessages("Well, this is awkward", detailLine: "The song could not be played, please try adding another")
+                    self.delegate.setPartyInfoHidden(true)
+                })
             }
         } else {
             println("song WAS nil")
             // TODO: check for the next available song
-            self.delegate.showMessages("Well, this is awkward", detailLine: "The song was unavailable for download, please try adding another")
-            self.delegate.setPartyInfoHidden(true)
+            dispatchAsyncToMainQueue(action: {
+                self.delegate.showMessages("Well, this is awkward", detailLine: "The song was unavailable for download, please try adding another")
+                self.delegate.setPartyInfoHidden(true)
+            })
         }
     }
     
     func playSong() {
         println("playSong")
-        
         var success1 = true
         var success2 = true
         
+        if !userIsHost {
+            return
+        }
+        
         // Ensure audio session is initialized when the user is the host
-        if userIsHost && audioSession == nil {
+        if audioSession == nil {
             audioSession = AVAudioSession.sharedInstance()
             
             var setCategoryError = NSErrorPointer()
@@ -336,9 +373,11 @@ class LocalParty: NSObject {
         }
         
         // Ensure the audio player is available when the user is the host
-        if userIsHost && audioPlayer == nil {
+        if audioPlayer == nil {
             audioPlayer = AVAudioPlayer()
         }
+        
+        println("audioSession:\(audioSession != nil) audioPlayer:\(audioPlayer != nil) audioToPlay:\(audioPlayerHasAudioToPlay) audioPlaying:\(audioPlayerIsPlaying)")
             
         if audioPlayer != nil && success1 && success2 {
             if audioPlayerHasAudioToPlay {
@@ -346,11 +385,12 @@ class LocalParty: NSObject {
                     audioPlayer!.play()
                     audioPlayerIsPlaying = true
                     println("audioPlayerIsPlaying: \(audioPlayerIsPlaying)")
-                    delegate.setAudioPlayerButtonsForPlaying(true)
+                    dispatchAsyncToMainQueue(action: {
+                        self.delegate.setAudioPlayerButtonsForPlaying(true)
+                        // Start the timer to be updating songProgress
+                        self.songTimerShouldBeActive(true)
+                    })
                 }
-                
-                // Start the timer to be updating songProgress
-                songTimerShouldBeActive(true)
             } else {
                 let alert = UIAlertView(title: "No Songs To Play", message: "Please add some songs to play, then press play again", delegate: nil, cancelButtonTitle: "Ok")
                 alert.show()
@@ -363,23 +403,28 @@ class LocalParty: NSObject {
     
     func pauseSong() {
         println("pauseSong")
-        println("audioSession:\(audioSession)   audioPlayer:\(audioPlayer != nil)   audioToPlay:\(audioPlayerHasAudioToPlay)   playing\(audioPlayerIsPlaying)")
+        println("audioSession:\(audioSession != nil) audioPlayer:\(audioPlayer != nil) audioToPlay:\(audioPlayerHasAudioToPlay) playing:\(audioPlayerIsPlaying)")
         if audioSession != nil && audioPlayer != nil && audioPlayerHasAudioToPlay && audioPlayerIsPlaying {
             audioPlayer!.pause()
             audioPlayerIsPlaying = false
-            delegate.setAudioPlayerButtonsForPlaying(false)
-            
-            // Stop the timer from updating songProgress
-            songTimerShouldBeActive(false)
+            dispatchAsyncToMainQueue(action: {
+                self.delegate.setAudioPlayerButtonsForPlaying(false)
+                // Stop the timer from updating songProgress
+                self.songTimerShouldBeActive(false)
+            })
         }
     }
     
     func updateSongProgress(timer: NSTimer!) {
         if audioPlayer != nil && audioPlayerHasAudioToPlay {
             let progress = Float(audioPlayer!.currentTime / audioPlayer!.duration)
-            delegate.updateSongProgress(progress)
+            dispatchAsyncToMainQueue(action: {
+                self.delegate.updateSongProgress(progress)
+            })
         } else {
-            delegate.updateSongProgress(0.0)
+            dispatchAsyncToMainQueue(action: {
+                self.delegate.updateSongProgress(0.0)
+            })
         }
     }
     
@@ -398,9 +443,11 @@ class LocalParty: NSObject {
     
     func updateDelegateSongInformation() {
         if currentSong != nil {
-            delegate.showPartySongInfo()
-            delegate.setPartySongInfo(currentSong!.name, songArtist: currentSong!.artistName, songTime: timeInSecondsToFormattedMinSecondTimeLabelString(currentSong!.duration))
-            updateDelegateSongImage()
+            dispatchAsyncToMainQueue(action: {
+                self.delegate.showPartySongInfo()
+                self.delegate.setPartySongInfo(self.currentSong!.name, songArtist: self.currentSong!.artistName, songTime: timeInSecondsToFormattedMinSecondTimeLabelString(self.currentSong!.duration))
+            })
+            updateDelegateSongImage() // UI calls in this fxn use dispatchAsyncToMainQueue
         }
     }
     
@@ -411,15 +458,21 @@ class LocalParty: NSObject {
             songImageCache.queryDiskCacheForKey(largerArtworkURL,
                 done: { image, imageCacheType in
                     if image != nil {
-                        self.delegate.setPartySongImage(songToPlay: true, artworkToShow: true, loadingSong: false, image: image)
+                        dispatchAsyncToMainQueue(action: {
+                            self.delegate.setPartySongImage(songToPlay: true, artworkToShow: true, loadingSong: false, image: image)
+                        })
                     } else {
                         SDWebImageManager.sharedManager().downloadImageWithURL(NSURL(string: largerArtworkURL), options: nil, progress: nil,
                             completed: { image, error, cacheType, boolValue, url in
                                 if error == nil && image != nil {
                                     self.songImageCache.storeImage(image, forKey: largerArtworkURL)
-                                    self.delegate.setPartySongImage(songToPlay: true, artworkToShow: true, loadingSong: false, image: image)
+                                    dispatchAsyncToMainQueue(action: {
+                                        self.delegate.setPartySongImage(songToPlay: true, artworkToShow: true, loadingSong: false, image: image)
+                                    })
                                 } else {
-                                    self.delegate.setPartySongImage(songToPlay: true, artworkToShow: false, loadingSong: false, image: nil)
+                                    dispatchAsyncToMainQueue(action: {
+                                        self.delegate.setPartySongImage(songToPlay: true, artworkToShow: false, loadingSong: false, image: nil)
+                                    })
                                 }
                             }
                         )
@@ -427,15 +480,20 @@ class LocalParty: NSObject {
                 }
             )
         } else {
-            delegate.setPartySongImage(songToPlay: true, artworkToShow: false, loadingSong: false, image: nil)
+            dispatchAsyncToMainQueue(action: {
+                self.delegate.setPartySongImage(songToPlay: true, artworkToShow: false, loadingSong: false, image: nil)
+            })
         }
     }
     
     func resetAllPartyInfo() {
         audioPlayer = nil
         audioSession = nil
-        delegate.setPartySongImage(songToPlay: false, artworkToShow: false, loadingSong: false, image: nil)
-        delegate.setPartyInfoHidden(true)
+        dispatchAsyncToMainQueue(action: {
+            self.delegate.setPartySongImage(songToPlay: false, artworkToShow: false, loadingSong: false, image: nil)
+            self.delegate.setPartySongInfo("", songArtist: "", songTime: "")
+            self.delegate.setPartyInfoHidden(true)
+        })
     }
 }
 
@@ -534,7 +592,7 @@ extension LocalParty {
             success: { data, responseObject in
                 let responseJSON = JSONValue(responseObject)
                 println(responseJSON)
-                self.updatePartySongInfoFromJSON(responseJSON)
+                self.updatePartySongInfoFromJSON(responseJSON, completion: completion)
             },
             failure: defaultAFHTTPFailureBlock
         )
@@ -545,7 +603,7 @@ extension LocalParty {
             success: { data, responseObject in
                 let responseJSON = JSONValue(responseObject)
                 println(responseJSON)
-                self.updatePartyMembersInfoFromJSON(responseJSON)
+                self.updatePartyMembersInfoFromJSON(responseJSON, completion: completion)
             },
             failure: defaultAFHTTPFailureBlock
         )
@@ -656,6 +714,7 @@ extension LocalParty: AVAudioPlayerDelegate {
     // MARK: respond to audio playback ENDING (interruptions are handled by avaudio session)
     
     func audioPlayerDidFinishPlaying(player: AVAudioPlayer!, successfully flag: Bool) {
+        audioPlayerIsPlaying = false
         audioPlayerHasAudioToPlay = false
         disallowGetNextSongCallTemporarily()
         getNextSongForDelegate()
