@@ -167,12 +167,6 @@ func dispatchAsyncToMainQueue(action closure:actionClosure) {
     }
 }
 
-func dispatchSyncToMainQueue(action closure:actionClosure) {
-    dispatch_sync(dispatch_get_main_queue()) {
-        closure()
-    }
-}
-
 func downloadImageWithURLString(urlString: String, completion: (success: Bool, image: UIImage?) -> () ) {
     let request = NSMutableURLRequest(URL: NSURL(string: urlString))
     NSURLConnection.sendAsynchronousRequest(request, queue: NSOperationQueue.mainQueue(),
@@ -182,6 +176,7 @@ func downloadImageWithURLString(urlString: String, completion: (success: Bool, i
                 completion(success: true, image: image)
             } else {
                 completion(success: false, image: nil)
+                println("ERROR DOWNLOADING IMAGE")
             }
         }
     )

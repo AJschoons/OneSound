@@ -338,7 +338,9 @@ extension LocalUser {
             party = nil
         }
         
-        if guest == false && json["photo"].string != nil && (forcePhotoUpdate == true || photoURL != json["photo"].string) {
+        let photoStr = "photo"
+        println("guest:\(guest) json[photo]:\(json[photoStr].string != nil) force:\(forcePhotoUpdate) photoUrl:\(photoURL) photoUrlChanged:\(photoURL != json[photoStr].string)")
+        if guest == false && json["photo"].string != nil && (forcePhotoUpdate == true || photoURL == nil || photoURL != json["photo"].string) {
             // If not a guest and a non-empty photoURL gets sent that's different from what it was (or forced)
             println("Setting new photo URL")
             photoURL = json["photo"].string
@@ -357,14 +359,16 @@ extension LocalUser {
     }
     
     func updateLocalUserPhoto(urlString: String) {
-        downloadImageWithURLString(urlString,
-            { success, image in
-                if success {
+        SDWebImageManager.sharedManager().downloadImageWithURL(NSURL(string: urlString), options: nil, progress: nil,
+            completed: { image, error, cacheType, boolValue, url in
+                if error == nil && image != nil {
                     let smallestSide = (image!.size.height > image!.size.width) ? image!.size.width : image!.size.height
                     self.photo = cropBiggestCenteredSquareImageFromImage(image!, sideLength: smallestSide)
                     println("Saved new photo for user")
                     NSUserDefaults.standardUserDefaults().setObject(UIImagePNGRepresentation(self.photo), forKey: userPhotoUIImageKey)
                     NSNotificationCenter.defaultCenter().postNotificationName(LocalUserInformationDidChangeNotification, object: nil)
+                } else {
+                    println("UNABLE to save new photo for user; download failed")
                 }
             }
         )

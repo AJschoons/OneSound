@@ -723,6 +723,7 @@ extension LocalParty: AVAudioPlayerDelegate {
 
 extension LocalParty {
     // MARK: handling AVAudioSession notifications
+    // TODO: handle audio session interruptions
     func audioPlayerInterruption(n: NSNotification) {
         println("AVAudioSessionInterruptionNotification")
         if userIsHost {
