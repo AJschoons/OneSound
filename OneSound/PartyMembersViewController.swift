@@ -23,7 +23,6 @@ class PartyMembersViewController: UIViewController {
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "refresh", name: AFNetworkingReachabilityDidChangeNotification, object: nil)
         // Make sure view knows the user is setup so it won't keep displaying 'Not signed into account' when there is no  internet connection when app launches and then the network comes back and LocalUser is setup
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "refresh", name: LocalUserInformationDidChangeNotification, object: nil)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "reloadTableData", name: LocalPartyMemberInformationDidChangeNotification, object: nil)
         
         // Creating an (empty) footer stops table from showing empty cells
         membersTable.tableFooterView = UIView(frame: CGRectZero)

@@ -28,8 +28,9 @@ class PartyMainViewController: UIViewController {
     @IBOutlet weak var songNameLabel: THLabel?
     @IBOutlet weak var songArtistLabel: THLabel?
     @IBOutlet weak var songTimeLabel: THLabel?
-    
     @IBOutlet weak var songImageForLoadingSong: UIImageView!
+    
+    @IBOutlet weak var userView: UIImageView!
     
     
     @IBAction func play(sender: AnyObject) {
@@ -83,6 +84,11 @@ class PartyMainViewController: UIViewController {
         }
         
         refresh()
+    }
+    
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        println("[][] userView height: \(userView.bounds.size.height) \(UIScreen.mainScreen().bounds.size.height)")
     }
     
     func updateSongProgress(progress: Float) {
@@ -164,6 +170,8 @@ class PartyMainViewController: UIViewController {
         // When hiding the party info, reset the song labels to empty and the song progress to 0
         if hidden == true {
             songImageForLoadingSong.hidden = hidden
+            
+            soundcloudLogo!.hidden = hidden
             
             playButton!.hidden = hidden
             playButton!.alpha = 0.0

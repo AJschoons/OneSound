@@ -40,9 +40,6 @@ enum PartyStrictnessOption: Int {
     }
 }
 
-let LocalPartySongInformationDidChangeNotification = "LocalPartySongInformationDidChange"
-let LocalPartyMemberInformationDidChangeNotification = "LocalPartyMemberInformationDidChange"
-
 class LocalParty: NSObject {
     
     let songImageCache = (UIApplication.sharedApplication().delegate as AppDelegate).songImageCache
@@ -307,11 +304,11 @@ class LocalParty: NSObject {
             
             var errorPtr = NSErrorPointer()
             self.audioPlayer = AVAudioPlayer(data: songData!, error: errorPtr)
-            self.audioPlayer!.delegate = self
-            println("*** SONG IS \(((Double(songData!.length) / 1024.0) / 1024.0)) MB ***")
             
             if errorPtr == nil {
                 println("no error")
+                self.audioPlayer!.delegate = self
+                println("*** SONG IS \(((Double(songData!.length) / 1024.0) / 1024.0)) MB ***")
                 self.updateDelegateSongInformation()
                 //self.playingSongID = self.currentSong!.externalID
                 dispatchAsyncToMainQueue(action: {
@@ -506,6 +503,7 @@ extension LocalParty {
         OSAPI.sharedClient.GETNextSong(pid, userID: localUser.id, userAPIToken: localUser.apiToken,
             success: { data, responseObject in
                 let responseJSON = JSONValue(responseObject)
+                println(responseJSON)
                 self.currentSong = Song(json: responseJSON)
                 if completion != nil {
                     completion!()
@@ -651,8 +649,6 @@ extension LocalParty {
             completion!()
         }
         
-        NSNotificationCenter.defaultCenter().postNotificationName(LocalPartySongInformationDidChangeNotification, object: nil)
-        
         println("UPDATED PARTY WITH \(self.members.count) MEMBERS")
     }
     
@@ -670,8 +666,6 @@ extension LocalParty {
         if completion != nil {
             completion!()
         }
-        
-        NSNotificationCenter.defaultCenter().postNotificationName(LocalPartySongInformationDidChangeNotification, object: nil)
         
         /*
         while songsToGet {
