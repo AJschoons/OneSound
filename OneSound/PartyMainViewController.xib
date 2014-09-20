@@ -11,6 +11,9 @@
                 <outlet property="messageLabel2" destination="UYc-8M-RBr" id="Clw-KC-Ij1"/>
                 <outlet property="pauseButton" destination="HIU-WJ-aqj" id="qqp-kF-x3H"/>
                 <outlet property="playButton" destination="QJc-pb-IIu" id="Uc8-0T-lsZ"/>
+                <outlet property="shortThumbsDownButton" destination="4R2-5J-Pth" id="Dhs-1o-xlT"/>
+                <outlet property="shortThumbsUpButton" destination="J7o-mQ-psy" id="TKa-Td-lp5"/>
+                <outlet property="shortUserLabel" destination="TR4-6S-KZ0" id="gS9-ZN-HKy"/>
                 <outlet property="songArtistLabel" destination="dAA-if-muq" id="r4l-sh-D91"/>
                 <outlet property="songImage" destination="NMo-td-Wl0" id="Bp3-Uf-1nT"/>
                 <outlet property="songImageForLoadingSong" destination="LLm-8r-LuE" id="jqn-tb-9GG"/>
@@ -124,37 +127,54 @@
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="qdb-42-GJA">
                     <rect key="frame" x="0.0" y="320" width="600" height="167"/>
                     <subviews>
-                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="4R2-5J-Pth">
-                            <rect key="frame" x="314" y="75" width="24" height="24"/>
-                            <color key="backgroundColor" red="0.1783866286277771" green="0.73694926500320435" blue="0.94469857215881348" alpha="1" colorSpace="calibratedRGB"/>
-                            <constraints>
-                                <constraint firstAttribute="height" constant="24" id="ERt-jx-Mat"/>
-                                <constraint firstAttribute="width" constant="24" id="iJg-59-Kdu"/>
-                            </constraints>
-                            <state key="normal">
-                                <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                            </state>
-                        </button>
                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="1234567891234567" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="TR4-6S-KZ0">
                             <rect key="frame" x="12" y="73" width="177.5" height="22"/>
                             <constraints>
                                 <constraint firstAttribute="height" constant="22" id="63R-qv-5dZ"/>
                                 <constraint firstAttribute="width" relation="lessThanOrEqual" constant="180" id="FTH-a0-cra"/>
+                                <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="177.5" id="eUB-TZ-OYG">
+                                    <variation key="widthClass=compact" constant="150"/>
+                                </constraint>
                             </constraints>
                             <fontDescription key="fontDescription" type="boldSystem" pointSize="20"/>
                             <color key="textColor" red="0.5170014500617981" green="0.51698595285415649" blue="0.51699477434158325" alpha="1" colorSpace="calibratedRGB"/>
                             <nil key="highlightedColor"/>
+                            <variation key="default">
+                                <mask key="constraints">
+                                    <exclude reference="eUB-TZ-OYG"/>
+                                </mask>
+                            </variation>
+                            <variation key="widthClass=compact">
+                                <mask key="constraints">
+                                    <include reference="eUB-TZ-OYG"/>
+                                </mask>
+                            </variation>
                         </label>
-                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="J7o-mQ-psy">
+                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" adjustsImageWhenHighlighted="NO" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="4R2-5J-Pth">
+                            <rect key="frame" x="314" y="75" width="24" height="24"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="24" id="ERt-jx-Mat"/>
+                                <constraint firstAttribute="width" constant="24" id="iJg-59-Kdu"/>
+                            </constraints>
+                            <state key="normal" image="thumbsDownUnselectedMainParty">
+                                <color key="titleShadowColor" red="0.1783866286277771" green="0.73694926500320435" blue="0.94469857215881348" alpha="1" colorSpace="calibratedRGB"/>
+                            </state>
+                            <connections>
+                                <action selector="shortThumbsDownPressed:" destination="-1" eventType="touchUpInside" id="uMd-MS-tZ2"/>
+                            </connections>
+                        </button>
+                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" adjustsImageWhenHighlighted="NO" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="J7o-mQ-psy">
                             <rect key="frame" x="451" y="75" width="24" height="24"/>
-                            <color key="backgroundColor" red="0.17838662860000001" green="0.73694926500000002" blue="0.94469857219999998" alpha="1" colorSpace="calibratedRGB"/>
                             <constraints>
                                 <constraint firstAttribute="height" constant="24" id="W1L-Vf-Gh5"/>
                                 <constraint firstAttribute="width" constant="24" id="ltU-1J-TJx"/>
                             </constraints>
-                            <state key="normal">
+                            <state key="normal" image="thumbsUpUnselectedMainParty">
                                 <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                             </state>
+                            <connections>
+                                <action selector="shortThumbsUpPressed:" destination="-1" eventType="touchUpInside" id="CNJ-h9-y4J"/>
+                            </connections>
                         </button>
                         <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="vGj-eQ-xbv">
                             <rect key="frame" x="201" y="75" width="113" height="24"/>
@@ -178,7 +198,7 @@
                             </constraints>
                         </view>
                     </subviews>
-                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    <color key="backgroundColor" red="0.95075207948684692" green="0.95072358846664429" blue="0.95073968172073364" alpha="1" colorSpace="calibratedRGB"/>
                     <constraints>
                         <constraint firstItem="0Ls-3E-v2A" firstAttribute="width" secondItem="vGj-eQ-xbv" secondAttribute="width" id="2UA-LZ-TbX"/>
                         <constraint firstItem="0Ls-3E-v2A" firstAttribute="leading" secondItem="J7o-mQ-psy" secondAttribute="trailing" id="4QV-Om-sW8"/>
@@ -266,5 +286,7 @@
     <resources>
         <image name="playIcon" width="38" height="50"/>
         <image name="soundcloudLogo" width="35" height="35"/>
+        <image name="thumbsDownUnselectedMainParty" width="24" height="24"/>
+        <image name="thumbsUpUnselectedMainParty" width="24" height="24"/>
     </resources>
 </document>

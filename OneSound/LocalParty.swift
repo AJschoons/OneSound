@@ -55,6 +55,7 @@ class LocalParty: NSObject {
     var songs = [Song]()
     var members = [User]()
     var currentSong: Song?
+    var currentUser: User?
     var songCache = [Int : NSData]()
     
     var setup = false

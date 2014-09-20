@@ -15,6 +15,11 @@ let PlayPauseButtonAnimationTime = 0.2
 let songImageForNoSongToPlay = UIImage(named: "noSongToPlay")
 let songImageForNoSongArtwork = UIImage(named: "songImageForNoSongArtwork")
 
+let thumbsUpSelectedMainParty = UIImage(named: "thumbsUpSelectedMainParty")
+let thumbsUpUnselectedMainParty = UIImage(named: "thumbsUpUnselectedMainParty")
+let thumbsDownSelectedMainParty = UIImage(named: "thumbsDownSelectedMainParty")
+let thumbsDownUnselectedMainParty = UIImage(named: "thumbsDownUnselectedMainParty")
+
 class PartyMainViewController: UIViewController {
     
     @IBOutlet weak var messageLabel1: UILabel?
@@ -31,7 +36,18 @@ class PartyMainViewController: UIViewController {
     @IBOutlet weak var songImageForLoadingSong: UIImageView!
     
     @IBOutlet weak var userView: UIImageView!
+    @IBOutlet weak var shortUserLabel: UILabel!
+    @IBOutlet weak var shortThumbsDownButton: UIButton!
+    @IBOutlet weak var shortThumbsUpButton: UIButton!
     
+    
+    @IBAction func shortThumbsDownPressed(sender: AnyObject) {
+        handleThumbsDownPress(sender)
+    }
+    
+    @IBAction func shortThumbsUpPressed(sender: AnyObject) {
+        handleThumbsUpPress(sender)
+    }
     
     @IBAction func play(sender: AnyObject) {
         LocalParty.sharedParty.playSong()
@@ -67,6 +83,12 @@ class PartyMainViewController: UIViewController {
         songImageForLoadingSong.animationDuration = 1.5
         songImageForLoadingSong.hidden = true
         
+        // Setup the thumb up/down buttons
+        shortThumbsUpButton.setImage(thumbsUpUnselectedMainParty, forState: UIControlState.Disabled)
+        shortThumbsDownButton.setImage(thumbsDownUnselectedMainParty, forState: UIControlState.Disabled)
+        
+        shortUserLabel.text = ""
+        
         hideMessages()
         setPartyInfoHidden(true)
     }
@@ -86,9 +108,40 @@ class PartyMainViewController: UIViewController {
         refresh()
     }
     
-    override func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
-        println("[][] userView height: \(userView.bounds.size.height) \(UIScreen.mainScreen().bounds.size.height)")
+    func handleThumbsUpPress(button: AnyObject) {
+        if let thumbsUpButton = button as? UIButton {
+            if thumbsUpButton.selected {
+                // If the button is selected before it is pressed, make it unselected
+                thumbsUpButton.setImage(thumbsUpUnselectedMainParty, forState: UIControlState.Normal)
+                thumbsUpButton.selected = false
+            } else {
+                // If the button is unselected before it is pressed
+                thumbsUpButton.setImage(thumbsUpSelectedMainParty, forState: UIControlState.Normal)
+                thumbsUpButton.selected = true
+                
+                if shortThumbsDownButton.selected {
+                    handleThumbsDownPress(shortThumbsDownButton)
+                }
+            }
+        }
+    }
+    
+    func handleThumbsDownPress(button: AnyObject) {
+        if let thumbsDownButton = button as? UIButton {
+            if thumbsDownButton.selected {
+                // If the button is selected before it is pressed, make it unselected
+                thumbsDownButton.setImage(thumbsDownUnselectedMainParty, forState: UIControlState.Normal)
+                thumbsDownButton.selected = false
+            } else {
+                // If the button is unselected before it is pressed
+                thumbsDownButton.setImage(thumbsDownSelectedMainParty, forState: UIControlState.Normal)
+                thumbsDownButton.selected = true
+                
+                if shortThumbsUpButton.selected {
+                    handleThumbsUpPress(shortThumbsUpButton)
+                }
+            }
+        }
     }
     
     func updateSongProgress(progress: Float) {
