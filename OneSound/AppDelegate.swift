@@ -34,8 +34,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                             
     var window: UIWindow?
     var revealViewController: SWRevealViewController?
-    var panGestureStartedFrom: FrontViewPosition = FrontViewPositionRightMostRemoved
-    // FrontViewPositionRightMostRemoved so it won't init as a used/relevant enum val
+    var panGestureStartedFrom: FrontViewPosition = FrontViewPosition.RightMostRemoved
+    // FrontViewPosition.RightMostRemoved so it won't init as a used/relevant enum val
     
     var songTableViewImageCache = SDImageCache(namespace: "songTableViewImages")
     var songImageCache = SDImageCache(namespace: "songImages")
@@ -329,7 +329,7 @@ extension AppDelegate: SWRevealViewControllerDelegate {
     // Customizes fading of whatever Front Navigation Controller is conforming to FrontNavigationControllerWithOverlay protocol
     
     func revealController(revealController: SWRevealViewController, animateToPosition position: FrontViewPosition) {
-        if position == FrontViewPositionRight {
+        if position == FrontViewPosition.Right {
             // If will move to show side nav
             printlnC(pL, pG, "animate side nav to VISIBLE")
             
@@ -339,7 +339,7 @@ extension AppDelegate: SWRevealViewControllerDelegate {
                     fnc.setOverlayAlpha(0.5)
                     })
             }
-        } else if position == FrontViewPositionLeft {
+        } else if position == FrontViewPosition.Left {
             // If will move to hide side nav
             printlnC(pL, pG, "animate side nav to HIDDEN")
             if let fnc = revealController.frontViewController as? FrontNavigationControllerWithOverlay {
@@ -364,7 +364,7 @@ extension AppDelegate: SWRevealViewControllerDelegate {
         if location < revealController.rearViewRevealWidth / 2.0 {
             // If pan began with side nav hidden, set the most recent pan start to FrontViewPositionLeft
             printlnC(pL, pG, "pan began with side nav HIDDEN")
-            panGestureStartedFrom = FrontViewPositionLeft
+            panGestureStartedFrom = FrontViewPosition.Left
             
             let pgVelocity = revealController.panGestureRecognizer().velocityInView(revealController.frontViewController.view)
             if pgVelocity.x > 0 {
@@ -375,7 +375,7 @@ extension AppDelegate: SWRevealViewControllerDelegate {
         } else if location >= revealController.rearViewRevealWidth / 2.0 {
             // If pan began with side nav visible, set the most recent pan start to FrontViewPositionRight
             printlnC(pL, pG, "pan began with side nav VISIBLE")
-            panGestureStartedFrom = FrontViewPositionRight
+            panGestureStartedFrom = FrontViewPosition.Right
         }
     }
     
@@ -383,29 +383,29 @@ extension AppDelegate: SWRevealViewControllerDelegate {
         // Seems that this is the val SFReveal uses to decide where a paritally moved pan should go
         let criticalWidthDenom = CGFloat(2.0)
         
-        if panGestureStartedFrom == FrontViewPositionLeft {
+        if panGestureStartedFrom == FrontViewPosition.Left {
             // If pan started with side nav HIDDEN
             printlnC(pL, pG, "pan ended after starting with side nav HIDDEN")
             if location >= revealController.rearViewRevealWidth / criticalWidthDenom {
                 // If pan ended to the right of critical width point, make side nav VISIBLE
                 printlnC(pL, pG, "    pan ended over 1/\(criticalWidthDenom) of the way to side nav VISIBLE, animate side nav to VISIBLE")
-                revealController.setFrontViewPosition(FrontViewPositionRight, animated: true)
+                revealController.setFrontViewPosition(FrontViewPosition.Right, animated: true)
             } else {
                 // If pan ended to the left of critical width point, make side nav HIDDEN
                 printlnC(pL, pG, "    pan didn't reach 1/\(criticalWidthDenom) of the way to side nav VISIBLE, animate side nav to HIDDEN")
-                revealController.setFrontViewPosition(FrontViewPositionLeft, animated: true)
+                revealController.setFrontViewPosition(FrontViewPosition.Left, animated: true)
             }
-        } else if panGestureStartedFrom == FrontViewPositionRight {
+        } else if panGestureStartedFrom == FrontViewPosition.Right {
             // If pan started with side nav VISIBLE
             printlnC(pL, pG, "pan ended after starting with side nav VISIBLE")
             if location <= (revealController.rearViewRevealWidth - (revealController.rearViewRevealWidth / criticalWidthDenom)) {
                 // If pan ended to the left of critical width point, make side nav HIDDEN
                 printlnC(pL, pG, "    pan ended over 1/\(criticalWidthDenom) of the way to side nav HIDDEN, animate side nav to HIDDEN")
-                revealController.setFrontViewPosition(FrontViewPositionLeft, animated: true)
+                revealController.setFrontViewPosition(FrontViewPosition.Left, animated: true)
             } else {
                 // If pan ended to the right of critical width point, make side nav VISIBLE
                 printlnC(pL, pG, "    pan didn't reach 1/\(criticalWidthDenom) of the way to side nav HIDDEN, animate side nav to VISIBLE")
-                revealController.setFrontViewPosition(FrontViewPositionRight, animated: true)
+                revealController.setFrontViewPosition(FrontViewPosition.Right, animated: true)
             }
         }
     }

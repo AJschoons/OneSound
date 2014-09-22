@@ -16,6 +16,7 @@ public func ==(lhs: FBSessionState, rhs: FBSessionState) -> Bool {
     return intVal1 == intVal2
 }*/
 
+/*
 extension FrontViewPosition : Equatable {
 }
 public func ==(lhs: FrontViewPosition, rhs: FrontViewPosition) -> Bool {
@@ -23,3 +24,4 @@ public func ==(lhs: FrontViewPosition, rhs: FrontViewPosition) -> Bool {
     let intVal2 = reflect(rhs)[0].1.value as UInt32
     return intVal1 == intVal2
 }
+*/

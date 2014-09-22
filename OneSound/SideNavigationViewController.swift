@@ -127,7 +127,7 @@ extension SideNavigationViewController: UITableViewDelegate {
             fnc.setViewControllers([menuViewController], animated: false)
             
             // Animate to FrontNavigationController; hide SideNavigation
-            revealViewController!.setFrontViewPosition(FrontViewPositionLeft, animated: true)
+            revealViewController!.setFrontViewPosition(FrontViewPosition.Left, animated: true)
         }
     }
     
