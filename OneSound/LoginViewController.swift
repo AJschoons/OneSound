@@ -25,7 +25,6 @@ class LoginViewController: UITableViewController {
     
     var userID: Int!
     var userAPIToken: String!
-    var userFacebookUID: String!
     var userFacebookToken: String!
     
     var color: OneSoundColorOption = OneSoundColorOption.Random
@@ -95,7 +94,7 @@ class LoginViewController: UITableViewController {
         if !accountAlreadyExists {
             println("Creating FULL account")
             
-            LocalUser.sharedUser.setupFullAccount(userName, userColor: userColor, userID: userID, userAPIToken: userAPIToken, providerUID: userFacebookUID, providerToken: userFacebookToken,
+            LocalUser.sharedUser.setupFullAccount(userName, userColor: userColor, userID: userID, userAPIToken: userAPIToken, providerToken: userFacebookToken,
                 respondToChangeAttempt: { nameIsValid in
                     if nameIsValid {
                         self.tableView.endEditing(true)

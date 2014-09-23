@@ -223,9 +223,7 @@ extension AppDelegate {
             
             let accessTokenData = session.accessTokenData
             let userFBAccessToken = accessTokenData.accessToken
-            let userFBID = accessTokenData.userID
-            //println("Facebook session UID:\(userFBID)")
-            //println("Facebook session access token:\(userFBAccessToken)")
+            println("Facebook session access token:\(userFBAccessToken)")
             
             var userID: Int? = SSKeychain.passwordForService(service, account: userIDKeychainKey) != nil ? SSKeychain.passwordForService(service, account: userIDKeychainKey).toInt() : nil
             var userAPIToken: String? = SSKeychain.passwordForService(service, account: userAPITokenKeychainKey)
@@ -234,10 +232,10 @@ extension AppDelegate {
                 println("Found userID and userAPIToken from keychain, sign in with Facebook account")
                 //println("userID from keychain:\(userID)")
                 //println("userAPIToken from keychain:\(userAPIToken)")
-                println("user fbUID: \(userFBID)")
                 println("userfbAuthToken: \(userFBAccessToken)")
-                if userFBID != nil && userFBAccessToken != nil {
-                    LocalUser.sharedUser.signIntoFullAccount(userID!, userAPIToken: userAPIToken!, fbUID: userFBID, fbAuthToken: userFBAccessToken)
+                
+                if userFBAccessToken != nil {
+                    LocalUser.sharedUser.signIntoFullAccount(userID!, userAPIToken: userAPIToken!, fbAuthToken: userFBAccessToken)
                 } else {
                     // Reset all data and let user know to sign back into facebook
                     // The Facebook SDK session state will change to closed / login failed, and will be handled accordingly

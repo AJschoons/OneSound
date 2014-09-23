@@ -175,7 +175,7 @@ extension OSAPI {
     }
     
     // Upgrade guest user to a full user. Provider can only be facebook, for now
-    func POSTUserProvider(userName: String, userColor: String, userID: Int, userAPIToken: String, providerUID: String, providerToken: String, success: AFHTTPSuccessBlock, failure: AFHTTPFailureBlock, extraAttempts: Int = defaultEA) {
+    func POSTUserProvider(userName: String, userColor: String, userID: Int, userAPIToken: String, providerToken: String, success: AFHTTPSuccessBlock, failure: AFHTTPFailureBlock, extraAttempts: Int = defaultEA) {
         // Checks if facebook id already in the database. Called before creating user so user can login to old account
         let urlString = "\(baseURLString)user/facebook"
         
@@ -185,12 +185,11 @@ extension OSAPI {
         params.updateValue(userColor, forKey: "color")
         params.updateValue(userID, forKey: "uid")
         params.updateValue(userAPIToken, forKey: "api_token")
-        params.updateValue(providerUID, forKey: "p_uid")
         params.updateValue(providerToken, forKey: "token")
         
         let failureWithExtraAttempt: AFHTTPFailureBlock = { task, error in
             if errorShouldBeHandledWithRepeatedRequest(task, error, attemptsLeft: extraAttempts) {
-                self.POSTUserProvider(userName, userColor: userColor, userID: userID, userAPIToken: userAPIToken, providerUID: providerUID, providerToken: providerToken, success: success, failure: failure, extraAttempts: (extraAttempts - 1))
+                self.POSTUserProvider(userName, userColor: userColor, userID: userID, userAPIToken: userAPIToken, providerToken: providerToken, success: success, failure: failure, extraAttempts: (extraAttempts - 1))
             } else {
                 failure!(task: task, error: error)
             }
@@ -221,7 +220,7 @@ extension OSAPI {
     
     // Login full user from Facebook. Checks if Facebook ID is already in database / active
     // If active, returns api_token and uid of user. If not, user must be setup
-    func GETUserLoginProvider(userID: Int, userAPIToken: String, providerUID: String, providerToken: String, success: AFHTTPSuccessBlock, failure: AFHTTPFailureBlock, extraAttempts: Int = defaultEA) {
+    func GETUserLoginProvider(userID: Int, userAPIToken: String, providerToken: String, success: AFHTTPSuccessBlock, failure: AFHTTPFailureBlock, extraAttempts: Int = defaultEA) {
         // Checks if facebook id already in the database. Called before creating user so user can login to old account
         let urlString = "\(baseURLString)login/facebook"
         
@@ -229,12 +228,11 @@ extension OSAPI {
         var params = Dictionary<String, AnyObject>()
         params.updateValue(userID, forKey: "uid")
         params.updateValue(userAPIToken, forKey: "api_token")
-        params.updateValue(providerUID, forKey: "p_uid")
         params.updateValue(providerToken, forKey: "token")
         
         let failureWithExtraAttempt: AFHTTPFailureBlock = { task, error in
             if errorShouldBeHandledWithRepeatedRequest(task, error, attemptsLeft: extraAttempts) {
-                self.GETUserLoginProvider(userID, userAPIToken: userAPIToken, providerUID: providerUID, providerToken: providerToken, success: success, failure: failure, extraAttempts: (extraAttempts - 1))
+                self.GETUserLoginProvider(userID, userAPIToken: userAPIToken, providerToken: providerToken, success: success, failure: failure, extraAttempts: (extraAttempts - 1))
             } else {
                 failure!(task: task, error: error)
             }

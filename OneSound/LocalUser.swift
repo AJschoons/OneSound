@@ -190,9 +190,9 @@ extension LocalUser {
         )
     }
     
-    func signIntoFullAccount(userID: Int, userAPIToken: String, fbUID: String, fbAuthToken: String) {
+    func signIntoFullAccount(userID: Int, userAPIToken: String, fbAuthToken: String) {
         
-        OSAPI.sharedClient.GETUserLoginProvider(userID, userAPIToken: userAPIToken, providerUID: fbUID, providerToken: fbAuthToken,
+        OSAPI.sharedClient.GETUserLoginProvider(userID, userAPIToken: userAPIToken, providerToken: fbAuthToken,
             success: { data, responseObject in
                 let responseJSON = JSONValue(responseObject)
                 println(responseJSON)
@@ -211,7 +211,6 @@ extension LocalUser {
                         completion: {
                             loginViewController.userID = userID
                             loginViewController.userAPIToken = userAPIToken
-                            loginViewController.userFacebookUID = fbUID
                             loginViewController.userFacebookToken = fbAuthToken
                         }
                     )
@@ -232,9 +231,9 @@ extension LocalUser {
         )
     }
     
-    func setupFullAccount(userName: String, userColor: String, userID: Int, userAPIToken: String, providerUID: String, providerToken: String, respondToChangeAttempt: (Bool) -> (), failure: AFHTTPFailureBlock = defaultAFHTTPFailureBlockForSigningIn) {
+    func setupFullAccount(userName: String, userColor: String, userID: Int, userAPIToken: String, providerToken: String, respondToChangeAttempt: (Bool) -> (), failure: AFHTTPFailureBlock = defaultAFHTTPFailureBlockForSigningIn) {
         
-        OSAPI.sharedClient.POSTUserProvider(userName, userColor: userColor, userID: userID, userAPIToken: userAPIToken, providerUID: providerUID, providerToken: providerToken,
+        OSAPI.sharedClient.POSTUserProvider(userName, userColor: userColor, userID: userID, userAPIToken: userAPIToken, providerToken: providerToken,
             success: { data, responseObject in
                 let responseJSON = JSONValue(responseObject)
                 println(responseJSON)
