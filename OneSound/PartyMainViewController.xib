@@ -21,7 +21,7 @@
                 <outlet property="songProgress" destination="dy3-EB-EWF" id="aXm-Vp-XqA"/>
                 <outlet property="songTimeLabel" destination="Flu-ww-wQ5" id="Tq3-77-vgJ"/>
                 <outlet property="soundcloudLogo" destination="5if-AM-htS" id="b13-HQ-ujM"/>
-                <outlet property="userView" destination="LLm-8r-LuE" id="e5p-xY-MmL"/>
+                <outlet property="userView" destination="qdb-42-GJA" id="Z5g-AY-n9Z"/>
                 <outlet property="view" destination="ggx-wY-78Y" id="ShI-Fz-ueM"/>
             </connections>
         </placeholder>
@@ -127,7 +127,7 @@
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="qdb-42-GJA">
                     <rect key="frame" x="0.0" y="320" width="600" height="167"/>
                     <subviews>
-                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="1234567891234567" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="TR4-6S-KZ0">
+                        <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="1234567891234567" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="TR4-6S-KZ0">
                             <rect key="frame" x="12" y="73" width="177.5" height="22"/>
                             <constraints>
                                 <constraint firstAttribute="height" constant="22" id="63R-qv-5dZ"/>
@@ -150,7 +150,7 @@
                                 </mask>
                             </variation>
                         </label>
-                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" adjustsImageWhenHighlighted="NO" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="4R2-5J-Pth">
+                        <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" adjustsImageWhenHighlighted="NO" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="4R2-5J-Pth">
                             <rect key="frame" x="314" y="75" width="24" height="24"/>
                             <constraints>
                                 <constraint firstAttribute="height" constant="24" id="ERt-jx-Mat"/>
@@ -163,7 +163,7 @@
                                 <action selector="shortThumbsDownPressed:" destination="-1" eventType="touchUpInside" id="uMd-MS-tZ2"/>
                             </connections>
                         </button>
-                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" adjustsImageWhenHighlighted="NO" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="J7o-mQ-psy">
+                        <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" adjustsImageWhenHighlighted="NO" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="J7o-mQ-psy">
                             <rect key="frame" x="451" y="75" width="24" height="24"/>
                             <constraints>
                                 <constraint firstAttribute="height" constant="24" id="W1L-Vf-Gh5"/>
@@ -198,7 +198,6 @@
                             </constraints>
                         </view>
                     </subviews>
-                    <color key="backgroundColor" red="0.95075207948684692" green="0.95072358846664429" blue="0.95073968172073364" alpha="1" colorSpace="calibratedRGB"/>
                     <constraints>
                         <constraint firstItem="0Ls-3E-v2A" firstAttribute="width" secondItem="vGj-eQ-xbv" secondAttribute="width" id="2UA-LZ-TbX"/>
                         <constraint firstItem="0Ls-3E-v2A" firstAttribute="leading" secondItem="J7o-mQ-psy" secondAttribute="trailing" id="4QV-Om-sW8"/>

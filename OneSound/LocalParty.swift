@@ -16,8 +16,9 @@ protocol LocalPartyDelegate {
     func showPartySongInfo()
     func showMessages(mainLine: String?, detailLine: String?)
     func hideMessages()
-    func setPartySongInfo(songName: String, songArtist: String, songTime: String)
+    func setPartySongInfo(# songName: String, songArtist: String, songTime: String, user: User?)
     func setPartySongImage(# songToPlay: Bool, artworkToShow: Bool, loadingSong: Bool, image: UIImage?)
+    func clearSongInfo()
 }
 
 enum PartyStrictnessOption: Int {
@@ -283,12 +284,12 @@ class LocalParty: NSObject {
                 self.audioIsDownloading = false
                 dispatchAsyncToMainQueue(action: {
                     self.delegate.setPartySongImage(songToPlay: false, artworkToShow: false, loadingSong: false, image: nil)
-                    self.delegate.setPartySongInfo("", songArtist: "", songTime: "")
+                    self.delegate.setPartySongInfo(songName: "", songArtist: "", songTime: "", user: nil)
                 })
             }, failureAddOn: {
                 self.audioIsDownloading = false
                 dispatchAsyncToMainQueue(action: {
-                    self.delegate.setPartySongInfo("", songArtist: "", songTime: "")
+                    self.delegate.setPartySongInfo(songName: "", songArtist: "", songTime: "", user: nil)
                     self.delegate.setPartyInfoHidden(true)
                     self.delegate.showMessages("Unable to load current song", detailLine: "Please check internet connection and refresh the party")
                 })
@@ -443,7 +444,7 @@ class LocalParty: NSObject {
         if currentSong != nil {
             dispatchAsyncToMainQueue(action: {
                 self.delegate.showPartySongInfo()
-                self.delegate.setPartySongInfo(self.currentSong!.name, songArtist: self.currentSong!.artistName, songTime: timeInSecondsToFormattedMinSecondTimeLabelString(self.currentSong!.duration))
+                self.delegate.setPartySongInfo(songName: self.currentSong!.name, songArtist: self.currentSong!.artistName, songTime: timeInSecondsToFormattedMinSecondTimeLabelString(self.currentSong!.duration), user: self.currentUser!)
             })
             updateDelegateSongImage() // UI calls in this fxn use dispatchAsyncToMainQueue
         }
@@ -484,12 +485,22 @@ class LocalParty: NSObject {
         }
     }
     
+    func clearSongInfo() {
+        currentSong = nil
+        currentUser = nil
+        currentSongImage = nil
+        
+        dispatchAsyncToMainQueue(action: {
+            self.delegate.clearSongInfo()
+        })
+    }
+    
     func resetAllPartyInfo() {
         audioPlayer = nil
         audioSession = nil
+        clearSongInfo()
+        
         dispatchAsyncToMainQueue(action: {
-            self.delegate.setPartySongImage(songToPlay: false, artworkToShow: false, loadingSong: false, image: nil)
-            self.delegate.setPartySongInfo("", songArtist: "", songTime: "")
             self.delegate.setPartyInfoHidden(true)
         })
     }
@@ -505,6 +516,7 @@ extension LocalParty {
             success: { data, responseObject in
                 let responseJSON = JSONValue(responseObject)
                 println(responseJSON)
+                self.currentUser = User(json: responseJSON["user"])
                 self.currentSong = Song(json: responseJSON)
                 if completion != nil {
                     completion!()
@@ -668,16 +680,6 @@ extension LocalParty {
             completion!()
         }
         
-        /*
-        while songsToGet {
-            if let songDict = json["\(i)"].object {
-                self.songs.insert(Song(json: json), atIndex: (i-1))
-                i++
-            } else {
-                songsToGet = false
-            }
-        }
-        */
         println("UPDATED PARTY WITH \(self.songs.count) SONGS")
     }
     
@@ -711,6 +713,7 @@ extension LocalParty: AVAudioPlayerDelegate {
     func audioPlayerDidFinishPlaying(player: AVAudioPlayer!, successfully flag: Bool) {
         audioPlayerIsPlaying = false
         audioPlayerHasAudioToPlay = false
+        clearSongInfo()
         disallowGetNextSongCallTemporarily()
         getNextSongForDelegate()
     }

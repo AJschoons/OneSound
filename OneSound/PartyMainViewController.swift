@@ -35,7 +35,7 @@ class PartyMainViewController: UIViewController {
     @IBOutlet weak var songTimeLabel: THLabel?
     @IBOutlet weak var songImageForLoadingSong: UIImageView!
     
-    @IBOutlet weak var userView: UIImageView!
+    @IBOutlet weak var userView: UIView!
     @IBOutlet weak var shortUserLabel: UILabel!
     @IBOutlet weak var shortThumbsDownButton: UIButton!
     @IBOutlet weak var shortThumbsUpButton: UIButton!
@@ -144,6 +144,14 @@ class PartyMainViewController: UIViewController {
         }
     }
     
+    func resetThumbsUpDownButtons() {
+        shortThumbsUpButton.setImage(thumbsUpUnselectedMainParty, forState: UIControlState.Normal)
+        shortThumbsUpButton.selected = false
+        
+        shortThumbsDownButton.setImage(thumbsDownUnselectedMainParty, forState: UIControlState.Normal)
+        shortThumbsDownButton.selected = false
+    }
+    
     func updateSongProgress(progress: Float) {
         songProgress!.progress = progress
         songProgress!.hidden = false
@@ -154,6 +162,31 @@ class PartyMainViewController: UIViewController {
         LocalParty.sharedParty.refresh()
     }
     
+    func clearSongInfo() {
+        setPartySongImage(songToPlay: false, artworkToShow: false, loadingSong: false, image: nil)
+        setPartySongInfo(songName: "", songArtist: "", songTime: "", user: nil)
+        resetThumbsUpDownButtons()
+    }
+    
+    func setPartySongUserInfo(user: User?) {
+        showPartySongUserInfo()
+        
+        if user != nil {
+            shortUserLabel.text = user!.name
+        } else {
+            shortUserLabel.text = ""
+            shortThumbsUpButton.hidden = true
+            shortThumbsDownButton.hidden = true
+        }
+    }
+    
+    func showPartySongUserInfo() {
+        userView!.hidden = false
+        shortUserLabel!.hidden = false
+        shortThumbsDownButton!.hidden = false
+        shortThumbsUpButton!.hidden = false
+    }
+    
     func showPartySongInfo() {
         songNameLabel!.hidden = false
         songArtistLabel!.hidden = false
@@ -161,14 +194,14 @@ class PartyMainViewController: UIViewController {
         songProgress!.hidden = false
     }
     
-    func setPartySongInfo(songName: String, songArtist: String, songTime: String) {
-        songNameLabel!.hidden = false
-        songArtistLabel!.hidden = false
-        songTimeLabel!.hidden = false
+    func setPartySongInfo(# songName: String, songArtist: String, songTime: String, user: User?) {
+        showPartySongInfo()
         
         songNameLabel!.text = songName
         songArtistLabel!.text = songArtist
         songTimeLabel!.text = songTime
+        
+        setPartySongUserInfo(user)
     }
     
     func setPartySongImage(# songToPlay: Bool, artworkToShow: Bool, loadingSong: Bool, image: UIImage?) {
@@ -237,6 +270,12 @@ class PartyMainViewController: UIViewController {
             songNameLabel!.text = ""
             songArtistLabel!.text = ""
             songTimeLabel!.text = ""
+            
+            userView!.hidden = hidden
+            shortUserLabel!.hidden = hidden
+            shortUserLabel!.text = ""
+            shortThumbsDownButton!.hidden = hidden
+            shortThumbsUpButton!.hidden = hidden
         }
     }
     
