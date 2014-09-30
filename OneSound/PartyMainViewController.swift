@@ -12,6 +12,8 @@ import AVFoundation
 let PartyMainViewControllerNibName = "PartyMainViewController"
 let PlayPauseButtonAnimationTime = 0.2
 
+let defaultUserImageForMainParty = UIImage(named: "defaultUserImageForMainParty")
+
 let songImageForNoSongToPlay = UIImage(named: "noSongToPlay")
 let songImageForNoSongArtwork = UIImage(named: "songImageForNoSongArtwork")
 
@@ -39,8 +41,19 @@ class PartyMainViewController: UIViewController {
     @IBOutlet weak var shortUserLabel: UILabel!
     @IBOutlet weak var shortThumbsDownButton: UIButton!
     @IBOutlet weak var shortThumbsUpButton: UIButton!
+    @IBOutlet weak var tallUserLabel: UILabel!
+    @IBOutlet weak var tallThumbsDownButton: UIButton!
+    @IBOutlet weak var tallThumbsUpButton: UIButton!
+    @IBOutlet weak var tallUserImage: UIImageView!
     
+    @IBAction func tallThumbsDownPressed(sender: AnyObject) {
+        handleThumbsDownPress(sender)
+    }
     
+    @IBAction func tallThumbsUpPressed(sender: AnyObject) {
+        handleThumbsUpPress(sender)
+    }
+  
     @IBAction func shortThumbsDownPressed(sender: AnyObject) {
         handleThumbsDownPress(sender)
     }
@@ -48,6 +61,8 @@ class PartyMainViewController: UIViewController {
     @IBAction func shortThumbsUpPressed(sender: AnyObject) {
         handleThumbsUpPress(sender)
     }
+    
+    
     
     @IBAction func play(sender: AnyObject) {
         LocalParty.sharedParty.playSong()
@@ -87,6 +102,8 @@ class PartyMainViewController: UIViewController {
         shortThumbsUpButton.setImage(thumbsUpUnselectedMainParty, forState: UIControlState.Disabled)
         shortThumbsDownButton.setImage(thumbsDownUnselectedMainParty, forState: UIControlState.Disabled)
         
+        tallUserImage.layer.cornerRadius = 5.0
+        tallUserImage.image = defaultUserImageForMainParty
         shortUserLabel.text = ""
         
         hideMessages()
@@ -119,8 +136,14 @@ class PartyMainViewController: UIViewController {
                 thumbsUpButton.setImage(thumbsUpSelectedMainParty, forState: UIControlState.Normal)
                 thumbsUpButton.selected = true
                 
-                if shortThumbsDownButton.selected {
-                    handleThumbsDownPress(shortThumbsDownButton)
+                if shorterIphoneScreen {
+                    if shortThumbsDownButton.selected {
+                        handleThumbsDownPress(shortThumbsDownButton)
+                    }
+                } else {
+                    if tallThumbsDownButton.selected {
+                        handleThumbsDownPress(tallThumbsDownButton)
+                    }
                 }
             }
         }
@@ -137,19 +160,33 @@ class PartyMainViewController: UIViewController {
                 thumbsDownButton.setImage(thumbsDownSelectedMainParty, forState: UIControlState.Normal)
                 thumbsDownButton.selected = true
                 
-                if shortThumbsUpButton.selected {
-                    handleThumbsUpPress(shortThumbsUpButton)
+                if shorterIphoneScreen {
+                    if shortThumbsUpButton.selected {
+                        handleThumbsUpPress(shortThumbsUpButton)
+                    }
+                } else {
+                    if tallThumbsUpButton.selected {
+                        handleThumbsUpPress(tallThumbsUpButton)
+                    }
                 }
             }
         }
     }
     
     func resetThumbsUpDownButtons() {
-        shortThumbsUpButton.setImage(thumbsUpUnselectedMainParty, forState: UIControlState.Normal)
-        shortThumbsUpButton.selected = false
-        
-        shortThumbsDownButton.setImage(thumbsDownUnselectedMainParty, forState: UIControlState.Normal)
-        shortThumbsDownButton.selected = false
+        if shorterIphoneScreen {
+            shortThumbsUpButton.setImage(thumbsUpUnselectedMainParty, forState: UIControlState.Normal)
+            shortThumbsUpButton.selected = false
+            
+            shortThumbsDownButton.setImage(thumbsDownUnselectedMainParty, forState: UIControlState.Normal)
+            shortThumbsDownButton.selected = false
+        } else {
+            tallThumbsUpButton.setImage(thumbsUpUnselectedMainParty, forState: UIControlState.Normal)
+            tallThumbsUpButton.selected = false
+            
+            tallThumbsDownButton.setImage(thumbsDownUnselectedMainParty, forState: UIControlState.Normal)
+            tallThumbsDownButton.selected = false
+        }
     }
     
     func updateSongProgress(progress: Float) {
@@ -171,20 +208,41 @@ class PartyMainViewController: UIViewController {
     func setPartySongUserInfo(user: User?) {
         showPartySongUserInfo()
         
-        if user != nil {
-            shortUserLabel.text = user!.name
+        if shorterIphoneScreen {
+            if user != nil {
+                shortUserLabel.text = user!.name
+            } else {
+                shortUserLabel.text = ""
+                shortThumbsUpButton.hidden = true
+                shortThumbsDownButton.hidden = true
+            }
         } else {
-            shortUserLabel.text = ""
-            shortThumbsUpButton.hidden = true
-            shortThumbsDownButton.hidden = true
+            if user != nil {
+                tallUserLabel.text = user!.name
+                tallUserImage.image = defaultUserImageForMainParty
+                // TODO: actually get the user's image
+            } else {
+                tallUserLabel.text = ""
+                tallThumbsUpButton.hidden = true
+                tallThumbsDownButton.hidden = true
+                tallUserImage.hidden = true
+            }
         }
     }
     
     func showPartySongUserInfo() {
         userView!.hidden = false
-        shortUserLabel!.hidden = false
-        shortThumbsDownButton!.hidden = false
-        shortThumbsUpButton!.hidden = false
+        
+        if shorterIphoneScreen {
+            shortUserLabel.hidden = false
+            shortThumbsDownButton.hidden = false
+            shortThumbsUpButton.hidden = false
+        } else {
+            tallUserLabel.hidden = false
+            tallThumbsDownButton.hidden = false
+            tallThumbsUpButton.hidden = false
+            tallUserImage.hidden = false
+        }
     }
     
     func showPartySongInfo() {
@@ -272,10 +330,18 @@ class PartyMainViewController: UIViewController {
             songTimeLabel!.text = ""
             
             userView!.hidden = hidden
-            shortUserLabel!.hidden = hidden
-            shortUserLabel!.text = ""
-            shortThumbsDownButton!.hidden = hidden
-            shortThumbsUpButton!.hidden = hidden
+            if shorterIphoneScreen {
+                shortUserLabel!.hidden = hidden
+                shortUserLabel!.text = ""
+                shortThumbsDownButton!.hidden = hidden
+                shortThumbsUpButton!.hidden = hidden
+            } else {
+                tallUserLabel!.hidden = hidden
+                tallUserLabel!.text = ""
+                tallThumbsDownButton!.hidden = hidden
+                tallThumbsUpButton!.hidden = hidden
+                tallUserImage.hidden = hidden
+            }
         }
     }
     

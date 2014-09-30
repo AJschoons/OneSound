@@ -26,6 +26,7 @@ let loadingSong1 = UIImage(named: "loadingSong1")
 let loadingSong2 = UIImage(named: "loadingSong2")
 
 let shorterPhoneLength = 480;
+var shorterIphoneScreen = false;
 
 var errorAlertIsShowing = false
 
@@ -59,6 +60,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         // Loads the FBLoginView before the view is shown
         FBLoginView.self
+        
+        // Set to true if the iPhone screen is the 4S length
+        if UIScreen.mainScreen().bounds.height < 500 {
+            shorterIphoneScreen = true
+        }
         
         return true
     }
