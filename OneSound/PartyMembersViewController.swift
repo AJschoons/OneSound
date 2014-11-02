@@ -118,10 +118,8 @@ extension PartyMembersViewController: UITableViewDataSource {
         if indexPath.row <= LocalParty.sharedParty.members.count {
             let user = LocalParty.sharedParty.members[indexPath.row]
             
-            membersCell.userNameLabel.text = user.name
-            membersCell.userUpvoteLabel.text = intFormattedToShortStringForDisplay(user.upvoteCount)
-            membersCell.userSongLabel.text = intFormattedToShortStringForDisplay(user.songCount)
-            //membersCell.userHotnessLabel.text = intFormattedToShortStringForDisplay(user.upvoteCount)
+            setUserInfoLabelsText(upvoteLabel: membersCell.userUpvoteLabel, numUpvotes: user.upvoteCount, songLabel: membersCell.userSongLabel, numSongs: user.songCount, hotnessLabel: membersCell.userHotnessLabel, percentHotness: user.hotnessPercent, userNameLabel: membersCell.userNameLabel, userName: user.name)
+            
             membersCell.backgroundColor = user.colorToUIColor
             membersCell.userImage.image = guestUserImageForUserCell
             

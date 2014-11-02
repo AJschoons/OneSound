@@ -19,6 +19,7 @@ class User {
     var photoURL: String?
     var songCount: Int!
     var upvoteCount: Int!
+    var hotnessPercent: Int!
     var followers: Int!
     var following: Int!
     
@@ -49,6 +50,7 @@ class User {
         guest = json["guest"].bool
         songCount = json["song_count"].integer
         upvoteCount = json["vote_count"].integer
+        hotnessPercent = json["hotness"].integer
         followers = json["followers"].integer
         following = json["following"].integer
         

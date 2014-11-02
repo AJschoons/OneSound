@@ -40,6 +40,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     var songTableViewImageCache = SDImageCache(namespace: "songTableViewImages")
     var songImageCache = SDImageCache(namespace: "songImages")
+    var userMainPartyImageCache = SDImageCache(namespace: "userMainPartyImages")
     
     var pL = false
 
@@ -62,6 +63,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         FBLoginView.self
         
         // Set to true if the iPhone screen is the 4S length
+        // App is only in portrait orientation
         if UIScreen.mainScreen().bounds.height < 500 {
             shorterIphoneScreen = true
         }
@@ -100,7 +102,7 @@ extension AppDelegate {
     
     func setupAppLocalUserBySigningInWithLoginFlow() {
         // Whenever a person opens the app, check for a cached session
-        if FBSession.activeSession().state == FBSessionState.CreatedTokenLoaded { //FBSessionStateCreatedTokenLoaded {
+        if FBSession.activeSession().state == FBSessionState.CreatedTokenLoaded {
             // If there IS one, just open the session silently, w/o showing the user the login UI
             println("Cached facebook token found")
             

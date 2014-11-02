@@ -24,6 +24,8 @@ let thumbsDownUnselectedMainParty = UIImage(named: "thumbsDownUnselectedMainPart
 
 class PartyMainViewController: UIViewController {
     
+    let userMainPartyImageCache = (UIApplication.sharedApplication().delegate as AppDelegate).userMainPartyImageCache
+    
     @IBOutlet weak var messageLabel1: UILabel?
     @IBOutlet weak var messageLabel2: UILabel?
     
@@ -36,6 +38,8 @@ class PartyMainViewController: UIViewController {
     @IBOutlet weak var songArtistLabel: THLabel?
     @IBOutlet weak var songTimeLabel: THLabel?
     @IBOutlet weak var songImageForLoadingSong: UIImageView!
+    @IBOutlet weak var addSongButton: UIButton!
+    
     
     @IBOutlet weak var userView: UIView!
     @IBOutlet weak var shortUserLabel: UILabel!
@@ -45,6 +49,13 @@ class PartyMainViewController: UIViewController {
     @IBOutlet weak var tallThumbsDownButton: UIButton!
     @IBOutlet weak var tallThumbsUpButton: UIButton!
     @IBOutlet weak var tallUserImage: UIImageView!
+    
+    @IBOutlet weak var userUpvoteLabel: UILabel!
+    @IBOutlet weak var userSongLabel: UILabel!
+    @IBOutlet weak var userHotnessLabel: UILabel!
+    @IBOutlet weak var userUpvoteIcon: UIImageView!
+    @IBOutlet weak var userSongIcon: UIImageView!
+    @IBOutlet weak var userHotnessIcon: UIImageView!
     
     @IBAction func tallThumbsDownPressed(sender: AnyObject) {
         handleThumbsDownPress(sender)
@@ -72,6 +83,13 @@ class PartyMainViewController: UIViewController {
         LocalParty.sharedParty.pauseSong()
     }
     
+    @IBAction func addSong(sender: AnyObject) {
+        let addSongViewController = AddSongViewController(nibName: AddSongViewControllerNibName, bundle: nil)
+        let navC = UINavigationController(rootViewController: addSongViewController)
+        presentViewController(navC, animated: true, completion: nil)
+    }
+    
+    
     override func viewDidLoad() {
         // This is the delegate to the LocalParty
         LocalParty.sharedParty.delegate = self
@@ -80,6 +98,8 @@ class PartyMainViewController: UIViewController {
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "refresh", name: AFNetworkingReachabilityDidChangeNotification, object: nil)
         // Make sure view knows the user is setup so it won't keep displaying 'Not signed into account' when there is no  internet connection when app launches and then the network comes back and LocalUser is setup
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "refresh", name: LocalUserInformationDidChangeNotification, object: nil)
+        // Should update when a party song is added
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "refreshAfterAddingSong", name: PartySongWasAddedNotification, object: nil)
         
         songProgress!.progress = 0.0
         
@@ -102,9 +122,12 @@ class PartyMainViewController: UIViewController {
         shortThumbsUpButton.setImage(thumbsUpUnselectedMainParty, forState: UIControlState.Disabled)
         shortThumbsDownButton.setImage(thumbsDownUnselectedMainParty, forState: UIControlState.Disabled)
         
+        // Setup the add song button
+        addSongButton.backgroundColor = UIColor.blue()
+        addSongButton.layer.cornerRadius = 3.0
+        
         tallUserImage.layer.cornerRadius = 5.0
         tallUserImage.image = defaultUserImageForMainParty
-        shortUserLabel.text = ""
         
         hideMessages()
         setPartyInfoHidden(true)
@@ -194,6 +217,11 @@ class PartyMainViewController: UIViewController {
         songProgress!.hidden = false
     }
     
+    func refreshAfterAddingSong() {
+        addSongButton.hidden = true
+        refresh()
+    }
+    
     func refresh() {
         println("refreshing PartyMainViewController")
         LocalParty.sharedParty.refresh()
@@ -213,19 +241,33 @@ class PartyMainViewController: UIViewController {
                 shortUserLabel.text = user!.name
             } else {
                 shortUserLabel.text = ""
+                shortUserLabel.hidden = true
                 shortThumbsUpButton.hidden = true
                 shortThumbsDownButton.hidden = true
             }
         } else {
             if user != nil {
-                tallUserLabel.text = user!.name
+                setUserInfoLabelsText(upvoteLabel: userUpvoteLabel, numUpvotes: user!.upvoteCount, songLabel: userSongLabel, numSongs: user!.songCount, hotnessLabel: userHotnessLabel, percentHotness: user!.hotnessPercent, userNameLabel: tallUserLabel, userName: user!.name)
+                
                 tallUserImage.image = defaultUserImageForMainParty
-                // TODO: actually get the user's image
+                if user!.photoURL != nil {
+                    setUserMainPartyImageUsingCache(user!.photoURL!)
+                }
             } else {
                 tallUserLabel.text = ""
                 tallThumbsUpButton.hidden = true
                 tallThumbsDownButton.hidden = true
                 tallUserImage.hidden = true
+                
+                userUpvoteLabel.text = ""
+                userSongLabel.text = ""
+                userHotnessLabel.text = ""
+                userUpvoteLabel.hidden = true
+                userSongLabel.hidden = true
+                userHotnessLabel.hidden = true
+                userUpvoteIcon.hidden = true
+                userSongIcon.hidden = true
+                userHotnessIcon.hidden = true
             }
         }
     }
@@ -242,6 +284,13 @@ class PartyMainViewController: UIViewController {
             tallThumbsDownButton.hidden = false
             tallThumbsUpButton.hidden = false
             tallUserImage.hidden = false
+            
+            userUpvoteLabel.hidden = false
+            userSongLabel.hidden = false
+            userHotnessLabel.hidden = false
+            userUpvoteIcon.hidden = false
+            userSongIcon.hidden = false
+            userHotnessIcon.hidden = false
         }
     }
     
@@ -263,6 +312,8 @@ class PartyMainViewController: UIViewController {
     }
     
     func setPartySongImage(# songToPlay: Bool, artworkToShow: Bool, loadingSong: Bool, image: UIImage?) {
+        addSongButton.hidden = true
+        
         if loadingSong {
             songImage!.hidden = true
             
@@ -279,7 +330,7 @@ class PartyMainViewController: UIViewController {
         
         if !songToPlay {
             songImage!.image = songImageForNoSongToPlay
-            //songImage = UIImageView(image: songImageForNoSongToPlay)
+            addSongButton.hidden = false
             soundcloudLogo!.hidden = true
             return
         }
@@ -324,6 +375,7 @@ class PartyMainViewController: UIViewController {
             songProgress!.hidden = hidden
             songProgress!.alpha = 0.0
             songProgress!.progress = 0.0
+            addSongButton.hidden = hidden
             
             songNameLabel!.text = ""
             songArtistLabel!.text = ""
@@ -399,6 +451,46 @@ class PartyMainViewController: UIViewController {
         messageLabel2!.alpha = 0
         messageLabel2!.text = ""
     }
+    
+    // Sets the user image from the cache if it's there, else downloads and caches it before setting
+    func setUserMainPartyImageUsingCache(urlString: String) {
+        userMainPartyImageCache.queryDiskCacheForKey(urlString,
+            done: { image, imageCacheType in
+                if image != nil {
+                    self.tallUserImage.image = image
+                    self.tallUserImage.setNeedsLayout()
+                } else {
+                    self.startImageDownload(urlString)
+                }
+            }
+        )
+    }
+    
+    // Sets user image after downloading and caching the image at the urlString into the userMainPartyImageCache
+    func startImageDownload(urlString: String) {
+        SDWebImageManager.sharedManager().downloadImageWithURL(NSURL(string: urlString), options: nil, progress: nil,
+            completed: { image, error, cacheType, boolValue, url in
+                
+                if error == nil && image != nil {
+                    let processedImage = cropBiggestCenteredSquareImageFromImage(image, sideLength: self.tallUserImage.frame.height)
+                    
+                    self.userMainPartyImageCache.storeImage(processedImage, forKey: urlString)
+                    
+                    dispatchAsyncToMainQueue(action: {
+                        self.tallUserImage.image = processedImage
+                        self.tallUserImage.setNeedsLayout()
+                    })
+                } else {
+                    dispatchAsyncToMainQueue(action: {
+                        self.tallUserImage.image = defaultUserImageForMainParty
+                        self.tallUserImage.setNeedsLayout()
+                    })
+                }
+            }
+        )
+    }
+    
+    
 }
 
 extension PartyMainViewController: LocalPartyDelegate {

@@ -359,3 +359,17 @@ func printlnC(l: Bool, g: Bool, m: String) {
         println(m)
     }
 }
+
+
+func setUserInfoLabelsText(# upvoteLabel: UILabel!, # numUpvotes: Int, # songLabel: UILabel!, # numSongs: Int, # hotnessLabel: UILabel!, # percentHotness: Int, userNameLabel: UILabel? = nil, userName: String? = nil) {
+    upvoteLabel.text = intFormattedToShortStringForDisplay(numUpvotes)
+    songLabel.text = intFormattedToShortStringForDisplay(numSongs)
+    hotnessLabel.text = "\(percentHotness)%"
+    
+    if userNameLabel != nil && userName != nil {
+        userNameLabel!.text = userName!
+    }
+}
+
+
+
