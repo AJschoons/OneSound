@@ -41,6 +41,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var songTableViewImageCache = SDImageCache(namespace: "songTableViewImages")
     var songImageCache = SDImageCache(namespace: "songImages")
     var userMainPartyImageCache = SDImageCache(namespace: "userMainPartyImages")
+    var userThumbnailImageCache = SDImageCache(namespace: "userThumbnailImages")
     
     var pL = false
 

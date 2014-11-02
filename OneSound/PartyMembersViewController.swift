@@ -13,6 +13,8 @@ let PartyMemberCellIdentifier = "PartyMemberCell"
 
 class PartyMembersViewController: UIViewController {
     
+    let userThumbnailImageCache = (UIApplication.sharedApplication().delegate as AppDelegate).userThumbnailImageCache
+    
     @IBOutlet weak var messageLabel1: UILabel?
     @IBOutlet weak var messageLabel2: UILabel?
     
@@ -58,6 +60,7 @@ class PartyMembersViewController: UIViewController {
                         LocalParty.sharedParty.updatePartyMembers(LocalParty.sharedParty.partyID!,
                             completion: {
                                 self.membersTable.reloadData()
+                                self.loadImagesForOnScreenRows()
                             }
                         )
                     } else {
@@ -123,14 +126,97 @@ extension PartyMembersViewController: UITableViewDataSource {
             membersCell.backgroundColor = user.colorToUIColor
             membersCell.userImage.image = guestUserImageForUserCell
             
-            SDWebImageManager.sharedManager().delegate = self
+            //SDWebImageManager.sharedManager().delegate = self
             
             if user.guest == false && user.photoURL != nil {
-                membersCell.userImage.sd_setImageWithURL(NSURL(string: user.photoURL!), placeholderImage: guestUserImageForUserCell)
+                //membersCell.userImage.sd_setImageWithURL(NSURL(string: user.photoURL!), placeholderImage: guestUserImageForUserCell)
+                if tableView.dragging == false && tableView.decelerating == false {
+                    
+                    userThumbnailImageCache.queryDiskCacheForKey(user.photoURL!,
+                        done: { image, imageCacheType in
+                            if image != nil {
+                                let updateCell = self.membersTable.cellForRowAtIndexPath(indexPath) as? PartyMemberCell
+                                
+                                if updateCell != nil {
+                                    // If the cell for that row is still visible and correct
+                                    updateCell!.userImage.image = image
+                                    updateCell!.setNeedsLayout()
+                                }
+                            } else {
+                                self.startImageDownload(user.photoURL!, forIndexPath: indexPath)
+                            }
+                        }
+                    )
+                    
+                }
             }
         }
         
         return membersCell
+    }
+    
+    func startImageDownload(urlString: String, forIndexPath indexPath: NSIndexPath) {
+        
+        SDWebImageManager.sharedManager().downloadImageWithURL(NSURL(string: urlString), options: nil, progress: nil,
+            completed: { image, error, cacheType, boolValue, url in
+                // Make sure it's still the correct cell
+                let updateCell = self.membersTable.cellForRowAtIndexPath(indexPath) as? PartyMemberCell
+                
+                if updateCell != nil {
+                    // If the cell for that row is still visible and correct
+                    
+                    if error == nil && image != nil {
+                        let processedImage = cropBiggestCenteredSquareImageFromImage(image, sideLength: updateCell!.userImage.frame.width)
+                        
+                        self.userThumbnailImageCache.storeImage(processedImage, forKey: urlString)
+                        
+                        dispatchAsyncToMainQueue(action: {
+                            updateCell!.userImage.image = processedImage
+                            updateCell!.userImage.setNeedsLayout()
+                        })
+                        //updateCell!.songImage.setNeedsLayout()
+                    } else {
+                        dispatchAsyncToMainQueue(action: {
+                            updateCell!.userImage.image = guestUserImageForUserCell
+                            updateCell!.userImage.setNeedsLayout()
+                        })
+                    }
+                }
+            }
+        )
+    }
+    
+    func loadImagesForOnScreenRows() {
+        let visiblePaths = membersTable.indexPathsForVisibleRows() as [NSIndexPath]
+        
+        for path in visiblePaths {
+            let user = LocalParty.sharedParty.members[path.row]
+            
+            if user.photoURL != nil {
+                userThumbnailImageCache.queryDiskCacheForKey(user.photoURL!,
+                    done: { image, imageCacheType in
+                        if image != nil {
+                            let updateCell = self.membersTable.cellForRowAtIndexPath(path) as? PartyMemberCell
+                            
+                            if updateCell != nil {
+                                // If the cell for that row is still visible and correct
+                                updateCell!.userImage.image = image
+                                updateCell!.userImage.setNeedsLayout()
+                            }
+                        } else {
+                            self.startImageDownload(user.photoURL!, forIndexPath: path)
+                        }
+                    }
+                )
+            } else {
+                let updateCell = self.membersTable.cellForRowAtIndexPath(path) as? PartyMemberCell
+                
+                if updateCell != nil {
+                    // If the cell for that row is still visible and correct
+                    updateCell!.userImage.image = guestUserImageForUserCell
+                }
+            }
+        }
     }
 }
 
@@ -140,9 +226,28 @@ extension PartyMembersViewController: UITableViewDelegate {
     }
 }
 
+extension PartyMembersViewController: UIScrollViewDelegate {
+    // Load the images for all onscreen rows when scrolling is finished
+    
+    // Called on finger up if the user dragged. Decelerate is true if it will continue moving afterwards
+    func scrollViewDidEndDragging(scrollView: UIScrollView!, willDecelerate decelerate: Bool) {
+        // Load the images for the cells if it won't be moving afterwards
+        if !decelerate {
+            loadImagesForOnScreenRows()
+        }
+    }
+    
+    // Called when the scroll view grinds to a halt
+    func scrollViewDidEndDecelerating(scrollView: UIScrollView!) {
+        loadImagesForOnScreenRows()
+    }
+}
+
+/*
 extension PartyMembersViewController: SDWebImageManagerDelegate {
     func imageManager(imageManager: SDWebImageManager!, transformDownloadedImage image: UIImage!, withURL imageURL: NSURL!) -> UIImage! {
         println("transforming downloaded image")
         return cropBiggestCenteredSquareImageFromImage(image, sideLength: 50)
     }
 }
+*/
