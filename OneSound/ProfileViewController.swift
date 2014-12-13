@@ -203,10 +203,10 @@ class ProfileViewController: UIViewController {
         setVisibilityOfUserInfoToHidden(hidden)
         
         if !hidden {
-            userNameLabel!.text = LocalUser.sharedUser.name
-            userUpvoteLabel!.text = intFormattedToShortStringForDisplay(LocalUser.sharedUser.upvoteCount)
-            userSongLabel!.text = intFormattedToShortStringForDisplay(LocalUser.sharedUser.songCount)
-            userHotnessLabel!.text = "XX%"
+            let user = LocalUser.sharedUser
+            
+            setUserInfoLabelsText(upvoteLabel: userUpvoteLabel, numUpvotes: user.upvoteCount, songLabel: userSongLabel, numSongs: user.songCount, hotnessLabel: userHotnessLabel, percentHotness: user.hotnessPercent, userNameLabel: userNameLabel, userName: user.name)
+
             
             if LocalUser.sharedUser.photo != nil {
                 userImage!.image = LocalUser.sharedUser.photo
@@ -252,11 +252,9 @@ class ProfileViewController: UIViewController {
                     println("image data for full user valid, use their image and set up other info")
                     let userUpvoteCount = defaults.integerForKey(userUpvoteCountKey)
                     let userSongCount = defaults.integerForKey(userSongCountKey)
-    
-                    userNameLabel!.text = userSavedName
-                    userUpvoteLabel!.text = intFormattedToShortStringForDisplay(userUpvoteCount)
-                    userSongLabel!.text = intFormattedToShortStringForDisplay(userSongCount)
-                    userHotnessLabel!.text = "XX%"
+                    let userHotnessPercent = defaults.integerForKey(userHotnessPercentKey)
+                    
+                    setUserInfoLabelsText(upvoteLabel: userUpvoteLabel, numUpvotes: userUpvoteCount, songLabel: userSongLabel, numSongs: userSongCount, hotnessLabel: userHotnessLabel, percentHotness: userHotnessPercent, userNameLabel: userNameLabel, userName: userSavedName)
                     
                     if imageData != nil {
                         userImage!.image = UIImage(data: imageData)

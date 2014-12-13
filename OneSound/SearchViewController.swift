@@ -16,6 +16,9 @@ class SearchViewController: UIViewController {
     
     @IBOutlet weak var messageLabel1: UILabel?
     @IBOutlet weak var messageLabel2: UILabel?
+    @IBOutlet weak var partySearchTextField: UITextField!
+    @IBOutlet weak var searchResultsTable: UITableView!
+    @IBOutlet weak var animatedOneSoundOne: UIImageView!
     
     func createParty() {
         if LocalUser.sharedUser.guest == false {

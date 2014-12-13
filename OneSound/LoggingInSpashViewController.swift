@@ -24,7 +24,7 @@ class LoggingInSpashViewController: UIViewController {
         let OSLogo1 = UIImage(named: "splashScreenOneSoundOne1")
         let OSLogo2 = UIImage(named: "splashScreenOneSoundOne2")
         
-        animatedOneSoundOne!.animationImages = [OSLogo2, OSLogo1, OSLogo0, OSLogo1]
+        animatedOneSoundOne!.animationImages = [OSLogo2!, OSLogo1!, OSLogo0!, OSLogo1!]
         animatedOneSoundOne!.animationDuration = 1.5
         // This would be set to stop it from looping forever
         // animatedOneSoundOne!.animationRepeatCount = X

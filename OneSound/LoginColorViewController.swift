@@ -59,7 +59,7 @@ extension LoginColorViewController: UITableViewDataSource {
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier(colorCellReuseIdentifier, forIndexPath: indexPath) as LoginColorCell
-        cell.colorLabel.text = colorNames[indexPath.row].toRaw()
+        cell.colorLabel.text = colorNames[indexPath.row].rawValue
         cell.colorView.backgroundColor = colorViewColors[indexPath.row]
         
         // Sets check mark on cell with the currently selected color option

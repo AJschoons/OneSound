@@ -53,10 +53,10 @@ class LoginViewController: UITableViewController {
         
         // Initialize color label to the initial color
         if accountAlreadyExists {
-            color = UserColors.fromRaw(LocalUser.sharedUser.color)!.UserColorsToOneSoundColorOption()
-            colorCellColorLabel.text = color.toRaw()
+            color = UserColors(rawValue: LocalUser.sharedUser.color)!.UserColorsToOneSoundColorOption()
+            colorCellColorLabel.text = color.rawValue
         } else {
-            colorCellColorLabel.text = color.toRaw()
+            colorCellColorLabel.text = color.rawValue
         }
         
         // Give the name text field the accounts name if it already exists
@@ -88,7 +88,7 @@ class LoginViewController: UITableViewController {
     
     func done() {
         //dismissViewControllerAnimated(true, completion: nil)
-        let userColor = color.OneSoundColorOptionToUserColor().toRaw()
+        let userColor = color.OneSoundColorOptionToUserColor().rawValue
         let userName = nameCellTextField.text
         
         if !accountAlreadyExists {
@@ -134,7 +134,7 @@ class LoginViewController: UITableViewController {
     func setDoneButtonState() {
         if accountAlreadyExists {
             // Only allow Done to be pressed if user information has changed from what is already is
-            if countElements(nameCellTextField.text as String) > 2 && nameCellTextField.text != LocalUser.sharedUser.name || color.OneSoundColorOptionToUserColor().toRaw() != LocalUser.sharedUser.color {
+            if countElements(nameCellTextField.text as String) > 2 && nameCellTextField.text != LocalUser.sharedUser.name || color.OneSoundColorOptionToUserColor().rawValue != LocalUser.sharedUser.color {
                 navigationItem.rightBarButtonItem!.enabled = true
             } else {
                 navigationItem.rightBarButtonItem!.enabled = false
@@ -256,7 +256,7 @@ extension LoginViewController: LoginColorViewControllerDelegate {
     func loginColorViewController(loginColorviewController: LoginColorViewController, didSelectColor selectedColor: OneSoundColorOption) {
         // Update color and color label, pop the LoginColorViewController
         color = selectedColor
-        colorCellColorLabel.text = color.toRaw()
+        colorCellColorLabel.text = color.rawValue
         
         if accountAlreadyExists {
             setDoneButtonState()

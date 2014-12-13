@@ -144,7 +144,7 @@ extension AddSongViewController: UITableViewDataSource {
         var nameText: String = (result.name != nil) ? result.name! : ""
         var artistText: String = (result.artistName != nil) ? "Uploaded by \(result.artistName!)" : ""
         var durationText: String = (result.duration != nil) ? timeInSecondsToFormattedMinSecondTimeLabelString(result.duration!) : ""
-        var popularityText: String = (result.numberOfPlaybacks != nil) ? "\(thousandsFormatter.stringFromNumber(NSNumber(integer: result.numberOfPlaybacks!))) playbacks" : ""
+        var popularityText: String = (result.numberOfPlaybacks != nil) ? "\(thousandsFormatter.stringFromNumber(NSNumber(integer: result.numberOfPlaybacks!))!) playbacks" : ""
         
         cell.nameLabel.text = nameText
         cell.artistNameLabel.text = artistText

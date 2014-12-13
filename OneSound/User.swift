@@ -24,7 +24,7 @@ class User {
     var following: Int!
     
     var colorToUIColor: UIColor {
-        if let userColor = UserColors.fromRaw(color) {
+        if let userColor = UserColors(rawValue: color) {
             switch userColor {
             case .Green:
                 return UIColor.green()
@@ -58,7 +58,7 @@ class User {
             // If not a guest and a non-empty photoURL gets sent that's different from what it was
             photoURL = json["photo"].string
         } else {
-            // Guests and users w/p valid photo URL don't have photo URLs
+            // Guests and users w/o valid photo URL don't have photo URLs
             photoURL = nil
         }
     }

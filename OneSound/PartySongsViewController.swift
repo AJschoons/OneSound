@@ -144,8 +144,9 @@ extension PartySongsViewController: UITableViewDataSource {
         if indexPath.row <= LocalParty.sharedParty.songs.count {
             var song = LocalParty.sharedParty.songs[indexPath.row]
             
-            songCell.songImage.image = songCellImagePlaceholder
             songCell.songID = song.songID
+            
+            songCell.songImage.image = songCellImagePlaceholder
             
             if song.name != nil {
                 songCell.songName.text = song.name!

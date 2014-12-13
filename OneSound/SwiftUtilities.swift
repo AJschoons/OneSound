@@ -142,9 +142,9 @@ extension UIColor {
         
         //var r:CUnsignedInt = 0, g:CUnsignedInt = 0, b:CUnsignedInt = 0;
         var r: UInt32 = 0, g: UInt32 = 0, b: UInt32 = 0
-        NSScanner.scannerWithString(rString).scanHexInt(&r)
-        NSScanner.scannerWithString(gString).scanHexInt(&g)
-        NSScanner.scannerWithString(bString).scanHexInt(&b)
+        NSScanner(string: rString).scanHexInt(&r)
+        NSScanner(string: gString).scanHexInt(&g)
+        NSScanner(string: bString).scanHexInt(&b)
         
         return UIColor(red: CGFloat(Int(r)) / 255.0, green: CGFloat(Int(g)) / 255.0, blue: CGFloat(Int(b)) / 255.0, alpha: CGFloat(1))
     }
@@ -174,7 +174,7 @@ func dispatchSyncToMainQueue(action closure:actionClosure) {
 }
 
 func downloadImageWithURLString(urlString: String, completion: (success: Bool, image: UIImage?) -> () ) {
-    let request = NSMutableURLRequest(URL: NSURL(string: urlString))
+    let request = NSMutableURLRequest(URL: NSURL(string: urlString)!)
     NSURLConnection.sendAsynchronousRequest(request, queue: NSOperationQueue.mainQueue(),
         completionHandler: { response, data, error in
             if error != nil {
@@ -203,7 +203,7 @@ func cropImageCenterFromSideEdgesWhilePreservingAspectRatio(withWidth width: CGF
     let imageRef = CGImageCreateWithImageInRect(originalImage.CGImage, cropSquare) // Automatically memory managed
     let newImage = UIImage(CGImage: imageRef, scale: originalImage.scale, orientation: originalImage.imageOrientation)
 
-    return newImage
+    return newImage!
 }
 
 func cropBiggestCenteredSquareImageFromImage(image: UIImage, sideLength side: CGFloat) -> UIImage {

@@ -87,8 +87,8 @@ class OSAPI: AFHTTPSessionManager {
                 
                 let initAPI = OSAPI(baseURL: NSURL(string: baseURLString), sessionConfiguration: config)
                 
-                initAPI.requestSerializer = AFJSONRequestSerializer()
-                initAPI.responseSerializer = AFJSONResponseSerializer()
+                initAPI.requestSerializer = AFJSONRequestSerializer() as AFJSONRequestSerializer
+                initAPI.responseSerializer = AFJSONResponseSerializer() as AFJSONResponseSerializer
                 
                 return initAPI
             }()

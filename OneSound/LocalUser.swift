@@ -21,6 +21,7 @@ let userGuestKey = "guest"
 let userPhotoUIImageKey = "photo"
 let userUpvoteCountKey = "upvote"
 let userSongCountKey = "song"
+let userHotnessPercentKey = "hotness"
 
 class LocalUser {
 
@@ -37,6 +38,7 @@ class LocalUser {
     var photoURL: String?
     var songCount: Int!
     var upvoteCount: Int!
+    var hotnessPercent: Int!
     var followers: Int!
     var following: Int!
     
@@ -63,7 +65,7 @@ class LocalUser {
         setRandomColor()
     }
         
-    if let userColor = UserColors.fromRaw(color) {
+    if let userColor = UserColors(rawValue: color) {
         switch userColor {
         case .Green:
             return UIColor.green()
@@ -83,7 +85,7 @@ class LocalUser {
     }
     
     class func colorToUIColor(color: String) -> UIColor {
-        if let userColor = UserColors.fromRaw(color) {
+        if let userColor = UserColors(rawValue: color) {
             switch userColor {
             case .Green:
                 return UIColor.green()
@@ -125,7 +127,7 @@ class LocalUser {
     }
     
     func setRandomColor() {
-        color = randomColor().toRaw()
+        color = randomColor().rawValue
     }
     
     func description() -> String {
@@ -328,6 +330,7 @@ extension LocalUser {
         guest = json["guest"].bool
         songCount = json["song_count"].integer
         upvoteCount = json["vote_count"].integer
+        hotnessPercent = json["hotness"].integer
         followers = json["followers"].integer
         following = json["following"].integer
         
@@ -401,6 +404,7 @@ extension LocalUser {
         defaults.setBool(guest, forKey: userGuestKey)
         defaults.setInteger(upvoteCount, forKey: userUpvoteCountKey)
         defaults.setInteger(songCount, forKey: userSongCountKey)
+        defaults.setInteger(hotnessPercent, forKey: userHotnessPercentKey)
     }
     
     func updateKeychainInfoForLocalUser(userID: Int, userAPIToken: String) {
@@ -424,6 +428,7 @@ extension LocalUser {
         defaults.removeObjectForKey(userPhotoUIImageKey)
         defaults.removeObjectForKey(userUpvoteCountKey)
         defaults.removeObjectForKey(userSongCountKey)
+        defaults.removeObjectForKey(userHotnessPercentKey)
         
         FBSession.activeSession().closeAndClearTokenInformation()
         

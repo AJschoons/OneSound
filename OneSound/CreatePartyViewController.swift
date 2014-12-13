@@ -56,7 +56,7 @@ class CreatePartyViewController: UITableViewController {
         
         // TODO: Initialize cells that need to be
         if partyAlreadyExists {
-            if let previousStrictness = PartyStrictnessOption.fromRaw(LocalParty.sharedParty.strictness) {
+            if let previousStrictness = PartyStrictnessOption(rawValue: LocalParty.sharedParty.strictness) {
                 strictness = previousStrictness
             }
         }
@@ -103,7 +103,7 @@ class CreatePartyViewController: UITableViewController {
         
         if !partyAlreadyExists {
             println("Creating NEW party")
-            LocalParty.sharedParty.createNewParty(nameCellTextField.text, partyPrivacy: privacyCellSwitch.on, partyStrictness: strictness.toRaw(), respondToChangeAttempt: { partyWasCreated in
+            LocalParty.sharedParty.createNewParty(nameCellTextField.text, partyPrivacy: privacyCellSwitch.on, partyStrictness: strictness.rawValue, respondToChangeAttempt: { partyWasCreated in
                     if partyWasCreated {
                         self.tableView.endEditing(true)
                         self.dismissViewControllerAnimated(true, completion: nil)

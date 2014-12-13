@@ -22,8 +22,8 @@ class SCClient {
     
     lazy var httpSessionManager: AFHTTPSessionManager = {
         let manager = AFHTTPSessionManager(baseURL: NSURL(string: SCBaseURL))
-        manager.requestSerializer = AFJSONRequestSerializer()
-        manager.responseSerializer = AFJSONResponseSerializer()
+        manager.requestSerializer = AFJSONRequestSerializer() as AFJSONRequestSerializer
+        manager.responseSerializer = AFJSONResponseSerializer() as AFJSONResponseSerializer
         return manager
     }()
     
@@ -40,7 +40,7 @@ extension SCClient {
     func downloadSoundCloudSongData(songID: Int, completion: DataTaskCompletionHandler) {
         let songURL = NSURL(string: "\(SCBaseURL)tracks/\(songID)/stream?client_id=\(SCClientID)")
         
-        let dataTask = urlSessionManager.session.dataTaskWithURL(songURL, completionHandler: completion)
+        let dataTask = urlSessionManager.session.dataTaskWithURL(songURL!, completionHandler: completion)
         dataTask.resume()
     }
 }

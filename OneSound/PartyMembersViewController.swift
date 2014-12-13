@@ -126,10 +126,7 @@ extension PartyMembersViewController: UITableViewDataSource {
             membersCell.backgroundColor = user.colorToUIColor
             membersCell.userImage.image = guestUserImageForUserCell
             
-            //SDWebImageManager.sharedManager().delegate = self
-            
             if user.guest == false && user.photoURL != nil {
-                //membersCell.userImage.sd_setImageWithURL(NSURL(string: user.photoURL!), placeholderImage: guestUserImageForUserCell)
                 if tableView.dragging == false && tableView.decelerating == false {
                     
                     userThumbnailImageCache.queryDiskCacheForKey(user.photoURL!,
@@ -149,6 +146,8 @@ extension PartyMembersViewController: UITableViewDataSource {
                     )
                     
                 }
+            } else {
+                membersCell.userImage.image = guestUserImageForUserCell
             }
         }
         
