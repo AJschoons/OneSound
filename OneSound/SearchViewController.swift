@@ -245,6 +245,12 @@ extension SearchViewController: UITableViewDelegate {
                 JSONUpdateCompletion: {
                     LocalParty.sharedParty.refresh()
                     self.searchResultsArray = [Party]() // Remove the results so they have to search again
+                    
+                    if LocalParty.sharedParty.setup == true {
+                        let delegate = UIApplication.sharedApplication().delegate as AppDelegate
+                        let snvc = delegate.revealViewController!.rearViewController as SideNavigationViewController
+                        snvc.programaticallySelectRow(1)
+                    }
                 }, failureAddOn: {
                     LocalParty.sharedParty.refresh()
                     self.searchResultsArray = [Party]() // Remove the results so they have to search again

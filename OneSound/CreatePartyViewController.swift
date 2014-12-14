@@ -107,6 +107,12 @@ class CreatePartyViewController: UITableViewController {
                     if partyWasCreated {
                         self.tableView.endEditing(true)
                         self.dismissViewControllerAnimated(true, completion: nil)
+                        
+                        if LocalParty.sharedParty.setup == true {
+                            let delegate = UIApplication.sharedApplication().delegate as AppDelegate
+                            let snvc = delegate.revealViewController!.rearViewController as SideNavigationViewController
+                            snvc.programaticallySelectRow(1)
+                        }
                     } else {
                         let alert = UIAlertView(title: "Could not create party", message: "Please try a new name, changing the settings, or restarting the app", delegate: nil, cancelButtonTitle: "Ok")
                         alert.show()

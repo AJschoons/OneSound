@@ -77,6 +77,7 @@ class SideNavigationViewController: UITableViewController {
     func programaticallySelectRow(row: Int) {
         let indexPath = NSIndexPath(forRow: row, inSection: 0)
         tableView(tableView, didSelectRowAtIndexPath: indexPath)
+        //tableView.selectRowAtIndexPath(indexPath, animated: false, scrollPosition: UITableViewScrollPosition.None)
     }
 }
 
