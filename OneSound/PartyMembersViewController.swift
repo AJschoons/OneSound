@@ -74,14 +74,14 @@ class PartyMembersViewController: UIViewController {
             } else {
                 //setUserInfoHidden(true)
                 //setStoriesTableToHidden(true)
-                showMessages("Not signed into an account", detailLine: "Please connect to the internet and restart One Sound")
+                showMessages("Not signed into an account", detailLine: "Please connect to the internet and restart OneSound")
                 hideMembersTable(true)
                 //disableButtons()
             }
         } else {
             //setUserInfoHidden(true)
             //setStoriesTableToHidden(true)
-            showMessages("Not connected to the internet", detailLine: "Please connect to the internet to use One Sound")
+            showMessages("Not connected to the internet", detailLine: "Please connect to the internet to use OneSound")
             hideMembersTable(true)
             //disableButtons()
         }

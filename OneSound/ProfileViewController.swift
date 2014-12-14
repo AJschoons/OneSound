@@ -174,11 +174,11 @@ class ProfileViewController: UIViewController {
                 if loadedFullUserInfoFromDefaults {
                     setVisibilityOfUserInfoToHidden(false)
                     setStoriesTableToHidden(true)
-                    showMessages("Could not connect to account", detailLine: "Please connect to the internet and restart One Sound", showMessageBelowUserInfo: true)
+                    showMessages("Could not connect to account", detailLine: "Please connect to the internet and restart OneSound", showMessageBelowUserInfo: true)
                 } else {
                     setUserInfoHidden(true)
                     setStoriesTableToHidden(true)
-                    showMessages("Not signed into an account", detailLine: "Please connect to the internet and restart One Sound", showMessageBelowUserInfo: false)
+                    showMessages("Not signed into an account", detailLine: "Please connect to the internet and restart OneSound", showMessageBelowUserInfo: false)
                 }
                 disableButtons()
             }
@@ -186,11 +186,11 @@ class ProfileViewController: UIViewController {
             if loadedFullUserInfoFromDefaults {
                 setVisibilityOfUserInfoToHidden(false)
                 setStoriesTableToHidden(true)
-                showMessages("Not connected to the internet", detailLine: "Please connect to the internet to use One Sound", showMessageBelowUserInfo: true)
+                showMessages("Not connected to the internet", detailLine: "Please connect to the internet to use OneSound", showMessageBelowUserInfo: true)
             } else {
                 setUserInfoHidden(true)
                 setStoriesTableToHidden(true)
-                showMessages("Not connected to the internet", detailLine: "Please connect to the internet to use One Sound", showMessageBelowUserInfo: false)
+                showMessages("Not connected to the internet", detailLine: "Please connect to the internet to use OneSound", showMessageBelowUserInfo: false)
             }
             
             disableButtons()
@@ -232,7 +232,8 @@ class ProfileViewController: UIViewController {
     }
     
     func setStoriesTableToHidden(hidden: Bool) {
-        storiesTable!.hidden = hidden
+        //storiesTable!.hidden = hidden
+        storiesTable!.hidden = true
     }
     
     func setUserProfileInfoFromUserDefaults() -> Bool {

@@ -15,10 +15,9 @@ class SearchViewController: UIViewController {
     
     @IBOutlet weak var messageLabel1: UILabel?
     @IBOutlet weak var messageLabel2: UILabel?
-    @IBOutlet weak var partySearchTextField: UITextField!
-
-    @IBOutlet weak var searchResultsTable: UITableView!
     
+    @IBOutlet weak var partySearchTextField: UITextField!
+    @IBOutlet weak var searchResultsTable: UITableView!
     @IBOutlet weak var animatedOneSoundOne: UIImageView!
     
     var createPartyButton: UIBarButtonItem!
@@ -27,7 +26,7 @@ class SearchViewController: UIViewController {
     
     func search() {
         // Empty the table, reload to show its empty, start the animation
-        searchResultsArray = [Party]()
+        searchResultsArray = []
         searchResultsTable.reloadData()
         loadingAnimationShouldBeAnimating(true)
         
@@ -112,11 +111,23 @@ class SearchViewController: UIViewController {
         animatedOneSoundOne.animationImages = [loadingOSLogo2, loadingOSLogo1, loadingOSLogo0, loadingOSLogo1]
         animatedOneSoundOne.animationDuration = 1.5
         animatedOneSoundOne.hidden = true
+        
+        // Make view respond to network reachability changes
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "refresh", name: AFNetworkingReachabilityDidChangeNotification, object: nil)
+        // Make sure view knows the user is setup so it won't keep displaying 'Not signed into account' when there is no  internet connection when app launches and then the network comes back and LocalUser is setup
+        // Also will refresh the "Create" button
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "refresh", name: LocalUserInformationDidChangeNotification, object: nil)
     }
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         refresh()
+    }
+    
+    override func viewDidDisappear(animated: Bool) {
+        super.viewDidDisappear(animated)
+        // Remove the results so they have to search again and keep the info fresh when they come back
+        self.searchResultsArray = []
     }
     
     // The text in the field has changed
@@ -141,31 +152,42 @@ class SearchViewController: UIViewController {
         }
     }
     
-    // Copy pasta'd from Profile view controller to have the same kind of refresh logic
-    // Keeping the commented out things for now to show what kind of changes were made for that
-    // TODO: update the refresh to remove comments irrelevant to this controller when finished w/ it
     func refresh() {
         println("refreshing PartyMembersViewController")
         
         if AFNetworkReachabilityManager.sharedManager().reachable {
             if LocalUser.sharedUser.setup == true {
                 hideMessages()
+                
                 if LocalUser.sharedUser.guest == true {
                     createPartyButton.enabled = false
                 } else {
                     createPartyButton.enabled = true
                 }
+                
+                setViewInfoHidden(false)
+                
             } else {
-                //setUserInfoHidden(true)
-                //setStoriesTableToHidden(true)
-                showMessages("Not signed into an account", detailLine: "Please connect to the internet and restart One Sound")
+                setViewInfoHidden(true)
+                showMessages("Not signed into an account", detailLine: "Please connect to the internet and restart OneSound")
                 disableButtons()
+                searchResultsArray = []
             }
         } else {
-            //setUserInfoHidden(true)
-            //setStoriesTableToHidden(true)
-            showMessages("Not connected to the internet", detailLine: "Please connect to the internet to use One Sound")
+            setViewInfoHidden(true)
+            showMessages("Not connected to the internet", detailLine: "Please connect to the internet to use OneSound")
             disableButtons()
+            searchResultsArray = []
+        }
+    }
+    
+    func setViewInfoHidden(hidden: Bool) {
+        partySearchTextField.hidden = hidden
+        searchResultsTable.hidden = hidden
+        
+        if (hidden)
+        {
+            animatedOneSoundOne.hidden = hidden
         }
     }
     
@@ -222,29 +244,21 @@ extension SearchViewController: UITableViewDelegate {
             LocalParty.sharedParty.joinParty(selectedParty.partyID,
                 JSONUpdateCompletion: {
                     LocalParty.sharedParty.refresh()
-                }, failureAddOn: {
                     self.searchResultsArray = [Party]() // Remove the results so they have to search again
-                    
+                }, failureAddOn: {
                     LocalParty.sharedParty.refresh()
+                    self.searchResultsArray = [Party]() // Remove the results so they have to search again
                     let alert = UIAlertView(title: "Problem Joining Party", message: "Unable to join party at this time, please try again", delegate: nil, cancelButtonTitle: "Ok")
                     alert.show()
                 }
             )
-            /*
-            OSAPI.sharedClient.POSTSong(LocalParty.sharedParty.partyID, externalID: selectedSong.externalID, source: source, title: selectedSong.name, artist: selectedSong.artistName, duration: selectedSong.duration, artworkURL: selectedSong.artworkURL, userID: LocalUser.sharedUser.id, userAPIToken: LocalUser.sharedUser.apiToken,
-                success: { data, responseObject in
-                    self.dismissViewControllerAnimated(true, completion: nil)
-                    NSNotificationCenter.defaultCenter().postNotificationName(PartySongWasAddedNotification, object: nil)
-                }, failure: { task, error in
-                    self.dismissViewControllerAnimated(true, completion: nil)
-                    let alert = UIAlertView(title: "Problem Adding Song", message: "The song could not be added to the playlist, please try a different song", delegate: nil, cancelButtonTitle: "Ok")
-                    alert.show()
-                }
-            )*/
         } else {
             let alert = UIAlertView(title: "Not Signed In", message: "Please sign into an account before joining a party", delegate: nil, cancelButtonTitle: "Ok")
             alert.show()
         }
+        
+        // Deselect it after
+        tableView.deselectRowAtIndexPath(indexPath, animated: true)
     }
     
     func tableView(tableView: UITableView!, heightForRowAtIndexPath indexPath: NSIndexPath!) -> CGFloat {

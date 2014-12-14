@@ -252,7 +252,7 @@ class LocalParty: NSObject {
                 //setUserInfoHidden(true)
                 //setStoriesTableToHidden(true)
                 dispatchAsyncToMainQueue(action: {
-                    self.delegate.showMessages("Not signed into an account", detailLine: "Please connect to the internet and restart One Sound")
+                    self.delegate.showMessages("Not signed into an account", detailLine: "Please connect to the internet and restart OneSound")
                     self.delegate.setPartyInfoHidden(true)
                 })
                 //disableButtons()
@@ -261,7 +261,7 @@ class LocalParty: NSObject {
             //setUserInfoHidden(true)
             //setStoriesTableToHidden(true)
             dispatchAsyncToMainQueue(action: {
-                self.delegate.showMessages("Not connected to the internet", detailLine: "Please connect to the internet to use One Sound")
+                self.delegate.showMessages("Not connected to the internet", detailLine: "Please connect to the internet to use OneSound")
                 self.delegate.setPartyInfoHidden(true)
             })
             //disableButtons()
