@@ -87,7 +87,7 @@ class LocalParty: NSObject {
     override init() {
         super.init()
         
-        partyRefreshTimer = NSTimer.scheduledTimerWithTimeInterval(15, target: self, selector: "refresh", userInfo: nil, repeats: true)
+        partyRefreshTimer = NSTimer.scheduledTimerWithTimeInterval(10, target: self, selector: "onPartyRefreshTimer", userInfo: nil, repeats: true)
         
         // Should help the AVAudioPlayer move to the next song when in background?
         // http://stackoverflow.com/questions/9660488/ios-avaudioplayer-doesnt-continue-to-next-song-while-in-background
@@ -126,6 +126,10 @@ class LocalParty: NSObject {
         refresh()
     }
     
+    func onPartyRefreshTimer() {
+        if userIsHost { refresh() }
+    }
+    
     func refresh() {
         println("refreshing LocalParty")
         
@@ -133,143 +137,115 @@ class LocalParty: NSObject {
             if LocalUser.sharedUser.setup == true {
                 if LocalUser.sharedUser.party != nil {
                     if setup == true {
-                        // Party is actually setup
-                        println("party is setup")
-                        dispatchAsyncToMainQueue(action: {
-                            self.delegate.hideMessages()
-                            self.delegate.setPartyInfoHidden(false)
-                        })
-                        println("user is host: \(userIsHost)")
+                        setDelegatePartyInfoVisible()
                         
                         if userIsHost {
-                            if !audioPlayerHasAudioToPlay && !audioIsDownloading && !recentlyGotNextSong {
-                                dispatchAsyncToMainQueue(action: {
-                                    self.delegate.setPartySongImage(songToPlay: false, artworkToShow: false, loadingSong: false, image: nil)
-                                })
-                                disallowGetNextSongCallTemporarily()
-                                getNextSongForDelegate()
-                            } else if !audioPlayerHasAudioToPlay && audioIsDownloading {
-                                dispatchAsyncToMainQueue(action: {
-                                    self.delegate.setPartySongImage(songToPlay: false, artworkToShow: false, loadingSong: true, image: nil)
-                                })
-                            } else {
-                                updateDelegateSongInformation()
-                            }
+                            refreshForHost()
                         } else {
-                            updateCurrentSong(LocalUser.sharedUser.party!,
-                                completion: {
-                                    println("audioPlayerIsPlaying (in refresh): \(self.audioPlayerIsPlaying)")
-                                    
-                                    if self.audioPlayerIsPlaying {
-                                        dispatchAsyncToMainQueue(action: {
-                                            self.delegate.setAudioPlayerButtonsForPlaying(true)
-                                        })
-                                        println("party audio is playing, no need to change anything")
-                                    } else {
-                                        /*
-                                        if self.playingSongID == nil || self.playingSongID != 143553285 {
-                                            // Need to get the song and update info
-                                            println("need to get the song and update info")
-                                            // TODO: check for upcoming songs
-                                            // TODO: add image that says to add a song
-                                            /*
-                                            SongStore.sharedStore.songAudioForKey(143553285, completion: {
-                                                song in
-                                                if song != nil {
-                                                    println("song was not nil")
-                                                    var errorPtr = NSErrorPointer()
-                                                    self.audioPlayer = AVAudioPlayer(data: song!, error: errorPtr)
-                                                    println("*** SONG IS \(((Double(song!.length) / 1024.0) / 1024.0)) Mb ***")
-                                                    
-                                                    if errorPtr == nil {
-                                                        println("no error")
-                                                        self.updateDelegateSongInformation(143553285)
-                                                        self.playingSongID = 143553285
-                                                        self.audioPlayerHasAudioToPlay = true
-                                                        self.delegate.setAudioPlayerButtonsForPlaying(false)
-                                                    } else {
-                                                        println("there was an error")
-                                                        println("ERROR: \(errorPtr)")
-                                                        self.delegate.showMessages("Well, this is awkward", detailLine: "The song could not be played, please try adding another")
-                                                        self.delegate.setPartyInfoHidden(true)
-                                                    }
-                                                } else {
-                                                    println("song WAS nil")
-                                                    // TODO: check for the next available song
-                                                    self.delegate.showMessages("Well, this is awkward", detailLine: "The song was unavailable for download, please try adding another")
-                                                    self.delegate.setPartyInfoHidden(true)
-                                                }
-                                                }
-                                            )
-                                            */
-                                            
-                                        } else {
-                                            // Don't need to get the song info
-                                            self.delegate.setAudioPlayerButtonsForPlaying(false)
-                                            println("don't need to get the song audio")
-                                        }
-                                        */
-                                    }
-                                }, noCurrentSong: {
-                                    dispatchAsyncToMainQueue(action: {
-                                        self.delegate.setPartySongImage(songToPlay: false, artworkToShow: false, loadingSong: false, image: nil)
-                                    })
-                                }, failureAddOn: {
-                                    dispatchAsyncToMainQueue(action: {
-                                        self.delegate.setPartyInfoHidden(true)
-                                        self.delegate.showMessages("Unable to load current song", detailLine: "Please check internet connection and refresh the party")
-                                    })
-                                }
-                            )
+                            refreshForNonHost()
                         }
                     } else {
-                        if shouldTryAnotherRefresh {
-                            shouldTryAnotherRefresh = false
-                            // If the party is valid but not setup, try joining it and then refreshing it once more
-                            joinParty(LocalUser.sharedUser.party!,
-                                JSONUpdateCompletion: {
-                                    // TODO: find a better way to accomplish this
-                                    self.shouldTryAnotherRefresh = true
-                                    self.refresh()
-                                }, failureAddOn: {
-                                    self.refresh()
-                                }
-                            )
-                        } else {
-                            dispatchAsyncToMainQueue(action: {
-                                self.delegate.showMessages("Well, this is awkward", detailLine: "We're not really sure what happened, try refreshing the party!")
-                                self.delegate.setPartyInfoHidden(true)
-                            })
-                        }
+                        attemptToJoinPartyOneMoreTime()
                     }
                 } else {
+                    // Party was nil, not member of a party
                     dispatchAsyncToMainQueue(action: {
                         self.delegate.showMessages("Not member of a party", detailLine: "Become a party member by joining or creating a party")
                         self.delegate.setPartyInfoHidden(true)
                     })
                 }
             } else {
-                //setUserInfoHidden(true)
-                //setStoriesTableToHidden(true)
+                // User not setup, not signed into full or guest account
                 dispatchAsyncToMainQueue(action: {
                     self.delegate.showMessages("Not signed into an account", detailLine: "Please connect to the internet and restart OneSound")
                     self.delegate.setPartyInfoHidden(true)
                 })
-                //disableButtons()
             }
         } else {
-            //setUserInfoHidden(true)
-            //setStoriesTableToHidden(true)
+            // Not connected to the internet
             dispatchAsyncToMainQueue(action: {
                 self.delegate.showMessages("Not connected to the internet", detailLine: "Please connect to the internet to use OneSound")
                 self.delegate.setPartyInfoHidden(true)
             })
-            //disableButtons()
         }
     }
     
+    func refreshForHost() {
+        if !audioPlayerHasAudioToPlay && !audioIsDownloading && !recentlyGotNextSong {
+            dispatchAsyncToMainQueue(action: {
+                self.delegate.setPartySongImage(songToPlay: false, artworkToShow: false, loadingSong: false, image: nil)
+            })
+            disallowGetNextSongCallTemporarily()
+            getNextSongForDelegate()
+        } else if !audioPlayerHasAudioToPlay && audioIsDownloading {
+            dispatchAsyncToMainQueue(action: {
+                self.delegate.setPartySongImage(songToPlay: false, artworkToShow: false, loadingSong: true, image: nil)
+            })
+        } else {
+            updateDelegateSongInformation()
+        }
+    }
+    
+    func refreshForNonHost() {
+        updateCurrentSongForDelegate()
+    }
+    
+    func setDelegatePartyInfoVisible() {
+        // Party is actually setup
+        println("party is setup")
+        dispatchAsyncToMainQueue(action: {
+            self.delegate.hideMessages()
+            self.delegate.setPartyInfoHidden(false)
+        })
+        println("user is host: \(userIsHost)")
+    }
+    
+    func attemptToJoinPartyOneMoreTime() {
+        if shouldTryAnotherRefresh {
+            shouldTryAnotherRefresh = false
+            // If the party is valid but not setup, try joining it and then refreshing it once more
+            joinParty(LocalUser.sharedUser.party!,
+                JSONUpdateCompletion: {
+                    // TODO: find a better way to accomplish this
+                    self.shouldTryAnotherRefresh = true
+                    self.refresh()
+                }, failureAddOn: {
+                    self.refresh()
+                }
+            )
+        } else {
+            dispatchAsyncToMainQueue(action: {
+                self.delegate.showMessages("Well, this is awkward", detailLine: "We're not really sure what happened, try refreshing the party!")
+                self.delegate.setPartyInfoHidden(true)
+            })
+        }
+    }
+    
+    // To be used for non-hosts
+    func updateCurrentSongForDelegate() {
+        updateCurrentSong(partyID,
+            completion: {
+                self.updateDelegateSongInformation()
+            },
+            noCurrentSong: {
+                dispatchAsyncToMainQueue(action: {
+                    self.delegate.setPartySongImage(songToPlay: false, artworkToShow: false, loadingSong: false, image: nil)
+                    self.delegate.setPartySongInfo(songName: "", songArtist: "", songTime: "", user: nil)
+                })
+            },
+            failureAddOn: {
+                dispatchAsyncToMainQueue(action: {
+                    self.delegate.setPartySongInfo(songName: "", songArtist: "", songTime: "", user: nil)
+                    self.delegate.setPartyInfoHidden(true)
+                    self.delegate.showMessages("Unable to load current song", detailLine: "Please check internet connection and refresh the party")
+                })
+            }
+        )
+    }
+    
+    // Only to be used for hosts
     func getNextSongForDelegate() {
-        getNextSong(LocalUser.sharedUser.party!,
+        getNextSong(partyID,
             completion: {
                 self.audioIsDownloading = true
                 dispatchAsyncToMainQueue(action: {
@@ -299,7 +275,6 @@ class LocalParty: NSObject {
     
     func setDelegatePreparedToPlaySong(songData: NSData?) {
         audioIsDownloading = false
-        //delegate.setPartySongImageOverlayHidden(true, withImage: nil)
         
         if songData != nil {
             println("song was not nil")
@@ -309,16 +284,19 @@ class LocalParty: NSObject {
             
             if errorPtr == nil {
                 println("no error")
-                self.audioPlayer!.delegate = self
                 println("*** SONG IS \(((Double(songData!.length) / 1024.0) / 1024.0)) MB ***")
+                
+                self.audioPlayer!.delegate = self
+                
                 self.updateDelegateSongInformation()
-                //self.playingSongID = self.currentSong!.externalID
+                
                 dispatchAsyncToMainQueue(action: {
                     self.delegate.setAudioPlayerButtonsForPlaying(true)
                 })
-                //self.delegate.showPartySongInfo()
+                
                 self.audioPlayerHasAudioToPlay = true
                 self.playSong()
+                
             } else {
                 println("there was an error")
                 println("ERROR: \(errorPtr)")
@@ -395,7 +373,7 @@ class LocalParty: NSObject {
                 alert.show()
             }
         } else {
-            let alert = UIAlertView(title: "Audio Session Problem", message: "Unable to setup an active audio session for audio playback. Double check nothing is overriding audio from One Sound, then refresh the party. If that doesn't work then restart the app", delegate: nil, cancelButtonTitle: "Ok")
+            let alert = UIAlertView(title: "Audio Session Problem", message: "Unable to setup an active audio session for audio playback. Double check nothing is overriding audio from OneSound, then refresh the party. If that doesn't work then restart the app", delegate: nil, cancelButtonTitle: "Ok")
             alert.show()
         }
     }
@@ -572,7 +550,9 @@ extension LocalParty {
         OSAPI.sharedClient.GETCurrentSong(pid,
             success: { data, responseObject in
                 let responseJSON = JSONValue(responseObject)
+                println(responseJSON)
                 self.currentSong = Song(json: responseJSON)
+                self.currentUser = User(json: responseJSON["user"])
                 if completion != nil {
                     completion!()
                 }
@@ -609,6 +589,9 @@ extension LocalParty {
             success: { data, responseObject in
                 let responseJSON = JSONValue(responseObject)
                 //println(responseJSON)
+                
+                LocalUser.sharedUser.party = pid
+                
                 self.updateMainPartyInfoFromJSON(responseJSON, JSONUpdateCompletion)
                 self.updatePartyMembers(pid)
                 self.updatePartySongs(pid)

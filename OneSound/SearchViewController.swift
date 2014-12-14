@@ -127,7 +127,8 @@ class SearchViewController: UIViewController {
     override func viewDidDisappear(animated: Bool) {
         super.viewDidDisappear(animated)
         // Remove the results so they have to search again and keep the info fresh when they come back
-        self.searchResultsArray = []
+        searchResultsArray = []
+        searchResultsTable.reloadData()
     }
     
     // The text in the field has changed
@@ -172,12 +173,14 @@ class SearchViewController: UIViewController {
                 showMessages("Not signed into an account", detailLine: "Please connect to the internet and restart OneSound")
                 disableButtons()
                 searchResultsArray = []
+                searchResultsTable.reloadData()
             }
         } else {
             setViewInfoHidden(true)
             showMessages("Not connected to the internet", detailLine: "Please connect to the internet to use OneSound")
             disableButtons()
             searchResultsArray = []
+            searchResultsTable.reloadData()
         }
     }
     
@@ -253,7 +256,8 @@ extension SearchViewController: UITableViewDelegate {
                     }
                 }, failureAddOn: {
                     LocalParty.sharedParty.refresh()
-                    self.searchResultsArray = [Party]() // Remove the results so they have to search again
+                    self.searchResultsArray = [] // Remove the results so they have to search again
+                    tableView.reloadData()
                     let alert = UIAlertView(title: "Problem Joining Party", message: "Unable to join party at this time, please try again", delegate: nil, cancelButtonTitle: "Ok")
                     alert.show()
                 }

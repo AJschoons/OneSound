@@ -57,6 +57,8 @@ class PartyMainViewController: UIViewController {
     @IBOutlet weak var userSongIcon: UIImageView!
     @IBOutlet weak var userHotnessIcon: UIImageView!
     
+    var partyRefreshTimer: NSTimer?
+    
     @IBAction func tallThumbsDownPressed(sender: AnyObject) {
         handleThumbsDownPress(sender)
     }
@@ -135,17 +137,22 @@ class PartyMainViewController: UIViewController {
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
-        if LocalParty.sharedParty.setup == true {
-            if LocalParty.sharedParty.name != nil {
-                navigationController!.visibleViewController.title = LocalParty.sharedParty.name
-            } else {
-                navigationController!.visibleViewController.title = "Party"
+        let party = LocalParty.sharedParty
+        if party.setup == true && party.name != nil {
+            navigationController!.visibleViewController.title = LocalParty.sharedParty.name
+            if !party.userIsHost {
+                partyRefreshTimer = NSTimer.scheduledTimerWithTimeInterval(10, target: self, selector: "refresh", userInfo: nil, repeats: true)
             }
-        } else {
+        }
+        else {
             navigationController!.visibleViewController.title = "Party"
         }
         
         refresh()
+    }
+    
+    override func viewWillDisappear(animated: Bool) {
+        if partyRefreshTimer != nil { partyRefreshTimer!.invalidate() }
     }
     
     func handleThumbsUpPress(button: AnyObject) {
@@ -215,6 +222,10 @@ class PartyMainViewController: UIViewController {
     func updateSongProgress(progress: Float) {
         songProgress!.progress = progress
         songProgress!.hidden = false
+    }
+    
+    func onPartyRefreshTimer() {
+        if !LocalParty.sharedParty.userIsHost { refresh() }
     }
     
     func refreshAfterAddingSong() {
