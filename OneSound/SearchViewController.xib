@@ -6,8 +6,11 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="SearchViewController" customModule="OneSound" customModuleProvider="target">
             <connections>
+                <outlet property="animatedOneSoundOne" destination="r7W-Ph-enJ" id="hCb-XW-INI"/>
                 <outlet property="messageLabel1" destination="Nq1-Qx-HSP" id="3sf-xR-6O4"/>
                 <outlet property="messageLabel2" destination="8aD-Hx-ffP" id="1N9-s6-Pi1"/>
+                <outlet property="partySearchTextField" destination="vau-rR-dyd" id="tPx-3t-RuJ"/>
+                <outlet property="searchResultsTable" destination="iKl-m2-DPf" id="SLX-WH-SjJ"/>
                 <outlet property="view" destination="9tl-7X-D3T" id="9EX-Cn-gvl"/>
             </connections>
         </placeholder>
@@ -50,6 +53,10 @@
                 <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="iKl-m2-DPf">
                     <rect key="frame" x="0.0" y="64" width="600" height="536"/>
                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                    <connections>
+                        <outlet property="dataSource" destination="-1" id="oP7-fA-fDb"/>
+                        <outlet property="delegate" destination="-1" id="sch-OM-OrA"/>
+                    </connections>
                 </tableView>
                 <imageView hidden="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="r7W-Ph-enJ">
                     <rect key="frame" x="280" y="312" width="40" height="40"/>

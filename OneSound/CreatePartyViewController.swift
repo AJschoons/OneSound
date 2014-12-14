@@ -31,7 +31,7 @@ class CreatePartyViewController: UITableViewController {
     //var userFacebookToken: String!
     
     var strictness: PartyStrictnessOption = .Default
-    var partyAlreadyExists = false
+    var partyAlreadyExists = false // TODO: figure out if partyAlreadyExists is actually ever used/needed
     
     var delegate: CreatePartyViewControllerDelegate?
     
@@ -240,6 +240,10 @@ extension CreatePartyViewController: UITextFieldDelegate {
             }
         }
         
+        if addingOnlyWhitespaceToTextFieldWithOnlyWhitespaceOrEmpty(textField.text, string) {
+            return false
+        }
+        
         // Only allow change if 20 or less characters
         let newLength = countElements(textField.text as String) + countElements(string as String) - range.length
         return ((newLength > 20) ? false : true)
@@ -247,6 +251,7 @@ extension CreatePartyViewController: UITextFieldDelegate {
     
     func textFieldShouldReturn(textField: UITextField!) -> Bool {
         // Hide keyboard when user presses "Done"
+        removeLeadingWhitespaceFromTextField(&nameCellTextField!)
         nameCellTextField.resignFirstResponder()
         return true
     }

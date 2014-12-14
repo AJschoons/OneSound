@@ -371,5 +371,50 @@ func setUserInfoLabelsText(# upvoteLabel: UILabel!, # numUpvotes: Int, # songLab
     }
 }
 
+func addingOnlyWhitespaceToTextFieldWithOnlyWhitespaceOrEmpty(textfieldText: String, textToAdd: String) -> Bool {
+    // Check if the text field already has any non-whitespace characters
+    var textFieldHasNonWhitespaceChar = false
+    for c in textfieldText {
+        if c != " " {
+            textFieldHasNonWhitespaceChar = true
+            break
+        }
+    }
+    
+    // If textfield is empty or only whitespace, make sure only spaces aren't added
+    if !textFieldHasNonWhitespaceChar {
+        var strippedRepStr = ""
+        
+        for c in textToAdd {
+            if c != " " {
+                strippedRepStr.append(c)
+            }
+        }
+        
+        // Only spaces being added, so return true
+        if (countElements(strippedRepStr) == 0) {
+            return true
+        }
+    }
+    
+    return false
+}
+
+func removeLeadingWhitespaceFromTextField(inout textField: UITextField) {
+    let oldText = textField.text as String
+    var newText = ""
+    var hitNonWhitespaceChar = false
+    for c in oldText {
+        if hitNonWhitespaceChar {
+            newText.append(c)
+        }
+        else if c != " " {
+            hitNonWhitespaceChar = true
+            newText.append(c)
+        }
+    }
+    
+    textField.text = newText
+}
 
 

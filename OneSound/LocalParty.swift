@@ -500,6 +500,30 @@ class LocalParty: NSObject {
         audioSession = nil
         clearSongInfo()
         
+        partyID = -1
+        isPrivate = false
+        hostUserID = -1
+        name = ""
+        strictness = -1
+        
+        songs = [Song]()
+        members = [User]()
+        currentSong = nil
+        currentUser = nil
+        songCache = [Int : NSData]()
+        
+        setup = false
+
+        songProgressTimer = nil
+        recentNextSongCallTimer = nil
+        
+        userIsHost = false
+        audioPlayerHasAudioToPlay = false
+        audioPlayerIsPlaying = false
+        recentlyGotNextSong = false
+        audioIsDownloading = false
+        shouldTryAnotherRefresh = true
+        
         dispatchAsyncToMainQueue(action: {
             self.delegate.setPartyInfoHidden(true)
         })
@@ -585,7 +609,6 @@ extension LocalParty {
             success: { data, responseObject in
                 let responseJSON = JSONValue(responseObject)
                 //println(responseJSON)
-                
                 self.updateMainPartyInfoFromJSON(responseJSON, JSONUpdateCompletion)
                 self.updatePartyMembers(pid)
                 self.updatePartySongs(pid)

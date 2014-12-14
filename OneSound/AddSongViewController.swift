@@ -20,16 +20,10 @@ class AddSongViewController: UIViewController {
     
     var searchResultsArray = [SongSearchResult]()
     
-    let thousandsFormatter: NSNumberFormatter = {
-        let formatter = NSNumberFormatter()
-        formatter.numberStyle = NSNumberFormatterStyle.DecimalStyle
-        formatter.formatterBehavior = NSNumberFormatterBehavior.BehaviorDefault
-        return formatter
-    }()
-    
     let heightForRows: CGFloat = 64.0
     
     func search() {
+        // Empty the table, reload to show its empty, start the animation
         searchResultsArray = [SongSearchResult]()
         searchResultsTable.reloadData()
         loadingAnimationShouldBeAnimating(true)

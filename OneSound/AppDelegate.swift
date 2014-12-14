@@ -25,6 +25,15 @@ let loadingSong0 = UIImage(named: "loadingSong0")!
 let loadingSong1 = UIImage(named: "loadingSong1")!
 let loadingSong2 = UIImage(named: "loadingSong2")!
 
+let thousandsFormatter: NSNumberFormatter = {
+    let formatter = NSNumberFormatter()
+    formatter.numberStyle = NSNumberFormatterStyle.DecimalStyle
+    formatter.formatterBehavior = NSNumberFormatterBehavior.BehaviorDefault
+    return formatter
+}()
+
+let validCharacters = "abcdefghijklmnopqrstuvwxyz1234567890"
+
 let shorterPhoneLength = 480;
 var shorterIphoneScreen = false;
 

@@ -14,8 +14,6 @@ protocol LoginViewControllerDelegate {
 
 class LoginViewController: UITableViewController {
     
-    let validCharacters = "abcdefghijklmnopqrstuvwxyz1234567890"
-    
     @IBOutlet weak var nameCell: UITableViewCell!
     @IBOutlet weak var nameCellTextField: UITextField!
     @IBOutlet weak var nameCellTextFieldCount: UILabel!
@@ -239,6 +237,10 @@ extension LoginViewController: UITextFieldDelegate {
                 return false
             }
         }
+        
+        if addingOnlyWhitespaceToTextFieldWithOnlyWhitespaceOrEmpty(textField.text, string) {
+            return false
+        }
     
         // Only allow change if 15 or less characters
         let newLength = countElements(textField.text as String) + countElements(string as String) - range.length
@@ -247,6 +249,7 @@ extension LoginViewController: UITextFieldDelegate {
     
     func textFieldShouldReturn(textField: UITextField!) -> Bool {
         // Hide keyboard when user presses "Done"
+        removeLeadingWhitespaceFromTextField(&nameCellTextField!)
         nameCellTextField.resignFirstResponder()
         return true
     }
