@@ -8,6 +8,12 @@
 
 import UIKit
 
+enum UserSongVote: Int {
+    case Down = -1
+    case None = 0
+    case Up = 1
+}
+
 class Song {
     var songID: Int!
     var source: String!
@@ -15,6 +21,7 @@ class Song {
     var voteCount: Int!
     var userID: Int!
     var partyID: Int!
+    var userVote: UserSongVote?
     
     // Display data
     var name: String!
@@ -33,5 +40,9 @@ class Song {
         artistName = json["artist"].string
         duration = json["length"].integer
         artworkURL = json["album"].string
+        
+        if let vote = json["user_vote"].integer {
+            userVote = UserSongVote(rawValue: vote)
+        }
     }
 }

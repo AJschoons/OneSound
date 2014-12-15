@@ -172,6 +172,19 @@ extension PartySongsViewController: UITableViewDataSource {
                 }
             }
             
+            songCell.resetThumbsUpDownButtons()
+            if song.userVote != nil {
+                switch song.userVote! {
+                case .Up:
+                    songCell.setThumbsUpSelected()
+                case .Down:
+                    songCell.setThumbsDownSelected()
+                default:
+                    songCell.resetThumbsUpDownButtons()
+                }
+            }
+            
+            
             if song.artworkURL != nil {
                 if tableView.dragging == false && tableView.decelerating == false {
                     let largerArtworkURL = song.artworkURL!.replaceSubstringWithString("-large.jpg", newSubstring: "-t500x500.jpg")
@@ -210,15 +223,17 @@ extension PartySongsViewController: UITableViewDataSource {
                     // If the cell for that row is still visible and correct
                     
                     if error == nil && image != nil {
-                        let processedImage = cropImageCenterFromSideEdgesWhilePreservingAspectRatio(withWidth: 640, withHeight: self.heightForRows * 2.0, image: image)
-                        
-                        self.songTableViewImageCache.storeImage(processedImage, forKey: urlString)
+                        // From when using the image as background for the full cell
+                        //let processedImage = cropImageCenterFromSideEdgesWhilePreservingAspectRatio(withWidth: 640, withHeight: self.heightForRows * 2.0, image: image)
                         
                         dispatchAsyncToMainQueue(action: {
-                            updateCell!.songImage.image = processedImage
+                            updateCell!.songImage.image = image
                             updateCell!.songImage.setNeedsLayout()
                         })
                         //updateCell!.songImage.setNeedsLayout()
+                        
+                        self.songTableViewImageCache.storeImage(image, forKey: urlString)
+                        
                     } else {
                         dispatchAsyncToMainQueue(action: {
                             updateCell!.songImage.image = self.songCellImagePlaceholder
@@ -237,9 +252,11 @@ extension PartySongsViewController: UITableViewDataSource {
             let song = LocalParty.sharedParty.songs[path.row]
             
             if song.artworkURL != nil {
-                let largerArtworkURL = song.artworkURL!.replaceSubstringWithString("-large.jpg", newSubstring: "-t500x500.jpg")
+                // From when using the image as background for the full cell
+                //let largerArtworkURL = song.artworkURL!.replaceSubstringWithString("-large.jpg", newSubstring: "-t500x500.jpg")
+                let artworkURL = song.artworkURL!
                 
-                songTableViewImageCache.queryDiskCacheForKey(largerArtworkURL,
+                songTableViewImageCache.queryDiskCacheForKey(artworkURL,
                     done: { image, imageCacheType in
                         if image != nil {
                             let updateCell = self.songsTable.cellForRowAtIndexPath(path) as? PartySongCell
@@ -250,7 +267,7 @@ extension PartySongsViewController: UITableViewDataSource {
                                 updateCell!.songImage.setNeedsLayout()
                             }
                         } else {
-                            self.startImageDownload(largerArtworkURL, forIndexPath: path)
+                            self.startImageDownload(artworkURL, forIndexPath: path)
                         }
                     }
                 )

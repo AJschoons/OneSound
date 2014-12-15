@@ -159,21 +159,13 @@ class PartyMainViewController: UIViewController {
         if let thumbsUpButton = button as? UIButton {
             if thumbsUpButton.selected {
                 // If the button is selected before it is pressed, make it unselected
-                thumbsUpButton.setImage(thumbsUpUnselectedMainParty, forState: UIControlState.Normal)
-                thumbsUpButton.selected = false
+                setThumbsUpUnselected()
             } else {
                 // If the button is unselected before it is pressed
-                thumbsUpButton.setImage(thumbsUpSelectedMainParty, forState: UIControlState.Normal)
-                thumbsUpButton.selected = true
+                setThumbsUpSelected()
                 
-                if shorterIphoneScreen {
-                    if shortThumbsDownButton.selected {
-                        handleThumbsDownPress(shortThumbsDownButton)
-                    }
-                } else {
-                    if tallThumbsDownButton.selected {
-                        handleThumbsDownPress(tallThumbsDownButton)
-                    }
+                if shortThumbsDownButton.selected || tallThumbsDownButton.selected {
+                    setThumbsDownUnselected()
                 }
             }
         }
@@ -183,37 +175,58 @@ class PartyMainViewController: UIViewController {
         if let thumbsDownButton = button as? UIButton {
             if thumbsDownButton.selected {
                 // If the button is selected before it is pressed, make it unselected
-                thumbsDownButton.setImage(thumbsDownUnselectedMainParty, forState: UIControlState.Normal)
-                thumbsDownButton.selected = false
+                setThumbsDownUnselected()
             } else {
                 // If the button is unselected before it is pressed
-                thumbsDownButton.setImage(thumbsDownSelectedMainParty, forState: UIControlState.Normal)
-                thumbsDownButton.selected = true
+                setThumbsDownSelected()
                 
-                if shorterIphoneScreen {
-                    if shortThumbsUpButton.selected {
-                        handleThumbsUpPress(shortThumbsUpButton)
-                    }
-                } else {
-                    if tallThumbsUpButton.selected {
-                        handleThumbsUpPress(tallThumbsUpButton)
-                    }
+                if shortThumbsUpButton.selected || tallThumbsUpButton.selected {
+                    setThumbsUpUnselected()
                 }
             }
         }
     }
     
     func resetThumbsUpDownButtons() {
+        setThumbsUpUnselected()
+        setThumbsDownUnselected()
+    }
+    
+    func setThumbsUpSelected() {
+        if shorterIphoneScreen {
+            shortThumbsUpButton.setImage(thumbsUpSelectedMainParty, forState: UIControlState.Normal)
+            shortThumbsUpButton.selected = true
+        } else {
+            tallThumbsUpButton.setImage(thumbsUpSelectedMainParty, forState: UIControlState.Normal)
+            tallThumbsUpButton.selected = true
+        }
+    }
+    
+    func setThumbsUpUnselected() {
         if shorterIphoneScreen {
             shortThumbsUpButton.setImage(thumbsUpUnselectedMainParty, forState: UIControlState.Normal)
             shortThumbsUpButton.selected = false
-            
-            shortThumbsDownButton.setImage(thumbsDownUnselectedMainParty, forState: UIControlState.Normal)
-            shortThumbsDownButton.selected = false
         } else {
             tallThumbsUpButton.setImage(thumbsUpUnselectedMainParty, forState: UIControlState.Normal)
             tallThumbsUpButton.selected = false
-            
+        }
+    }
+    
+    func setThumbsDownSelected() {
+        if shorterIphoneScreen {
+            shortThumbsDownButton.setImage(thumbsDownSelectedMainParty, forState: UIControlState.Normal)
+            shortThumbsDownButton.selected = true
+        } else {
+            tallThumbsDownButton.setImage(thumbsDownSelectedMainParty, forState: UIControlState.Normal)
+            tallThumbsDownButton.selected = true
+        }
+    }
+    
+    func setThumbsDownUnselected() {
+        if shorterIphoneScreen {
+            shortThumbsDownButton.setImage(thumbsDownUnselectedMainParty, forState: UIControlState.Normal)
+            shortThumbsDownButton.selected = false
+        } else {
             tallThumbsDownButton.setImage(thumbsDownUnselectedMainParty, forState: UIControlState.Normal)
             tallThumbsDownButton.selected = false
         }
@@ -240,7 +253,7 @@ class PartyMainViewController: UIViewController {
     
     func clearSongInfo() {
         setPartySongImage(songToPlay: false, artworkToShow: false, loadingSong: false, image: nil)
-        setPartySongInfo(songName: "", songArtist: "", songTime: "", user: nil)
+        setPartySongInfo(songName: "", songArtist: "", songTime: "", user: nil, thumbsUp: false, thumbsDown: false)
         resetThumbsUpDownButtons()
     }
     
@@ -312,7 +325,7 @@ class PartyMainViewController: UIViewController {
         songProgress!.hidden = false
     }
     
-    func setPartySongInfo(# songName: String, songArtist: String, songTime: String, user: User?) {
+    func setPartySongInfo(# songName: String, songArtist: String, songTime: String, user: User?, thumbsUp: Bool, thumbsDown: Bool) {
         showPartySongInfo()
         
         songNameLabel!.text = songName
@@ -320,6 +333,13 @@ class PartyMainViewController: UIViewController {
         songTimeLabel!.text = songTime
         
         setPartySongUserInfo(user)
+        
+        resetThumbsUpDownButtons()
+        if thumbsUp {
+            setThumbsUpSelected()
+        } else if thumbsDown {
+            setThumbsDownSelected()
+        }
     }
     
     func setPartySongImage(# songToPlay: Bool, artworkToShow: Bool, loadingSong: Bool, image: UIImage?) {

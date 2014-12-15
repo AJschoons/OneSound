@@ -16,7 +16,7 @@ protocol LocalPartyDelegate {
     func showPartySongInfo()
     func showMessages(mainLine: String?, detailLine: String?)
     func hideMessages()
-    func setPartySongInfo(# songName: String, songArtist: String, songTime: String, user: User?)
+    func setPartySongInfo(# songName: String, songArtist: String, songTime: String, user: User?, thumbsUp: Bool, thumbsDown: Bool)
     func setPartySongImage(# songToPlay: Bool, artworkToShow: Bool, loadingSong: Bool, image: UIImage?)
     func clearSongInfo()
 }
@@ -230,12 +230,12 @@ class LocalParty: NSObject {
             noCurrentSong: {
                 dispatchAsyncToMainQueue(action: {
                     self.delegate.setPartySongImage(songToPlay: false, artworkToShow: false, loadingSong: false, image: nil)
-                    self.delegate.setPartySongInfo(songName: "", songArtist: "", songTime: "", user: nil)
+                    self.delegate.setPartySongInfo(songName: "", songArtist: "", songTime: "", user: nil, thumbsUp: false, thumbsDown: false)
                 })
             },
             failureAddOn: {
                 dispatchAsyncToMainQueue(action: {
-                    self.delegate.setPartySongInfo(songName: "", songArtist: "", songTime: "", user: nil)
+                    self.delegate.setPartySongInfo(songName: "", songArtist: "", songTime: "", user: nil, thumbsUp: false, thumbsDown: false)
                     self.delegate.setPartyInfoHidden(true)
                     self.delegate.showMessages("Unable to load current song", detailLine: "Please check internet connection and refresh the party")
                 })
@@ -260,12 +260,12 @@ class LocalParty: NSObject {
                 self.audioIsDownloading = false
                 dispatchAsyncToMainQueue(action: {
                     self.delegate.setPartySongImage(songToPlay: false, artworkToShow: false, loadingSong: false, image: nil)
-                    self.delegate.setPartySongInfo(songName: "", songArtist: "", songTime: "", user: nil)
+                    self.delegate.setPartySongInfo(songName: "", songArtist: "", songTime: "", user: nil, thumbsUp: false, thumbsDown: false)
                 })
             }, failureAddOn: {
                 self.audioIsDownloading = false
                 dispatchAsyncToMainQueue(action: {
-                    self.delegate.setPartySongInfo(songName: "", songArtist: "", songTime: "", user: nil)
+                    self.delegate.setPartySongInfo(songName: "", songArtist: "", songTime: "", user: nil, thumbsUp: false, thumbsDown: false)
                     self.delegate.setPartyInfoHidden(true)
                     self.delegate.showMessages("Unable to load current song", detailLine: "Please check internet connection and refresh the party")
                 })
@@ -420,9 +420,24 @@ class LocalParty: NSObject {
     
     func updateDelegateSongInformation() {
         if currentSong != nil {
+            
+            var thumbsUp = false
+            var thumbsDown = false
+            
+            if currentSong!.userVote != nil {
+                switch currentSong!.userVote! {
+                case .Up:
+                    thumbsUp = true
+                case .Down:
+                    thumbsDown = true
+                default:
+                    break
+                }
+            }
+            
             dispatchAsyncToMainQueue(action: {
                 self.delegate.showPartySongInfo()
-                self.delegate.setPartySongInfo(songName: self.currentSong!.name, songArtist: self.currentSong!.artistName, songTime: timeInSecondsToFormattedMinSecondTimeLabelString(self.currentSong!.duration), user: self.currentUser!)
+                self.delegate.setPartySongInfo(songName: self.currentSong!.name, songArtist: self.currentSong!.artistName, songTime: timeInSecondsToFormattedMinSecondTimeLabelString(self.currentSong!.duration), user: self.currentUser!, thumbsUp: thumbsUp, thumbsDown: thumbsDown)
             })
             updateDelegateSongImage() // UI calls in this fxn use dispatchAsyncToMainQueue
         }
@@ -711,6 +726,11 @@ extension LocalParty {
             completion!()
         }
     }
+}
+
+extension LocalParty {
+    // MARK: Party networking related code for song voting
+    
 }
 
 extension LocalParty: AVAudioPlayerDelegate {

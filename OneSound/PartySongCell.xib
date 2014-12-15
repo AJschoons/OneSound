@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="6205" systemVersion="14A283o" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="6254" systemVersion="14C81f" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6198"/>
-        <capability name="Constraints with attributes relative to the layout margin" minToolsVersion="6.0"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6247"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
@@ -14,51 +14,87 @@
                 <rect key="frame" x="0.0" y="0.0" width="320" height="43"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="The Name Of The Artist" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="10" translatesAutoresizingMaskIntoConstraints="NO" id="U75-J6-gKG">
+                        <rect key="frame" x="70" y="34" width="167" height="12"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="12" id="ULJ-db-VTf"/>
+                        </constraints>
+                        <fontDescription key="fontDescription" type="boldSystem" pointSize="10"/>
+                        <color key="textColor" red="0.5170014500617981" green="0.51698595285415649" blue="0.51699477434158325" alpha="1" colorSpace="calibratedRGB"/>
+                        <nil key="highlightedColor"/>
+                    </label>
                     <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="songCellImagePlaceholder" translatesAutoresizingMaskIntoConstraints="NO" id="iHF-mJ-W5v">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="64"/>
+                        <rect key="frame" x="10" y="7" width="50" height="50"/>
                         <color key="backgroundColor" red="0.8304140567779541" green="0.83038914203643799" blue="0.83040332794189453" alpha="1" colorSpace="calibratedRGB"/>
+                        <constraints>
+                            <constraint firstAttribute="width" constant="50" id="q5M-r8-3WK"/>
+                            <constraint firstAttribute="height" constant="50" id="u7o-4m-MPf"/>
+                        </constraints>
                     </imageView>
-                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="The Name Of The Song" textAlignment="center" lineBreakMode="middleTruncation" baselineAdjustment="alignBaselines" minimumFontSize="10" translatesAutoresizingMaskIntoConstraints="NO" id="G1e-Xo-VN3" customClass="THLabel">
-                        <rect key="frame" x="40" y="15" width="240" height="18"/>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="The Name Of The Song" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="10" translatesAutoresizingMaskIntoConstraints="NO" id="G1e-Xo-VN3">
+                        <rect key="frame" x="70" y="18" width="167" height="16"/>
                         <constraints>
-                            <constraint firstAttribute="height" constant="18" id="BGc-fB-7XW"/>
+                            <constraint firstAttribute="height" constant="16" id="BGc-fB-7XW"/>
                         </constraints>
-                        <fontDescription key="fontDescription" type="boldSystem" pointSize="16"/>
-                        <color key="textColor" red="1" green="0.99997437000274658" blue="0.99999129772186279" alpha="1" colorSpace="calibratedRGB"/>
+                        <fontDescription key="fontDescription" type="boldSystem" pointSize="14"/>
+                        <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                         <nil key="highlightedColor"/>
                     </label>
-                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="The Name Of The Artist" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="10" translatesAutoresizingMaskIntoConstraints="NO" id="U75-J6-gKG" customClass="THLabel">
-                        <rect key="frame" x="40" y="35" width="240" height="14"/>
+                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" reversesTitleShadowWhenHighlighted="YES" adjustsImageWhenHighlighted="NO" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="f2I-hB-V3z">
+                        <rect key="frame" x="286" y="20" width="24" height="24"/>
                         <constraints>
-                            <constraint firstAttribute="height" constant="14" id="ULJ-db-VTf"/>
+                            <constraint firstAttribute="width" constant="24" id="Ihu-4V-0W7"/>
+                            <constraint firstAttribute="height" constant="24" id="OFz-D2-yDW"/>
                         </constraints>
-                        <fontDescription key="fontDescription" type="boldSystem" pointSize="12"/>
-                        <color key="textColor" red="1" green="0.99997437000274658" blue="0.99999129772186279" alpha="1" colorSpace="calibratedRGB"/>
-                        <nil key="highlightedColor"/>
-                    </label>
+                        <state key="normal" image="thumbsUpUnselectedMainParty">
+                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                        </state>
+                        <connections>
+                            <action selector="onThumbsUp:" destination="KGk-i7-Jjw" eventType="touchUpInside" id="YiC-fX-gHi"/>
+                        </connections>
+                    </button>
+                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" adjustsImageWhenHighlighted="NO" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Umf-ea-nPj">
+                        <rect key="frame" x="247" y="20" width="24" height="24"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="24" id="Lkd-gk-qhn"/>
+                            <constraint firstAttribute="width" constant="24" id="mUG-NQ-u0G"/>
+                        </constraints>
+                        <state key="normal" image="thumbsDownUnselectedMainParty">
+                            <color key="titleShadowColor" red="0.17838662860000001" green="0.73694926500000002" blue="0.94469857219999998" alpha="1" colorSpace="calibratedRGB"/>
+                        </state>
+                        <connections>
+                            <action selector="onThumbsDown:" destination="KGk-i7-Jjw" eventType="touchUpInside" id="Fkz-99-aXK"/>
+                        </connections>
+                    </button>
                 </subviews>
-                <color key="backgroundColor" red="0.8304140567779541" green="0.83038914203643799" blue="0.83040332794189453" alpha="1" colorSpace="calibratedRGB"/>
+                <color key="backgroundColor" red="0.95075207948684692" green="0.95072358846664429" blue="0.95073968172073364" alpha="1" colorSpace="calibratedRGB"/>
                 <constraints>
-                    <constraint firstAttribute="trailingMargin" secondItem="U75-J6-gKG" secondAttribute="trailing" constant="32" id="6jD-fb-Zjr"/>
-                    <constraint firstItem="iHF-mJ-W5v" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="topMargin" constant="-8" id="HkW-1f-pgG"/>
-                    <constraint firstAttribute="trailingMargin" secondItem="G1e-Xo-VN3" secondAttribute="trailing" constant="32" id="OGG-st-7Jm"/>
-                    <constraint firstItem="G1e-Xo-VN3" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="topMargin" constant="7" id="Vc9-id-JNR"/>
-                    <constraint firstAttribute="bottomMargin" secondItem="iHF-mJ-W5v" secondAttribute="bottom" constant="-8" id="Vjq-vj-if0"/>
-                    <constraint firstAttribute="trailingMargin" secondItem="iHF-mJ-W5v" secondAttribute="trailing" constant="-8" id="cDH-Ht-uqv"/>
-                    <constraint firstItem="iHF-mJ-W5v" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leadingMargin" constant="-8" id="ghT-q3-P1v"/>
-                    <constraint firstItem="U75-J6-gKG" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leadingMargin" constant="32" id="lsi-oi-02G"/>
-                    <constraint firstItem="G1e-Xo-VN3" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leadingMargin" constant="32" id="owj-Rq-jm0"/>
-                    <constraint firstAttribute="bottomMargin" secondItem="U75-J6-gKG" secondAttribute="bottom" constant="6" id="ttm-uD-33z"/>
+                    <constraint firstAttribute="centerY" secondItem="f2I-hB-V3z" secondAttribute="centerY" id="1Q4-47-4FY"/>
+                    <constraint firstAttribute="centerY" secondItem="G1e-Xo-VN3" secondAttribute="centerY" constant="5.75" id="2r4-0c-hrH"/>
+                    <constraint firstItem="f2I-hB-V3z" firstAttribute="leading" secondItem="Umf-ea-nPj" secondAttribute="trailing" constant="15" id="310-zA-NsH"/>
+                    <constraint firstAttribute="centerY" secondItem="iHF-mJ-W5v" secondAttribute="centerY" id="5G1-ae-DIQ"/>
+                    <constraint firstItem="U75-J6-gKG" firstAttribute="leading" secondItem="G1e-Xo-VN3" secondAttribute="leading" id="7fN-WN-jwa"/>
+                    <constraint firstItem="U75-J6-gKG" firstAttribute="trailing" secondItem="G1e-Xo-VN3" secondAttribute="trailing" id="C6X-YM-hRz"/>
+                    <constraint firstItem="G1e-Xo-VN3" firstAttribute="leading" secondItem="iHF-mJ-W5v" secondAttribute="trailing" constant="10" id="Etz-UT-9s8"/>
+                    <constraint firstItem="Umf-ea-nPj" firstAttribute="leading" secondItem="G1e-Xo-VN3" secondAttribute="trailing" constant="10" id="H3J-dj-prD"/>
+                    <constraint firstItem="f2I-hB-V3z" firstAttribute="trailing" secondItem="H2p-sc-9uM" secondAttribute="trailingMargin" constant="-2" id="OgO-6B-c8S"/>
+                    <constraint firstAttribute="centerY" secondItem="Umf-ea-nPj" secondAttribute="centerY" id="TWG-Aq-PhP"/>
+                    <constraint firstItem="iHF-mJ-W5v" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leadingMargin" constant="2" id="ghT-q3-P1v"/>
+                    <constraint firstItem="U75-J6-gKG" firstAttribute="top" secondItem="G1e-Xo-VN3" secondAttribute="bottom" id="vpO-XK-mhF"/>
                 </constraints>
             </tableViewCellContentView>
             <connections>
                 <outlet property="songArtist" destination="U75-J6-gKG" id="yhr-t4-g7f"/>
                 <outlet property="songImage" destination="iHF-mJ-W5v" id="T1b-jI-FZY"/>
                 <outlet property="songName" destination="G1e-Xo-VN3" id="Nua-R3-jDW"/>
+                <outlet property="thumbsDownButton" destination="Umf-ea-nPj" id="CUN-RB-Heq"/>
+                <outlet property="thumbsUpButton" destination="f2I-hB-V3z" id="pMt-qm-Bjq"/>
             </connections>
         </tableViewCell>
     </objects>
     <resources>
-        <image name="songCellImagePlaceholder" width="320" height="64"/>
+        <image name="songCellImagePlaceholder" width="50" height="50"/>
+        <image name="thumbsDownUnselectedMainParty" width="24" height="24"/>
+        <image name="thumbsUpUnselectedMainParty" width="24" height="24"/>
     </resources>
 </document>
