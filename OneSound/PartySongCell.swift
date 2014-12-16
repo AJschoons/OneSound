@@ -49,13 +49,19 @@ class PartySongCell: UITableViewCell {
             if thumbsUpButton.selected {
                 // If the button is selected before it is pressed, make it unselected
                 setThumbsUpUnselected()
+                
+                // Clear song vote on the server
+                LocalParty.sharedParty.songClearVote(songID)
             } else {
                 // If the button is unselected before it is pressed
                 setThumbsUpSelected()
                 
+                // Upvote song on the server
+                LocalParty.sharedParty.songUpvote(songID)
+                
                 // If the thumbs down button is already selected when thumbs up gets selected, unselect it
                 if thumbsDownButton.selected {
-                    handleThumbsDown(thumbsDownButton)
+                    setThumbsDownUnselected()
                 }
             }
         }
@@ -66,13 +72,19 @@ class PartySongCell: UITableViewCell {
             if thumbsDownButton.selected {
                 // If the button is selected before it is pressed, make it unselected
                 setThumbsDownUnselected()
+                
+                // Clear song vote on the server
+                LocalParty.sharedParty.songClearVote(songID)
             } else {
                 // If the button is unselected before it is pressed
                 setThumbsDownSelected()
                 
+                // Downvote song on the server
+                LocalParty.sharedParty.songDownvote(songID)
+                
                 // If the thumbs up button is already selected when thumbs down gets selected, unselect it
                 if thumbsUpButton.selected {
-                    handleThumbsUp(thumbsUpButton)
+                    setThumbsUpUnselected()
                 }
             }
         }

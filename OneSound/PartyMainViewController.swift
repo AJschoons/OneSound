@@ -160,9 +160,19 @@ class PartyMainViewController: UIViewController {
             if thumbsUpButton.selected {
                 // If the button is selected before it is pressed, make it unselected
                 setThumbsUpUnselected()
+                
+                // Clear song vote on the server
+                if let currentSong = LocalParty.sharedParty.currentSong {
+                    LocalParty.sharedParty.songClearVote(currentSong.songID)
+                }
             } else {
                 // If the button is unselected before it is pressed
                 setThumbsUpSelected()
+                
+                // Upvote song on the server
+                if let currentSong = LocalParty.sharedParty.currentSong {
+                    LocalParty.sharedParty.songUpvote(currentSong.songID)
+                }
                 
                 if shortThumbsDownButton.selected || tallThumbsDownButton.selected {
                     setThumbsDownUnselected()
@@ -176,9 +186,19 @@ class PartyMainViewController: UIViewController {
             if thumbsDownButton.selected {
                 // If the button is selected before it is pressed, make it unselected
                 setThumbsDownUnselected()
+                
+                // Clear song vote on the server
+                if let currentSong = LocalParty.sharedParty.currentSong {
+                    LocalParty.sharedParty.songClearVote(currentSong.songID)
+                }
             } else {
                 // If the button is unselected before it is pressed
                 setThumbsDownSelected()
+                
+                // Downvote song on the server
+                if let currentSong = LocalParty.sharedParty.currentSong {
+                    LocalParty.sharedParty.songDownvote(currentSong.songID)
+                }
                 
                 if shortThumbsUpButton.selected || tallThumbsUpButton.selected {
                     setThumbsUpUnselected()

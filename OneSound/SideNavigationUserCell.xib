@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="6185.11" systemVersion="14A261i" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="6254" systemVersion="14C81f" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6190.4"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6247"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
@@ -22,19 +23,29 @@
                         </constraints>
                     </imageView>
                     <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Name of User" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="NK2-Sa-VVV">
-                        <rect key="frame" x="20" y="118" width="160" height="20"/>
+                        <rect key="frame" x="20" y="117.5" width="160" height="20.5"/>
                         <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
                         <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                         <nil key="highlightedColor"/>
                     </label>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="cDj-Yu-8Ws" userLabel="seperator">
+                        <rect key="frame" x="0.0" y="149" width="200" height="1"/>
+                        <color key="backgroundColor" red="0.83041405680000002" green="0.83038914200000002" blue="0.83040332790000004" alpha="1" colorSpace="calibratedRGB"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="1" id="WVF-pi-rFR"/>
+                        </constraints>
+                    </view>
                 </subviews>
                 <constraints>
                     <constraint firstAttribute="centerX" secondItem="QYz-Hy-nEE" secondAttribute="centerX" id="0Ov-HK-oHb"/>
                     <constraint firstAttribute="centerX" secondItem="NK2-Sa-VVV" secondAttribute="centerX" id="Gsa-xH-0Gx"/>
                     <constraint firstItem="QYz-Hy-nEE" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="10" id="Sn2-EU-6it"/>
                     <constraint firstItem="NK2-Sa-VVV" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="20" id="Vym-53-BTe"/>
+                    <constraint firstAttribute="trailingMargin" secondItem="cDj-Yu-8Ws" secondAttribute="trailing" constant="-8" id="Wea-Uq-XQj"/>
                     <constraint firstAttribute="bottom" secondItem="NK2-Sa-VVV" secondAttribute="bottom" constant="11.5" id="WzE-al-rB8"/>
+                    <constraint firstAttribute="bottomMargin" secondItem="cDj-Yu-8Ws" secondAttribute="bottom" constant="-9" id="eOD-GI-Mjd"/>
                     <constraint firstAttribute="trailing" secondItem="NK2-Sa-VVV" secondAttribute="trailing" constant="20" id="jMk-4H-znQ"/>
+                    <constraint firstItem="cDj-Yu-8Ws" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leadingMargin" constant="-8" id="qqg-pk-1Z9"/>
                 </constraints>
             </tableViewCellContentView>
             <connections>

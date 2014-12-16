@@ -438,7 +438,66 @@ extension OSAPI {
         }
         
         GET(urlString, parameters: params, success: success, failure: failure)
+    }
+    
+    func POSTSongUpvote(sid: Int, userID: Int, userAPIToken: String, success: AFHTTPSuccessBlock, failure: AFHTTPFailureBlock, extraAttempts: Int = defaultEA) {
         
+        let urlString = "song/\(sid)/upvote"
+        
+        // Create parameters to pass
+        var params = Dictionary<String, AnyObject>()
+        params.updateValue(userID, forKey: "uid")
+        params.updateValue(userAPIToken, forKey: "api_token")
+        
+        let failureWithExtraAttempt: AFHTTPFailureBlock = { task, error in
+            if errorShouldBeHandledWithRepeatedRequest(task, error, attemptsLeft: extraAttempts) {
+                self.POSTSongUpvote(sid, userID: userID, userAPIToken: userAPIToken, success: success, failure: failure, extraAttempts: (extraAttempts - 1))
+            } else {
+                failure!(task: task, error: error)
+            }
+        }
+        
+        POST(urlString, parameters: params, success: success, failure: failure)
+    }
+    
+    func POSTSongDownvote(sid: Int, userID: Int, userAPIToken: String, success: AFHTTPSuccessBlock, failure: AFHTTPFailureBlock, extraAttempts: Int = defaultEA) {
+        
+        let urlString = "song/\(sid)/downvote"
+        
+        // Create parameters to pass
+        var params = Dictionary<String, AnyObject>()
+        params.updateValue(userID, forKey: "uid")
+        params.updateValue(userAPIToken, forKey: "api_token")
+        
+        let failureWithExtraAttempt: AFHTTPFailureBlock = { task, error in
+            if errorShouldBeHandledWithRepeatedRequest(task, error, attemptsLeft: extraAttempts) {
+                self.POSTSongDownvote(sid, userID: userID, userAPIToken: userAPIToken, success: success, failure: failure, extraAttempts: (extraAttempts - 1))
+            } else {
+                failure!(task: task, error: error)
+            }
+        }
+        
+        POST(urlString, parameters: params, success: success, failure: failure)
+    }
+    
+    func DELETESongVote(sid: Int, userID: Int, userAPIToken: String, success: AFHTTPSuccessBlock, failure: AFHTTPFailureBlock, extraAttempts: Int = defaultEA) {
+        
+        let urlString = "song/\(sid)/vote"
+        
+        // Create parameters to pass
+        var params = Dictionary<String, AnyObject>()
+        params.updateValue(userID, forKey: "uid")
+        params.updateValue(userAPIToken, forKey: "api_token")
+        
+        let failureWithExtraAttempt: AFHTTPFailureBlock = { task, error in
+            if errorShouldBeHandledWithRepeatedRequest(task, error, attemptsLeft: extraAttempts) {
+                self.DELETESongVote(sid, userID: userID, userAPIToken: userAPIToken, success: success, failure: failure, extraAttempts: (extraAttempts - 1))
+            } else {
+                failure!(task: task, error: error)
+            }
+        }
+        
+        DELETE(urlString, parameters: params, success: success, failure: failure)
     }
 }
 

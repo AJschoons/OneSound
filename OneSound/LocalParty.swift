@@ -731,6 +731,20 @@ extension LocalParty {
 extension LocalParty {
     // MARK: Party networking related code for song voting
     
+    func songUpvote(sid: Int) {
+        let user = LocalUser.sharedUser
+        OSAPI.sharedClient.POSTSongUpvote(sid, userID: user.id, userAPIToken: user.apiToken, success: nil, failure: defaultAFHTTPFailureBlock)
+    }
+    
+    func songDownvote(sid: Int) {
+        let user = LocalUser.sharedUser
+        OSAPI.sharedClient.POSTSongDownvote(sid, userID: user.id, userAPIToken: user.apiToken, success: nil, failure: defaultAFHTTPFailureBlock)
+    }
+    
+    func songClearVote(sid: Int) {
+        let user = LocalUser.sharedUser
+        OSAPI.sharedClient.DELETESongVote(sid, userID: user.id, userAPIToken: user.apiToken, success: nil, failure: defaultAFHTTPFailureBlock)
+    }
 }
 
 extension LocalParty: AVAudioPlayerDelegate {
