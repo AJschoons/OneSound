@@ -8,6 +8,7 @@
 
 import UIKit
 import AVFoundation
+import MediaPlayer
 
 protocol LocalPartyDelegate {
     func updateSongProgress(progress: Float)
@@ -328,22 +329,24 @@ class LocalParty: NSObject {
     func setDelegatePreparedToPlaySong(songURLString: String) {
         audioIsDownloading = false
         
-        self.updateDelegateSongInformation()
+        updateDelegateSongInformation()
+        updateMPNowPlayingInfoCenterInfo()
         
         dispatchAsyncToMainQueue(action: {
             self.delegate.setAudioPlayerButtonsForPlaying(true)
         })
         
-        self.audioPlayerHasAudioToPlay = true
+        audioPlayerHasAudioToPlay = true
         audioPlayer.play(songURLString)
-        self.playSong()
+        playSong()
     }
     
     func setDelegatePreparedToPlaySongFromQueue() {
         audioIsDownloading = false
         audioPlayerHasAudioToPlay = true
         
-        self.updateDelegateSongInformation()
+        updateDelegateSongInformation()
+        updateMPNowPlayingInfoCenterInfo()
         
         dispatchAsyncToMainQueue(action: {
             self.delegate.setAudioPlayerButtonsForPlaying(true)
@@ -498,6 +501,28 @@ class LocalParty: NSObject {
         }
     }
     
+    // Make sure to use this AFTER updateDelegateSongImage() and updateDelegateSongInformation()
+    func updateMPNowPlayingInfoCenterInfo() {
+        
+        if currentSong!.artworkURL != nil {
+            let largerArtworkURL = currentSong!.artworkURL!.replaceSubstringWithString("-large.jpg", newSubstring: "-t500x500.jpg")
+            songImageCache.queryDiskCacheForKey(largerArtworkURL,
+                done: { image, imageCacheType in
+                    if image != nil {
+                        let artwork = MPMediaItemArtwork(image: image)
+                        MPNowPlayingInfoCenter.defaultCenter().nowPlayingInfo = [MPMediaItemPropertyArtist : self.currentSong!.artistName,  MPMediaItemPropertyTitle : self.currentSong!.name, MPMediaItemPropertyArtwork : artwork, MPMediaItemPropertyPlaybackDuration : self.currentSong!.duration]
+                    } else {
+                        let artwork = MPMediaItemArtwork(image: songImageForNoSongArtwork)
+                        MPNowPlayingInfoCenter.defaultCenter().nowPlayingInfo = [MPMediaItemPropertyArtist : self.currentSong!.artistName,  MPMediaItemPropertyTitle : self.currentSong!.name, MPMediaItemPropertyArtwork : artwork, MPMediaItemPropertyPlaybackDuration : self.currentSong!.duration]
+                    }
+                }
+            )
+        } else {
+            let artwork = MPMediaItemArtwork(image: songImageForNoSongArtwork)
+            MPNowPlayingInfoCenter.defaultCenter().nowPlayingInfo = [MPMediaItemPropertyArtist : currentSong!.artistName,  MPMediaItemPropertyTitle : currentSong!.name, MPMediaItemPropertyArtwork : artwork, MPMediaItemPropertyPlaybackDuration : currentSong!.duration]
+        }
+    }
+    
     func setupAudioSessionForHostPlaying() -> Bool {
         if audioSession == nil {
             audioSession = AVAudioSession.sharedInstance()
@@ -540,6 +565,8 @@ class LocalParty: NSObject {
         currentSong = nil
         currentUser = nil
         currentSongImage = nil
+        
+        MPNowPlayingInfoCenter.defaultCenter().nowPlayingInfo = ["" : ""]
         
         dispatchAsyncToMainQueue(action: {
             self.delegate.clearSongInfo()

@@ -426,4 +426,29 @@ extension AppDelegate: SWRevealViewControllerDelegate {
         }
     }
 }
+
+extension AppDelegate {
+    // MARK: handing play/pause from home screen
     
+    override func remoteControlReceivedWithEvent(event: UIEvent) {
+        let rc = event.subtype
+        println("received remote control \(rc.rawValue)")
+        
+        let party = LocalParty.sharedParty
+        switch rc {
+        case .RemoteControlTogglePlayPause:
+            if party.audioPlayer.state == STKAudioPlayerStatePlaying {
+                party.pauseSong()
+            } else {
+                party.playSong()
+            }
+        case .RemoteControlPlay:
+            party.playSong()
+        case .RemoteControlPause:
+            party.pauseSong()
+        default:
+            break
+        }
+        
+    }
+}
