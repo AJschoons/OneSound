@@ -12,3 +12,4 @@
 #import "FacebookSDK.h"
 #import "THLabel.h"
 #import "UIImageView+WebCache.h"
+#import "STKAudioPlayer.h"

@@ -38,10 +38,14 @@ class SCClient {
 extension SCClient {
     // MARK: downloading songs
     func downloadSoundCloudSongData(songID: Int, completion: DataTaskCompletionHandler) {
-        let songURL = NSURL(string: "\(SCBaseURL)tracks/\(songID)/stream?client_id=\(SCClientID)")
+        let songURL = NSURL(string: getSongURLString(songID))
         
         let dataTask = urlSessionManager.session.dataTaskWithURL(songURL!, completionHandler: completion)
         dataTask.resume()
+    }
+    
+    func getSongURLString(songID: Int) -> String {
+        return "\(SCBaseURL)tracks/\(songID)/stream?client_id=\(SCClientID)"
     }
 }
 

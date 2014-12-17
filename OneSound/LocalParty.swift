@@ -57,13 +57,15 @@ class LocalParty: NSObject {
     var members = [User]()
     var currentSong: Song?
     var currentUser: User?
-    var songCache = [Int : NSData]()
+    var queueSong: Song?
+    var queueUser: User?
     
     var setup = false
     
-    var audioPlayer: AVAudioPlayer?
-    var audioSession: AVAudioSession?
-    var songProgressTimer: NSTimer?
+    var audioPlayer: STKAudioPlayer!
+    var audioSession: AVAudioSession!
+    
+    var songPlayingTimer: NSTimer?
     var partyRefreshTimer: NSTimer!
     var recentNextSongCallTimer: NSTimer?
     
@@ -74,6 +76,7 @@ class LocalParty: NSObject {
     var audioPlayerIsPlaying = false
     var recentlyGotNextSong = false
     var audioIsDownloading = false
+    var attemptedToQueueSongForThisSong = false
     
     var shouldTryAnotherRefresh = true
     
@@ -98,18 +101,37 @@ class LocalParty: NSObject {
         // Refresh the party info when the user info changes
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "refreshForUserInfoChange", name: LocalUserInformationDidChangeNotification, object: nil)
         
+        // Setup audio session
         audioSession = AVAudioSession.sharedInstance()
-        audioPlayer = AVAudioPlayer()
         
-        var setCategoryError = NSErrorPointer()
-        var success1 = audioSession!.setCategory(AVAudioSessionCategoryPlayback, error: setCategoryError)
+        var setBufferDurationError = NSErrorPointer()
+        var success1 = audioSession.setPreferredIOBufferDuration(0.1, error: setBufferDurationError)
         if !success1 {
             println("not successful 1")
+            if setBufferDurationError != nil {
+                println("ERROR with set buffer")
+                println(setBufferDurationError)
+            }
+        }
+        
+        var setCategoryError = NSErrorPointer()
+        var success2 = audioSession!.setCategory(AVAudioSessionCategoryPlayback, error: setCategoryError)
+        if !success2 {
+            println("not successful 2")
             if setCategoryError != nil {
                 println("ERROR with set category")
                 println(setCategoryError)
             }
         }
+        
+        // Setup audio player
+        let equalizerB:(Float32, Float32, Float32, Float32, Float32, Float32, Float32, Float32, Float32, Float32, Float32, Float32, Float32, Float32, Float32, Float32, Float32, Float32, Float32, Float32, Float32, Float32, Float32, Float32) = (50, 100, 200, 400, 800, 600, 2600, 16000, 0, 0, 0, 0, 0, 0 , 0, 0, 0, 0, 0, 0, 0, 0 , 0, 0 )
+        var optns:STKAudioPlayerOptions = STKAudioPlayerOptions(flushQueueOnSeek: true, enableVolumeMixer: true, equalizerBandFrequencies:equalizerB,readBufferSize: (64 * 1024), bufferSizeInSeconds: 10, secondsRequiredToStartPlaying: 1, gracePeriodAfterSeekInSeconds: 0.5, secondsRequiredToStartPlayingAfterBufferUnderun: 7.5)
+        
+        audioPlayer = STKAudioPlayer(options: optns)
+        audioPlayer.meteringEnabled = true
+        audioPlayer.volume = 1
+        audioPlayer.delegate = self
     }
     
     func disallowGetNextSongCallTemporarily() {
@@ -245,17 +267,16 @@ class LocalParty: NSObject {
     
     // Only to be used for hosts
     func getNextSongForDelegate() {
+        
         getNextSong(partyID,
-            completion: {
-                self.audioIsDownloading = true
-                dispatchAsyncToMainQueue(action: {
-                    self.delegate.setPartySongImage(songToPlay: false, artworkToShow: false, loadingSong: true, image: nil)
-                })
-                SongStore.sharedStore.songAudioForKey(self.currentSong!.externalID,
-                    completion: { songData in
-                        self.setDelegatePreparedToPlaySong(songData)
-                    }
-                )
+            completion: { song, user in
+                //self.audioIsDownloading = true
+                //dispatchAsyncToMainQueue(action: {
+                //    self.delegate.setPartySongImage(songToPlay: false, artworkToShow: false, loadingSong: true, image: nil)
+                //})
+                self.currentSong = song
+                self.currentUser = user
+                self.setDelegatePreparedToPlaySong(SCClient.sharedClient.getSongURLString(self.currentSong!.externalID))
             }, noCurrentSong: {
                 self.audioIsDownloading = false
                 dispatchAsyncToMainQueue(action: {
@@ -273,93 +294,78 @@ class LocalParty: NSObject {
         )
     }
     
-    func setDelegatePreparedToPlaySong(songData: NSData?) {
+    // Only to be used for hosts
+    func queueNextSongForDelegate() {
+        attemptedToQueueSongForThisSong = true
+        
+        getNextSong(partyID,
+            completion: { song, user in
+                self.queueSong = song
+                self.queueUser = user
+                self.audioPlayer.queue(SCClient.sharedClient.getSongURLString(song.externalID))
+            }, noCurrentSong: {
+                
+            }, failureAddOn: {
+                
+            }
+        )
+    }
+    
+    // Move queue song info to current song info, clear the queue info after
+    func setQueueSongAndUserToCurrent() -> Bool {
+        if queueSong != nil && queueUser != nil {
+            currentSong = queueSong
+            currentUser = queueUser
+            
+            queueSong = nil
+            queueUser = nil
+            return true
+        }
+        
+        return false
+    }
+    
+    func setDelegatePreparedToPlaySong(songURLString: String) {
         audioIsDownloading = false
         
-        if songData != nil {
-            println("song was not nil")
-            
-            var errorPtr = NSErrorPointer()
-            self.audioPlayer = AVAudioPlayer(data: songData!, error: errorPtr)
-            
-            if errorPtr == nil {
-                println("no error")
-                println("*** SONG IS \(((Double(songData!.length) / 1024.0) / 1024.0)) MB ***")
-                
-                self.audioPlayer!.delegate = self
-                
-                self.updateDelegateSongInformation()
-                
-                dispatchAsyncToMainQueue(action: {
-                    self.delegate.setAudioPlayerButtonsForPlaying(true)
-                })
-                
-                self.audioPlayerHasAudioToPlay = true
-                self.playSong()
-                
-            } else {
-                println("there was an error")
-                println("ERROR: \(errorPtr)")
-                dispatchAsyncToMainQueue(action: {
-                    self.delegate.showMessages("Well, this is awkward", detailLine: "The song could not be played, please try adding another")
-                    self.delegate.setPartyInfoHidden(true)
-                })
-            }
-        } else {
-            println("song WAS nil")
-            // TODO: check for the next available song
-            dispatchAsyncToMainQueue(action: {
-                self.delegate.showMessages("Well, this is awkward", detailLine: "The song was unavailable for download, please try adding another")
-                self.delegate.setPartyInfoHidden(true)
-            })
-        }
+        self.updateDelegateSongInformation()
+        
+        dispatchAsyncToMainQueue(action: {
+            self.delegate.setAudioPlayerButtonsForPlaying(true)
+        })
+        
+        self.audioPlayerHasAudioToPlay = true
+        audioPlayer.play(songURLString)
+        self.playSong()
+    }
+    
+    func setDelegatePreparedToPlaySongFromQueue() {
+        audioIsDownloading = false
+        audioPlayerHasAudioToPlay = true
+        
+        self.updateDelegateSongInformation()
+        
+        dispatchAsyncToMainQueue(action: {
+            self.delegate.setAudioPlayerButtonsForPlaying(true)
+        })
     }
     
     func playSong() {
         println("playSong")
-        var success1 = true
-        var success2 = true
-        
         if !userIsHost {
             return
         }
         
         // Ensure audio session is initialized when the user is the host
-        if audioSession == nil {
-            audioSession = AVAudioSession.sharedInstance()
-            
-            var setCategoryError = NSErrorPointer()
-            success1 = audioSession!.setCategory(AVAudioSessionCategoryPlayback, error: setCategoryError)
-            if !success1 {
-                println("not successful 1")
-                if setCategoryError != nil {
-                    println("ERROR with set category")
-                    println(setCategoryError)
-                }
-            }
-            
-            var activationError = NSErrorPointer()
-            success2 = audioSession!.setActive(true, error: activationError)
-            if !success2 {
-                println("not successful 2")
-                if activationError != nil {
-                    println("ERROR with set active")
-                    println(activationError)
-                }
-            }
-        }
+        let audioSessionSetup = setupAudioSessionForHostPlaying()
         
-        // Ensure the audio player is available when the user is the host
-        if audioPlayer == nil {
-            audioPlayer = AVAudioPlayer()
-        }
         
         println("audioSession:\(audioSession != nil) audioPlayer:\(audioPlayer != nil) audioToPlay:\(audioPlayerHasAudioToPlay) audioPlaying:\(audioPlayerIsPlaying)")
             
-        if audioPlayer != nil && success1 && success2 {
+        if audioSessionSetup {
             if audioPlayerHasAudioToPlay {
                 if !audioPlayerIsPlaying {
-                    audioPlayer!.play()
+                    audioPlayer!.resume()
                     audioPlayerIsPlaying = true
                     println("audioPlayerIsPlaying: \(audioPlayerIsPlaying)")
                     dispatchAsyncToMainQueue(action: {
@@ -392,12 +398,26 @@ class LocalParty: NSObject {
         }
     }
     
-    func updateSongProgress(timer: NSTimer!) {
+    func onSongPlayingTimer(timer: NSTimer!) {
         if audioPlayer != nil && audioPlayerHasAudioToPlay {
-            let progress = Float(audioPlayer!.currentTime / audioPlayer!.duration)
-            dispatchAsyncToMainQueue(action: {
-                self.delegate.updateSongProgress(progress)
-            })
+            let progress = audioPlayer!.progress
+            let duration = audioPlayer!.duration
+            
+            if duration < 0.000001 {
+                // "in between" songs; duration is 0
+                delegate.updateSongProgress(0.0)
+            } else {
+                let progressPercent = Float(progress / duration)
+                dispatchAsyncToMainQueue(action: {
+                    self.delegate.updateSongProgress(progressPercent)
+                })
+                
+                // Try queueing the next song
+                let timeRemaining = duration - progress
+                if timeRemaining < 5 && !attemptedToQueueSongForThisSong {
+                    queueNextSongForDelegate()
+                }
+            }
         } else {
             dispatchAsyncToMainQueue(action: {
                 self.delegate.updateSongProgress(0.0)
@@ -407,14 +427,14 @@ class LocalParty: NSObject {
     
     func songTimerShouldBeActive(shouldBeActive: Bool) {
         if shouldBeActive {
-            if songProgressTimer == nil {
-                songProgressTimer = NSTimer.scheduledTimerWithTimeInterval(0.33, target: self, selector: "updateSongProgress:", userInfo: nil, repeats: true)
+            if songPlayingTimer == nil {
+                songPlayingTimer = NSTimer.scheduledTimerWithTimeInterval(0.33, target: self, selector: "onSongPlayingTimer:", userInfo: nil, repeats: true)
             }
         } else {
-            if songProgressTimer != nil {
-                songProgressTimer!.invalidate()
+            if songPlayingTimer != nil {
+                songPlayingTimer!.invalidate()
             }
-            songProgressTimer = nil
+            songPlayingTimer = nil
         }
     }
     
@@ -478,6 +498,44 @@ class LocalParty: NSObject {
         }
     }
     
+    func setupAudioSessionForHostPlaying() -> Bool {
+        if audioSession == nil {
+            audioSession = AVAudioSession.sharedInstance()
+        }
+        
+        var setBufferDurationError = NSErrorPointer()
+        var success1 = audioSession.setPreferredIOBufferDuration(0.1, error: setBufferDurationError)
+        if !success1 {
+            println("not successful 1")
+            if setBufferDurationError != nil {
+                println("ERROR with set buffer")
+                println(setBufferDurationError)
+            }
+        }
+        
+        var setCategoryError = NSErrorPointer()
+        var success2 = audioSession!.setCategory(AVAudioSessionCategoryPlayback, error: setCategoryError)
+        if !success2 {
+            println("not successful 2")
+            if setCategoryError != nil {
+                println("ERROR with set category")
+                println(setCategoryError)
+            }
+        }
+        
+        var activationError = NSErrorPointer()
+        var success3 = audioSession!.setActive(true, error: activationError)
+        if !success3 {
+            println("not successful 3")
+            if activationError != nil {
+                println("ERROR with set active")
+                println(activationError)
+            }
+        }
+        
+        return success1 && success2 && success3
+    }
+    
     func clearSongInfo() {
         currentSong = nil
         currentUser = nil
@@ -489,8 +547,9 @@ class LocalParty: NSObject {
     }
     
     func resetAllPartyInfo() {
-        audioPlayer = nil
-        audioSession = nil
+        // Clears current and queued songs
+        audioPlayer.stop()
+        
         clearSongInfo()
         
         partyID = -1
@@ -499,15 +558,16 @@ class LocalParty: NSObject {
         name = ""
         strictness = -1
         
-        songs = [Song]()
-        members = [User]()
+        songs = []
+        members = []
         currentSong = nil
         currentUser = nil
-        songCache = [Int : NSData]()
+        queueSong = nil
+        queueUser = nil
         
         setup = false
 
-        songProgressTimer = nil
+        songPlayingTimer = nil
         recentNextSongCallTimer = nil
         
         userIsHost = false
@@ -516,6 +576,7 @@ class LocalParty: NSObject {
         recentlyGotNextSong = false
         audioIsDownloading = false
         shouldTryAnotherRefresh = true
+        attemptedToQueueSongForThisSong = false
         
         dispatchAsyncToMainQueue(action: {
             self.delegate.setPartyInfoHidden(true)
@@ -526,17 +587,16 @@ class LocalParty: NSObject {
 extension LocalParty {
     // MARK: Party networking related code for user's active party
     
-    func getNextSong(pid: Int, completion: completionClosure? = nil, noCurrentSong: completionClosure? = nil, failureAddOn: completionClosure? = nil) {
+    func getNextSong(pid: Int, completion: ((song: Song, user: User) -> ())? = nil, noCurrentSong: completionClosure? = nil, failureAddOn: completionClosure? = nil) {
         
         let localUser = LocalUser.sharedUser
         OSAPI.sharedClient.GETNextSong(pid, userID: localUser.id, userAPIToken: localUser.apiToken,
             success: { data, responseObject in
                 let responseJSON = JSONValue(responseObject)
                 println(responseJSON)
-                self.currentUser = User(json: responseJSON["user"])
-                self.currentSong = Song(json: responseJSON)
+                
                 if completion != nil {
-                    completion!()
+                    completion!(song: Song(json: responseJSON), user: User(json: responseJSON["user"]))
                 }
             }, failure: { task, error in
                 var shouldDoDefaultFailureBlock = true
@@ -747,15 +807,43 @@ extension LocalParty {
     }
 }
 
-extension LocalParty: AVAudioPlayerDelegate {
-    // MARK: respond to audio playback ENDING (interruptions are handled by avaudio session)
+extension LocalParty: STKAudioPlayerDelegate {
+    // Raised when an item has started playing
+    func audioPlayer(audioPlayer: STKAudioPlayer!, didStartPlayingQueueItemId queueItemId: NSObject!) {
+        
+    }
     
-    func audioPlayerDidFinishPlaying(player: AVAudioPlayer!, successfully flag: Bool) {
-        audioPlayerIsPlaying = false
-        audioPlayerHasAudioToPlay = false
-        clearSongInfo()
-        disallowGetNextSongCallTemporarily()
-        getNextSongForDelegate()
+    // Raised when an item has finished buffering (may or may not be the currently playing item)
+    // This event may be raised multiple times for the same item if seek is invoked on the player
+    func audioPlayer(audioPlayer: STKAudioPlayer!, didFinishBufferingSourceWithQueueItemId queueItemId: NSObject!) {
+        
+    }
+
+    // Raised when the state of the player has changed
+    func audioPlayer(audioPlayer: STKAudioPlayer!, stateChanged state: STKAudioPlayerState, previousState:STKAudioPlayerState) {
+        
+    }
+    
+    // Raised when an item has finished playing
+    func audioPlayer(audioPlayer: STKAudioPlayer!, didFinishPlayingQueueItemId queueItemId: NSObject!, withReason stopReason:STKAudioPlayerStopReason, andProgress progress: Double, andDuration duration: Double) {
+        
+        if setQueueSongAndUserToCurrent() {
+            // If there's a queued song
+            audioPlayerIsPlaying = false
+            audioPlayerHasAudioToPlay = false
+            setDelegatePreparedToPlaySongFromQueue()
+        } else {
+            audioPlayerIsPlaying = false
+            audioPlayerHasAudioToPlay = false
+            clearSongInfo()
+            disallowGetNextSongCallTemporarily()
+            getNextSongForDelegate()
+        }
+    }
+    
+    // Raised when an unexpected and possibly unrecoverable error has occured (usually best to recreate the STKAudioPlauyer)
+    func audioPlayer(audioPlayer: STKAudioPlayer!, unexpectedError errorCode: STKAudioPlayerErrorCode) {
+        
     }
 }
 

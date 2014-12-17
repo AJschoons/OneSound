@@ -448,6 +448,17 @@ class PartyMainViewController: UIViewController {
         }
     }
     
+    /*
+    func updateControls() {
+        if let player = LocalParty.sharedParty.audioPlayer {
+            
+            if player.state == STKAudioPlayerStatePlaying {
+                
+            }
+            
+        }
+    }*/
+    
     func setAudioPlayerButtonsForPlaying(audioPlayerIsPlaying: Bool) {
         // The song progress should always be visible when there's an audio player
         songProgress!.hidden = false
