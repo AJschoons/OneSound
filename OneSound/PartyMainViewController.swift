@@ -558,3 +558,41 @@ class PartyMainViewController: UIViewController {
 extension PartyMainViewController: LocalPartyDelegate {
     
 }
+
+extension PartyMainViewController {
+    // MARK: handing play/pause from home screen, firstResponder info
+    
+    override func canBecomeFirstResponder() -> Bool { return true }
+    
+    override func canResignFirstResponder() -> Bool { return true }
+    
+    func assignFirstResponder() {
+        becomeFirstResponder()
+    }
+    
+    func unassignFirstResponder() {
+        resignFirstResponder()
+    }
+    
+    override func remoteControlReceivedWithEvent(event: UIEvent) {
+        let rc = event.subtype
+        println("received remote control \(rc.rawValue)")
+        let party = LocalParty.sharedParty
+        
+        switch rc {
+        case .RemoteControlTogglePlayPause:
+            if party.audioPlayer.state == STKAudioPlayerStatePlaying {
+                party.pauseSong()
+            } else {
+                party.playSong()
+            }
+        case .RemoteControlPlay:
+            party.playSong()
+        case .RemoteControlPause:
+            party.pauseSong()
+        default:
+            break
+        }
+        
+    }
+}

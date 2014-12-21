@@ -72,6 +72,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Loads the FBLoginView before the view is shown
         FBLoginView.self
         
+        // Should help the AVAudioPlayer move to the next song when in background
+        // Also needed for home screen control and AirPlay
+        // http://stackoverflow.com/questions/9660488/ios-avaudioplayer-doesnt-continue-to-next-song-while-in-background
+        UIApplication.sharedApplication().beginReceivingRemoteControlEvents()
+        
         // Set to true if the iPhone screen is the 4S length
         // App is only in portrait orientation
         if UIScreen.mainScreen().bounds.height < 500 {
@@ -424,31 +429,5 @@ extension AppDelegate: SWRevealViewControllerDelegate {
                 revealController.setFrontViewPosition(FrontViewPosition.Right, animated: true)
             }
         }
-    }
-}
-
-extension AppDelegate {
-    // MARK: handing play/pause from home screen
-    
-    override func remoteControlReceivedWithEvent(event: UIEvent) {
-        let rc = event.subtype
-        println("received remote control \(rc.rawValue)")
-        
-        let party = LocalParty.sharedParty
-        switch rc {
-        case .RemoteControlTogglePlayPause:
-            if party.audioPlayer.state == STKAudioPlayerStatePlaying {
-                party.pauseSong()
-            } else {
-                party.playSong()
-            }
-        case .RemoteControlPlay:
-            party.playSong()
-        case .RemoteControlPause:
-            party.pauseSong()
-        default:
-            break
-        }
-        
     }
 }

@@ -20,6 +20,8 @@ protocol LocalPartyDelegate {
     func setPartySongInfo(# songName: String, songArtist: String, songTime: String, user: User?, thumbsUp: Bool, thumbsDown: Bool)
     func setPartySongImage(# songToPlay: Bool, artworkToShow: Bool, loadingSong: Bool, image: UIImage?)
     func clearSongInfo()
+    func assignFirstResponder()
+    func unassignFirstResponder()
 }
 
 enum PartyStrictnessOption: Int {
@@ -92,10 +94,6 @@ class LocalParty: NSObject {
         super.init()
         
         partyRefreshTimer = NSTimer.scheduledTimerWithTimeInterval(10, target: self, selector: "onPartyRefreshTimer", userInfo: nil, repeats: true)
-        
-        // Should help the AVAudioPlayer move to the next song when in background?
-        // http://stackoverflow.com/questions/9660488/ios-avaudioplayer-doesnt-continue-to-next-song-while-in-background
-        UIApplication.sharedApplication().beginReceivingRemoteControlEvents()
         
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "audioPlayerInterruption:", name: AVAudioSessionInterruptionNotification, object: nil)
         
@@ -362,6 +360,10 @@ class LocalParty: NSObject {
         // Ensure audio session is initialized when the user is the host
         let audioSessionSetup = setupAudioSessionForHostPlaying()
         
+        // Setup main party to receive remote control events
+        UIApplication.sharedApplication().beginReceivingRemoteControlEvents()
+        delegate.assignFirstResponder()
+        
         
         println("audioSession:\(audioSession != nil) audioPlayer:\(audioPlayer != nil) audioToPlay:\(audioPlayerHasAudioToPlay) audioPlaying:\(audioPlayerIsPlaying)")
             
@@ -390,7 +392,7 @@ class LocalParty: NSObject {
     func pauseSong() {
         println("pauseSong")
         println("audioSession:\(audioSession != nil) audioPlayer:\(audioPlayer != nil) audioToPlay:\(audioPlayerHasAudioToPlay) playing:\(audioPlayerIsPlaying)")
-        if audioSession != nil && audioPlayer != nil && audioPlayerHasAudioToPlay && audioPlayerIsPlaying {
+        if audioSession != nil && audioPlayerHasAudioToPlay && audioPlayerIsPlaying {
             audioPlayer!.pause()
             audioPlayerIsPlaying = false
             dispatchAsyncToMainQueue(action: {
@@ -402,9 +404,11 @@ class LocalParty: NSObject {
     }
     
     func onSongPlayingTimer(timer: NSTimer!) {
-        if audioPlayer != nil && audioPlayerHasAudioToPlay {
-            let progress = audioPlayer!.progress
-            let duration = audioPlayer!.duration
+        if audioPlayerHasAudioToPlay {
+            let progress = audioPlayer.progress
+            let duration = audioPlayer.duration
+            
+            updateMPNowPlayingInfoCenterInfo(elapsedTime: progress)
             
             if duration < 0.000001 {
                 // "in between" songs; duration is 0
@@ -502,7 +506,7 @@ class LocalParty: NSObject {
     }
     
     // Make sure to use this AFTER updateDelegateSongImage() and updateDelegateSongInformation()
-    func updateMPNowPlayingInfoCenterInfo() {
+    func updateMPNowPlayingInfoCenterInfo(playbackRate: Int = 1, elapsedTime: Double = 0) {
         
         if currentSong!.artworkURL != nil {
             let largerArtworkURL = currentSong!.artworkURL!.replaceSubstringWithString("-large.jpg", newSubstring: "-t500x500.jpg")
@@ -510,16 +514,18 @@ class LocalParty: NSObject {
                 done: { image, imageCacheType in
                     if image != nil {
                         let artwork = MPMediaItemArtwork(image: image)
-                        MPNowPlayingInfoCenter.defaultCenter().nowPlayingInfo = [MPMediaItemPropertyArtist : self.currentSong!.artistName,  MPMediaItemPropertyTitle : self.currentSong!.name, MPMediaItemPropertyArtwork : artwork, MPMediaItemPropertyPlaybackDuration : self.currentSong!.duration]
+                        MPNowPlayingInfoCenter.defaultCenter().nowPlayingInfo = [MPMediaItemPropertyArtist : self.currentSong!.artistName,  MPMediaItemPropertyTitle : self.currentSong!.name, MPMediaItemPropertyArtwork : artwork, MPMediaItemPropertyPlaybackDuration : self.currentSong!.duration, MPNowPlayingInfoPropertyElapsedPlaybackTime : elapsedTime, MPNowPlayingInfoPropertyPlaybackRate : playbackRate]
                     } else {
                         let artwork = MPMediaItemArtwork(image: songImageForNoSongArtwork)
-                        MPNowPlayingInfoCenter.defaultCenter().nowPlayingInfo = [MPMediaItemPropertyArtist : self.currentSong!.artistName,  MPMediaItemPropertyTitle : self.currentSong!.name, MPMediaItemPropertyArtwork : artwork, MPMediaItemPropertyPlaybackDuration : self.currentSong!.duration]
+                        MPNowPlayingInfoCenter.defaultCenter().nowPlayingInfo = [MPMediaItemPropertyArtist : self.currentSong!.artistName,  MPMediaItemPropertyTitle : self.currentSong!.name, MPMediaItemPropertyArtwork : artwork, MPMediaItemPropertyPlaybackDuration : self.currentSong!.duration, MPNowPlayingInfoPropertyElapsedPlaybackTime : elapsedTime, MPNowPlayingInfoPropertyPlaybackRate : playbackRate]
+
                     }
                 }
             )
         } else {
             let artwork = MPMediaItemArtwork(image: songImageForNoSongArtwork)
-            MPNowPlayingInfoCenter.defaultCenter().nowPlayingInfo = [MPMediaItemPropertyArtist : currentSong!.artistName,  MPMediaItemPropertyTitle : currentSong!.name, MPMediaItemPropertyArtwork : artwork, MPMediaItemPropertyPlaybackDuration : currentSong!.duration]
+            MPNowPlayingInfoCenter.defaultCenter().nowPlayingInfo = [MPMediaItemPropertyArtist : currentSong!.artistName,  MPMediaItemPropertyTitle : currentSong!.name, MPMediaItemPropertyArtwork : artwork, MPMediaItemPropertyPlaybackDuration : currentSong!.duration, MPNowPlayingInfoPropertyElapsedPlaybackTime : elapsedTime, MPNowPlayingInfoPropertyPlaybackRate : playbackRate]
+
         }
     }
     
@@ -567,6 +573,10 @@ class LocalParty: NSObject {
         currentSongImage = nil
         
         MPNowPlayingInfoCenter.defaultCenter().nowPlayingInfo = ["" : ""]
+        
+        // Stop main party from receiving remote control events
+        UIApplication.sharedApplication().endReceivingRemoteControlEvents()
+        delegate.unassignFirstResponder()
         
         dispatchAsyncToMainQueue(action: {
             self.delegate.clearSongInfo()
@@ -835,6 +845,8 @@ extension LocalParty {
 }
 
 extension LocalParty: STKAudioPlayerDelegate {
+    // MARK: STKAudioPlayer delegate methods
+    
     // Raised when an item has started playing
     func audioPlayer(audioPlayer: STKAudioPlayer!, didStartPlayingQueueItemId queueItemId: NSObject!) {
         
@@ -857,7 +869,6 @@ extension LocalParty: STKAudioPlayerDelegate {
         if setQueueSongAndUserToCurrent() {
             // If there's a queued song
             audioPlayerIsPlaying = false
-            audioPlayerHasAudioToPlay = false
             setDelegatePreparedToPlaySongFromQueue()
         } else {
             audioPlayerIsPlaying = false
