@@ -66,6 +66,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         // Create the user
         LocalUser.sharedUser
+        //LocalUser.sharedUser.deleteAllSavedUserInformation()
         
         // Login flow is handled by AFNetworkingReachability manager and FBLogin status change
         
@@ -134,7 +135,7 @@ extension AppDelegate {
             println("Cached facebook token unavailable, check for guest user")
             
             var userID: Int? = SSKeychain.passwordForService(service, account: userIDKeychainKey) != nil ? SSKeychain.passwordForService(service, account: userIDKeychainKey).toInt() : nil
-            var userAPIToken: String? = SSKeychain.passwordForService(service, account: userAPITokenKeychainKey)
+            var userAPIToken: String? = SSKeychain.passwordForService(service, account: userAccessTokenKeychainKey)
             
             if userID == nil || userAPIToken == nil {
                 // If no guest user, then request a guest user to be created, set it up, save in keychain, save to LocalUser
@@ -143,7 +144,7 @@ extension AppDelegate {
             } else {
                 // Got guest user from keychain, request their information and save to LocalUser
                 println("Guest user FOUND")
-                LocalUser.sharedUser.signIntoGuestAccount(userID!, apiToken: userAPIToken!)
+                LocalUser.sharedUser.signIntoGuestAccount(userID!, userAccessToken: userAPIToken!)
             }
         }
     }
@@ -249,16 +250,17 @@ extension AppDelegate {
             println("Facebook session access token:\(userFBAccessToken)")
             
             var userID: Int? = SSKeychain.passwordForService(service, account: userIDKeychainKey) != nil ? SSKeychain.passwordForService(service, account: userIDKeychainKey).toInt() : nil
-            var userAPIToken: String? = SSKeychain.passwordForService(service, account: userAPITokenKeychainKey)
+            var userAPIToken: String? = SSKeychain.passwordForService(service, account: userAccessTokenKeychainKey)
             
             if userID != nil && userAPIToken != nil {
                 println("Found userID and userAPIToken from keychain, sign in with Facebook account")
-                //println("userID from keychain:\(userID)")
-                //println("userAPIToken from keychain:\(userAPIToken)")
-                println("userfbAuthToken: \(userFBAccessToken)")
+                
+                println("userID from keychain:\(userID)")
+                println("userAPIToken from keychain:\(userAPIToken)")
+                println("userfbAuthToken:\(userFBAccessToken)")
                 
                 if userFBAccessToken != nil {
-                    LocalUser.sharedUser.signIntoFullAccount(userID!, userAPIToken: userAPIToken!, fbAuthToken: userFBAccessToken)
+                    LocalUser.sharedUser.signIntoFullAccount(userID!, userAccessToken: userAPIToken!, fbAuthToken: userFBAccessToken)
                 } else {
                     // Reset all data and let user know to sign back into facebook
                     // The Facebook SDK session state will change to closed / login failed, and will be handled accordingly

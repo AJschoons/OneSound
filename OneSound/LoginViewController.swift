@@ -92,7 +92,7 @@ class LoginViewController: UITableViewController {
         if !accountAlreadyExists {
             println("Creating FULL account")
             
-            LocalUser.sharedUser.setupFullAccount(userName, userColor: userColor, userID: userID, userAPIToken: userAPIToken, providerToken: userFacebookToken,
+            LocalUser.sharedUser.setupFullAccount(userName, userColor: userColor, userID: userID, userAccessToken: userAPIToken, providerToken: userFacebookToken,
                 respondToChangeAttempt: { nameIsValid in
                     if nameIsValid {
                         self.tableView.endEditing(true)

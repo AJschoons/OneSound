@@ -627,7 +627,7 @@ extension LocalParty {
     func getNextSong(pid: Int, completion: ((song: Song, user: User) -> ())? = nil, noCurrentSong: completionClosure? = nil, failureAddOn: completionClosure? = nil) {
         
         let localUser = LocalUser.sharedUser
-        OSAPI.sharedClient.GETNextSong(pid, userID: localUser.id, userAPIToken: localUser.apiToken,
+        OSAPI.sharedClient.GETNextSong(pid,
             success: { data, responseObject in
                 let responseJSON = JSONValue(responseObject)
                 println(responseJSON)
@@ -696,24 +696,28 @@ extension LocalParty {
         // Makes it so none of the old info stays if you join a party from an old one
         resetAllPartyInfo()
         
-        let user = LocalUser.sharedUser
-        OSAPI.sharedClient.GETParty(pid, userID: user.id, userAPIToken: user.apiToken,
-            success: { data, responseObject in
-                let responseJSON = JSONValue(responseObject)
-                //println(responseJSON)
-                
-                LocalUser.sharedUser.party = pid
-                
-                self.updateMainPartyInfoFromJSON(responseJSON, JSONUpdateCompletion)
-                self.updatePartyMembers(pid)
-                self.updatePartySongs(pid)
-            }, failure: { task, error in
-                if failureAddOn != nil {
-                    failureAddOn!()
+        if pid != 0 {
+            let user = LocalUser.sharedUser
+            OSAPI.sharedClient.GETParty(pid,
+                success: { data, responseObject in
+                    let responseJSON = JSONValue(responseObject)
+                    //println(responseJSON)
+                    
+                    LocalUser.sharedUser.party = pid
+                    
+                    self.updateMainPartyInfoFromJSON(responseJSON, JSONUpdateCompletion)
+                    self.updatePartyMembers(pid)
+                    self.updatePartySongs(pid)
+                }, failure: { task, error in
+                    if failureAddOn != nil {
+                        failureAddOn!()
+                    }
+                    defaultAFHTTPFailureBlock!(task: task, error: error)
                 }
-                defaultAFHTTPFailureBlock!(task: task, error: error)
-            }
-        )
+            )
+        } else {
+            println("ERROR: trying to join a party with pid = 0")
+        }
     }
 
     func updatePartySongs(pid: Int, completion: completionClosure? = nil) {
@@ -741,7 +745,7 @@ extension LocalParty {
     func createNewParty(partyName: String, partyPrivacy: Bool, partyStrictness: Int, respondToChangeAttempt: (Bool) -> (), failure: AFHTTPFailureBlock = defaultAFHTTPFailureBlockForSigningIn) {
         let user = LocalUser.sharedUser
         
-        OSAPI.sharedClient.POSTParty(partyName, partyPrivacy: partyPrivacy, partyStrictness: partyStrictness, userID: user.id, userAPIToken: user.apiToken,
+        OSAPI.sharedClient.POSTParty(partyName, partyPrivacy: partyPrivacy, partyStrictness: partyStrictness,
             success: { data, responseObject in
                 let responseJSON = JSONValue(responseObject)
                 println(responseJSON)
@@ -830,17 +834,17 @@ extension LocalParty {
     
     func songUpvote(sid: Int) {
         let user = LocalUser.sharedUser
-        OSAPI.sharedClient.POSTSongUpvote(sid, userID: user.id, userAPIToken: user.apiToken, success: nil, failure: defaultAFHTTPFailureBlock)
+        OSAPI.sharedClient.POSTSongUpvote(sid, success: nil, failure: defaultAFHTTPFailureBlock)
     }
     
     func songDownvote(sid: Int) {
         let user = LocalUser.sharedUser
-        OSAPI.sharedClient.POSTSongDownvote(sid, userID: user.id, userAPIToken: user.apiToken, success: nil, failure: defaultAFHTTPFailureBlock)
+        OSAPI.sharedClient.POSTSongDownvote(sid, success: nil, failure: defaultAFHTTPFailureBlock)
     }
     
     func songClearVote(sid: Int) {
         let user = LocalUser.sharedUser
-        OSAPI.sharedClient.DELETESongVote(sid, userID: user.id, userAPIToken: user.apiToken, success: nil, failure: defaultAFHTTPFailureBlock)
+        OSAPI.sharedClient.DELETESongVote(sid, success: nil, failure: defaultAFHTTPFailureBlock)
     }
 }
 

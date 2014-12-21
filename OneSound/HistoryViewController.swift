@@ -52,7 +52,7 @@ class HistoryViewController: UIViewController {
             let localUser = LocalUser.sharedUser
             if LocalUser.sharedUser.setup == true {
                 validUser = true
-                LocalUser.sharedUser.updateLocalUserInformationFromServer(
+                LocalUser.sharedUser.updateUserInformationFromServer(
                     addToSuccess: {
                         if LocalUser.sharedUser.guest == true {
                             //self.setUserInfoHidden(true)

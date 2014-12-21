@@ -11,7 +11,7 @@ import Foundation
 let LocalUserInformationDidChangeNotification = "LocalUserInformationDidChange"
 let service = "com.AdamSchoonmaker.OneSound"
 let userIDKeychainKey = "userID"
-let userAPITokenKeychainKey = "userAPIToken"
+let userAccessTokenKeychainKey = "userAccessToken"
 let userGuestBoolKeychainKey = "userGuestBool"
 let userFacebookUIDKeychainKey = "userFacebookUID"
 let userFacebookAuthenticationTokenKeychainKey = "userFacebookAuthenticationTokenKey"
@@ -27,7 +27,7 @@ class LocalUser {
 
     var pL = true
     
-    var apiToken: String!
+    var accessToken: String!
     
     var setup = false
     
@@ -131,7 +131,7 @@ class LocalUser {
     }
     
     func description() -> String {
-        var d = "[USER] id:\(id) name:'\(name)' color:\(color) guest:\(guest) f-ers:\(followers) f-ing:\(following) songs:\(songCount) votes:\(upvoteCount) photo:\(photo) apiToken:\(apiToken) setup:\(setup)"
+        var d = "[USER] id:\(id) name:'\(name)' color:\(color) guest:\(guest) f-ers:\(followers) f-ing:\(following) songs:\(songCount) votes:\(upvoteCount) photo:\(photo) accessToken:\(accessToken) setup:\(setup)"
         
         return d
     }
@@ -140,21 +140,23 @@ class LocalUser {
 extension LocalUser {
     // MARK: Login flow and other networking related code
     
-    func signIntoGuestAccount(id: Int, apiToken: String) {
-        // For use in the login flow of signing a user in
+    // For use in the login flow of signing a guest user in
+    func signIntoGuestAccount(id: Int, userAccessToken: String) {
+        printlnC(pL, pG, "Signing in with GUEST information... userID:\(id)   userAccessToken:\(userAccessToken)")
         
-        printlnC(pL, pG, "Signing in with GUEST information... userID:\(id)   userAPIToken:\(apiToken)")
+        // Set the saved access token in the header
+        OSAPI.sharedClient.requestSerializer.setValue(userAccessToken, forHTTPHeaderField: accessTokenHeaderKey)
         
-        OSAPI.sharedClient.GETUserLoginGuest(id, userAPIToken: apiToken,
+        OSAPI.sharedClient.GETUserLoginGuest(
             success: { data, responseObject in
                 let responseJSON = JSONValue(responseObject)
                 println(responseJSON)
                 
-                // Get the guest's new api token
-                let newGuestToken = responseJSON["api_token"].string
+                // Get the guest's new access token
+                let newGuestAccessToken = responseJSON["access_token"].string
                 let guestUserID = responseJSON["uid"].integer
                 
-                self.updateLocalUserInformationAfterSignIn(userID: guestUserID!, userAPIToken: newGuestToken!,
+                self.updateUserInformationAfterSignIn(userID: guestUserID!, accessToken: newGuestAccessToken!,
                     failure: { task, error in
                         println("ERROR: Couldn't sign into account, creating new one")
                         println(error.localizedDescription)
@@ -165,14 +167,15 @@ extension LocalUser {
             }, failure: { task, error in
                 println("ERROR: Guest account no longer exists, creating new one")
                 println(error.localizedDescription)
+                self.deleteAllSavedUserInformation()
                 self.setupGuestAccount()
             }
         )
     }
     
+    // For use in the login flow of creating a guest user
     func setupGuestAccount() {
-        // For use in the login flow of signing a user in
-        printlnC(pL, pG, "Setup local guest user")
+        printlnC(pL, pG, "Setup guest user")
         
         // Get the guest user creation info from the server
         OSAPI.sharedClient.GETGuestUser(
@@ -181,20 +184,23 @@ extension LocalUser {
                 println(responseJSON)
                 
                 // Get the guest response info
-                let guestAPIToken = responseJSON["api_token"].string
+                let guestAccessToken = responseJSON["access_token"].string
                 let guestUID = responseJSON["uid"].integer
                 
-                printlnC(self.pL, pG, "Signing in with GUEST information... userID:\(guestUID)   userAPIToken:\(guestAPIToken)")
+                printlnC(self.pL, pG, "Signing in with GUEST information... userID:\(guestUID)   userAccessToken:\(guestAccessToken)")
                 
-                self.updateLocalUserInformationAfterSignIn(userID: guestUID!, userAPIToken: guestAPIToken!)
+                self.updateUserInformationAfterSignIn(userID: guestUID!, accessToken: guestAccessToken!)
             },
             failure: defaultAFHTTPFailureBlockForSigningIn
         )
     }
     
-    func signIntoFullAccount(userID: Int, userAPIToken: String, fbAuthToken: String) {
+    func signIntoFullAccount(userID: Int, userAccessToken: String, fbAuthToken: String) {
         
-        OSAPI.sharedClient.GETUserLoginProvider(userID, userAPIToken: userAPIToken, providerToken: fbAuthToken,
+        // Set the saved access token in the header
+        OSAPI.sharedClient.requestSerializer.setValue(userAccessToken, forHTTPHeaderField: accessTokenHeaderKey)
+        
+        OSAPI.sharedClient.GETUserLoginProvider(fbAuthToken,
             success: { data, responseObject in
                 let responseJSON = JSONValue(responseObject)
                 println(responseJSON)
@@ -212,7 +218,7 @@ extension LocalUser {
                     fvc.presentViewController(navC, animated: true,
                         completion: {
                             loginViewController.userID = userID
-                            loginViewController.userAPIToken = userAPIToken
+                            loginViewController.userAPIToken = userAccessToken
                             loginViewController.userFacebookToken = fbAuthToken
                         }
                     )
@@ -220,10 +226,10 @@ extension LocalUser {
                     // Facebook account HAS been seen before
                     println("Account is active; update information and sign in")
                     
-                    let userAPIToken = responseJSON["api_token"].string
+                    let userAccessToken = responseJSON["access_token"].string
                     let userID = responseJSON["uid"].integer
                     
-                    self.updateLocalUserInformationAfterSignIn(userID: userID!, userAPIToken: userAPIToken!)
+                    self.updateUserInformationAfterSignIn(userID: userID!, accessToken: userAccessToken!)
                 }
             }, failure: { task, error in
                 println("ERROR: Failed sign on for full account, setup a guest account")
@@ -233,9 +239,12 @@ extension LocalUser {
         )
     }
     
-    func setupFullAccount(userName: String, userColor: String, userID: Int, userAPIToken: String, providerToken: String, respondToChangeAttempt: (Bool) -> (), failure: AFHTTPFailureBlock = defaultAFHTTPFailureBlockForSigningIn) {
+    func setupFullAccount(userName: String, userColor: String, userID: Int, userAccessToken: String, providerToken: String, respondToChangeAttempt: (Bool) -> (), failure: AFHTTPFailureBlock = defaultAFHTTPFailureBlockForSigningIn) {
         
-        OSAPI.sharedClient.POSTUserProvider(userName, userColor: userColor, userID: userID, userAPIToken: userAPIToken, providerToken: providerToken,
+        // Set the saved access token in the header
+        OSAPI.sharedClient.requestSerializer.setValue(userAccessToken, forHTTPHeaderField: accessTokenHeaderKey)
+        
+        OSAPI.sharedClient.POSTUserProvider(userName, userColor: userColor, providerToken: providerToken,
             success: { data, responseObject in
                 let responseJSON = JSONValue(responseObject)
                 println(responseJSON)
@@ -243,8 +252,8 @@ extension LocalUser {
                 
                 if status == "success" {
                     // Update new user information
-                    let newUserAPIToken = responseJSON["api_token"].string
-                    LocalUser.sharedUser.updateLocalUserInformationAfterSignIn(userID: userID, userAPIToken: newUserAPIToken!, respondToChangeAttempt: respondToChangeAttempt, failure: failure)
+                    let newUserAccessToken = responseJSON["access_token"].string
+                    LocalUser.sharedUser.updateUserInformationAfterSignIn(userID: userID, accessToken: newUserAccessToken!, respondToChangeAttempt: respondToChangeAttempt, failure: failure)
                 } else {
                     // Server didn't accept request for new account with that name / color
                     respondToChangeAttempt(false)
@@ -259,9 +268,13 @@ extension LocalUser {
         )
     }
     
-    func updateLocalUserInformationAfterSignIn(userID id: Int, userAPIToken token: String, respondToChangeAttempt: ((Bool) -> ())? = nil, failure: AFHTTPFailureBlock = defaultAFHTTPFailureBlockForSigningIn) {
-        // Download the user's record for the userID, update the LocalUser info from that json, 
-        // update the UserDefaults, and update the Keychain info
+    // Download the user's record for the userID, update the User info from that json,
+    // update the UserDefaults, and update the Keychain info
+    // Update the access token in the header
+    func updateUserInformationAfterSignIn(userID id: Int, accessToken token: String, respondToChangeAttempt: ((Bool) -> ())? = nil, failure: AFHTTPFailureBlock = defaultAFHTTPFailureBlockForSigningIn) {
+        
+        // Update the access token in the header
+        OSAPI.sharedClient.requestSerializer.setValue(token, forHTTPHeaderField: accessTokenHeaderKey)
         
         // Get the user's info from the server
         OSAPI.sharedClient.GETUser(id,
@@ -269,8 +282,8 @@ extension LocalUser {
                 let responseJSON = JSONValue(responseObject)
                 println(responseJSON)
                 
-                // Update shared Local User's information, UserDefaults, and Keychain info
-                LocalUser.sharedUser.updateLocalUserFromJSON(responseJSON, apiToken: token,
+                // Update shared User's information, UserDefaults, and Keychain info
+                LocalUser.sharedUser.updateUserFromJSON(responseJSON, accessToken: token,
                     completion: {
                         // Join the party that the user is in
                         if LocalUser.sharedUser.party != nil {
@@ -284,7 +297,7 @@ extension LocalUser {
                         }
                         
                         // Save the accounts info in the keychain
-                        self.updateKeychainInfoForLocalUser(id, userAPIToken: token)
+                        self.updateKeychainInfoForLocalUser(id, accessToken: token)
                         // Send out LocalUserInformationDidChangeNotification
                         NSNotificationCenter.defaultCenter().postNotificationName(LocalUserInformationDidChangeNotification, object: nil)
                         // Let the app know it can it can nav away from the splash screen
@@ -301,7 +314,7 @@ extension LocalUser {
     }
     
     func updateServerWithNewNameAndColor(name: String?, color: String?, respondToChangeAttempt: (Bool) -> () ) {
-        OSAPI.sharedClient.PUTUser(id, apiToken: apiToken, newName: name, newColor: color,
+        OSAPI.sharedClient.PUTUser(id, newName: name, newColor: color,
             success: { data, responseObject in
                 let responseJSON = JSONValue(responseObject)
                 println(responseJSON)
@@ -309,7 +322,7 @@ extension LocalUser {
                 
                 if status == "success" {
                     NSNotificationCenter.defaultCenter().postNotificationName(LocalUserInformationDidChangeNotification, object: nil)
-                    self.updateLocalUserInformationFromServer()
+                    self.updateUserInformationFromServer()
                     respondToChangeAttempt(true)
                 } else {
                     respondToChangeAttempt(false)
@@ -317,12 +330,12 @@ extension LocalUser {
             }, failure: defaultAFHTTPFailureBlock)
     }
     
-    func updateLocalUserFromJSON(json: JSONValue, apiToken: String, completion: completionClosure? = nil, forcePhotoUpdate: Bool = false) {
+    func updateUserFromJSON(json: JSONValue, accessToken: String, completion: completionClosure? = nil, forcePhotoUpdate: Bool = false) {
         println("Updating LocalUser from JSON")
         
         setup = true
         
-        self.apiToken = apiToken
+        self.accessToken = accessToken
         
         id = json["uid"].integer
         name = json["name"].string
@@ -334,7 +347,7 @@ extension LocalUser {
         followers = json["followers"].integer
         following = json["following"].integer
         
-        if let usersParty = json["party"].integer {
+        if let usersParty = json["party_pid"].integer {
             party = usersParty
         } else {
             party = nil
@@ -346,7 +359,7 @@ extension LocalUser {
             // If not a guest and a non-empty photoURL gets sent that's different from what it was (or forced)
             println("Setting new photo URL")
             photoURL = json["photo"].string
-            updateLocalUserPhoto(photoURL!)
+            updateUserPhoto(photoURL!)
         } else if guest == true {
             // Guests don't have photos
             photo = nil
@@ -360,7 +373,7 @@ extension LocalUser {
         }
     }
     
-    func updateLocalUserPhoto(urlString: String) {
+    func updateUserPhoto(urlString: String) {
         SDWebImageManager.sharedManager().downloadImageWithURL(NSURL(string: urlString), options: nil, progress: nil,
             completed: { image, error, cacheType, boolValue, url in
                 if error == nil && image != nil {
@@ -376,16 +389,16 @@ extension LocalUser {
         )
     }
     
-    func updateLocalUserInformationFromServer(addToSuccess: completionClosure? = nil) {
-        // For updating the local user when NOT in the login flow
-        printlnC(pL, pG, "Updating user information from server")
+    // For updating the local user when NOT in the login flow
+    func updateUserInformationFromServer(addToSuccess: completionClosure? = nil) {
+        printlnC(pL, pG, "Updating user information from server (NOT login flow)")
         
         OSAPI.sharedClient.GETUser(id,
             success: { data, responseObject in
                 let responseJSON = JSONValue(responseObject)
                 println(responseJSON)
                 
-                self.updateLocalUserFromJSON(responseJSON, apiToken: self.apiToken)
+                self.updateUserFromJSON(responseJSON, accessToken: self.accessToken)
                 println(self.description())
                 if addToSuccess != nil {
                     addToSuccess!()
@@ -407,19 +420,22 @@ extension LocalUser {
         defaults.setInteger(hotnessPercent, forKey: userHotnessPercentKey)
     }
     
-    func updateKeychainInfoForLocalUser(userID: Int, userAPIToken: String) {
+    func updateKeychainInfoForLocalUser(userID: Int, accessToken: String) {
         // Save the account's info in the keychain
         println("Updating information for LocalUser in Keychain")
         println("Saved userID to keychain:\(userID)")
-        println("Saved userAPIToken to keychain:\(userAPIToken)")
+        println("Saved accessToken to keychain:\(accessToken)")
         
         SSKeychain.setPassword(String(userID), forService: service, account: userIDKeychainKey)
-        SSKeychain.setPassword(userAPIToken, forService: service, account: userAPITokenKeychainKey)
+        SSKeychain.setPassword(accessToken, forService: service, account: userAccessTokenKeychainKey)
     }
     
     func deleteAllSavedUserInformation(completion: completionClosure? = nil) {
+        // Clear the access token in the header
+        OSAPI.sharedClient.requestSerializer.setValue(nil, forHTTPHeaderField: accessTokenHeaderKey)
+        
         SSKeychain.deletePasswordForService(service, account: userIDKeychainKey)
-        SSKeychain.deletePasswordForService(service, account: userAPITokenKeychainKey)
+        SSKeychain.deletePasswordForService(service, account: userAccessTokenKeychainKey)
         
         let defaults = NSUserDefaults.standardUserDefaults()
         defaults.removeObjectForKey(userNameKey)
