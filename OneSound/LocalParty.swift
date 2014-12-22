@@ -447,23 +447,6 @@ class LocalParty: NSObject {
         }
     }
     
-    // Updates the delegate's song information, sets the MPNowplayingInfoCenter info with the current song info
-    // before playback, adds picture to the InfoCenter if available
-    func updateDelegateSongInformationAndPrepareMPNowPlayingInfoCenterForNewSong() {
-        // Set the info for the song, add the image if it exists
-        MPNowPlayingInfoCenter.defaultCenter().nowPlayingInfo = [MPMediaItemPropertyArtist : self.currentSong!.artistName,  MPMediaItemPropertyTitle : self.currentSong!.name, MPMediaItemPropertyPlaybackDuration : NSNumber(integer: self.currentSong!.duration), MPNowPlayingInfoPropertyPlaybackRate : NSNumber(integer: 1)]
-        updateDelegateSongInformation(imageCompletion:
-            { image in
-                if image != nil {
-                    let artwork = MPMediaItemArtwork(image: image!)
-                    var songInfo = MPNowPlayingInfoCenter.defaultCenter().nowPlayingInfo
-                    songInfo.updateValue(artwork, forKey: MPMediaItemPropertyArtwork)
-                    MPNowPlayingInfoCenter.defaultCenter().nowPlayingInfo = songInfo
-                }
-            }
-        )
-    }
-    
     func updateDelegateSongInformation(imageCompletion: ((UIImage?) -> ())? = nil) {
         if currentSong != nil {
             

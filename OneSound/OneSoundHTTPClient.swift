@@ -92,6 +92,7 @@ class OSAPI: AFHTTPSessionManager {
                 initAPI.requestSerializer = AFJSONRequestSerializer() as AFJSONRequestSerializer
                 initAPI.responseSerializer = AFJSONResponseSerializer() as AFJSONResponseSerializer
                 
+                // http://stackoverflow.com/questions/12967220/i-want-to-allow-invalid-ssl-certificates-with-afnetworking (answer from titaniumdecoy)
                 var securityPolicy = AFSecurityPolicy(pinningMode: AFSSLPinningMode.None)
                 securityPolicy.allowInvalidCertificates = true
                 initAPI.securityPolicy = securityPolicy
