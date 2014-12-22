@@ -77,7 +77,7 @@ let defaultAFHTTPFailureBlockForSigningIn: AFHTTPFailureBlock = { task, error in
 
 let defaultEA = 2
 
-let baseURLString = "http://sparty.onesoundapp.com/"
+let baseURLString = "https://sparty.onesoundapp.com/"
 
 class OSAPI: AFHTTPSessionManager {
     
@@ -91,6 +91,10 @@ class OSAPI: AFHTTPSessionManager {
                 
                 initAPI.requestSerializer = AFJSONRequestSerializer() as AFJSONRequestSerializer
                 initAPI.responseSerializer = AFJSONResponseSerializer() as AFJSONResponseSerializer
+                
+                var securityPolicy = AFSecurityPolicy(pinningMode: AFSSLPinningMode.None)
+                securityPolicy.allowInvalidCertificates = true
+                initAPI.securityPolicy = securityPolicy
                 
                 return initAPI
             }()
