@@ -8,6 +8,7 @@
 
 import UIKit
 import QuartzCore
+import AVFoundation
 
 // Set to true to print everything in app to console
 var pG = false
@@ -72,6 +73,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         // Loads the FBLoginView before the view is shown
         FBLoginView.self
+        
+        let audioSession = AVAudioSession.sharedInstance()
+        audioSession.setCategory(AVAudioSessionCategoryPlayback, error: nil)
+        audioSession.setActive(true, error: nil)
         
         // Should help the AVAudioPlayer move to the next song when in background
         // Also needed for home screen control and AirPlay
@@ -430,6 +435,29 @@ extension AppDelegate: SWRevealViewControllerDelegate {
                 printlnC(pL, pG, "    pan didn't reach 1/\(criticalWidthDenom) of the way to side nav HIDDEN, animate side nav to VISIBLE")
                 revealController.setFrontViewPosition(FrontViewPosition.Right, animated: true)
             }
+        }
+    }
+}
+
+extension AppDelegate {
+    override func remoteControlReceivedWithEvent(event: UIEvent) {
+        let rc = event.subtype
+        println("received remote control \(rc.rawValue)")
+        let party = LocalParty.sharedParty
+        
+        switch rc {
+        case .RemoteControlTogglePlayPause:
+            if party.audioPlayer.state == STKAudioPlayerStatePlaying {
+                party.pauseSong()
+            } else {
+                party.playSong()
+            }
+        case .RemoteControlPlay:
+            party.playSong()
+        case .RemoteControlPause:
+            party.pauseSong()
+        default:
+            break
         }
     }
 }

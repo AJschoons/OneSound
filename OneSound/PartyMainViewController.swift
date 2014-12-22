@@ -559,6 +559,7 @@ extension PartyMainViewController: LocalPartyDelegate {
     
 }
 
+/*
 extension PartyMainViewController {
     // MARK: handing play/pause from home screen, firstResponder info
     
@@ -596,3 +597,4 @@ extension PartyMainViewController {
         
     }
 }
+*/

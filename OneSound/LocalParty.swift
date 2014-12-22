@@ -20,8 +20,6 @@ protocol LocalPartyDelegate {
     func setPartySongInfo(# songName: String, songArtist: String, songTime: String, user: User?, thumbsUp: Bool, thumbsDown: Bool)
     func setPartySongImage(# songToPlay: Bool, artworkToShow: Bool, loadingSong: Bool, image: UIImage?)
     func clearSongInfo()
-    func assignFirstResponder()
-    func unassignFirstResponder()
 }
 
 enum PartyStrictnessOption: Int {
@@ -71,8 +69,6 @@ class LocalParty: NSObject {
     var songPlayingTimer: NSTimer?
     var partyRefreshTimer: NSTimer!
     var recentNextSongCallTimer: NSTimer?
-    
-    var currentSongImage: UIImage?
     
     var userIsHost = false
     var audioPlayerHasAudioToPlay = false
@@ -204,6 +200,7 @@ class LocalParty: NSObject {
             })
         } else {
             updateDelegateSongInformation()
+            //updateCurrentSongForDelegate()
         }
     }
     
@@ -242,7 +239,6 @@ class LocalParty: NSObject {
         }
     }
     
-    // To be used for non-hosts
     func updateCurrentSongForDelegate() {
         updateCurrentSong(partyID,
             completion: {
@@ -327,8 +323,7 @@ class LocalParty: NSObject {
     func setDelegatePreparedToPlaySong(songURLString: String) {
         audioIsDownloading = false
         
-        updateDelegateSongInformation()
-        updateMPNowPlayingInfoCenterInfo()
+        updateDelegateSongInformationAndPrepareMPNowPlayingInfoCenterForNewSong()
         
         dispatchAsyncToMainQueue(action: {
             self.delegate.setAudioPlayerButtonsForPlaying(true)
@@ -343,8 +338,7 @@ class LocalParty: NSObject {
         audioIsDownloading = false
         audioPlayerHasAudioToPlay = true
         
-        updateDelegateSongInformation()
-        updateMPNowPlayingInfoCenterInfo()
+        updateDelegateSongInformationAndPrepareMPNowPlayingInfoCenterForNewSong()
         
         dispatchAsyncToMainQueue(action: {
             self.delegate.setAudioPlayerButtonsForPlaying(true)
@@ -360,11 +354,6 @@ class LocalParty: NSObject {
         // Ensure audio session is initialized when the user is the host
         let audioSessionSetup = setupAudioSessionForHostPlaying()
         
-        // Setup main party to receive remote control events
-        UIApplication.sharedApplication().beginReceivingRemoteControlEvents()
-        delegate.assignFirstResponder()
-        
-        
         println("audioSession:\(audioSession != nil) audioPlayer:\(audioPlayer != nil) audioToPlay:\(audioPlayerHasAudioToPlay) audioPlaying:\(audioPlayerIsPlaying)")
             
         if audioSessionSetup {
@@ -378,6 +367,13 @@ class LocalParty: NSObject {
                         // Start the timer to be updating songProgress
                         self.songTimerShouldBeActive(true)
                     })
+                    
+                    var playingInfo = MPNowPlayingInfoCenter.defaultCenter().nowPlayingInfo
+                    playingInfo.updateValue(NSNumber(double: audioPlayer.progress), forKey: MPNowPlayingInfoPropertyElapsedPlaybackTime)
+                    MPNowPlayingInfoCenter.defaultCenter().nowPlayingInfo = playingInfo
+                    
+                    // Receive remote control events
+                    UIApplication.sharedApplication().beginReceivingRemoteControlEvents()
                 }
             } else {
                 let alert = UIAlertView(title: "No Songs To Play", message: "Please add some songs to play, then press play again", delegate: nil, cancelButtonTitle: "Ok")
@@ -408,12 +404,14 @@ class LocalParty: NSObject {
             let progress = audioPlayer.progress
             let duration = audioPlayer.duration
             
-            updateMPNowPlayingInfoCenterInfo(elapsedTime: progress)
-            
             if duration < 0.000001 {
                 // "in between" songs; duration is 0
                 delegate.updateSongProgress(0.0)
             } else {
+                var playingInfo = MPNowPlayingInfoCenter.defaultCenter().nowPlayingInfo
+                playingInfo.updateValue(NSNumber(double: progress), forKey: MPNowPlayingInfoPropertyElapsedPlaybackTime)
+                MPNowPlayingInfoCenter.defaultCenter().nowPlayingInfo = playingInfo
+                
                 let progressPercent = Float(progress / duration)
                 dispatchAsyncToMainQueue(action: {
                     self.delegate.updateSongProgress(progressPercent)
@@ -445,7 +443,24 @@ class LocalParty: NSObject {
         }
     }
     
-    func updateDelegateSongInformation() {
+    // Updates the delegate's song information, sets the MPNowplayingInfoCenter info with the current song info
+    // before playback, adds picture to the InfoCenter if available
+    func updateDelegateSongInformationAndPrepareMPNowPlayingInfoCenterForNewSong() {
+        // Set the info for the song, add the image if it exists
+        MPNowPlayingInfoCenter.defaultCenter().nowPlayingInfo = [MPMediaItemPropertyArtist : self.currentSong!.artistName,  MPMediaItemPropertyTitle : self.currentSong!.name, MPMediaItemPropertyPlaybackDuration : NSNumber(integer: self.currentSong!.duration), MPNowPlayingInfoPropertyPlaybackRate : NSNumber(integer: 1)]
+        updateDelegateSongInformation(imageCompletion:
+            { image in
+                if image != nil {
+                    let artwork = MPMediaItemArtwork(image: image!)
+                    var songInfo = MPNowPlayingInfoCenter.defaultCenter().nowPlayingInfo
+                    songInfo.updateValue(artwork, forKey: MPMediaItemPropertyArtwork)
+                    MPNowPlayingInfoCenter.defaultCenter().nowPlayingInfo = songInfo
+                }
+            }
+        )
+    }
+    
+    func updateDelegateSongInformation(imageCompletion: ((UIImage?) -> ())? = nil) {
         if currentSong != nil {
             
             var thumbsUp = false
@@ -466,11 +481,11 @@ class LocalParty: NSObject {
                 self.delegate.showPartySongInfo()
                 self.delegate.setPartySongInfo(songName: self.currentSong!.name, songArtist: self.currentSong!.artistName, songTime: timeInSecondsToFormattedMinSecondTimeLabelString(self.currentSong!.duration), user: self.currentUser!, thumbsUp: thumbsUp, thumbsDown: thumbsDown)
             })
-            updateDelegateSongImage() // UI calls in this fxn use dispatchAsyncToMainQueue
+            updateDelegateSongImage(imageCompletion) // UI calls in this fxn use dispatchAsyncToMainQueue
         }
     }
     
-    func updateDelegateSongImage() {
+    func updateDelegateSongImage( imageCompletion: ((UIImage?) -> ())? = nil ) {
         if currentSong!.artworkURL != nil {
             let largerArtworkURL = currentSong!.artworkURL!.replaceSubstringWithString("-large.jpg", newSubstring: "-t500x500.jpg")
             
@@ -480,6 +495,7 @@ class LocalParty: NSObject {
                         dispatchAsyncToMainQueue(action: {
                             self.delegate.setPartySongImage(songToPlay: true, artworkToShow: true, loadingSong: false, image: image)
                         })
+                        if imageCompletion != nil { imageCompletion!(image) }
                     } else {
                         SDWebImageManager.sharedManager().downloadImageWithURL(NSURL(string: largerArtworkURL), options: nil, progress: nil,
                             completed: { image, error, cacheType, boolValue, url in
@@ -488,10 +504,12 @@ class LocalParty: NSObject {
                                     dispatchAsyncToMainQueue(action: {
                                         self.delegate.setPartySongImage(songToPlay: true, artworkToShow: true, loadingSong: false, image: image)
                                     })
+                                    if imageCompletion != nil { imageCompletion!(image) }
                                 } else {
                                     dispatchAsyncToMainQueue(action: {
                                         self.delegate.setPartySongImage(songToPlay: true, artworkToShow: false, loadingSong: false, image: nil)
                                     })
+                                    if imageCompletion != nil { imageCompletion!(nil) }
                                 }
                             }
                         )
@@ -502,10 +520,12 @@ class LocalParty: NSObject {
             dispatchAsyncToMainQueue(action: {
                 self.delegate.setPartySongImage(songToPlay: true, artworkToShow: false, loadingSong: false, image: nil)
             })
+            if imageCompletion != nil { imageCompletion!(nil) }
         }
     }
     
     // Make sure to use this AFTER updateDelegateSongImage() and updateDelegateSongInformation()
+    /*
     func updateMPNowPlayingInfoCenterInfo(playbackRate: Int = 1, elapsedTime: Double = 0) {
         
         if currentSong!.artworkURL != nil {
@@ -528,6 +548,7 @@ class LocalParty: NSObject {
 
         }
     }
+    */
     
     func setupAudioSessionForHostPlaying() -> Bool {
         if audioSession == nil {
@@ -570,13 +591,8 @@ class LocalParty: NSObject {
     func clearSongInfo() {
         currentSong = nil
         currentUser = nil
-        currentSongImage = nil
         
         MPNowPlayingInfoCenter.defaultCenter().nowPlayingInfo = ["" : ""]
-        
-        // Stop main party from receiving remote control events
-        UIApplication.sharedApplication().endReceivingRemoteControlEvents()
-        delegate.unassignFirstResponder()
         
         dispatchAsyncToMainQueue(action: {
             self.delegate.clearSongInfo()
@@ -853,7 +869,7 @@ extension LocalParty: STKAudioPlayerDelegate {
     
     // Raised when an item has started playing
     func audioPlayer(audioPlayer: STKAudioPlayer!, didStartPlayingQueueItemId queueItemId: NSObject!) {
-        
+
     }
     
     // Raised when an item has finished buffering (may or may not be the currently playing item)
