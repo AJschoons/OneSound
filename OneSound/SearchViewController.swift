@@ -24,13 +24,18 @@ class SearchViewController: UIViewController {
     var searchResultsArray = [Party]()
     let heightForRows: CGFloat = 64.0
     
+    var noSearchResults = false
+    
     func search() {
         // Empty the table, reload to show its empty, start the animation
+        noSearchResults = false
         searchResultsArray = []
         searchResultsTable.reloadData()
         loadingAnimationShouldBeAnimating(true)
         
-        OSAPI.sharedClient.GETPartySearch(partySearchTextField.text,
+        let searchStr = partySearchTextField.text.stringByAddingPercentEscapesUsingEncoding(NSUTF8StringEncoding)!
+        
+        OSAPI.sharedClient.GETPartySearch(searchStr,
             success: {data, responseObject in
                 let responseJSON = JSONValue(responseObject)
                 println(responseJSON)
@@ -46,6 +51,8 @@ class SearchViewController: UIViewController {
                         newPartySearchResults.append(Party(json: result))
                     }
                 }
+                
+                if partiesArray!.count == 0 { self.noSearchResults = true }
                 
                 // Update the party results, reload the table to show them, stop animating
                 self.searchResultsArray = newPartySearchResults
@@ -127,6 +134,7 @@ class SearchViewController: UIViewController {
     override func viewDidDisappear(animated: Bool) {
         super.viewDidDisappear(animated)
         // Remove the results so they have to search again and keep the info fresh when they come back
+        noSearchResults = false
         searchResultsArray = []
         searchResultsTable.reloadData()
     }
@@ -219,21 +227,28 @@ class SearchViewController: UIViewController {
 
 extension SearchViewController: UITableViewDataSource {
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return searchResultsArray.count
+        return noSearchResults ? 1 : searchResultsArray.count
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
 
         let cell = searchResultsTable.dequeueReusableCellWithIdentifier(PartySearchResultCellIdentifier, forIndexPath: indexPath) as PartySearchResultCell
-        let result = searchResultsArray[indexPath.row]
         
-        var nameText: String = (result.name != nil) ? result.name! : ""
-        var userText: String = (result.hostName != nil) ? "Created by \(result.hostName!)" : "Created by Host"
-        var membersText: String = (result.memberCount != nil) ? "\(thousandsFormatter.stringFromNumber(NSNumber(integer: result.memberCount!))!) members" : "0 members"
-        
-        cell.nameLabel.text = nameText
-        cell.userNameLabel.text = userText
-        cell.memberCountLabel.text = membersText
+        if noSearchResults {
+            cell.nameLabel.text = "No Parties Found"
+            cell.userNameLabel.text = "Check spelling and try searching again"
+            cell.memberCountLabel.text = ""
+        } else {
+            let result = searchResultsArray[indexPath.row]
+            
+            var nameText: String = (result.name != nil) ? result.name! : ""
+            var userText: String = (result.hostName != nil) ? "Created by \(result.hostName!)" : "Created by Host"
+            var membersText: String = (result.memberCount != nil) ? "\(thousandsFormatter.stringFromNumber(NSNumber(integer: result.memberCount!))!) members" : "0 members"
+            
+            cell.nameLabel.text = nameText
+            cell.userNameLabel.text = userText
+            cell.memberCountLabel.text = membersText
+        }
 
         return cell
     }
@@ -241,6 +256,8 @@ extension SearchViewController: UITableViewDataSource {
 
 extension SearchViewController: UITableViewDelegate {
     func tableView(tableView: UITableView!, didSelectRowAtIndexPath indexPath: NSIndexPath!) {
+        if noSearchResults { return }
+        
         let selectedParty = searchResultsArray[indexPath.row]
         
         if LocalUser.sharedUser.setup == true {
@@ -273,6 +290,10 @@ extension SearchViewController: UITableViewDelegate {
     
     func tableView(tableView: UITableView!, heightForRowAtIndexPath indexPath: NSIndexPath!) -> CGFloat {
         return heightForRows
+    }
+    
+    func tableView(tableView: UITableView, shouldHighlightRowAtIndexPath indexPath: NSIndexPath) -> Bool {
+        return !noSearchResults
     }
 }
 

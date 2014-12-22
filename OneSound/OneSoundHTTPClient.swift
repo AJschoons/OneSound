@@ -86,7 +86,6 @@ class OSAPI: AFHTTPSessionManager {
             static let api: OSAPI = {
                 let config = NSURLSessionConfiguration.defaultSessionConfiguration()
                 config.HTTPAdditionalHeaders = ["CLIENT_ID" : "1", "CLIENT_SECRET" : "d7aa3fcb7141e876cea6121b600d1d8854ea74d7"]
-                    //["X_API_KEY": "05a41855c009ff2cbcd280e965e8e417a907e29c447dcfebb8"]
                 
                 let initAPI = OSAPI(baseURL: NSURL(string: baseURLString), sessionConfiguration: config)
                 

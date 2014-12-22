@@ -79,6 +79,8 @@ class LocalParty: NSObject {
     
     var shouldTryAnotherRefresh = true
     
+    var numOnSongPlayingTimerTicks = 0
+    
     class var sharedParty: LocalParty {
     struct Static {
         static let localParty = LocalParty()
@@ -323,7 +325,8 @@ class LocalParty: NSObject {
     func setDelegatePreparedToPlaySong(songURLString: String) {
         audioIsDownloading = false
         
-        updateDelegateSongInformationAndPrepareMPNowPlayingInfoCenterForNewSong()
+        updateDelegateSongInformation()
+        updateMPNowPlayingInfoCenterInfo()
         
         dispatchAsyncToMainQueue(action: {
             self.delegate.setAudioPlayerButtonsForPlaying(true)
@@ -338,7 +341,8 @@ class LocalParty: NSObject {
         audioIsDownloading = false
         audioPlayerHasAudioToPlay = true
         
-        updateDelegateSongInformationAndPrepareMPNowPlayingInfoCenterForNewSong()
+        updateDelegateSongInformation()
+        updateMPNowPlayingInfoCenterInfo()
         
         dispatchAsyncToMainQueue(action: {
             self.delegate.setAudioPlayerButtonsForPlaying(true)
@@ -367,10 +371,6 @@ class LocalParty: NSObject {
                         // Start the timer to be updating songProgress
                         self.songTimerShouldBeActive(true)
                     })
-                    
-                    var playingInfo = MPNowPlayingInfoCenter.defaultCenter().nowPlayingInfo
-                    playingInfo.updateValue(NSNumber(double: audioPlayer.progress), forKey: MPNowPlayingInfoPropertyElapsedPlaybackTime)
-                    MPNowPlayingInfoCenter.defaultCenter().nowPlayingInfo = playingInfo
                     
                     // Receive remote control events
                     UIApplication.sharedApplication().beginReceivingRemoteControlEvents()
@@ -408,10 +408,6 @@ class LocalParty: NSObject {
                 // "in between" songs; duration is 0
                 delegate.updateSongProgress(0.0)
             } else {
-                var playingInfo = MPNowPlayingInfoCenter.defaultCenter().nowPlayingInfo
-                playingInfo.updateValue(NSNumber(double: progress), forKey: MPNowPlayingInfoPropertyElapsedPlaybackTime)
-                MPNowPlayingInfoCenter.defaultCenter().nowPlayingInfo = playingInfo
-                
                 let progressPercent = Float(progress / duration)
                 dispatchAsyncToMainQueue(action: {
                     self.delegate.updateSongProgress(progressPercent)
@@ -421,6 +417,14 @@ class LocalParty: NSObject {
                 let timeRemaining = duration - progress
                 if timeRemaining < 5 && !attemptedToQueueSongForThisSong {
                     queueNextSongForDelegate()
+                }
+                
+                // Refresh the MPNowPlayingInfo every 3 ticks (~1 second)
+                if numOnSongPlayingTimerTicks < 3 {
+                    ++numOnSongPlayingTimerTicks
+                } else {
+                    numOnSongPlayingTimerTicks = 0
+                    updateMPNowPlayingInfoCenterInfo(elapsedTime: progress)
                 }
             }
         } else {
@@ -525,8 +529,7 @@ class LocalParty: NSObject {
     }
     
     // Make sure to use this AFTER updateDelegateSongImage() and updateDelegateSongInformation()
-    /*
-    func updateMPNowPlayingInfoCenterInfo(playbackRate: Int = 1, elapsedTime: Double = 0) {
+    func updateMPNowPlayingInfoCenterInfo(elapsedTime: Double = 0) {
         
         if currentSong!.artworkURL != nil {
             let largerArtworkURL = currentSong!.artworkURL!.replaceSubstringWithString("-large.jpg", newSubstring: "-t500x500.jpg")
@@ -534,21 +537,19 @@ class LocalParty: NSObject {
                 done: { image, imageCacheType in
                     if image != nil {
                         let artwork = MPMediaItemArtwork(image: image)
-                        MPNowPlayingInfoCenter.defaultCenter().nowPlayingInfo = [MPMediaItemPropertyArtist : self.currentSong!.artistName,  MPMediaItemPropertyTitle : self.currentSong!.name, MPMediaItemPropertyArtwork : artwork, MPMediaItemPropertyPlaybackDuration : self.currentSong!.duration, MPNowPlayingInfoPropertyElapsedPlaybackTime : elapsedTime, MPNowPlayingInfoPropertyPlaybackRate : playbackRate]
+                        MPNowPlayingInfoCenter.defaultCenter().nowPlayingInfo = [MPMediaItemPropertyArtist : self.currentSong!.artistName,  MPMediaItemPropertyTitle : self.currentSong!.name, MPMediaItemPropertyArtwork : artwork, MPMediaItemPropertyPlaybackDuration : self.currentSong!.duration, MPNowPlayingInfoPropertyElapsedPlaybackTime : elapsedTime]
                     } else {
-                        let artwork = MPMediaItemArtwork(image: songImageForNoSongArtwork)
-                        MPNowPlayingInfoCenter.defaultCenter().nowPlayingInfo = [MPMediaItemPropertyArtist : self.currentSong!.artistName,  MPMediaItemPropertyTitle : self.currentSong!.name, MPMediaItemPropertyArtwork : artwork, MPMediaItemPropertyPlaybackDuration : self.currentSong!.duration, MPNowPlayingInfoPropertyElapsedPlaybackTime : elapsedTime, MPNowPlayingInfoPropertyPlaybackRate : playbackRate]
+                        MPNowPlayingInfoCenter.defaultCenter().nowPlayingInfo = [MPMediaItemPropertyArtist : self.currentSong!.artistName,  MPMediaItemPropertyTitle : self.currentSong!.name, MPMediaItemPropertyPlaybackDuration : self.currentSong!.duration, MPNowPlayingInfoPropertyElapsedPlaybackTime : elapsedTime]
 
                     }
                 }
             )
         } else {
-            let artwork = MPMediaItemArtwork(image: songImageForNoSongArtwork)
-            MPNowPlayingInfoCenter.defaultCenter().nowPlayingInfo = [MPMediaItemPropertyArtist : currentSong!.artistName,  MPMediaItemPropertyTitle : currentSong!.name, MPMediaItemPropertyArtwork : artwork, MPMediaItemPropertyPlaybackDuration : currentSong!.duration, MPNowPlayingInfoPropertyElapsedPlaybackTime : elapsedTime, MPNowPlayingInfoPropertyPlaybackRate : playbackRate]
+            MPNowPlayingInfoCenter.defaultCenter().nowPlayingInfo = [MPMediaItemPropertyArtist : currentSong!.artistName,  MPMediaItemPropertyTitle : currentSong!.name, MPMediaItemPropertyPlaybackDuration : currentSong!.duration, MPNowPlayingInfoPropertyElapsedPlaybackTime : elapsedTime]
 
         }
     }
-    */
+
     
     func setupAudioSessionForHostPlaying() -> Bool {
         if audioSession == nil {

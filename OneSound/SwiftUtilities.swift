@@ -417,4 +417,3 @@ func removeLeadingWhitespaceFromTextField(inout textField: UITextField) {
     textField.text = newText
 }
 
-
