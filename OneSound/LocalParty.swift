@@ -241,6 +241,7 @@ class LocalParty: NSObject {
         }
     }
     
+    // Get and update the current song, then reflect that update in the delegate
     func updateCurrentSongForDelegate() {
         updateCurrentSong(partyID,
             completion: {
@@ -447,7 +448,7 @@ class LocalParty: NSObject {
         }
     }
     
-    func updateDelegateSongInformation(imageCompletion: ((UIImage?) -> ())? = nil) {
+    func updateDelegateSongInformation() {
         if currentSong != nil {
             
             var thumbsUp = false
@@ -468,11 +469,11 @@ class LocalParty: NSObject {
                 self.delegate.showPartySongInfo()
                 self.delegate.setPartySongInfo(songName: self.currentSong!.name, songArtist: self.currentSong!.artistName, songTime: timeInSecondsToFormattedMinSecondTimeLabelString(self.currentSong!.duration), user: self.currentUser!, thumbsUp: thumbsUp, thumbsDown: thumbsDown)
             })
-            updateDelegateSongImage(imageCompletion) // UI calls in this fxn use dispatchAsyncToMainQueue
+            updateDelegateSongImage() // UI calls in this fxn use dispatchAsyncToMainQueue
         }
     }
     
-    func updateDelegateSongImage( imageCompletion: ((UIImage?) -> ())? = nil ) {
+    func updateDelegateSongImage() {
         if currentSong!.artworkURL != nil {
             let largerArtworkURL = currentSong!.artworkURL!.replaceSubstringWithString("-large.jpg", newSubstring: "-t500x500.jpg")
             
@@ -482,7 +483,6 @@ class LocalParty: NSObject {
                         dispatchAsyncToMainQueue(action: {
                             self.delegate.setPartySongImage(songToPlay: true, artworkToShow: true, loadingSong: false, image: image)
                         })
-                        if imageCompletion != nil { imageCompletion!(image) }
                     } else {
                         SDWebImageManager.sharedManager().downloadImageWithURL(NSURL(string: largerArtworkURL), options: nil, progress: nil,
                             completed: { image, error, cacheType, boolValue, url in
@@ -491,12 +491,10 @@ class LocalParty: NSObject {
                                     dispatchAsyncToMainQueue(action: {
                                         self.delegate.setPartySongImage(songToPlay: true, artworkToShow: true, loadingSong: false, image: image)
                                     })
-                                    if imageCompletion != nil { imageCompletion!(image) }
                                 } else {
                                     dispatchAsyncToMainQueue(action: {
                                         self.delegate.setPartySongImage(songToPlay: true, artworkToShow: false, loadingSong: false, image: nil)
                                     })
-                                    if imageCompletion != nil { imageCompletion!(nil) }
                                 }
                             }
                         )
@@ -507,7 +505,6 @@ class LocalParty: NSObject {
             dispatchAsyncToMainQueue(action: {
                 self.delegate.setPartySongImage(songToPlay: true, artworkToShow: false, loadingSong: false, image: nil)
             })
-            if imageCompletion != nil { imageCompletion!(nil) }
         }
     }
     
