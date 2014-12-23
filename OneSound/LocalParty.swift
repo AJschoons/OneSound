@@ -17,9 +17,10 @@ protocol LocalPartyDelegate {
     func showPartySongInfo()
     func showMessages(mainLine: String?, detailLine: String?)
     func hideMessages()
-    func setPartySongInfo(# songName: String, songArtist: String, songTime: String, user: User?, thumbsUp: Bool, thumbsDown: Bool)
+    func setPartySongInfo(# name: String, artist: String, time: String)
+    func setPartySongUserInfo(user: User?, thumbsUp: Bool, thumbsDown: Bool)
     func setPartySongImage(# songToPlay: Bool, artworkToShow: Bool, loadingSong: Bool, image: UIImage?)
-    func clearSongInfo()
+    func clearAllSongInfo()
 }
 
 enum PartyStrictnessOption: Int {
@@ -133,7 +134,7 @@ class LocalParty: NSObject {
     
     func disallowGetNextSongCallTemporarily() {
         recentlyGotNextSong = true
-        NSTimer.scheduledTimerWithTimeInterval(0.3, target: self, selector: "allowGetNextSongCall", userInfo: nil, repeats: false)
+        NSTimer.scheduledTimerWithTimeInterval(2, target: self, selector: "allowGetNextSongCall", userInfo: nil, repeats: false)
     }
     
     func allowGetNextSongCall() {
@@ -194,20 +195,18 @@ class LocalParty: NSObject {
             dispatchAsyncToMainQueue(action: {
                 self.delegate.setPartySongImage(songToPlay: false, artworkToShow: false, loadingSong: false, image: nil)
             })
-            disallowGetNextSongCallTemporarily()
             getNextSongForDelegate()
         } else if !audioPlayerHasAudioToPlay && audioIsDownloading {
             dispatchAsyncToMainQueue(action: {
                 self.delegate.setPartySongImage(songToPlay: false, artworkToShow: false, loadingSong: true, image: nil)
             })
         } else {
-            updateDelegateSongInformation()
-            //updateCurrentSongForDelegate()
+            updateCurrentSongAndUserThenDelegate(onlyUpdateCurrentUserInfo: true)
         }
     }
     
     func refreshForNonHost() {
-        updateCurrentSongForDelegate()
+        updateCurrentSongAndUserThenDelegate()
     }
     
     func setDelegatePartyInfoVisible() {
@@ -241,21 +240,20 @@ class LocalParty: NSObject {
         }
     }
     
-    // Get and update the current song, then reflect that update in the delegate
-    func updateCurrentSongForDelegate() {
-        updateCurrentSong(partyID,
+    // Get and update the current song and user, then reflect that update in the delegate
+    func updateCurrentSongAndUserThenDelegate(onlyUpdateCurrentUserInfo: Bool = false) {
+        updateCurrentSongAndUser(partyID,
             completion: {
-                self.updateDelegateSongInformation()
+                self.updateDelegateSongAndUserInformation(onlyUpdateCurrentUserInfo: onlyUpdateCurrentUserInfo)
             },
             noCurrentSong: {
                 dispatchAsyncToMainQueue(action: {
-                    self.delegate.setPartySongImage(songToPlay: false, artworkToShow: false, loadingSong: false, image: nil)
-                    self.delegate.setPartySongInfo(songName: "", songArtist: "", songTime: "", user: nil, thumbsUp: false, thumbsDown: false)
+                    self.delegate.clearAllSongInfo()
                 })
             },
             failureAddOn: {
                 dispatchAsyncToMainQueue(action: {
-                    self.delegate.setPartySongInfo(songName: "", songArtist: "", songTime: "", user: nil, thumbsUp: false, thumbsDown: false)
+                    self.delegate.clearAllSongInfo()
                     self.delegate.setPartyInfoHidden(true)
                     self.delegate.showMessages("Unable to load current song", detailLine: "Please check internet connection and refresh the party")
                 })
@@ -265,7 +263,6 @@ class LocalParty: NSObject {
     
     // Only to be used for hosts
     func getNextSongForDelegate() {
-        
         getNextSong(partyID,
             completion: { song, user in
                 //self.audioIsDownloading = true
@@ -278,13 +275,12 @@ class LocalParty: NSObject {
             }, noCurrentSong: {
                 self.audioIsDownloading = false
                 dispatchAsyncToMainQueue(action: {
-                    self.delegate.setPartySongImage(songToPlay: false, artworkToShow: false, loadingSong: false, image: nil)
-                    self.delegate.setPartySongInfo(songName: "", songArtist: "", songTime: "", user: nil, thumbsUp: false, thumbsDown: false)
+                    self.delegate.clearAllSongInfo()
                 })
             }, failureAddOn: {
                 self.audioIsDownloading = false
                 dispatchAsyncToMainQueue(action: {
-                    self.delegate.setPartySongInfo(songName: "", songArtist: "", songTime: "", user: nil, thumbsUp: false, thumbsDown: false)
+                    self.delegate.clearAllSongInfo()
                     self.delegate.setPartyInfoHidden(true)
                     self.delegate.showMessages("Unable to load current song", detailLine: "Please check internet connection and refresh the party")
                 })
@@ -326,7 +322,7 @@ class LocalParty: NSObject {
     func setDelegatePreparedToPlaySong(songURLString: String) {
         audioIsDownloading = false
         
-        updateDelegateSongInformation()
+        updateDelegateSongAndUserInformation()
         updateMPNowPlayingInfoCenterInfo()
         
         dispatchAsyncToMainQueue(action: {
@@ -342,7 +338,7 @@ class LocalParty: NSObject {
         audioIsDownloading = false
         audioPlayerHasAudioToPlay = true
         
-        updateDelegateSongInformation()
+        updateDelegateSongAndUserInformation()
         updateMPNowPlayingInfoCenterInfo()
         
         dispatchAsyncToMainQueue(action: {
@@ -448,8 +444,8 @@ class LocalParty: NSObject {
         }
     }
     
-    func updateDelegateSongInformation() {
-        if currentSong != nil {
+    func updateDelegateSongAndUserInformation(onlyUpdateCurrentUserInfo: Bool = false) {
+        if currentSong != nil && currentUser != nil {
             
             var thumbsUp = false
             var thumbsDown = false
@@ -467,9 +463,16 @@ class LocalParty: NSObject {
             
             dispatchAsyncToMainQueue(action: {
                 self.delegate.showPartySongInfo()
-                self.delegate.setPartySongInfo(songName: self.currentSong!.name, songArtist: self.currentSong!.artistName, songTime: timeInSecondsToFormattedMinSecondTimeLabelString(self.currentSong!.duration), user: self.currentUser!, thumbsUp: thumbsUp, thumbsDown: thumbsDown)
+                self.delegate.setPartySongUserInfo(self.currentUser!, thumbsUp: thumbsUp, thumbsDown: thumbsDown)
+                
+                if !onlyUpdateCurrentUserInfo {
+                    self.delegate.setPartySongInfo(name: self.currentSong!.name, artist: self.currentSong!.artistName, time: timeInSecondsToFormattedMinSecondTimeLabelString(self.currentSong!.duration))
+                }
             })
-            updateDelegateSongImage() // UI calls in this fxn use dispatchAsyncToMainQueue
+            
+            if !onlyUpdateCurrentUserInfo {
+                updateDelegateSongImage() // UI calls in this fxn use dispatchAsyncToMainQueue
+            }
         }
     }
     
@@ -510,23 +513,26 @@ class LocalParty: NSObject {
     
     // Make sure to use this AFTER updateDelegateSongImage() and updateDelegateSongInformation()
     func updateMPNowPlayingInfoCenterInfo(elapsedTime: Double = 0) {
-        
-        if currentSong!.artworkURL != nil {
-            let largerArtworkURL = currentSong!.artworkURL!.replaceSubstringWithString("-large.jpg", newSubstring: "-t500x500.jpg")
-            songImageCache.queryDiskCacheForKey(largerArtworkURL,
-                done: { image, imageCacheType in
-                    if image != nil {
-                        let artwork = MPMediaItemArtwork(image: image)
-                        MPNowPlayingInfoCenter.defaultCenter().nowPlayingInfo = [MPMediaItemPropertyArtist : self.currentSong!.artistName,  MPMediaItemPropertyTitle : self.currentSong!.name, MPMediaItemPropertyArtwork : artwork, MPMediaItemPropertyPlaybackDuration : self.currentSong!.duration, MPNowPlayingInfoPropertyElapsedPlaybackTime : elapsedTime]
-                    } else {
-                        MPNowPlayingInfoCenter.defaultCenter().nowPlayingInfo = [MPMediaItemPropertyArtist : self.currentSong!.artistName,  MPMediaItemPropertyTitle : self.currentSong!.name, MPMediaItemPropertyPlaybackDuration : self.currentSong!.duration, MPNowPlayingInfoPropertyElapsedPlaybackTime : elapsedTime]
-
+        if currentSong != nil {
+            if currentSong!.artworkURL != nil {
+                let largerArtworkURL = currentSong!.artworkURL!.replaceSubstringWithString("-large.jpg", newSubstring: "-t500x500.jpg")
+                songImageCache.queryDiskCacheForKey(largerArtworkURL,
+                    done: { image, imageCacheType in
+                        if image != nil {
+                            let artwork = MPMediaItemArtwork(image: image)
+                            MPNowPlayingInfoCenter.defaultCenter().nowPlayingInfo = [MPMediaItemPropertyArtist : self.currentSong!.artistName,  MPMediaItemPropertyTitle : self.currentSong!.name, MPMediaItemPropertyArtwork : artwork, MPMediaItemPropertyPlaybackDuration : self.currentSong!.duration, MPNowPlayingInfoPropertyElapsedPlaybackTime : elapsedTime]
+                        } else {
+                            MPNowPlayingInfoCenter.defaultCenter().nowPlayingInfo = [MPMediaItemPropertyArtist : self.currentSong!.artistName,  MPMediaItemPropertyTitle : self.currentSong!.name, MPMediaItemPropertyPlaybackDuration : self.currentSong!.duration, MPNowPlayingInfoPropertyElapsedPlaybackTime : elapsedTime]
+                            
+                        }
                     }
-                }
-            )
+                )
+            } else {
+                MPNowPlayingInfoCenter.defaultCenter().nowPlayingInfo = [MPMediaItemPropertyArtist : currentSong!.artistName,  MPMediaItemPropertyTitle : currentSong!.name, MPMediaItemPropertyPlaybackDuration : currentSong!.duration, MPNowPlayingInfoPropertyElapsedPlaybackTime : elapsedTime]
+                
+            }
         } else {
-            MPNowPlayingInfoCenter.defaultCenter().nowPlayingInfo = [MPMediaItemPropertyArtist : currentSong!.artistName,  MPMediaItemPropertyTitle : currentSong!.name, MPMediaItemPropertyPlaybackDuration : currentSong!.duration, MPNowPlayingInfoPropertyElapsedPlaybackTime : elapsedTime]
-
+            MPNowPlayingInfoCenter.defaultCenter().nowPlayingInfo = ["" : ""]
         }
     }
 
@@ -576,7 +582,7 @@ class LocalParty: NSObject {
         MPNowPlayingInfoCenter.defaultCenter().nowPlayingInfo = ["" : ""]
         
         dispatchAsyncToMainQueue(action: {
-            self.delegate.clearSongInfo()
+            self.delegate.clearAllSongInfo()
         })
     }
     
@@ -622,46 +628,52 @@ extension LocalParty {
     // MARK: Party networking related code for user's active party
     
     func getNextSong(pid: Int, completion: ((song: Song, user: User) -> ())? = nil, noCurrentSong: completionClosure? = nil, failureAddOn: completionClosure? = nil) {
+        let shouldAttempt = !recentlyGotNextSong
+        disallowGetNextSongCallTemporarily()
         
-        let localUser = LocalUser.sharedUser
-        OSAPI.sharedClient.GETNextSong(pid,
-            success: { data, responseObject in
-                let responseJSON = JSONValue(responseObject)
-                println(responseJSON)
-                
-                if completion != nil {
-                    completion!(song: Song(json: responseJSON), user: User(json: responseJSON["user"]))
-                }
-            }, failure: { task, error in
-                var shouldDoDefaultFailureBlock = true
-                
-                if let response = task.response as? NSHTTPURLResponse {
-                    println("errorResponseCode:\(response.statusCode)")
-                    if response.statusCode == 404 && noCurrentSong != nil {
-                        shouldDoDefaultFailureBlock = false
-                        if noCurrentSong != nil {
-                            noCurrentSong!()
+        if shouldAttempt {
+            let localUser = LocalUser.sharedUser
+            OSAPI.sharedClient.GETNextSong(pid,
+                success: { data, responseObject in
+                    let responseJSON = JSONValue(responseObject)
+                    println(responseJSON)
+                    
+                    if completion != nil {
+                        completion!(song: Song(json: responseJSON), user: User(json: responseJSON["user"]))
+                    }
+                }, failure: { task, error in
+                    var shouldDoDefaultFailureBlock = true
+                    
+                    if let response = task.response as? NSHTTPURLResponse {
+                        println("errorResponseCode:\(response.statusCode)")
+                        if response.statusCode == 404 && noCurrentSong != nil {
+                            shouldDoDefaultFailureBlock = false
+                            if noCurrentSong != nil {
+                                noCurrentSong!()
+                            }
                         }
                     }
-                }
-                
-                if shouldDoDefaultFailureBlock == true {
-                    if failureAddOn != nil {
-                        failureAddOn!()
+                    
+                    if shouldDoDefaultFailureBlock == true {
+                        if failureAddOn != nil {
+                            failureAddOn!()
+                        }
+                        defaultAFHTTPFailureBlock!(task: task, error: error)
                     }
-                    defaultAFHTTPFailureBlock!(task: task, error: error)
                 }
-            }
-        )
+            )
+        }
     }
     
-    func updateCurrentSong(pid: Int, completion: completionClosure? = nil, noCurrentSong: completionClosure? = nil, failureAddOn: completionClosure? = nil) {
+    func updateCurrentSongAndUser(pid: Int, completion: completionClosure? = nil, noCurrentSong: completionClosure? = nil, failureAddOn: completionClosure? = nil) {
         OSAPI.sharedClient.GETCurrentSong(pid,
             success: { data, responseObject in
                 let responseJSON = JSONValue(responseObject)
                 println(responseJSON)
+                
                 self.currentSong = Song(json: responseJSON)
                 self.currentUser = User(json: responseJSON["user"])
+                
                 if completion != nil {
                     completion!()
                 }
@@ -875,7 +887,6 @@ extension LocalParty: STKAudioPlayerDelegate {
             audioPlayerIsPlaying = false
             audioPlayerHasAudioToPlay = false
             clearSongInfo()
-            disallowGetNextSongCallTemporarily()
             getNextSongForDelegate()
         }
     }

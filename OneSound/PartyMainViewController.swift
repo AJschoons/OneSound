@@ -140,6 +140,7 @@ class PartyMainViewController: UIViewController {
         let party = LocalParty.sharedParty
         if party.setup == true && party.name != nil {
             navigationController!.visibleViewController.title = LocalParty.sharedParty.name
+            
             if !party.userIsHost {
                 partyRefreshTimer = NSTimer.scheduledTimerWithTimeInterval(10, target: self, selector: "refresh", userInfo: nil, repeats: true)
             }
@@ -161,21 +162,24 @@ class PartyMainViewController: UIViewController {
                 // If the button is selected before it is pressed, make it unselected
                 setThumbsUpUnselected()
                 
-                // Clear song vote on the server
+                // Clear song vote
                 if let currentSong = LocalParty.sharedParty.currentSong {
                     LocalParty.sharedParty.songClearVote(currentSong.songID)
                 }
+                changeUserUpvoteLabelCountBy(-1)
             } else {
                 // If the button is unselected before it is pressed
                 setThumbsUpSelected()
                 
-                // Upvote song on the server
+                // Upvote song
                 if let currentSong = LocalParty.sharedParty.currentSong {
                     LocalParty.sharedParty.songUpvote(currentSong.songID)
                 }
+                changeUserUpvoteLabelCountBy(1)
                 
                 if shortThumbsDownButton.selected || tallThumbsDownButton.selected {
                     setThumbsDownUnselected()
+                    changeUserUpvoteLabelCountBy(1)
                 }
             }
         }
@@ -187,21 +191,24 @@ class PartyMainViewController: UIViewController {
                 // If the button is selected before it is pressed, make it unselected
                 setThumbsDownUnselected()
                 
-                // Clear song vote on the server
+                // Clear song vote
                 if let currentSong = LocalParty.sharedParty.currentSong {
                     LocalParty.sharedParty.songClearVote(currentSong.songID)
                 }
+                changeUserUpvoteLabelCountBy(1)
             } else {
                 // If the button is unselected before it is pressed
                 setThumbsDownSelected()
                 
-                // Downvote song on the server
+                // Downvote song
                 if let currentSong = LocalParty.sharedParty.currentSong {
                     LocalParty.sharedParty.songDownvote(currentSong.songID)
                 }
+                changeUserUpvoteLabelCountBy(-1)
                 
                 if shortThumbsUpButton.selected || tallThumbsUpButton.selected {
                     setThumbsUpUnselected()
+                    changeUserUpvoteLabelCountBy(-1)
                 }
             }
         }
@@ -210,6 +217,15 @@ class PartyMainViewController: UIViewController {
     func resetThumbsUpDownButtons() {
         setThumbsUpUnselected()
         setThumbsDownUnselected()
+    }
+    
+    func changeUserUpvoteLabelCountBy(changeBy: Int) {
+        if userUpvoteLabel != nil {
+            if let voteCount = userUpvoteLabel!.text!.toInt() {
+                let newVoteCount = voteCount + changeBy
+                userUpvoteLabel.text = String(newVoteCount)
+            }
+        }
     }
     
     func setThumbsUpSelected() {
@@ -271,13 +287,14 @@ class PartyMainViewController: UIViewController {
         LocalParty.sharedParty.refresh()
     }
     
-    func clearSongInfo() {
+    func clearAllSongInfo() {
         setPartySongImage(songToPlay: false, artworkToShow: false, loadingSong: false, image: nil)
-        setPartySongInfo(songName: "", songArtist: "", songTime: "", user: nil, thumbsUp: false, thumbsDown: false)
+        setPartySongInfo(name: "", artist: "", time: "")
+        setPartySongUserInfo(nil, thumbsUp: false, thumbsDown: false)
         resetThumbsUpDownButtons()
     }
     
-    func setPartySongUserInfo(user: User?) {
+    func setPartySongUserInfo(user: User?, thumbsUp: Bool, thumbsDown: Bool) {
         showPartySongUserInfo()
         
         if shorterIphoneScreen {
@@ -345,21 +362,12 @@ class PartyMainViewController: UIViewController {
         songProgress!.hidden = false
     }
     
-    func setPartySongInfo(# songName: String, songArtist: String, songTime: String, user: User?, thumbsUp: Bool, thumbsDown: Bool) {
+    func setPartySongInfo(# name: String, artist: String, time: String) {
         showPartySongInfo()
         
-        songNameLabel!.text = songName
-        songArtistLabel!.text = songArtist
-        songTimeLabel!.text = songTime
-        
-        setPartySongUserInfo(user)
-        
-        resetThumbsUpDownButtons()
-        if thumbsUp {
-            setThumbsUpSelected()
-        } else if thumbsDown {
-            setThumbsDownSelected()
-        }
+        songNameLabel!.text = name
+        songArtistLabel!.text = artist
+        songTimeLabel!.text = time
     }
     
     func setPartySongImage(# songToPlay: Bool, artworkToShow: Bool, loadingSong: Bool, image: UIImage?) {
@@ -386,13 +394,13 @@ class PartyMainViewController: UIViewController {
             return
         }
         
+        soundcloudLogo!.hidden = false
+        
         if !artworkToShow {
             songImage!.image = songImageForNoSongArtwork
             soundcloudLogo!.hidden = false
             return
         }
-        
-        soundcloudLogo!.hidden = false
         
         if image != nil {
             songImage!.image = image
