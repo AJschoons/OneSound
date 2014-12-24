@@ -65,11 +65,11 @@ class ProfileViewController: UIViewController {
         if refresh() {
             if LocalUser.sharedUser.guest == true {
                 // Let the guest know that signing out a guest account doesn't really do anything
-                let alert = UIAlertView(title: "Signing Out Guest", message: "Signing out of guest account deletes current guest account and signs into a new guest account. To sign into a full account, login with Facebook, and your guest account is automatically signed out.", delegate: self, cancelButtonTitle: "Cancel", otherButtonTitles: "Ok")
+                let alert = UIAlertView(title: "Signing Out Guest", message: "Signing out of guest account deletes current guest account and signs into a new guest account. To sign into a full account, login with Facebook, and your guest account is automatically upgraded.", delegate: self, cancelButtonTitle: "Cancel", otherButtonTitles: "Ok")
                 alert.tag = 101
                 alert.show()
             } else {
-                let alert = UIAlertView(title: "Signing Out", message: "Continue signing out to sign in with a different Facebook account, or to downgrade to a guest account. Guests can only join and use parties, and do not have social features such as stat tracking, Stories, Following, etc.", delegate: self, cancelButtonTitle: "Cancel", otherButtonTitles: "Ok")
+                let alert = UIAlertView(title: "Signing Out", message: "Continue signing out to sign in with a different Facebook account, or to downgrade to a guest account. Guests can only join and use parties, and can't create them", delegate: self, cancelButtonTitle: "Cancel", otherButtonTitles: "Ok")
                 alert.tag = 102
                 alert.show()
             }
@@ -155,7 +155,7 @@ class ProfileViewController: UIViewController {
                         if LocalUser.sharedUser.guest == true {
                             self.setUserInfoHidden(true)
                             self.setStoriesTableToHidden(true)
-                            self.showMessages("Guests can only join and use parties", detailLine: "Please sign in with Facebook to use social features", showMessageBelowUserInfo: false)
+                            self.showMessages("Guests can only join and use parties", detailLine: "Please sign in with Facebook to use Profiles", showMessageBelowUserInfo: false)
                             self.facebookSignInButton!.hidden = false
                             self.signOutButton!.enabled = false
                             self.settingsButton!.enabled = false
@@ -342,7 +342,6 @@ extension ProfileViewController: UIAlertViewDelegate {
             // If full user is trying to sign out, let the FB session state change handle sign out and updating to new guest account
             if buttonIndex == 1 {
                 FBSession.activeSession().closeAndClearTokenInformation()
-                refresh()
             }
         }
     }

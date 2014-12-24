@@ -51,7 +51,7 @@ class PartyMembersViewController: UIViewController {
         
         if AFNetworkReachabilityManager.sharedManager().reachable {
             if LocalUser.sharedUser.setup == true {
-                if LocalUser.sharedUser.party != nil {
+                if LocalUser.sharedUser.party != nil && LocalUser.sharedUser.party != 0 {
                     if LocalParty.sharedParty.setup == true {
                         // Actually show members stuff
                         hideMessages()
@@ -72,18 +72,12 @@ class PartyMembersViewController: UIViewController {
                     hideMembersTable(true)
                 }
             } else {
-                //setUserInfoHidden(true)
-                //setStoriesTableToHidden(true)
                 showMessages("Not signed into an account", detailLine: "Please connect to the internet and restart OneSound")
                 hideMembersTable(true)
-                //disableButtons()
             }
         } else {
-            //setUserInfoHidden(true)
-            //setStoriesTableToHidden(true)
             showMessages("Not connected to the internet", detailLine: "Please connect to the internet to use OneSound")
             hideMembersTable(true)
-            //disableButtons()
         }
     }
     

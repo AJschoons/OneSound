@@ -153,9 +153,10 @@ class LocalParty: NSObject {
     func refresh() {
         println("refreshing LocalParty")
         
+        let user = LocalUser.sharedUser
         if AFNetworkReachabilityManager.sharedManager().reachable {
             if LocalUser.sharedUser.setup == true {
-                if LocalUser.sharedUser.party != nil {
+                if LocalUser.sharedUser.party != nil && LocalUser.sharedUser.party != 0 {
                     if setup == true {
                         setDelegatePartyInfoVisible()
                         

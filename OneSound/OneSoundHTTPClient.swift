@@ -356,7 +356,11 @@ extension OSAPI {
     
     // Search for a party by name
     func GETPartySearch(searchText: String, success: AFHTTPSuccessBlock, failure: AFHTTPFailureBlock, extraAttempts: Int = defaultEA) {
-        let urlString = "\(baseURLString)party/search/\(searchText)"
+        let urlString = "\(baseURLString)party/search"
+        
+        // Create parameters to pass
+        var params = Dictionary<String, AnyObject>()
+        params.updateValue(searchText, forKey: "q")
         
         let failureWithExtraAttempt: AFHTTPFailureBlock = { task, error in
             if errorShouldBeHandledWithRepeatedRequest(task, error, attemptsLeft: extraAttempts) {
@@ -366,7 +370,7 @@ extension OSAPI {
             }
         }
         
-        GET(urlString, parameters: nil, success: success, failure: failureWithExtraAttempt)
+        GET(urlString, parameters: params, success: success, failure: failureWithExtraAttempt)
     }
 }
 

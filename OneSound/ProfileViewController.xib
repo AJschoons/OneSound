@@ -40,20 +40,20 @@
                     <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                     <nil key="highlightedColor"/>
                 </label>
-                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" restorationIdentifier="message2" text="Some text below that further explains first message" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7DP-hq-6m4">
+                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" restorationIdentifier="message2" text="Some text below that further explains first message" textAlignment="center" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7DP-hq-6m4">
                     <rect key="frame" x="20" y="251" width="560" height="13.5"/>
                     <fontDescription key="fontDescription" type="system" pointSize="11"/>
                     <color key="textColor" red="0.5170014500617981" green="0.51698595285415649" blue="0.51699477434158325" alpha="1" colorSpace="calibratedRGB"/>
                     <nil key="highlightedColor"/>
                 </label>
-                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" restorationIdentifier="message3" text="Some text for main line of message" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="TB8-eX-L9O">
-                    <rect key="frame" x="15" y="364" width="560" height="17"/>
+                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" restorationIdentifier="message3" text="Some text for main line of message" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="TB8-eX-L9O">
+                    <rect key="frame" x="15" y="364" width="570" height="17"/>
                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
                     <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                     <nil key="highlightedColor"/>
                 </label>
-                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" restorationIdentifier="message4" text="Some text below that further explains first message" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="FQw-7j-L1X">
-                    <rect key="frame" x="15" y="381" width="560" height="13.5"/>
+                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" restorationIdentifier="message4" text="Some text below that further explains first message" textAlignment="center" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="FQw-7j-L1X">
+                    <rect key="frame" x="15" y="381" width="570" height="13.5"/>
                     <fontDescription key="fontDescription" type="system" pointSize="11"/>
                     <color key="textColor" red="0.51700145009999998" green="0.51698595290000005" blue="0.51699477429999996" alpha="1" colorSpace="calibratedRGB"/>
                     <nil key="highlightedColor"/>
@@ -186,8 +186,8 @@
                         <constraint firstAttribute="width" constant="50" id="JJr-0H-ri7"/>
                     </constraints>
                 </view>
-                <tableView hidden="YES" clipsSubviews="YES" contentMode="scaleToFill" misplaced="YES" restorationIdentifier="userProfileStoriesTable" alwaysBounceVertical="YES" scrollEnabled="NO" style="plain" separatorStyle="none" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="eCU-Oq-8c7">
-                    <rect key="frame" x="-6" y="262" width="606" height="230"/>
+                <tableView hidden="YES" clipsSubviews="YES" contentMode="scaleToFill" restorationIdentifier="userProfileStoriesTable" alwaysBounceVertical="YES" scrollEnabled="NO" style="plain" separatorStyle="none" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="eCU-Oq-8c7">
+                    <rect key="frame" x="0.0" y="262" width="600" height="230"/>
                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                     <color key="sectionIndexBackgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                     <connections>
@@ -219,7 +219,6 @@
                 </constraint>
                 <constraint firstItem="etC-fY-YB5" firstAttribute="top" secondItem="CIl-lD-DEk" secondAttribute="bottom" constant="8" id="S9L-sn-jB3"/>
                 <constraint firstItem="7DP-hq-6m4" firstAttribute="top" secondItem="veg-mN-gPm" secondAttribute="bottom" id="TBu-CJ-oTu"/>
-                <constraint firstAttribute="centerX" secondItem="7DP-hq-6m4" secondAttribute="centerX" id="TIM-EV-XAw"/>
                 <constraint firstItem="clQ-gd-PYY" firstAttribute="top" secondItem="CIl-lD-DEk" secondAttribute="bottom" constant="8" id="TMW-pN-LMJ"/>
                 <constraint firstAttribute="centerX" secondItem="yXS-7L-RqS" secondAttribute="centerX" id="U41-EP-LKB"/>
                 <constraint firstAttribute="bottom" secondItem="eCU-Oq-8c7" secondAttribute="bottom" constant="44" id="V0Z-oY-gMR"/>
@@ -245,7 +244,7 @@
                 <constraint firstItem="ZVn-Bn-bEM" firstAttribute="height" secondItem="yXS-7L-RqS" secondAttribute="height" id="iBi-N6-mzU"/>
                 <constraint firstItem="TB8-eX-L9O" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" constant="15" id="jc1-3x-uFL"/>
                 <constraint firstItem="FQw-7j-L1X" firstAttribute="top" secondItem="TB8-eX-L9O" secondAttribute="bottom" id="jf5-CI-3FL"/>
-                <constraint firstAttribute="trailing" secondItem="FQw-7j-L1X" secondAttribute="trailing" constant="25" id="jvT-KJ-s11"/>
+                <constraint firstAttribute="trailing" secondItem="FQw-7j-L1X" secondAttribute="trailing" constant="15" id="jvT-KJ-s11"/>
                 <constraint firstItem="cxO-gK-Hw1" firstAttribute="top" secondItem="KmA-Ug-KHh" secondAttribute="bottom" constant="2" id="kDp-Ju-nPB"/>
                 <constraint firstItem="clQ-gd-PYY" firstAttribute="leading" secondItem="0gB-z2-YIA" secondAttribute="trailing" id="kUM-8E-ij1"/>
                 <constraint firstItem="etC-fY-YB5" firstAttribute="leading" secondItem="KmA-Ug-KHh" secondAttribute="trailing" id="l8X-Uw-pFy"/>

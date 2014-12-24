@@ -75,7 +75,7 @@ class PartySongsViewController: UIViewController {
         
         if AFNetworkReachabilityManager.sharedManager().reachable {
             if LocalUser.sharedUser.setup == true {
-                if LocalUser.sharedUser.party != nil {
+                if LocalUser.sharedUser.party != nil && LocalUser.sharedUser.party != 0 {
                     if LocalParty.sharedParty.setup == true {
                         // Actually show songs stuff
                         hideMessages()
