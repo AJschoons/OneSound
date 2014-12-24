@@ -80,6 +80,7 @@ extension SCClient {
         params.updateValue("streamable", forKey: "filter")
         params.updateValue("hotness", forKey: "order")
         params.updateValue("600000", forKey: "duration-to") // 10 minute max
+        params.updateValue(20, forKey: "limit") // Just get 20 results (default is 50)
         
         let failureWithExtraAttempt: AFHTTPFailureBlock = { task, error in
             if errorShouldBeHandledWithRepeatedRequest(task, error, attemptsLeft: extraAttempts) {
