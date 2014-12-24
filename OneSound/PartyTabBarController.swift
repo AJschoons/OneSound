@@ -24,7 +24,7 @@ class PartyTabBarController: UITabBarController {
         partyMembersViewController.tabBarItem.image = UIImage(named: "partyTabBarMembersIcon")
         
         let partyMainViewController = PartyMainViewController(nibName: PartyMainViewControllerNibName, bundle: nil)
-        partyMainViewController.tabBarItem.title = "Party"
+        partyMainViewController.tabBarItem.title = "Now Playing"
         partyMainViewController.tabBarItem.image = UIImage(named: "partyTabBarPartyIcon")
         
         let partySongsViewController = PartySongsViewController(nibName: PartySongsViewControllerNibName, bundle: nil)

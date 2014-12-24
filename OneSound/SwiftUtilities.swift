@@ -509,3 +509,40 @@ extension UILabel {
         self.setNeedsLayout()
     }
 }
+
+func setTableBackgroundViewWithMessages(tableView: UITableView, mainLine: String, detailLine: String) {
+    let f = tableView.frame
+    
+    let bgView = UIView(frame: f)
+    bgView.backgroundColor = UIColor.clearColor()
+    tableView.backgroundView = bgView
+    
+    let messageLabel1 = UILabel()
+    messageLabel1.setTranslatesAutoresizingMaskIntoConstraints(false)
+    messageLabel1.text = mainLine
+    messageLabel1.textColor = UIColor.black()
+    messageLabel1.numberOfLines = 0
+    messageLabel1.textAlignment = NSTextAlignment.Center
+    messageLabel1.font = UIFont.systemFontOfSize(14)
+    messageLabel1.sizeToFit()
+    bgView.addSubview(messageLabel1)
+    
+    bgView.addConstraint(NSLayoutConstraint(item: messageLabel1, attribute: NSLayoutAttribute.CenterY, relatedBy: NSLayoutRelation.Equal, toItem: bgView, attribute: NSLayoutAttribute.CenterY, multiplier: 1, constant: -messageLabel1.frame.height / 2))
+    bgView.addConstraint(NSLayoutConstraint(item: messageLabel1, attribute: NSLayoutAttribute.Left, relatedBy: NSLayoutRelation.Equal, toItem: bgView, attribute: NSLayoutAttribute.Left, multiplier: 1, constant: 0))
+    bgView.addConstraint(NSLayoutConstraint(item: messageLabel1, attribute: NSLayoutAttribute.Right, relatedBy: NSLayoutRelation.Equal, toItem: bgView, attribute: NSLayoutAttribute.Right, multiplier: 1, constant: 0))
+    
+    
+    let messageLabel2 = UILabel()
+    messageLabel2.setTranslatesAutoresizingMaskIntoConstraints(false)
+    messageLabel2.text = detailLine
+    messageLabel2.textColor = UIColor.grayDark()
+    messageLabel2.numberOfLines = 0
+    messageLabel2.textAlignment = NSTextAlignment.Center
+    messageLabel2.font = UIFont.systemFontOfSize(11)
+    messageLabel2.sizeToFit()
+    bgView.addSubview(messageLabel2)
+    
+    bgView.addConstraint(NSLayoutConstraint(item: messageLabel2, attribute: NSLayoutAttribute.Top, relatedBy: NSLayoutRelation.Equal, toItem: messageLabel1, attribute: NSLayoutAttribute.Bottom, multiplier: 1, constant: 0))
+    bgView.addConstraint(NSLayoutConstraint(item: messageLabel2, attribute: NSLayoutAttribute.Left, relatedBy: NSLayoutRelation.Equal, toItem: bgView, attribute: NSLayoutAttribute.Left, multiplier: 1, constant: 0))
+    bgView.addConstraint(NSLayoutConstraint(item: messageLabel2, attribute: NSLayoutAttribute.Right, relatedBy: NSLayoutRelation.Equal, toItem: bgView, attribute: NSLayoutAttribute.Right, multiplier: 1, constant: 0))
+}

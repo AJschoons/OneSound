@@ -22,9 +22,12 @@ class AddSongViewController: UIViewController {
     
     let heightForRows: CGFloat = 64.0
     
+    var noSearchResults = false
+    
     func search() {
         // Empty the table, reload to show its empty, start the animation
-        searchResultsArray = [SongSearchResult]()
+        noSearchResults = false
+        searchResultsArray = []
         searchResultsTable.reloadData()
         loadingAnimationShouldBeAnimating(true)
         
@@ -57,6 +60,8 @@ class AddSongViewController: UIViewController {
                         newSongSearchResults.append(SongSearchResult(source: source, externalID: id!, name: name!, artistName: artistName!, duration: duration!, artworkURL: artworkURL, numberOfPlaybacks: playbacks))
                     }
                 }
+                
+                if newSongSearchResults.count == 0 { self.noSearchResults = true }
                 
                 self.searchResultsArray = newSongSearchResults
                 self.searchResultsTable.reloadData()
@@ -102,6 +107,14 @@ class AddSongViewController: UIViewController {
         animatedOneSoundOne.hidden = true
     }
     
+    override func viewDidDisappear(animated: Bool) {
+        super.viewDidDisappear(animated)
+        
+        searchResultsArray = []
+        searchResultsTable.reloadData()
+        noSearchResults = false
+    }
+    
     func textFieldDidChange() {
         if countElements(songSearchTextField.text as String) > 0 {
             navigationItem.rightBarButtonItem!.enabled = true
@@ -129,6 +142,17 @@ class AddSongViewController: UIViewController {
 extension AddSongViewController: UITableViewDataSource {
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return searchResultsArray.count
+    }
+    
+    func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+        if !noSearchResults {
+            tableView.backgroundView = nil
+            return 1
+        } else {
+            // Display a message when the table is empty after searching
+            setTableBackgroundViewWithMessages(tableView, "No songs found", "Please try searching with a different name")
+            return 0
+        }
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {

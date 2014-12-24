@@ -138,6 +138,17 @@ extension PartySongsViewController: UITableViewDataSource {
         return LocalParty.sharedParty.songs.count
     }
     
+    func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+        if LocalParty.sharedParty.songs.count > 0 {
+            tableView.backgroundView = nil
+            return 1
+        } else {
+            // Display a message when the table is empty
+            setTableBackgroundViewWithMessages(tableView, "No songs are queued in the playlist", "Please pull down to refresh, or add a song")
+            return 0
+        }
+    }
+    
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         var songCell = songsTable.dequeueReusableCellWithIdentifier(PartySongCellIndentifier, forIndexPath: indexPath) as PartySongCell
         

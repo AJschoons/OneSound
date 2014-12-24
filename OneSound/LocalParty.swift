@@ -593,11 +593,11 @@ class LocalParty: NSObject {
         
         clearSongInfo()
         
-        partyID = -1
+        partyID = 0
         isPrivate = false
-        hostUserID = -1
+        hostUserID = 0
         name = ""
-        strictness = -1
+        strictness = 0
         
         songs = []
         members = []

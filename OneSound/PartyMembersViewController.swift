@@ -109,6 +109,17 @@ extension PartyMembersViewController: UITableViewDataSource {
         return LocalParty.sharedParty.members.count
     }
     
+    func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+        if LocalParty.sharedParty.members.count > 0 {
+            tableView.backgroundView = nil
+            return 1
+        } else {
+            // Display a message when the table is empty
+            setTableBackgroundViewWithMessages(tableView, "No party members", "Please pull down to refresh, or invite some friends")
+            return 0
+        }
+    }
+    
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let membersCell = membersTable.dequeueReusableCellWithIdentifier(PartyMemberCellIdentifier, forIndexPath: indexPath) as PartyMemberCell
         

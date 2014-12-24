@@ -227,28 +227,33 @@ class SearchViewController: UIViewController {
 
 extension SearchViewController: UITableViewDataSource {
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return noSearchResults ? 1 : searchResultsArray.count
+        return searchResultsArray.count
+    }
+    
+    func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+        if !noSearchResults {
+            tableView.backgroundView = nil
+            return 1
+        } else {
+            // Display a message when the table is empty after searching
+            setTableBackgroundViewWithMessages(tableView, "No parties found", "Please try searching with a different name")
+            return 0
+        }
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
 
         let cell = searchResultsTable.dequeueReusableCellWithIdentifier(PartySearchResultCellIdentifier, forIndexPath: indexPath) as PartySearchResultCell
         
-        if noSearchResults {
-            cell.nameLabel.text = "No Parties Found"
-            cell.userNameLabel.text = "Check spelling and try searching again"
-            cell.memberCountLabel.text = ""
-        } else {
-            let result = searchResultsArray[indexPath.row]
-            
-            var nameText: String = (result.name != nil) ? result.name! : ""
-            var userText: String = (result.hostName != nil) ? "Created by \(result.hostName!)" : "Created by Host"
-            var membersText: String = (result.memberCount != nil) ? "\(thousandsFormatter.stringFromNumber(NSNumber(integer: result.memberCount!))!) members" : "0 members"
-            
-            cell.nameLabel.text = nameText
-            cell.userNameLabel.text = userText
-            cell.memberCountLabel.text = membersText
-        }
+        let result = searchResultsArray[indexPath.row]
+        
+        var nameText: String = (result.name != nil) ? result.name! : ""
+        var userText: String = (result.hostName != nil) ? "Created by \(result.hostName!)" : "Created by Host"
+        var membersText: String = (result.memberCount != nil) ? "\(thousandsFormatter.stringFromNumber(NSNumber(integer: result.memberCount!))!) members" : "0 members"
+        
+        cell.nameLabel.text = nameText
+        cell.userNameLabel.text = userText
+        cell.memberCountLabel.text = membersText
 
         return cell
     }
@@ -256,7 +261,6 @@ extension SearchViewController: UITableViewDataSource {
 
 extension SearchViewController: UITableViewDelegate {
     func tableView(tableView: UITableView!, didSelectRowAtIndexPath indexPath: NSIndexPath!) {
-        if noSearchResults { return }
         
         let selectedParty = searchResultsArray[indexPath.row]
         
@@ -290,10 +294,6 @@ extension SearchViewController: UITableViewDelegate {
     
     func tableView(tableView: UITableView!, heightForRowAtIndexPath indexPath: NSIndexPath!) -> CGFloat {
         return heightForRows
-    }
-    
-    func tableView(tableView: UITableView, shouldHighlightRowAtIndexPath indexPath: NSIndexPath) -> Bool {
-        return !noSearchResults
     }
 }
 
