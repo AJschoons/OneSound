@@ -12,6 +12,7 @@ pod 'SSKeychain', '~> 1.2'
 pod 'THLabel', '~> 1.3'
 pod 'SDWebImage', '~> 3.7'
 pod 'StreamingKit', '~> 0.1'
+pod 'FXLabel', '~> 1.5'
 
 end
 

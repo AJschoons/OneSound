@@ -324,16 +324,15 @@ func replaceSpacesWithASCIISpaceCodeForURL(urlString: String) -> String {
     return urlString.stringByReplacingOccurrencesOfString(" ", withString: "%20", options: nil, range: nil)
 }
 
-func setupTHLabelToDefaultDesiredLook(label: THLabel!) {
+func setupOSLabelToDefaultDesiredLook(label: OSLabel!) {
     if label != nil {
         label.textColor = UIColor.white()
-        label.shadowColor = UIColor(white: 0, alpha: 0.5)
-        label.shadowOffset = CGSizeMake(0, 0)
-        label.shadowBlur = 3.0
-        label.strokeSize = 1.0
-        label.strokeColor = UIColor.black()
-        label.fadeTruncatingMode = THLabelFadeTruncatingMode.Tail
+        label.layer.shadowColor = UIColor.blackColor().CGColor
+        label.layer.shadowRadius = 1.0
+        label.layer.shadowOpacity = 1.0
+        label.layer.shadowOffset = CGSizeZero
         label.clipsToBounds = false
+        label.adjustsFontSizeToFitWidth = true
     }
 }
 
@@ -417,3 +416,96 @@ func removeLeadingWhitespaceFromTextField(inout textField: UITextField) {
     textField.text = newText
 }
 
+extension UILabel {
+    // Adjusts multiline label font size to make text shrink before wrapping onto more than 1 line
+    //
+    //   Note: Label must have a fixed width. If heightToAdjustFor is unspecified, then the labels
+    //         current height is used
+    
+    //         The idea is to call this after setting the text, with "heightToAdjustFor" being the
+    //         height of the label when the text is on X lines. The text is sized to fit on X lines,
+    //         and then gets wrapped onto more lines if needed
+    func adjustFontSizeToFit(# minFontSize: Int, heightToAdjustFor: CGFloat? = nil) {
+        var font = self.font
+        let size = self.frame.size
+        
+        // Calculate the needed font size to fit in the label's height
+        // Start at the largest font size, decrease font size by 1 while > minimum font size
+        for (var maxSize = self.font.pointSize; maxSize >= self.minimumScaleFactor * self.font.pointSize; maxSize -= 1.0) {
+            // New font size
+            font = font.fontWithSize(maxSize)
+            
+            // Make a constraint box using ONLY the FIXED WIDTH of the UILabel, height will be checked later
+            let constraintSize = CGSizeMake(size.width, CGFloat(MAXFLOAT))
+            
+            // Check how tall the label would be with the font
+            let textRect = (self.text! as NSString).boundingRectWithSize(constraintSize, options: NSStringDrawingOptions.UsesLineFragmentOrigin, attributes: [NSFontAttributeName : font], context: nil)
+            let labelSize = textRect.size
+            
+            // If specified, use heightToAdjustFor, else the label's current height
+            let adjustingHeight = (heightToAdjustFor != nil) ? (heightToAdjustFor) : (size.height)
+            
+            // If the label fits into the required height, break and use this font size
+            if labelSize.height <= adjustingHeight {
+                self.font = font
+                self.setNeedsLayout()
+                break
+            }
+        }
+        
+        // Set the font to the minimum size if nothing larger works
+        self.font = font.fontWithSize(CGFloat(minFontSize))
+        self.setNeedsLayout()
+    }
+    
+    func adjustAttributedFontSizeToFit(heightToAdjustFor: CGFloat? = nil) {
+        var font = self.font
+        let size = self.frame.size
+        
+        // Calculate the needed font size to fit in the label's height
+        // Start at the largest font size, decrease font size by 1 while > minimum font size
+        for (var maxSize = self.font.pointSize; maxSize >= self.minimumScaleFactor * self.font.pointSize; maxSize -= 1.0) {
+            // New font size
+            font = font.fontWithSize(maxSize)
+            
+            // Make a constraint box using ONLY the FIXED WIDTH of the UILabel, height will be checked later
+            let constraintSize = CGSizeMake(size.width, CGFloat(MAXFLOAT))
+            
+            // Check how tall the label would be with the font
+            let textRect = (self.text! as NSString).boundingRectWithSize(constraintSize, options: NSStringDrawingOptions.UsesLineFragmentOrigin, attributes: [NSFontAttributeName : font], context: nil)
+            let labelSize = textRect.size
+            
+            // If specified, use heightToAdjustFor, else the label's current height
+            let adjustingHeight = (heightToAdjustFor != nil) ? (heightToAdjustFor) : (size.height)
+            
+            // If the label fits into the required height, break and use this font size
+            if labelSize.height <= adjustingHeight {
+                self.font = font
+                self.attributedText =
+                    NSAttributedString(
+                        string: self.text!,
+                        attributes:
+                        [
+                            NSFontAttributeName: font,
+                            NSForegroundColorAttributeName: self.textColor,
+                            NSKernAttributeName: 0.2
+                        ])
+                self.setNeedsLayout()
+                break
+            }
+        }
+        
+        // Set the font to the minimum size if nothing larger works
+        self.font = font
+        self.attributedText =
+            NSAttributedString(
+                string: self.text!,
+                attributes:
+                [
+                    NSFontAttributeName: font,
+                    NSForegroundColorAttributeName: self.textColor,
+                    NSKernAttributeName: 0.2
+                ])
+        self.setNeedsLayout()
+    }
+}

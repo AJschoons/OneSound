@@ -167,8 +167,15 @@ extension LocalUser {
             }, failure: { task, error in
                 println("ERROR: Guest account no longer exists, creating new one")
                 println(error.localizedDescription)
-                self.deleteAllSavedUserInformation()
-                self.setupGuestAccount()
+                
+                // Clear the saved access token in the header
+                OSAPI.sharedClient.requestSerializer.setValue("", forHTTPHeaderField: accessTokenHeaderKey)
+                
+                self.deleteAllSavedUserInformation(
+                    completion: {
+                        self.setupGuestAccount()
+                    }
+                )
             }
         )
     }
@@ -231,10 +238,29 @@ extension LocalUser {
                     
                     self.updateUserInformationAfterSignIn(userID: userID!, accessToken: userAccessToken!)
                 }
-            }, failure: { task, error in
+            },
+            failure: { task, error in
                 println("ERROR: Failed sign on for full account, setup a guest account")
                 println(error.localizedDescription)
-                self.setupGuestAccount()
+                
+                // Clear the saved access token in the header
+                OSAPI.sharedClient.requestSerializer.setValue("", forHTTPHeaderField: accessTokenHeaderKey)
+                
+                if let response = task.response as? NSHTTPURLResponse {
+                    println("errorResponseCode:\(response.statusCode)")
+                    if response.statusCode == 401 {
+                        // Unauthorized token, so just delete everything
+                        self.deleteAllSavedUserInformation(
+                            completion: {
+                                self.setupGuestAccount()
+                            }
+                        )
+                    } else {
+                        self.setupGuestAccount()
+                    }
+                } else {
+                    self.setupGuestAccount()
+                }
             }
         )
     }
@@ -263,13 +289,31 @@ extension LocalUser {
             failure: { task, error in
                 println("ERROR: Guest account no longer exists, creating new one")
                 println(error.localizedDescription)
-                self.setupGuestAccount()
+
+                // Clear the saved access token in the header
+                OSAPI.sharedClient.requestSerializer.setValue("", forHTTPHeaderField: accessTokenHeaderKey)
+                
+                if let response = task.response as? NSHTTPURLResponse {
+                    println("errorResponseCode:\(response.statusCode)")
+                    if response.statusCode == 401 {
+                        // Unauthorized token, so just delete everything
+                        self.deleteAllSavedUserInformation(
+                            completion: {
+                                self.setupGuestAccount()
+                            }
+                        )
+                    } else {
+                        self.setupGuestAccount()
+                    }
+                } else {
+                    self.setupGuestAccount()
+                }
             }
         )
     }
     
     // Download the user's record for the userID, update the User info from that json,
-    // update the UserDefaults, and update the Keychain info
+    // Update the UserDefaults, and update the Keychain info
     // Update the access token in the header
     func updateUserInformationAfterSignIn(userID id: Int, accessToken token: String, respondToChangeAttempt: ((Bool) -> ())? = nil, failure: AFHTTPFailureBlock = defaultAFHTTPFailureBlockForSigningIn) {
         
@@ -286,7 +330,7 @@ extension LocalUser {
                 LocalUser.sharedUser.updateUserFromJSON(responseJSON, accessToken: token,
                     completion: {
                         // Join the party that the user is in
-                        if LocalUser.sharedUser.party != nil {
+                        if LocalUser.sharedUser.party != nil && LocalUser.sharedUser.party != 0 {
                             LocalParty.sharedParty.joinParty(LocalUser.sharedUser.party!,
                                 JSONUpdateCompletion: {
                                     LocalParty.sharedParty.refresh()
@@ -431,8 +475,8 @@ extension LocalUser {
     }
     
     func deleteAllSavedUserInformation(completion: completionClosure? = nil) {
-        // Clear the access token in the header
-        OSAPI.sharedClient.requestSerializer.setValue(nil, forHTTPHeaderField: accessTokenHeaderKey)
+        // Clear the saved access token in the header
+        OSAPI.sharedClient.requestSerializer.setValue("", forHTTPHeaderField: accessTokenHeaderKey)
         
         SSKeychain.deletePasswordForService(service, account: userIDKeychainKey)
         SSKeychain.deletePasswordForService(service, account: userAccessTokenKeychainKey)

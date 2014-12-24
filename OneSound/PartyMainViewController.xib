@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="6254" systemVersion="14C81f" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="6254" systemVersion="14B25" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6247"/>
         <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
@@ -7,7 +7,7 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="PartyMainViewController" customModule="OneSound" customModuleProvider="target">
             <connections>
-                <outlet property="addSongButton" destination="hIG-cm-4AI" id="BAQ-Ix-vMs"/>
+                <outlet property="addSongButton" destination="AAT-uz-eSM" id="qIR-1W-kDN"/>
                 <outlet property="messageLabel1" destination="dg1-oM-G78" id="ngp-Q3-VP1"/>
                 <outlet property="messageLabel2" destination="UYc-8M-RBr" id="Clw-KC-Ij1"/>
                 <outlet property="pauseButton" destination="HIU-WJ-aqj" id="qqp-kF-x3H"/>
@@ -104,31 +104,28 @@
                     <color key="progressTintColor" red="0.17838662860000001" green="0.73694926500000002" blue="0.94469857219999998" alpha="1" colorSpace="calibratedRGB"/>
                     <color key="trackTintColor" red="0.83041405680000002" green="0.83038914200000002" blue="0.83040332790000004" alpha="1" colorSpace="calibratedRGB"/>
                 </progressView>
-                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Song Name" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="oBv-JJ-MLy" customClass="THLabel">
-                    <rect key="frame" x="10" y="262" width="527" height="31"/>
-                    <constraints>
-                        <constraint firstAttribute="height" constant="31" id="Zkq-R2-gZo"/>
-                    </constraints>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Song Name" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="none" minimumScaleFactor="0.75000000000000022" translatesAutoresizingMaskIntoConstraints="NO" id="oBv-JJ-MLy" customClass="OSLabel" customModule="OneSound" customModuleProvider="target">
+                    <rect key="frame" x="10" y="271" width="537" height="21.5"/>
                     <fontDescription key="fontDescription" type="boldSystem" pointSize="18"/>
                     <color key="textColor" red="1" green="0.99997437000274658" blue="0.99999129772186279" alpha="1" colorSpace="calibratedRGB"/>
                     <nil key="highlightedColor"/>
                 </label>
-                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Artist Name" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="dAA-if-muq" customClass="THLabel">
-                    <rect key="frame" x="10" y="289" width="527" height="21"/>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Artist Name" lineBreakMode="tailTruncation" baselineAdjustment="none" minimumFontSize="10" translatesAutoresizingMaskIntoConstraints="NO" id="dAA-if-muq" customClass="OSLabel" customModule="OneSound" customModuleProvider="target">
+                    <rect key="frame" x="10" y="296" width="537" height="14"/>
                     <constraints>
-                        <constraint firstAttribute="height" constant="21" id="NH3-Nk-en1"/>
+                        <constraint firstAttribute="height" constant="14" id="NH3-Nk-en1"/>
                     </constraints>
                     <fontDescription key="fontDescription" type="boldSystem" pointSize="12"/>
                     <color key="textColor" red="1" green="0.99997437000274658" blue="0.99999129772186279" alpha="1" colorSpace="calibratedRGB"/>
                     <nil key="highlightedColor"/>
                 </label>
-                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="00:00" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Flu-ww-wQ5" customClass="THLabel">
-                    <rect key="frame" x="545" y="289" width="45" height="21"/>
+                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="00:00" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="none" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Flu-ww-wQ5" customClass="OSLabel" customModule="OneSound" customModuleProvider="target">
+                    <rect key="frame" x="555" y="296" width="35" height="14"/>
                     <constraints>
-                        <constraint firstAttribute="height" constant="21" id="1MF-MA-QO3"/>
-                        <constraint firstAttribute="width" constant="45" id="bUD-Nf-wT8"/>
+                        <constraint firstAttribute="height" constant="14" id="1MF-MA-QO3"/>
+                        <constraint firstAttribute="width" constant="35" id="bUD-Nf-wT8"/>
                     </constraints>
-                    <fontDescription key="fontDescription" type="system" pointSize="12"/>
+                    <fontDescription key="fontDescription" type="boldSystem" pointSize="12"/>
                     <color key="textColor" red="1" green="0.99997437000274658" blue="0.99999129772186279" alpha="1" colorSpace="calibratedRGB"/>
                     <nil key="highlightedColor"/>
                 </label>
@@ -613,14 +610,14 @@
                         </mask>
                     </variation>
                 </view>
-                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="hIG-cm-4AI">
-                    <rect key="frame" x="200" y="426" width="200" height="44"/>
-                    <color key="backgroundColor" red="0.1783866286277771" green="0.73694926500320435" blue="0.94469857215881348" alpha="1" colorSpace="calibratedRGB"/>
+                <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="AAT-uz-eSM">
+                    <rect key="frame" x="255" y="389" width="90" height="30"/>
+                    <color key="backgroundColor" red="0.17838662860000001" green="0.73694926500000002" blue="0.94469857219999998" alpha="1" colorSpace="calibratedRGB"/>
                     <constraints>
-                        <constraint firstAttribute="width" constant="200" id="8Xr-on-RCc">
+                        <constraint firstAttribute="width" constant="90" id="XAe-W2-ALd">
                             <variation key="widthClass=compact" constant="90"/>
                         </constraint>
-                        <constraint firstAttribute="height" constant="44" id="gsS-Lu-IJc">
+                        <constraint firstAttribute="height" constant="30" id="Yje-s6-ab9">
                             <variation key="widthClass=compact" constant="30"/>
                         </constraint>
                     </constraints>
@@ -630,7 +627,7 @@
                         <color key="titleShadowColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                     </state>
                     <connections>
-                        <action selector="addSong:" destination="-1" eventType="touchUpInside" id="CNo-kx-TPd"/>
+                        <action selector="addSong:" destination="-1" eventType="touchUpInside" id="Dvf-iG-2Kd"/>
                     </connections>
                 </button>
             </subviews>
@@ -640,6 +637,7 @@
                 <constraint firstAttribute="centerX" secondItem="dg1-oM-G78" secondAttribute="centerX" id="1LJ-0W-QzQ"/>
                 <constraint firstAttribute="trailing" secondItem="qdb-42-GJA" secondAttribute="trailing" id="2f2-fg-0ID"/>
                 <constraint firstItem="NMo-td-Wl0" firstAttribute="trailing" secondItem="HIU-WJ-aqj" secondAttribute="trailing" id="6Ev-Rg-MK2"/>
+                <constraint firstItem="AAT-uz-eSM" firstAttribute="centerX" secondItem="qdb-42-GJA" secondAttribute="centerX" id="ETY-Tp-EeW"/>
                 <constraint firstItem="LLm-8r-LuE" firstAttribute="bottom" secondItem="NMo-td-Wl0" secondAttribute="bottom" id="GLz-KQ-qgz"/>
                 <constraint firstItem="Flu-ww-wQ5" firstAttribute="leading" secondItem="dAA-if-muq" secondAttribute="trailing" constant="8" id="Gjf-v0-0uk"/>
                 <constraint firstItem="LLm-8r-LuE" firstAttribute="top" secondItem="NMo-td-Wl0" secondAttribute="top" id="HQY-cB-HIq"/>
@@ -655,9 +653,6 @@
                 <constraint firstItem="dAA-if-muq" firstAttribute="bottom" secondItem="oBv-JJ-MLy" secondAttribute="bottom" constant="17" id="U2n-nl-nDz"/>
                 <constraint firstAttribute="bottom" secondItem="qdb-42-GJA" secondAttribute="bottom" id="W2k-66-0dD"/>
                 <constraint firstItem="dy3-EB-EWF" firstAttribute="trailing" secondItem="NMo-td-Wl0" secondAttribute="trailing" id="XlG-WO-H2D"/>
-                <constraint firstItem="hIG-cm-4AI" firstAttribute="centerY" secondItem="qdb-42-GJA" secondAttribute="centerY" constant="-159.5" id="akc-vd-gT0">
-                    <variation key="widthClass=compact" constant="0.0"/>
-                </constraint>
                 <constraint firstItem="5if-AM-htS" firstAttribute="leading" secondItem="NMo-td-Wl0" secondAttribute="leading" constant="15" id="bkL-wp-HIj">
                     <variation key="heightClass=regular-widthClass=compact" constant="12"/>
                 </constraint>
@@ -670,6 +665,7 @@
                 <constraint firstItem="NMo-td-Wl0" firstAttribute="top" secondItem="QJc-pb-IIu" secondAttribute="top" id="kUX-rj-0wF"/>
                 <constraint firstItem="UYc-8M-RBr" firstAttribute="top" secondItem="dg1-oM-G78" secondAttribute="bottom" id="kl9-S2-XFe"/>
                 <constraint firstItem="NMo-td-Wl0" firstAttribute="trailing" secondItem="QJc-pb-IIu" secondAttribute="trailing" id="mIS-TG-NCX"/>
+                <constraint firstItem="AAT-uz-eSM" firstAttribute="centerY" secondItem="qdb-42-GJA" secondAttribute="centerY" id="mfX-Ng-Wuy"/>
                 <constraint firstItem="NMo-td-Wl0" firstAttribute="bottom" secondItem="Flu-ww-wQ5" secondAttribute="bottom" constant="10" id="oO2-fl-g4W"/>
                 <constraint firstItem="5if-AM-htS" firstAttribute="top" secondItem="NMo-td-Wl0" secondAttribute="top" constant="15" id="p5T-aX-b6B">
                     <variation key="heightClass=regular-widthClass=compact" constant="12"/>
@@ -681,9 +677,6 @@
                 <constraint firstItem="NMo-td-Wl0" firstAttribute="top" secondItem="ggx-wY-78Y" secondAttribute="top" id="t8d-qn-D2K"/>
                 <constraint firstItem="qdb-42-GJA" firstAttribute="leading" secondItem="ggx-wY-78Y" secondAttribute="leading" id="uJw-4H-CRK"/>
                 <constraint firstItem="Flu-ww-wQ5" firstAttribute="leading" secondItem="oBv-JJ-MLy" secondAttribute="trailing" constant="8" id="vJ7-sf-g5S"/>
-                <constraint firstItem="hIG-cm-4AI" firstAttribute="centerX" secondItem="qdb-42-GJA" secondAttribute="centerX" constant="50" id="vlT-FN-uLw">
-                    <variation key="widthClass=compact" constant="0.0"/>
-                </constraint>
                 <constraint firstItem="NMo-td-Wl0" firstAttribute="top" secondItem="HIU-WJ-aqj" secondAttribute="top" id="weL-IA-agR"/>
                 <constraint firstItem="NMo-td-Wl0" firstAttribute="bottom" secondItem="QJc-pb-IIu" secondAttribute="bottom" id="x2f-IA-dFB">
                     <variation key="widthClass=compact" constant="20"/>
@@ -693,24 +686,7 @@
             <simulatedStatusBarMetrics key="simulatedStatusBarMetrics" statusBarStyle="lightContent"/>
             <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" translucent="NO" prompted="NO"/>
             <simulatedTabBarMetrics key="simulatedBottomBarMetrics" translucent="NO"/>
-            <variation key="default">
-                <mask key="subviews">
-                    <exclude reference="hIG-cm-4AI"/>
-                </mask>
-                <mask key="constraints">
-                    <exclude reference="akc-vd-gT0"/>
-                    <exclude reference="vlT-FN-uLw"/>
-                </mask>
-            </variation>
-            <variation key="widthClass=compact">
-                <mask key="subviews">
-                    <include reference="hIG-cm-4AI"/>
-                </mask>
-                <mask key="constraints">
-                    <include reference="akc-vd-gT0"/>
-                    <include reference="vlT-FN-uLw"/>
-                </mask>
-            </variation>
+            <point key="canvasLocation" x="327" y="289.5"/>
         </view>
     </objects>
     <resources>

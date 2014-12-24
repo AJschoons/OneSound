@@ -34,12 +34,11 @@ class PartyMainViewController: UIViewController {
     @IBOutlet weak var playButton: UIButton?
     @IBOutlet weak var pauseButton: UIButton?
     @IBOutlet weak var songProgress: UIProgressView?
-    @IBOutlet weak var songNameLabel: THLabel?
-    @IBOutlet weak var songArtistLabel: THLabel?
-    @IBOutlet weak var songTimeLabel: THLabel?
+    @IBOutlet weak var songNameLabel: OSLabel!
+    @IBOutlet weak var songArtistLabel: OSLabel!
+    @IBOutlet weak var songTimeLabel: OSLabel!
     @IBOutlet weak var songImageForLoadingSong: UIImageView!
     @IBOutlet weak var addSongButton: UIButton!
-    
     
     @IBOutlet weak var userView: UIView!
     @IBOutlet weak var shortUserLabel: UILabel!
@@ -106,14 +105,9 @@ class PartyMainViewController: UIViewController {
         songProgress!.progress = 0.0
         
         // Setup the labels
-        setupTHLabelToDefaultDesiredLook(songNameLabel!)
-        setupTHLabelToDefaultDesiredLook(songArtistLabel!)
-        setupTHLabelToDefaultDesiredLook(songTimeLabel!)
-        songNameLabel!.textInsets = UIEdgeInsets(top: 0, left: 5, bottom: 0, right: 0)
-        songArtistLabel!.textInsets = UIEdgeInsets(top: 0, left: 5, bottom: 0, right: 0)
-        songArtistLabel!.shadowColor = UIColor(white: 0, alpha: 0.3)
-        songTimeLabel!.textInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 5)
-        songTimeLabel!.shadowColor = UIColor(white: 0, alpha: 0.3)
+        setupOSLabelToDefaultDesiredLook(songNameLabel!)
+        setupOSLabelToDefaultDesiredLook(songArtistLabel!)
+        setupOSLabelToDefaultDesiredLook(songTimeLabel!)
         
         // Setup loading animation
         songImageForLoadingSong.animationImages = [loadingSong2, loadingSong1, loadingSong0, loadingSong1]
@@ -130,7 +124,7 @@ class PartyMainViewController: UIViewController {
         
         tallUserImage.layer.cornerRadius = 5.0
         tallUserImage.image = defaultUserImageForMainParty
-        
+
         hideMessages()
         setPartyInfoHidden(true)
     }
@@ -365,9 +359,35 @@ class PartyMainViewController: UIViewController {
     func setPartySongInfo(# name: String, artist: String, time: String) {
         showPartySongInfo()
         
-        songNameLabel!.text = name
-        songArtistLabel!.text = artist
-        songTimeLabel!.text = time
+        songNameLabel.attributedText =
+            NSAttributedString(
+                string: name,
+                attributes:
+                [
+                    NSFontAttributeName: songNameLabel.font,
+                    NSForegroundColorAttributeName: songNameLabel.textColor,
+                    NSKernAttributeName: songNameLabel.kerning
+                ])
+        songArtistLabel.attributedText =
+            NSAttributedString(
+                string: artist,
+                attributes:
+                [
+                    NSFontAttributeName: songArtistLabel.font,
+                    NSForegroundColorAttributeName: songArtistLabel.textColor,
+                    NSKernAttributeName: songArtistLabel.kerning
+                ])
+        songTimeLabel.attributedText =
+            NSAttributedString(
+                string: time,
+                attributes:
+                [
+                    NSFontAttributeName: songTimeLabel.font,
+                    NSForegroundColorAttributeName: songTimeLabel.textColor,
+                    NSKernAttributeName: songTimeLabel.kerning
+                ])
+        
+        self.songNameLabel!.adjustFontSizeToFit(minFontSize: 14, heightToAdjustFor: 25)
     }
     
     func setPartySongImage(# songToPlay: Bool, artworkToShow: Bool, loadingSong: Bool, image: UIImage?) {

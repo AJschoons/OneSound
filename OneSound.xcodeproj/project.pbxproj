@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		0C5C4B89C9B444C983D44940 /* libPods-OneSound.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 52F652D4E9264838BE2D4D5C /* libPods-OneSound.a */; };
+		49218FBD0D84F21CB16F6804 /* libPods-OneSound.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 52F652D4E9264838BE2D4D5C /* libPods-OneSound.a */; };
 		8103D66B19805E9000AE5A27 /* LoggingInSpashViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8103D66919805E9000AE5A27 /* LoggingInSpashViewController.swift */; };
 		8103D66C19805E9000AE5A27 /* LoggingInSpashViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8103D66A19805E9000AE5A27 /* LoggingInSpashViewController.xib */; };
 		81062FA3196B6C7E0057D230 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81062FA2196B6C7E0057D230 /* AppDelegate.swift */; };
@@ -17,6 +17,7 @@
 		8108DF94199BBBE70040B8E7 /* CreateParty.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8108DF93199BBBE70040B8E7 /* CreateParty.storyboard */; };
 		8108DF97199BBC900040B8E7 /* CreatePartyViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8108DF96199BBC900040B8E7 /* CreatePartyViewController.swift */; };
 		8108DF9A199BDD150040B8E7 /* CreatePartyStrictnessViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8108DF98199BDD150040B8E7 /* CreatePartyStrictnessViewController.swift */; };
+		812795091A49F20E0092D880 /* OSLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 812795081A49F20E0092D880 /* OSLabel.swift */; };
 		8130D7D21986B8BD00DD4B47 /* Party.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8130D7D11986B8BD00DD4B47 /* Party.swift */; };
 		8130D7D41986B8EB00DD4B47 /* LocalParty.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8130D7D31986B8EB00DD4B47 /* LocalParty.swift */; };
 		8130D7D6198714C900DD4B47 /* SoundCloudClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8130D7D5198714C900DD4B47 /* SoundCloudClient.swift */; };
@@ -89,7 +90,6 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		2B74F56C655F4716852A0B36 /* Pods-OneSound.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-OneSound.xcconfig"; path = "Pods/Pods-OneSound.xcconfig"; sourceTree = "<group>"; };
 		52F652D4E9264838BE2D4D5C /* libPods-OneSound.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-OneSound.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		8103D66919805E9000AE5A27 /* LoggingInSpashViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoggingInSpashViewController.swift; sourceTree = "<group>"; };
 		8103D66A19805E9000AE5A27 /* LoggingInSpashViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LoggingInSpashViewController.xib; sourceTree = "<group>"; };
@@ -104,6 +104,7 @@
 		8108DF93199BBBE70040B8E7 /* CreateParty.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = CreateParty.storyboard; sourceTree = "<group>"; };
 		8108DF96199BBC900040B8E7 /* CreatePartyViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CreatePartyViewController.swift; sourceTree = "<group>"; };
 		8108DF98199BDD150040B8E7 /* CreatePartyStrictnessViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CreatePartyStrictnessViewController.swift; sourceTree = "<group>"; };
+		812795081A49F20E0092D880 /* OSLabel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OSLabel.swift; sourceTree = "<group>"; };
 		8130D7D11986B8BD00DD4B47 /* Party.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Party.swift; sourceTree = "<group>"; };
 		8130D7D31986B8EB00DD4B47 /* LocalParty.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocalParty.swift; sourceTree = "<group>"; };
 		8130D7D5198714C900DD4B47 /* SoundCloudClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SoundCloudClient.swift; sourceTree = "<group>"; };
@@ -167,6 +168,8 @@
 		81C92CEF1A3CCFE900BE63D1 /* PartySearchResultCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PartySearchResultCell.xib; sourceTree = "<group>"; };
 		81DA8A66198A9FE00037EAD1 /* Song.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Song.swift; sourceTree = "<group>"; };
 		81EAC5F81998132000F02894 /* SongStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SongStore.swift; sourceTree = "<group>"; };
+		A1BC9E433771B4BEBA03DCD4 /* Pods-OneSound.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-OneSound.release.xcconfig"; path = "Pods/Target Support Files/Pods-OneSound/Pods-OneSound.release.xcconfig"; sourceTree = "<group>"; };
+		A676421E6983DD5A8B82753E /* Pods-OneSound.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-OneSound.debug.xcconfig"; path = "Pods/Target Support Files/Pods-OneSound/Pods-OneSound.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -177,7 +180,7 @@
 				81953482197860A7000B97A3 /* Security.framework in Frameworks */,
 				81751FF7196DEB1D00B9F9A9 /* UIKit.framework in Frameworks */,
 				81751FF5196DEB0F00B9F9A9 /* Foundation.framework in Frameworks */,
-				0C5C4B89C9B444C983D44940 /* libPods-OneSound.a in Frameworks */,
+				49218FBD0D84F21CB16F6804 /* libPods-OneSound.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -200,6 +203,7 @@
 				815831461975CD9B0011D3CE /* SwiftyJSON.swift */,
 				813FCE0619774ECF00419097 /* TestingPlayground.playground */,
 				81414DCD197DD1F800081132 /* EnumHackExtensions.swift */,
+				812795081A49F20E0092D880 /* OSLabel.swift */,
 			);
 			name = "Utility + Bridging Header";
 			sourceTree = "<group>";
@@ -258,8 +262,8 @@
 				81062F9F196B6C7E0057D230 /* OneSound */,
 				81062FB4196B6C7E0057D230 /* OneSoundTests */,
 				81062F9E196B6C7E0057D230 /* Products */,
-				2B74F56C655F4716852A0B36 /* Pods-OneSound.xcconfig */,
 				F0954DF62FE441E2A671CB82 /* Frameworks */,
+				E27DB2FE218F2C0F072301C0 /* Pods */,
 			);
 			sourceTree = "<group>";
 		};
@@ -448,6 +452,15 @@
 			name = "Add Song";
 			sourceTree = "<group>";
 		};
+		E27DB2FE218F2C0F072301C0 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				A676421E6983DD5A8B82753E /* Pods-OneSound.debug.xcconfig */,
+				A1BC9E433771B4BEBA03DCD4 /* Pods-OneSound.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
 		F0954DF62FE441E2A671CB82 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -610,7 +623,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Pods-OneSound-resources.sh\"\n";
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-OneSound/Pods-OneSound-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -632,6 +645,7 @@
 				8108DF9A199BDD150040B8E7 /* CreatePartyStrictnessViewController.swift in Sources */,
 				81BCC2BE199D65AC00A3500F /* SongSearchResultCell.swift in Sources */,
 				81527128196C5A8E00464068 /* User.swift in Sources */,
+				812795091A49F20E0092D880 /* OSLabel.swift in Sources */,
 				816FD445196F22B0003CCB1C /* SideNavigationViewController.swift in Sources */,
 				81BCC2B7199D2EA900A3500F /* AddSongViewController.swift in Sources */,
 				8158311F197477990011D3CE /* HistoryViewController.swift in Sources */,
@@ -764,7 +778,7 @@
 		};
 		81062FBC196B6C7E0057D230 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 2B74F56C655F4716852A0B36 /* Pods-OneSound.xcconfig */;
+			baseConfigurationReference = A676421E6983DD5A8B82753E /* Pods-OneSound.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
@@ -788,7 +802,7 @@
 		};
 		81062FBD196B6C7E0057D230 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 2B74F56C655F4716852A0B36 /* Pods-OneSound.xcconfig */;
+			baseConfigurationReference = A1BC9E433771B4BEBA03DCD4 /* Pods-OneSound.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;

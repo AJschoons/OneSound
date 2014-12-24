@@ -13,3 +13,4 @@
 #import "THLabel.h"
 #import "UIImageView+WebCache.h"
 #import "STKAudioPlayer.h"
+#import "FXLabel.h"

@@ -192,10 +192,22 @@ extension OSAPI {
         params.updateValue(providerToken, forKey: "token")
         
         let failureWithExtraAttempt: AFHTTPFailureBlock = { task, error in
-            if errorShouldBeHandledWithRepeatedRequest(task, error, attemptsLeft: extraAttempts) {
-                self.POSTUserProvider(userName, userColor: userColor, providerToken: providerToken, success: success, failure: failure, extraAttempts: (extraAttempts - 1))
-            } else {
-                failure!(task: task, error: error)
+            var shouldConsiderRepeatedRequest = true
+            
+            // Don't try extra attempts for a 401; will be handled
+            if let response = task.response as? NSHTTPURLResponse {
+                if response.statusCode == 401 {
+                    shouldConsiderRepeatedRequest = false
+                    failure!(task: task, error: error)
+                }
+            }
+            
+            if shouldConsiderRepeatedRequest {
+                if errorShouldBeHandledWithRepeatedRequest(task, error, attemptsLeft: extraAttempts) {
+                    self.POSTUserProvider(userName, userColor: userColor, providerToken: providerToken, success: success, failure: failure, extraAttempts: (extraAttempts - 1))
+                } else {
+                    failure!(task: task, error: error)
+                }
             }
         }
         
@@ -233,10 +245,22 @@ extension OSAPI {
         params.updateValue(providerToken, forKey: "token")
         
         let failureWithExtraAttempt: AFHTTPFailureBlock = { task, error in
-            if errorShouldBeHandledWithRepeatedRequest(task, error, attemptsLeft: extraAttempts) {
-                self.GETUserLoginProvider(providerToken, success: success, failure: failure, extraAttempts: (extraAttempts - 1))
-            } else {
-                failure!(task: task, error: error)
+            var shouldConsiderRepeatedRequest = true
+            
+            // Don't try extra attempts for a 401; will be handled
+            if let response = task.response as? NSHTTPURLResponse {
+                if response.statusCode == 401 {
+                    shouldConsiderRepeatedRequest = false
+                    failure!(task: task, error: error)
+                }
+            }
+            
+            if shouldConsiderRepeatedRequest {
+                if errorShouldBeHandledWithRepeatedRequest(task, error, attemptsLeft: extraAttempts) {
+                    self.GETUserLoginProvider(providerToken, success: success, failure: failure, extraAttempts: (extraAttempts - 1))
+                } else {
+                    failure!(task: task, error: error)
+                }
             }
         }
         
@@ -387,7 +411,7 @@ extension OSAPI {
         let failureWithExtraAttempt: AFHTTPFailureBlock = { task, error in
             var shouldConsiderRepeatedRequest = true
             
-            // Don't try extra attempts for a 404; will be handled by noCurrentSong404
+            // Don't try extra attempts for a 404; will be handled by noCurrentSong
             if let response = task.response as? NSHTTPURLResponse {
                 if response.statusCode == 404 {
                     shouldConsiderRepeatedRequest = false
@@ -412,10 +436,22 @@ extension OSAPI {
         let urlString = "party/\(pid)/nextsong"
         
         let failureWithExtraAttempt: AFHTTPFailureBlock = { task, error in
-            if errorShouldBeHandledWithRepeatedRequest(task, error, attemptsLeft: extraAttempts) {
-                self.GETNextSong(pid, success: success, failure: failure, extraAttempts: (extraAttempts - 1))
-            } else {
-                failure!(task: task, error: error)
+            var shouldConsiderRepeatedRequest = true
+            
+            // Don't try extra attempts for a 404; will be handled by noCurrentSong
+            if let response = task.response as? NSHTTPURLResponse {
+                if response.statusCode == 404 {
+                    shouldConsiderRepeatedRequest = false
+                    failure!(task: task, error: error)
+                }
+            }
+            
+            if shouldConsiderRepeatedRequest {
+                if errorShouldBeHandledWithRepeatedRequest(task, error, attemptsLeft: extraAttempts) {
+                    self.GETNextSong(pid, success: success, failure: failure, extraAttempts: (extraAttempts - 1))
+                } else {
+                    failure!(task: task, error: error)
+                }
             }
         }
         

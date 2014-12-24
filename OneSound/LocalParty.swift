@@ -641,7 +641,8 @@ extension LocalParty {
                     if completion != nil {
                         completion!(song: Song(json: responseJSON), user: User(json: responseJSON["user"]))
                     }
-                }, failure: { task, error in
+                },
+                failure: { task, error in
                     var shouldDoDefaultFailureBlock = true
                     
                     if let response = task.response as? NSHTTPURLResponse {
@@ -677,7 +678,8 @@ extension LocalParty {
                 if completion != nil {
                     completion!()
                 }
-            }, failure: { task, error in
+            },
+            failure: { task, error in
                 var shouldDoDefaultFailureBlock = true
                 
                 if let response = task.response as? NSHTTPURLResponse {
