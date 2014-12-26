@@ -24,6 +24,8 @@ class PartySongsViewController: UIViewController {
     
     var addSongButton: UIBarButtonItem!
     
+    var tableViewController: UITableViewController!
+    
     let heightForRows: CGFloat = 64.0
     
     func addSong() {
@@ -49,6 +51,18 @@ class PartySongsViewController: UIViewController {
         let nib = UINib(nibName: PartySongCellNibName, bundle: nil)
         songsTable.registerNib(nib, forCellReuseIdentifier: PartySongCellIndentifier)
         
+        // Setup the refresh control
+        // Added and placed inside a UITableViewController to remove "stutter" from having a
+        // UIViewController handle the refresh control
+        // http://stackoverflow.com/questions/12497940/uirefreshcontrol-without-uitableviewcontroller
+        tableViewController = UITableViewController(style: UITableViewStyle.Plain)
+        tableViewController.tableView = songsTable
+        addChildViewController(tableViewController)
+        tableViewController.refreshControl = UIRefreshControl()
+        tableViewController.refreshControl!.backgroundColor = UIColor.blue()
+        tableViewController.refreshControl!.tintColor = UIColor.white()
+        tableViewController.refreshControl!.addTarget(self, action: "refresh", forControlEvents: UIControlEvents.ValueChanged)
+        
         hideMessages()
     }
     
@@ -58,18 +72,10 @@ class PartySongsViewController: UIViewController {
         refresh()
     }
     
-    func refreshAfterDelay() {
-        println("should be refreshing after delay")
-        NSTimer.scheduledTimerWithTimeInterval(2, target: self, selector: "refresh", userInfo: nil, repeats: false)
-    }
-    
     func reloadTableData() {
         songsTable.reloadData()
     }
     
-    // Copy pasta'd from Profile view controller to have the same kind of refresh logic
-    // Keeping the commented out things for now to show what kind of changes were made for that
-    // TODO: update the refresh to remove comments irrelevant to this controller when finished w/ it
     func refresh() {
         println("refreshing PartySongViewController")
         
@@ -84,29 +90,28 @@ class PartySongsViewController: UIViewController {
                             dispatchAsyncToMainQueue(action: {
                                 self.songsTable.reloadData()
                                 self.loadImagesForOnScreenRows()
+                                self.tableViewController.refreshControl!.endRefreshing()
                             })
                         })
                     } else {
                         showMessages("Well, this is awkward", detailLine: "We're not really sure what happened, try refreshing the party!")
                         hideSongsTable(true)
+                        tableViewController.refreshControl!.endRefreshing()
                     }
                 } else {
                     showMessages("Not member of a party", detailLine: "Become a party member by joining or creating a party")
                     hideSongsTable(true)
+                    tableViewController.refreshControl!.endRefreshing()
                 }
             } else {
-                //setUserInfoHidden(true)
-                //setStoriesTableToHidden(true)
                 showMessages("Not signed into an account", detailLine: "Please connect to the internet and restart OneSound")
                 hideSongsTable(true)
-                //disableButtons()
+                tableViewController.refreshControl!.endRefreshing()
             }
         } else {
-            //setUserInfoHidden(true)
-            //setStoriesTableToHidden(true)
             showMessages("Not connected to the internet", detailLine: "Please connect to the internet to use OneSound")
             hideSongsTable(true)
-            //disableButtons()
+            tableViewController.refreshControl!.endRefreshing()
         }
     }
     
@@ -295,7 +300,7 @@ extension PartySongsViewController: UITableViewDataSource {
 }
 
 extension PartySongsViewController: UITableViewDelegate {
-    func tableView(tableView: UITableView!, heightForRowAtIndexPath indexPath: NSIndexPath!) -> CGFloat {
+    func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
         return heightForRows
     }
 }
@@ -304,7 +309,7 @@ extension PartySongsViewController: UIScrollViewDelegate {
     // Load the images for all onscreen rows when scrolling is finished
     
     // Called on finger up if the user dragged. Decelerate is true if it will continue moving afterwards
-    func scrollViewDidEndDragging(scrollView: UIScrollView!, willDecelerate decelerate: Bool) {
+    func scrollViewDidEndDragging(scrollView: UIScrollView, willDecelerate decelerate: Bool) {
         // Load the images for the cells if it won't be moving afterwards
         if !decelerate {
             loadImagesForOnScreenRows()
@@ -312,7 +317,7 @@ extension PartySongsViewController: UIScrollViewDelegate {
     }
     
     // Called when the scroll view grinds to a halt
-    func scrollViewDidEndDecelerating(scrollView: UIScrollView!) {
+    func scrollViewDidEndDecelerating(scrollView: UIScrollView) {
         loadImagesForOnScreenRows()
     }
 }

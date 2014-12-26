@@ -20,6 +20,8 @@ class PartyMembersViewController: UIViewController {
     
     @IBOutlet weak var membersTable: UITableView!
     
+    var tableViewController: UITableViewController!
+    
     override func viewDidLoad() {
         // Make view respond to network reachability changes
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "refresh", name: AFNetworkingReachabilityDidChangeNotification, object: nil)
@@ -31,6 +33,18 @@ class PartyMembersViewController: UIViewController {
         
         let nib = UINib(nibName: PartyMemberCellNibName, bundle: nil)
         membersTable.registerNib(nib, forCellReuseIdentifier: PartyMemberCellIdentifier)
+        
+        // Setup the refresh control
+        // Added and placed inside a UITableViewController to remove "stutter" from having a
+        // UIViewController handle the refresh control
+        // http://stackoverflow.com/questions/12497940/uirefreshcontrol-without-uitableviewcontroller
+        tableViewController = UITableViewController(style: UITableViewStyle.Plain)
+        tableViewController.tableView = membersTable
+        addChildViewController(tableViewController)
+        tableViewController.refreshControl = UIRefreshControl()
+        tableViewController.refreshControl!.backgroundColor = UIColor.blue()
+        tableViewController.refreshControl!.tintColor = UIColor.white()
+        tableViewController.refreshControl!.addTarget(self, action: "refresh", forControlEvents: UIControlEvents.ValueChanged)
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -43,9 +57,6 @@ class PartyMembersViewController: UIViewController {
         membersTable.reloadData()
     }
     
-    // Copy pasta'd from Profile view controller to have the same kind of refresh logic
-    // Keeping the commented out things for now to show what kind of changes were made for that
-    // TODO: update the refresh to remove comments irrelevant to this controller when finished w/ it
     func refresh() {
         println("refreshing PartyMembersViewController")
         
@@ -61,23 +72,28 @@ class PartyMembersViewController: UIViewController {
                             completion: {
                                 self.membersTable.reloadData()
                                 self.loadImagesForOnScreenRows()
+                                self.tableViewController.refreshControl!.endRefreshing()
                             }
                         )
                     } else {
                         showMessages("Well, this is awkward", detailLine: "We're not really sure what happened, try refreshing the party!")
                         hideMembersTable(true)
+                        tableViewController.refreshControl!.endRefreshing()
                     }
                 } else {
                     showMessages("Not member of a party", detailLine: "Become a party member by joining or creating a party")
                     hideMembersTable(true)
+                    tableViewController.refreshControl!.endRefreshing()
                 }
             } else {
                 showMessages("Not signed into an account", detailLine: "Please connect to the internet and restart OneSound")
                 hideMembersTable(true)
+                tableViewController.refreshControl!.endRefreshing()
             }
         } else {
             showMessages("Not connected to the internet", detailLine: "Please connect to the internet to use OneSound")
             hideMembersTable(true)
+            tableViewController.refreshControl!.endRefreshing()
         }
     }
     

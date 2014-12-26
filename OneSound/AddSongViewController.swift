@@ -25,6 +25,9 @@ class AddSongViewController: UIViewController {
     var noSearchResults = false
     
     func search() {
+        // Hide the keyboard
+        songSearchTextField.resignFirstResponder()
+        
         // Empty the table, reload to show its empty, start the animation
         noSearchResults = false
         searchResultsArray = []
@@ -209,7 +212,6 @@ extension AddSongViewController: UITableViewDelegate {
 extension AddSongViewController: UITextFieldDelegate {
     func textFieldShouldReturn(textField: UITextField!) -> Bool {
         // Hide keyboard when user presses "Search", initiate the search
-        songSearchTextField.resignFirstResponder()
         search()
         return true
     }
