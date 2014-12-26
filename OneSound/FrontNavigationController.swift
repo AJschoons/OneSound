@@ -8,9 +8,8 @@
 
 import UIKit
 
-@objc protocol FrontNavigationControllerWithOverlay {
-    
-    func setOverlayAlpha(CGFloat)
+@objc protocol SideMenuNavigableViewControllerWithKeyboard {
+    func hideKeyboard()
 }
 
 class FrontNavigationController: UINavigationController {
@@ -32,12 +31,15 @@ class FrontNavigationController: UINavigationController {
     
     override func viewWillAppear(animated: Bool) {
     }
-}
-
-extension FrontNavigationController: FrontNavigationControllerWithOverlay {
     
     func setOverlayAlpha(newAlpha: CGFloat) {
         overlay.alpha = newAlpha
+    }
+    
+    func hideKeyboardOfVisibleViewController() {
+        if let vc = visibleViewController as? SideMenuNavigableViewControllerWithKeyboard {
+            vc.hideKeyboard()
+        }
     }
 }
 

@@ -354,15 +354,16 @@ extension AppDelegate {
 
 extension AppDelegate: SWRevealViewControllerDelegate {
     // MARK: SWRevealViewController Delegate methods
-    // Customizes fading of whatever Front Navigation Controller is conforming to FrontNavigationControllerWithOverlay protocol
+    // Customizes fading of OSFrontNavigationController
     
     func revealController(revealController: SWRevealViewController, animateToPosition position: FrontViewPosition) {
         if position == FrontViewPosition.Right {
             // If will move to show side nav
             printlnC(pL, pG, "animate side nav to VISIBLE")
             
-            if let fnc = revealController.frontViewController as? FrontNavigationControllerWithOverlay {
+            if let fnc = revealController.frontViewController as? FrontNavigationController {
                 //UIApplication.sharedApplication().setStatusBarHidden(true, withAnimation: UIStatusBarAnimation.Slide)
+                fnc.hideKeyboardOfVisibleViewController()
                 UIView.animateWithDuration(revealController.toggleAnimationDuration, animations: {
                     fnc.setOverlayAlpha(0.5)
                     })
@@ -370,7 +371,7 @@ extension AppDelegate: SWRevealViewControllerDelegate {
         } else if position == FrontViewPosition.Left {
             // If will move to hide side nav
             printlnC(pL, pG, "animate side nav to HIDDEN")
-            if let fnc = revealController.frontViewController as? FrontNavigationControllerWithOverlay {
+            if let fnc = revealController.frontViewController as? FrontNavigationController {
                 //UIApplication.sharedApplication().setStatusBarHidden(false, withAnimation: UIStatusBarAnimation.Slide)
                 UIView.animateWithDuration(revealController.toggleAnimationDuration, animations: {
                         fnc.setOverlayAlpha(0.0)
@@ -380,7 +381,7 @@ extension AppDelegate: SWRevealViewControllerDelegate {
     }
     
     func revealController(revealController: SWRevealViewController, panGestureMovedToLocation location: CGFloat, progress: CGFloat) {
-        if let fnc = revealController.frontViewController as? FrontNavigationControllerWithOverlay {
+        if let fnc = revealController.frontViewController as? FrontNavigationController {
             UIView.animateWithDuration(0.03, animations: {
                 let progressDouble = Double(progress)
                 fnc.setOverlayAlpha(CGFloat(customExponentialEaseOut(progressDouble) / 2.0))
@@ -393,6 +394,10 @@ extension AppDelegate: SWRevealViewControllerDelegate {
             // If pan began with side nav hidden, set the most recent pan start to FrontViewPositionLeft
             printlnC(pL, pG, "pan began with side nav HIDDEN")
             panGestureStartedFrom = FrontViewPosition.Left
+            
+            if let fnc = revealController.frontViewController as? FrontNavigationController {
+                fnc.hideKeyboardOfVisibleViewController()
+            }
             
             let pgVelocity = revealController.panGestureRecognizer().velocityInView(revealController.frontViewController.view)
             if pgVelocity.x > 0 {
@@ -418,6 +423,10 @@ extension AppDelegate: SWRevealViewControllerDelegate {
                 // If pan ended to the right of critical width point, make side nav VISIBLE
                 printlnC(pL, pG, "    pan ended over 1/\(criticalWidthDenom) of the way to side nav VISIBLE, animate side nav to VISIBLE")
                 revealController.setFrontViewPosition(FrontViewPosition.Right, animated: true)
+                
+                if let fnc = revealController.frontViewController as? FrontNavigationController {
+                    fnc.hideKeyboardOfVisibleViewController()
+                }
             } else {
                 // If pan ended to the left of critical width point, make side nav HIDDEN
                 printlnC(pL, pG, "    pan didn't reach 1/\(criticalWidthDenom) of the way to side nav VISIBLE, animate side nav to HIDDEN")

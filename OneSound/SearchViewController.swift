@@ -324,5 +324,9 @@ extension SearchViewController: UITextFieldDelegate {
     }
 }
 
-
+extension SearchViewController: SideMenuNavigableViewControllerWithKeyboard {
+    func hideKeyboard() {
+        partySearchTextField.resignFirstResponder()
+    }
+}
 

@@ -14,6 +14,7 @@ protocol CreatePartyStrictnessViewControllerDelegate {
 
 class CreatePartyStrictnessViewController: UITableViewController {
     
+    let cellLabelFontSize = 16
     let defaultCellReuseIdentifier = "defaultCell"
     let strictnessOptions: [PartyStrictnessOption] = [.Off, .Low, .Default, .Strict]
     var selectedStrictness: PartyStrictnessOption!
@@ -27,7 +28,7 @@ class CreatePartyStrictnessViewController: UITableViewController {
     }
     
     required init(coder aDecoder: NSCoder) {
-        // TODO: find a way to actually save the delegate in color; simply forced to do this for now so did this garbage work
+        // Not actually used for anything
         delegate = nil
         selectedStrictness = .Default
         super.init(coder: aDecoder)
@@ -38,18 +39,14 @@ class CreatePartyStrictnessViewController: UITableViewController {
         
         tableView = UITableView(frame: CGRectZero, style: UITableViewStyle.Grouped)
         
-        navigationItem.title = "Choose Strictness"
+        navigationItem.title = "Strictness"
         
         tableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: defaultCellReuseIdentifier)
         
         // Creating an (empty) footer stops table from showing empty cells
         tableView.tableFooterView = UIView(frame: CGRectZero)
         
-        if UIScreen.mainScreen().bounds.height > 500 {
-            tableView.scrollEnabled = false
-        } else {
-            tableView.scrollEnabled = true
-        }
+        tableView.scrollEnabled = true
         
         selectedIndex = find(strictnessOptions, selectedStrictness)
     }
@@ -84,6 +81,7 @@ extension CreatePartyStrictnessViewController: UITableViewDataSource {
         let cell = tableView.dequeueReusableCellWithIdentifier(defaultCellReuseIdentifier, forIndexPath: indexPath) as UITableViewCell
         
         cell.textLabel!.text = strictnessOptions[indexPath.section].PartyStrictnessOptionToString()
+        cell.textLabel!.font = UIFont.systemFontOfSize(CGFloat(cellLabelFontSize))
         
         // Sets check mark on cell with the currently selected color option
         if indexPath.section == selectedIndex {
