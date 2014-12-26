@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6205" systemVersion="14A283o" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6254" systemVersion="14B25" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6198"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6247"/>
     </dependencies>
     <scenes>
         <!--Create Party View Controller-->
@@ -15,15 +15,15 @@
                         <sections>
                             <tableViewSection headerTitle="Name" footerTitle="Must have 3-20 characters. Only a-z, A-Z, 0-9, and spaces allowed" id="Vn9-pP-3R7">
                                 <cells>
-                                    <tableViewCell contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" id="GB8-5q-KRt">
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" rowHeight="44" id="GB8-5q-KRt">
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="GB8-5q-KRt" id="iuT-nK-q8e">
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Enter name" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="Euh-aA-l7l">
-                                                    <rect key="frame" x="15" y="11" width="570" height="21"/>
+                                                    <rect key="frame" x="15" y="10.5" width="570" height="22"/>
                                                     <constraints>
-                                                        <constraint firstAttribute="height" constant="21" id="rUP-cJ-DAh"/>
+                                                        <constraint firstAttribute="height" constant="22" id="rUP-cJ-DAh"/>
                                                     </constraints>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                     <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" keyboardType="alphabet" returnKeyType="done"/>
@@ -41,10 +41,9 @@
                                             <constraints>
                                                 <constraint firstItem="Euh-aA-l7l" firstAttribute="leading" secondItem="iuT-nK-q8e" secondAttribute="leading" constant="15" id="4O7-mE-YFc"/>
                                                 <constraint firstAttribute="trailing" secondItem="Euh-aA-l7l" secondAttribute="trailing" constant="15" id="KPi-vL-NzW"/>
-                                                <constraint firstItem="Euh-aA-l7l" firstAttribute="top" secondItem="iuT-nK-q8e" secondAttribute="top" constant="11.5" id="V4i-Xi-GVh"/>
                                                 <constraint firstAttribute="trailing" secondItem="R2V-DW-amu" secondAttribute="trailing" constant="15" id="XSL-CG-78u"/>
-                                                <constraint firstAttribute="centerY" secondItem="Euh-aA-l7l" secondAttribute="centerY" constant="-0.25" id="jMA-d8-POL"/>
-                                                <constraint firstItem="R2V-DW-amu" firstAttribute="centerY" secondItem="Euh-aA-l7l" secondAttribute="centerY" constant="0.5" id="zcm-uA-94Q"/>
+                                                <constraint firstAttribute="centerY" secondItem="Euh-aA-l7l" secondAttribute="centerY" id="jMA-d8-POL"/>
+                                                <constraint firstItem="R2V-DW-amu" firstAttribute="centerY" secondItem="Euh-aA-l7l" secondAttribute="centerY" id="zcm-uA-94Q"/>
                                             </constraints>
                                         </tableViewCellContentView>
                                     </tableViewCell>

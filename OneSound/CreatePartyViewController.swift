@@ -235,6 +235,10 @@ extension CreatePartyViewController: UITableViewDelegate {
             return
         }
     }
+    
+    override func tableView(tableView: UITableView, shouldHighlightRowAtIndexPath indexPath: NSIndexPath) -> Bool {
+        return indexPath.section == 2 // Only highlight the party strictness cell
+    }
 }
 
 extension CreatePartyViewController: UITextFieldDelegate {
