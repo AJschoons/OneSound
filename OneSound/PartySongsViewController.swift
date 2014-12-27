@@ -68,7 +68,7 @@ class PartySongsViewController: UIViewController {
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
-        navigationController!.visibleViewController.title = "Playlist"
+        parentViewController!.navigationItem.title = "Playlist"
         refresh()
     }
     

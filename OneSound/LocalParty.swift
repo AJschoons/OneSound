@@ -718,7 +718,7 @@ extension LocalParty {
     }
     
     func joinParty(pid: Int, JSONUpdateCompletion: completionClosure? = nil, failureAddOn: completionClosure? = nil) {
-        // Makes it so none of the old info stays if you join a party from an old one
+        // Makes it so none of the old info stays when joining a party from an old one
         resetAllPartyInfo()
         
         if pid != 0 {

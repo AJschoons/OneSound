@@ -114,7 +114,7 @@ class PartyMainViewController: UIViewController {
         LocalParty.sharedParty.leaveParty(
             respondToChangeAttempt: { partyWasLeft in
                 if partyWasLeft {
-                    self.navigationController!.visibleViewController.title = "Party"
+                    self.parentViewController!.navigationItem.title = "Party"
                     self.refresh()
                 } else {
                     let alert = UIAlertView(title: "Could not leave party", message: "Please try again, or just create a new one", delegate: nil, cancelButtonTitle: "Ok")
@@ -175,20 +175,16 @@ class PartyMainViewController: UIViewController {
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
-        prepareViewToAppear()
-    }
-    
-    func prepareViewToAppear() {
         let party = LocalParty.sharedParty
         if party.setup == true && party.name != nil {
-            navigationController!.visibleViewController.title = LocalParty.sharedParty.name
+            parentViewController!.navigationItem.title = LocalParty.sharedParty.name
             
             if !party.userIsHost {
                 partyRefreshTimer = NSTimer.scheduledTimerWithTimeInterval(10, target: self, selector: "refresh", userInfo: nil, repeats: true)
             }
         }
         else {
-            navigationController!.visibleViewController.title = "Party"
+            parentViewController!.navigationItem.title = "Party"
         }
         
         setRightBarButtonWhenSelected()
@@ -653,7 +649,7 @@ extension PartyMainViewController: LocalPartyDelegate {
 
 extension PartyMainViewController: CreatePartyViewControllerDelegate {
     func CreatePartyViewControllerDone() {
-        prepareViewToAppear()
+        viewWillAppear(true)
     }
 }
 

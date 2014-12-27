@@ -49,7 +49,7 @@ class PartyMembersViewController: UIViewController {
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
-        navigationController!.visibleViewController.title = "Members"
+        parentViewController!.navigationItem.title = "Members"
         refresh()
     }
     
