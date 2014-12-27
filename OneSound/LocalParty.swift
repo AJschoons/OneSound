@@ -21,6 +21,7 @@ protocol LocalPartyDelegate {
     func setPartySongUserInfo(user: User?, thumbsUp: Bool, thumbsDown: Bool)
     func setPartySongImage(# songToPlay: Bool, artworkToShow: Bool, loadingSong: Bool, image: UIImage?)
     func clearAllSongInfo()
+    func setPartyMainVCRightBarButton(# create: Bool, leave: Bool, settings: Bool)
 }
 
 enum PartyStrictnessOption: Int {
@@ -172,6 +173,7 @@ class LocalParty: NSObject {
                     // Party was nil, not member of a party
                     dispatchAsyncToMainQueue(action: {
                         self.delegate.showMessages("Not member of a party", detailLine: "Become a party member by joining or creating a party")
+                        self.delegate.setPartyMainVCRightBarButton(create: true, leave: false, settings: false)
                         self.delegate.setPartyInfoHidden(true)
                     })
                 }
@@ -179,6 +181,7 @@ class LocalParty: NSObject {
                 // User not setup, not signed into full or guest account
                 dispatchAsyncToMainQueue(action: {
                     self.delegate.showMessages("Not signed into an account", detailLine: "Please connect to the internet and restart OneSound")
+                    self.delegate.setPartyMainVCRightBarButton(create: false, leave: false, settings: false)
                     self.delegate.setPartyInfoHidden(true)
                 })
             }
@@ -186,12 +189,17 @@ class LocalParty: NSObject {
             // Not connected to the internet
             dispatchAsyncToMainQueue(action: {
                 self.delegate.showMessages("Not connected to the internet", detailLine: "Please connect to the internet to use OneSound")
+                self.delegate.setPartyMainVCRightBarButton(create: false, leave: false, settings: false)
                 self.delegate.setPartyInfoHidden(true)
             })
         }
     }
     
     func refreshForHost() {
+        dispatchAsyncToMainQueue(action: {
+            self.delegate.setPartyMainVCRightBarButton(create: false, leave: false, settings: true)
+        })
+        
         if !audioPlayerHasAudioToPlay && !audioIsDownloading && !recentlyGotNextSong {
             dispatchAsyncToMainQueue(action: {
                 self.delegate.setPartySongImage(songToPlay: false, artworkToShow: false, loadingSong: false, image: nil)
@@ -207,6 +215,10 @@ class LocalParty: NSObject {
     }
     
     func refreshForNonHost() {
+        dispatchAsyncToMainQueue(action: {
+            self.delegate.setPartyMainVCRightBarButton(create: false, leave: true, settings: false)
+        })
+        
         updateCurrentSongAndUserThenDelegate()
     }
     

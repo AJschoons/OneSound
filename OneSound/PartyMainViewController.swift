@@ -56,6 +56,11 @@ class PartyMainViewController: UIViewController {
     @IBOutlet weak var userSongIcon: UIImageView!
     @IBOutlet weak var userHotnessIcon: UIImageView!
     
+    var createPartyButton: UIBarButtonItem!
+    var leavePartyButton: UIBarButtonItem!
+    var partySettingsButton: UIBarButtonItem!
+    var rightBarButton: UIBarButtonItem?
+    
     var partyRefreshTimer: NSTimer?
     
     @IBAction func tallThumbsDownPressed(sender: AnyObject) {
@@ -74,8 +79,6 @@ class PartyMainViewController: UIViewController {
         handleThumbsUpPress(sender)
     }
     
-    
-    
     @IBAction func play(sender: AnyObject) {
         LocalParty.sharedParty.playSong()
     }
@@ -88,6 +91,18 @@ class PartyMainViewController: UIViewController {
         let addSongViewController = AddSongViewController(nibName: AddSongViewControllerNibName, bundle: nil)
         let navC = UINavigationController(rootViewController: addSongViewController)
         presentViewController(navC, animated: true, completion: nil)
+    }
+    
+    func createParty() {
+    
+    }
+    
+    func leaveParty() {
+    
+    }
+    
+    func changePartySettings() {
+    
     }
     
     
@@ -124,6 +139,11 @@ class PartyMainViewController: UIViewController {
         
         tallUserImage.layer.cornerRadius = 5.0
         tallUserImage.image = defaultUserImageForMainParty
+        
+        createPartyButton = UIBarButtonItem(title: "Create", style: UIBarButtonItemStyle.Plain, target: self, action: "createParty")
+        leavePartyButton = UIBarButtonItem(title: "Leave", style: UIBarButtonItemStyle.Plain, target: self, action: "leaveParty")
+        partySettingsButton = UIBarButtonItem(title: "Settings", style: UIBarButtonItemStyle.Plain, target: self, action: "changePartySettings")
+        rightBarButton = createPartyButton
 
         hideMessages()
         setPartyInfoHidden(true)
@@ -143,11 +163,27 @@ class PartyMainViewController: UIViewController {
             navigationController!.visibleViewController.title = "Party"
         }
         
+        setRightBarButtonWhenSelected()
         refresh()
     }
     
     override func viewWillDisappear(animated: Bool) {
         if partyRefreshTimer != nil { partyRefreshTimer!.invalidate() }
+    }
+    
+    func setPartyMainVCRightBarButton(# create: Bool, leave: Bool, settings: Bool) {
+        if create { rightBarButton = createPartyButton }
+        else if leave { rightBarButton = leavePartyButton }
+        else if settings { rightBarButton = partySettingsButton }
+        else { rightBarButton = nil }
+        setRightBarButtonWhenSelected()
+    }
+    
+    // When this is the selected tab of the tab bar controller, set the right nav button to rightBarButton
+    func setRightBarButtonWhenSelected() {
+        if let ptbc = getPartyTabBarController() {
+            ptbc.updateRightBarButtonForMainParty()
+        }
     }
     
     func handleThumbsUpPress(button: AnyObject) {

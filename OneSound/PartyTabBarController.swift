@@ -63,6 +63,17 @@ class PartyTabBarController: UITabBarController {
             println("ERROR: selectedIndex for PartyTabBarController was out of range 0-2")
         }
     }
+    
+    // If the PartyMainViewController is the selected tab, change the right bar button to its rightBarButton
+    func updateRightBarButtonForMainParty() {
+        if let pMainVC = selectedViewController as? PartyMainViewController {
+            navigationItem.rightBarButtonItem = pMainVC.rightBarButton
+            if pMainVC.rightBarButton == pMainVC.createPartyButton {
+                // Disabled when guest
+                navigationItem.rightBarButtonItem!.enabled = !LocalUser.sharedUser.guest
+            }
+        }
+    }
 }
 
 extension PartyTabBarController: UITabBarControllerDelegate {
@@ -71,7 +82,7 @@ extension PartyTabBarController: UITabBarControllerDelegate {
             if let pMembVC = viewController as? PartyMembersViewController {
                 ptbc.navigationItem.rightBarButtonItem = nil
             } else if let pMainVC = viewController as? PartyMainViewController {
-                ptbc.navigationItem.rightBarButtonItem = nil
+                ptbc.navigationItem.rightBarButtonItem = pMainVC.rightBarButton
             } else if let pSongVC = viewController as? PartySongsViewController {
                 ptbc.navigationItem.rightBarButtonItem = pSongVC.addSongButton
             } else {
