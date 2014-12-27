@@ -282,6 +282,22 @@ extension OSAPI {
         
         GET(urlString, parameters: nil, success: success, failure: failureWithExtraAttempt)
     }
+    
+    // Delete a user's party (leave it)
+    func DELETEUserParty(uid: Int, success: AFHTTPSuccessBlock, failure: AFHTTPFailureBlock, extraAttempts: Int = defaultEA) {
+        
+        let urlString = "\(baseURLString)user/\(uid)/party"
+        
+        let failureWithExtraAttempt: AFHTTPFailureBlock = { task, error in
+            if errorShouldBeHandledWithRepeatedRequest(task, error, attemptsLeft: extraAttempts) {
+                self.DELETEUserParty(uid, success: success, failure: failure, extraAttempts: (extraAttempts - 1))
+            } else {
+                failure!(task: task, error: error)
+            }
+        }
+        
+        DELETE(urlString, parameters: nil, success: success, failure: failureWithExtraAttempt)
+    }
 }
 
 extension OSAPI {

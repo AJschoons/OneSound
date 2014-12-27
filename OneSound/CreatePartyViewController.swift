@@ -24,12 +24,6 @@ class CreatePartyViewController: UITableViewController {
     @IBOutlet weak var strictnessCell: UITableViewCell!
     @IBOutlet weak var strictnessCellStrictnessLabel: UILabel!
     
-    // TODO: put the party's variables here for when settings are changed
-    //var userID: Int!
-    //var userAPIToken: String!
-    //var userFacebookUID: String!
-    //var userFacebookToken: String!
-    
     var strictness: PartyStrictnessOption = .Default
     var partyAlreadyExists = false // TODO: figure out if partyAlreadyExists is actually ever used/needed
     
@@ -103,7 +97,8 @@ class CreatePartyViewController: UITableViewController {
         
         if !partyAlreadyExists {
             println("Creating NEW party")
-            LocalParty.sharedParty.createNewParty(nameCellTextField.text, partyPrivacy: privacyCellSwitch.on, partyStrictness: strictness.rawValue, respondToChangeAttempt: { partyWasCreated in
+            LocalParty.sharedParty.createNewParty(nameCellTextField.text, partyPrivacy: privacyCellSwitch.on, partyStrictness: strictness.rawValue,
+                respondToChangeAttempt: { partyWasCreated in
                     if partyWasCreated {
                         self.tableView.endEditing(true)
                         self.dismissViewControllerAnimated(true, completion: nil)
@@ -112,6 +107,10 @@ class CreatePartyViewController: UITableViewController {
                             let delegate = UIApplication.sharedApplication().delegate as AppDelegate
                             let snvc = delegate.revealViewController!.rearViewController as SideNavigationViewController
                             snvc.programaticallySelectRow(1)
+                        }
+                        
+                        if self.delegate != nil {
+                            self.delegate!.CreatePartyViewControllerDone()
                         }
                     } else {
                         let alert = UIAlertView(title: "Could not create party", message: "Please try a new name, changing the settings, or restarting the app", delegate: nil, cancelButtonTitle: "Ok")

@@ -94,15 +94,39 @@ class PartyMainViewController: UIViewController {
     }
     
     func createParty() {
-    
+        if LocalUser.sharedUser.guest == false {
+            let createPartyStoryboard = UIStoryboard(name: "CreateParty", bundle: nil)
+            let createPartyViewController = createPartyStoryboard.instantiateViewControllerWithIdentifier("CreatePartyViewController") as CreatePartyViewController
+            createPartyViewController.partyAlreadyExists = false
+            createPartyViewController.delegate = self
+
+            let navC = UINavigationController(rootViewController: createPartyViewController)
+            if let fnc = getFrontNavigationController() {
+                fnc.presentViewController(navC, animated: true, completion: nil)
+            }
+        } else {
+            let alert = UIAlertView(title: "Guests cannot create parties", message: "Please become a full account by logging in with Facebook, then try again", delegate: nil, cancelButtonTitle: "Ok")
+            alert.show()
+        }
     }
     
     func leaveParty() {
-    
+        LocalParty.sharedParty.leaveParty(
+            respondToChangeAttempt: { partyWasLeft in
+                if partyWasLeft {
+                    self.navigationController!.visibleViewController.title = "Party"
+                    self.refresh()
+                } else {
+                    let alert = UIAlertView(title: "Could not leave party", message: "Please try again, or just create a new one", delegate: nil, cancelButtonTitle: "Ok")
+                    alert.show()
+                }
+            }
+        )
     }
     
     func changePartySettings() {
-    
+        let alert = UIAlertView(title: "nah", message: "change party settings", delegate: nil, cancelButtonTitle: "Ok")
+        alert.show()
     }
     
     
@@ -151,6 +175,10 @@ class PartyMainViewController: UIViewController {
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
+        prepareViewToAppear()
+    }
+    
+    func prepareViewToAppear() {
         let party = LocalParty.sharedParty
         if party.setup == true && party.name != nil {
             navigationController!.visibleViewController.title = LocalParty.sharedParty.name
@@ -621,6 +649,12 @@ class PartyMainViewController: UIViewController {
 
 extension PartyMainViewController: LocalPartyDelegate {
     
+}
+
+extension PartyMainViewController: CreatePartyViewControllerDelegate {
+    func CreatePartyViewControllerDone() {
+        prepareViewToAppear()
+    }
 }
 
 /*

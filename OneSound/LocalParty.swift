@@ -605,6 +605,7 @@ class LocalParty: NSObject {
         
         clearSongInfo()
         
+        LocalUser.sharedUser.party = nil
         partyID = 0
         isPrivate = false
         hostUserID = 0
@@ -780,12 +781,33 @@ extension LocalParty {
                     let pid = responseJSON["pid"].integer
                     self.joinParty(pid!,
                         JSONUpdateCompletion: {
-                            respondToChangeAttempt(true)
                             LocalUser.sharedUser.party = pid
+                            respondToChangeAttempt(true)
                         }, failureAddOn: {
                             respondToChangeAttempt(false)
                         }
                     )
+                } else {
+                    // Server didn't accept request for new party with supplied information
+                    respondToChangeAttempt(false)
+                }
+            }, failure: defaultAFHTTPFailureBlock
+        )
+    }
+    
+    // Leaves a party. If successful, clears the party info. respondToChangeAttempt = true if left party, else false
+    func leaveParty(# respondToChangeAttempt: (Bool) -> ()) {
+        let user = LocalUser.sharedUser
+        OSAPI.sharedClient.DELETEUserParty(user.id,
+            success: { data, responseObject in
+                let responseJSON = JSONValue(responseObject)
+                println(responseJSON)
+                let status = responseJSON["status"].string
+                
+                if status == "success" {
+                    // Clear all party information
+                    self.resetAllPartyInfo()
+                    respondToChangeAttempt(true)
                 } else {
                     // Server didn't accept request for new party with supplied information
                     respondToChangeAttempt(false)

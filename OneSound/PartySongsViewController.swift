@@ -84,6 +84,7 @@ class PartySongsViewController: UIViewController {
                 if LocalUser.sharedUser.party != nil && LocalUser.sharedUser.party != 0 {
                     if LocalParty.sharedParty.setup == true {
                         // Actually show songs stuff
+                        addSongButton.enabled = true
                         hideMessages()
                         hideSongsTable(false)
                         LocalParty.sharedParty.updatePartySongs(LocalParty.sharedParty.partyID!, completion: {
@@ -95,21 +96,25 @@ class PartySongsViewController: UIViewController {
                         })
                     } else {
                         showMessages("Well, this is awkward", detailLine: "We're not really sure what happened, try refreshing the party!")
+                        addSongButton.enabled = false
                         hideSongsTable(true)
                         tableViewController.refreshControl!.endRefreshing()
                     }
                 } else {
                     showMessages("Not member of a party", detailLine: "Become a party member by joining or creating a party")
+                    addSongButton.enabled = false
                     hideSongsTable(true)
                     tableViewController.refreshControl!.endRefreshing()
                 }
             } else {
                 showMessages("Not signed into an account", detailLine: "Please connect to the internet and restart OneSound")
+                addSongButton.enabled = false
                 hideSongsTable(true)
                 tableViewController.refreshControl!.endRefreshing()
             }
         } else {
             showMessages("Not connected to the internet", detailLine: "Please connect to the internet to use OneSound")
+            addSongButton.enabled = false
             hideSongsTable(true)
             tableViewController.refreshControl!.endRefreshing()
         }
