@@ -798,18 +798,17 @@ extension LocalParty {
     func updatePartyInfo(name: String, privacy: Bool, strictness: Int, respondToChangeAttempt: (Bool) -> (), failure: AFHTTPFailureBlock = defaultAFHTTPFailureBlockForSigningIn) {
         let user = LocalUser.sharedUser
         
-        OSAPI.sharedClient.PUTParty(name, privacy: privacy, strictness: strictness,
+        OSAPI.sharedClient.PUTParty(partyID, name: name, privacy: privacy, strictness: strictness,
             success: { data, responseObject in
                 let responseJSON = JSONValue(responseObject)
                 println(responseJSON)
                 let status = responseJSON["status"].string
                 
+                // TODO: probably don't need to join party after updating
                 if status == "success" {
-                    // Update new party information
-                    let pid = responseJSON["pid"].integer
-                    self.joinParty(pid!,
+                    // Update/get new party information
+                    self.joinParty(self.partyID,
                         JSONUpdateCompletion: {
-                            LocalUser.sharedUser.party = pid
                             respondToChangeAttempt(true)
                         }, failureAddOn: {
                             respondToChangeAttempt(false)

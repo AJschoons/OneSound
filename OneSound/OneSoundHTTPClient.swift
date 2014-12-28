@@ -371,9 +371,9 @@ extension OSAPI {
     }
     
     // Update a party's info
-    func PUTParty(name: String, privacy: Bool, strictness: Int, success: AFHTTPSuccessBlock, failure: AFHTTPFailureBlock, extraAttempts: Int = defaultEA) {
+    func PUTParty(pid: Int, name: String, privacy: Bool, strictness: Int, success: AFHTTPSuccessBlock, failure: AFHTTPFailureBlock, extraAttempts: Int = defaultEA) {
         
-        let urlString = "\(baseURLString)party"
+        let urlString = "\(baseURLString)party/\(pid)"
         
         // Create parameters to pass
         var params = Dictionary<String, AnyObject>()
@@ -383,7 +383,7 @@ extension OSAPI {
         
         let failureWithExtraAttempt: AFHTTPFailureBlock = { task, error in
             if errorShouldBeHandledWithRepeatedRequest(task, error, attemptsLeft: extraAttempts) {
-                self.PUTParty(name, privacy: privacy, strictness: strictness, success: success, failure: failure, extraAttempts: (extraAttempts - 1))
+                self.PUTParty(pid, name: name, privacy: privacy, strictness: strictness, success: success, failure: failure, extraAttempts: (extraAttempts - 1))
             } else {
                 failure!(task: task, error: error)
             }

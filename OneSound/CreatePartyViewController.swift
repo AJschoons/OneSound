@@ -68,27 +68,7 @@ class CreatePartyViewController: UITableViewController {
         
         if partyAlreadyExists {
             // Add a tableView footer with a button to leave the party
-            let footerView = UIView(frame: CGRectMake(0, 0, tableView.frame.width, CGFloat(footerViewHeight)))
-            footerView.backgroundColor = UIColor.clearColor()
-            tableView.tableFooterView = footerView
-            
-            let button = UIButton.buttonWithType(UIButtonType.System) as UIButton
-            button.setTitle("Leave Party", forState: UIControlState.Normal)
-            button.setTitleColor(UIColor.white(), forState: UIControlState.Normal)
-            button.addTarget(self, action: "leaveParty", forControlEvents: UIControlEvents.TouchUpInside)
-            button.titleLabel!.textColor = UIColor.white()
-            button.titleLabel!.textAlignment = NSTextAlignment.Center
-            button.titleLabel!.font = UIFont.systemFontOfSize(15)
-            button.backgroundColor = UIColor.red()
-            button.layer.cornerRadius = 3.0
-            button.setTranslatesAutoresizingMaskIntoConstraints(false)
-            
-            footerView.addSubview(button)
-            
-            button.addConstraint(NSLayoutConstraint(item: button, attribute: NSLayoutAttribute.Width, relatedBy: NSLayoutRelation.Equal, toItem: nil, attribute: NSLayoutAttribute.NotAnAttribute, multiplier: 1, constant: 110))
-            button.addConstraint(NSLayoutConstraint(item: button, attribute: NSLayoutAttribute.Height, relatedBy: NSLayoutRelation.Equal, toItem: nil, attribute: NSLayoutAttribute.NotAnAttribute, multiplier: 1, constant: 30))
-            footerView.addConstraint(NSLayoutConstraint(item: button, attribute: NSLayoutAttribute.Bottom, relatedBy: NSLayoutRelation.Equal, toItem: footerView, attribute: NSLayoutAttribute.Bottom, multiplier: 1, constant: 0))
-            footerView.addConstraint(NSLayoutConstraint(item: button, attribute: NSLayoutAttribute.CenterX, relatedBy: NSLayoutRelation.Equal, toItem: footerView, attribute: NSLayoutAttribute.CenterX, multiplier: 1, constant: 0))
+            setupLeavePartyButtonInTableFooterView()
         }
         
         // Give the privacy cell a switch
@@ -212,6 +192,30 @@ class CreatePartyViewController: UITableViewController {
     func tap() {
         // Dismiss the keyboard whenever the background is touched while editing
         tableView.endEditing(true)
+    }
+    
+    func setupLeavePartyButtonInTableFooterView() {
+        let footerView = UIView(frame: CGRectMake(0, 0, tableView.frame.width, CGFloat(footerViewHeight)))
+        footerView.backgroundColor = UIColor.clearColor()
+        tableView.tableFooterView = footerView
+        
+        let button = UIButton.buttonWithType(UIButtonType.System) as UIButton
+        button.setTitle("Leave Party", forState: UIControlState.Normal)
+        button.setTitleColor(UIColor.white(), forState: UIControlState.Normal)
+        button.addTarget(self, action: "leaveParty", forControlEvents: UIControlEvents.TouchUpInside)
+        button.titleLabel!.textColor = UIColor.white()
+        button.titleLabel!.textAlignment = NSTextAlignment.Center
+        button.titleLabel!.font = UIFont.systemFontOfSize(15)
+        button.backgroundColor = UIColor.red()
+        button.layer.cornerRadius = 3.0
+        button.setTranslatesAutoresizingMaskIntoConstraints(false)
+        
+        footerView.addSubview(button)
+        
+        button.addConstraint(NSLayoutConstraint(item: button, attribute: NSLayoutAttribute.Width, relatedBy: NSLayoutRelation.Equal, toItem: nil, attribute: NSLayoutAttribute.NotAnAttribute, multiplier: 1, constant: 110))
+        button.addConstraint(NSLayoutConstraint(item: button, attribute: NSLayoutAttribute.Height, relatedBy: NSLayoutRelation.Equal, toItem: nil, attribute: NSLayoutAttribute.NotAnAttribute, multiplier: 1, constant: 30))
+        footerView.addConstraint(NSLayoutConstraint(item: button, attribute: NSLayoutAttribute.Bottom, relatedBy: NSLayoutRelation.Equal, toItem: footerView, attribute: NSLayoutAttribute.Bottom, multiplier: 1, constant: 0))
+        footerView.addConstraint(NSLayoutConstraint(item: button, attribute: NSLayoutAttribute.CenterX, relatedBy: NSLayoutRelation.Equal, toItem: footerView, attribute: NSLayoutAttribute.CenterX, multiplier: 1, constant: 0))
     }
 }
 
