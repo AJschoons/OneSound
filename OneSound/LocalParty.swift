@@ -805,6 +805,7 @@ extension LocalParty {
                 let status = responseJSON["status"].string
                 
                 // TODO: probably don't need to join party after updating
+                // Could just update the info from the arguments provided
                 if status == "success" {
                     // Update/get new party information
                     self.joinParty(self.partyID,

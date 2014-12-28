@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="6254" systemVersion="14C81f" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="6254" systemVersion="14B25" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6247"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
@@ -14,6 +14,9 @@
                 <rect key="frame" x="0.0" y="0.0" width="320" height="43"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
+                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="5ck-5E-sbA">
+                        <rect key="frame" x="0.0" y="0.0" width="200" height="149.5"/>
+                    </imageView>
                     <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="QYz-Hy-nEE">
                         <rect key="frame" x="50" y="10" width="100" height="100"/>
                         <color key="backgroundColor" red="0.1063067689538002" green="0.82194298505783081" blue="0.60250616073608398" alpha="1" colorSpace="calibratedRGB"/>
@@ -22,8 +25,8 @@
                             <constraint firstAttribute="height" constant="100" id="qZl-2n-9Rj"/>
                         </constraints>
                     </imageView>
-                    <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Name of User" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="NK2-Sa-VVV">
-                        <rect key="frame" x="20" y="117.5" width="160" height="20.5"/>
+                    <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Name of User" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="NK2-Sa-VVV" customClass="OSLabel" customModule="OneSound" customModuleProvider="target">
+                        <rect key="frame" x="20" y="118" width="160" height="20.5"/>
                         <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
                         <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                         <nil key="highlightedColor"/>
@@ -38,9 +41,13 @@
                 </subviews>
                 <constraints>
                     <constraint firstAttribute="centerX" secondItem="QYz-Hy-nEE" secondAttribute="centerX" id="0Ov-HK-oHb"/>
+                    <constraint firstItem="5ck-5E-sbA" firstAttribute="trailing" secondItem="H2p-sc-9uM" secondAttribute="trailingMargin" constant="8" id="9Ux-rC-tKe"/>
+                    <constraint firstItem="5ck-5E-sbA" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="topMargin" constant="-8" id="G1v-Et-sZC"/>
                     <constraint firstAttribute="centerX" secondItem="NK2-Sa-VVV" secondAttribute="centerX" id="Gsa-xH-0Gx"/>
                     <constraint firstItem="QYz-Hy-nEE" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="10" id="Sn2-EU-6it"/>
+                    <constraint firstItem="5ck-5E-sbA" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leadingMargin" constant="-8" id="T8y-Kd-Zc3"/>
                     <constraint firstItem="NK2-Sa-VVV" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="20" id="Vym-53-BTe"/>
+                    <constraint firstAttribute="bottomMargin" secondItem="5ck-5E-sbA" secondAttribute="bottom" constant="-8" id="W66-uK-uf9"/>
                     <constraint firstAttribute="trailingMargin" secondItem="cDj-Yu-8Ws" secondAttribute="trailing" constant="-8" id="Wea-Uq-XQj"/>
                     <constraint firstAttribute="bottom" secondItem="NK2-Sa-VVV" secondAttribute="bottom" constant="11.5" id="WzE-al-rB8"/>
                     <constraint firstAttribute="bottomMargin" secondItem="cDj-Yu-8Ws" secondAttribute="bottom" constant="-9" id="eOD-GI-Mjd"/>
@@ -49,6 +56,7 @@
                 </constraints>
             </tableViewCellContentView>
             <connections>
+                <outlet property="blurredUserImage" destination="5ck-5E-sbA" id="rqW-gD-8ge"/>
                 <outlet property="userImage" destination="QYz-Hy-nEE" id="oRo-oI-NqB"/>
                 <outlet property="userLabel" destination="NK2-Sa-VVV" id="mCo-jb-bba"/>
             </connections>

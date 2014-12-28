@@ -339,6 +339,15 @@ func setupOSLabelToDefaultDesiredLook(label: OSLabel!) {
     }
 }
 
+func resetOSLabelToBlackUILabel(label: OSLabel!) {
+    if label != nil {
+        label.textColor = UIColor.black()
+        label.layer.shadowRadius = 0.0
+        label.layer.shadowOpacity = 0.0
+        label.outlineWidth = 0.0
+    }
+}
+
 func customCurveEaseInOut(xVal: Double, alphaPower: Double = 2.0) -> Double {
     if (xVal <= 1) && (xVal >= 0) {
         return (pow(xVal, alphaPower) / ( pow(xVal, alphaPower) + pow((1 - xVal), alphaPower) ))

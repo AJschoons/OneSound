@@ -10,7 +10,8 @@
 #import "SWRevealViewController.h"
 #import "SSKeychain.h"
 #import "FacebookSDK.h"
-#import "THLabel.h"
+//#import "THLabel.h" // Using OSLabel
 #import "UIImageView+WebCache.h"
 #import "STKAudioPlayer.h"
-#import "FXLabel.h"
+//#import "FXLabel.h" // Using OSLabel
+#import "UIImage+ImageEffects.h"

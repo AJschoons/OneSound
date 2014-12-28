@@ -11,7 +11,8 @@ import UIKit
 class SideNavigationUserCell: UITableViewCell {
 
     @IBOutlet weak var userImage: UIImageView!
-    @IBOutlet weak var userLabel: UILabel!
+    @IBOutlet weak var blurredUserImage: UIImageView!
+    @IBOutlet weak var userLabel: OSLabel!
     
     var pL = true
     
@@ -20,6 +21,10 @@ class SideNavigationUserCell: UITableViewCell {
         // Initialization code
         
         userImage.layer.cornerRadius = 5
+        userImage.layer.borderColor = UIColor.white().CGColor
+        userImage.layer.borderWidth = 1.5
+        userImage.clipsToBounds = true
+        
         
         // Stop cell color from changing when selected
         selectionStyle = UITableViewCellSelectionStyle.None
@@ -38,17 +43,37 @@ class SideNavigationUserCell: UITableViewCell {
         if LocalUser.sharedUser.setup == true {
             // If user exists
             println("user is setup")
-            userLabel.text = LocalUser.sharedUser.name
+            let userName = LocalUser.sharedUser.name
+            userLabel.text = userName
             
             if LocalUser.sharedUser.guest == false && LocalUser.sharedUser.photo != nil {
                 // If user isn't a guest and has a valid photo
                 println("full user with valid photo; use their photo")
                 userImage.image = LocalUser.sharedUser.photo
+                
+                let blurredImage = LocalUser.sharedUser.photo!.applyBlurWithRadius(5, tintColor: nil, saturationDeltaFactor: 1.3, maskImage: nil)
+                blurredUserImage.image = blurredImage
+                
+                setupOSLabelToDefaultDesiredLook(userLabel)
+                userLabel.outlineWidth = 1.5
+                userLabel.attributedText =
+                    NSAttributedString(
+                        string: userName,
+                        attributes:
+                        [
+                            NSFontAttributeName: userLabel.font,
+                            NSForegroundColorAttributeName: userLabel.textColor,
+                            NSKernAttributeName: userLabel.kerning
+                        ])
             } else {
                 // If user guest or doesn't have valid photo
                 println("guest user or invalid photo, use user color")
                 userImage.image = nil
                 userImage.backgroundColor = LocalUser.sharedUser.colorToUIColor
+                
+                blurredUserImage.image = nil
+                
+                resetOSLabelToBlackUILabel(userLabel)
             }
         }
         else {
@@ -61,11 +86,13 @@ class SideNavigationUserCell: UITableViewCell {
             
             if userSavedName != nil {
                 // If user information can be retreived (assumes getting ANY user info means the rest is saved)
-                println("found guest user info in user defaults")
+                println("found user info in user defaults")
                 userLabel.text = userSavedName
                 if userSavedIsGuest {
                     println("saved user was guest")
                     userImage.image = nil
+                    blurredUserImage.image = nil
+                    resetOSLabelToBlackUILabel(userLabel)
                     
                     if userSavedColor != nil {
                         userImage.backgroundColor = LocalUser.colorToUIColor(userSavedColor!)
@@ -81,8 +108,27 @@ class SideNavigationUserCell: UITableViewCell {
                             println("image data valid, use their image")
                             let image = UIImage(data: imageData)
                             userImage.image = image
+                            
+                            let blurredImage = image!.applyBlurWithRadius(5, tintColor: nil, saturationDeltaFactor: 1.3, maskImage: nil)
+                            blurredUserImage.image = blurredImage
+                            
+                            setupOSLabelToDefaultDesiredLook(userLabel)
+                            userLabel.outlineWidth = 1.5
+                            userLabel.attributedText =
+                                NSAttributedString(
+                                    string: userSavedName!,
+                                    attributes:
+                                    [
+                                        NSFontAttributeName: userLabel.font,
+                                        NSForegroundColorAttributeName: userLabel.textColor,
+                                        NSKernAttributeName: userLabel.kerning
+                                    ])
                         } else {
                             println("image data valid but was nil, try using their color")
+                            userImage.image = nil
+                            blurredUserImage.image = nil
+                            resetOSLabelToBlackUILabel(userLabel)
+                            
                             if userSavedColor != nil  {
                                 userImage.backgroundColor = LocalUser.colorToUIColor(userSavedColor!)
                             } else {
@@ -94,6 +140,8 @@ class SideNavigationUserCell: UITableViewCell {
                         // Couldn't get image
                         println("image data invalid, use their color")
                         userImage.image = nil
+                        blurredUserImage.image = nil
+                        resetOSLabelToBlackUILabel(userLabel)
                         
                         if userSavedColor != nil  {
                             userImage.backgroundColor = LocalUser.colorToUIColor(userSavedColor!)
@@ -107,6 +155,9 @@ class SideNavigationUserCell: UITableViewCell {
                 // Can't retrieve any user info
                 println("user isn't setup")
                 userLabel.text = "Not Signed In"
+                userImage.image = nil
+                blurredUserImage.image = nil
+                resetOSLabelToBlackUILabel(userLabel)
                 userImage.backgroundColor = UIColor.grayDark()
             }
         }
