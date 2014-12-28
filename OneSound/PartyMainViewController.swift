@@ -95,8 +95,8 @@ class PartyMainViewController: UIViewController {
     
     func createParty() {
         if LocalUser.sharedUser.guest == false {
-            let createPartyStoryboard = UIStoryboard(name: "CreateParty", bundle: nil)
-            let createPartyViewController = createPartyStoryboard.instantiateViewControllerWithIdentifier("CreatePartyViewController") as CreatePartyViewController
+            let createPartyStoryboard = UIStoryboard(name: CreatePartyStoryboardName, bundle: nil)
+            let createPartyViewController = createPartyStoryboard.instantiateViewControllerWithIdentifier(CreatePartyViewControllerIdentifier) as CreatePartyViewController
             createPartyViewController.partyAlreadyExists = false
             createPartyViewController.delegate = self
 
@@ -125,8 +125,20 @@ class PartyMainViewController: UIViewController {
     }
     
     func changePartySettings() {
-        let alert = UIAlertView(title: "nah", message: "change party settings", delegate: nil, cancelButtonTitle: "Ok")
-        alert.show()
+        if LocalParty.sharedParty.userIsHost {
+            let createPartyStoryboard = UIStoryboard(name: CreatePartyStoryboardName, bundle: nil)
+            let createPartyViewController = createPartyStoryboard.instantiateViewControllerWithIdentifier(CreatePartyViewControllerIdentifier) as CreatePartyViewController
+            createPartyViewController.partyAlreadyExists = true
+            createPartyViewController.delegate = self
+            
+            let navC = UINavigationController(rootViewController: createPartyViewController)
+            if let fnc = getFrontNavigationController() {
+                fnc.presentViewController(navC, animated: true, completion: nil)
+            }
+        } else {
+            let alert = UIAlertView(title: "Only hosts edit party settings", message: "Please become the host before editing party settings, or make sure you still are the host", delegate: nil, cancelButtonTitle: "Ok")
+            alert.show()
+        }
     }
     
     

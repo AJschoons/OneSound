@@ -216,8 +216,8 @@ extension LocalUser {
                     // Haven't seen that Facebook account before
                     println("Account is inactive; create account")
                     
-                    let loginStoryboard = UIStoryboard(name: "Login", bundle: nil)
-                    let loginViewController = loginStoryboard.instantiateViewControllerWithIdentifier("LoginViewController") as LoginViewController
+                    let loginStoryboard = UIStoryboard(name: LoginStoryboardName, bundle: nil)
+                    let loginViewController = loginStoryboard.instantiateViewControllerWithIdentifier(LoginViewControllerIdentifier) as LoginViewController
                     let navC = UINavigationController(rootViewController: loginViewController)
                     
                     let delegate = UIApplication.sharedApplication().delegate as AppDelegate

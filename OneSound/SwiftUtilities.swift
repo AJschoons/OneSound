@@ -188,6 +188,8 @@ func downloadImageWithURLString(urlString: String, completion: (success: Bool, i
     )
 }
 
+// Was used for the song artwork in the playlist when trying to take square images and crop the center of it to fit into 
+// a cell as wide as the screen
 func cropImageCenterFromSideEdgesWhilePreservingAspectRatio(withWidth width: CGFloat, withHeight height: CGFloat, image originalImage: UIImage) -> UIImage {
     
     let originalSize = originalImage.size
@@ -206,6 +208,7 @@ func cropImageCenterFromSideEdgesWhilePreservingAspectRatio(withWidth width: CGF
     return newImage!
 }
 
+// Get the largest square portion of an image from the center
 func cropBiggestCenteredSquareImageFromImage(image: UIImage, sideLength side: CGFloat) -> UIImage {
     // Get size of current image
     let size = image.size

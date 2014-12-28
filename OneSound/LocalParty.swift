@@ -767,10 +767,38 @@ extension LocalParty {
         )
     }
     
-    func createNewParty(partyName: String, partyPrivacy: Bool, partyStrictness: Int, respondToChangeAttempt: (Bool) -> (), failure: AFHTTPFailureBlock = defaultAFHTTPFailureBlockForSigningIn) {
+    func createNewParty(name: String, privacy: Bool, strictness: Int, respondToChangeAttempt: (Bool) -> (), failure: AFHTTPFailureBlock = defaultAFHTTPFailureBlockForSigningIn) {
         let user = LocalUser.sharedUser
         
-        OSAPI.sharedClient.POSTParty(partyName, partyPrivacy: partyPrivacy, partyStrictness: partyStrictness,
+        OSAPI.sharedClient.POSTParty(name, privacy: privacy, strictness: strictness,
+            success: { data, responseObject in
+                let responseJSON = JSONValue(responseObject)
+                println(responseJSON)
+                let status = responseJSON["status"].string
+                
+                if status == "success" {
+                    // Update new party information
+                    let pid = responseJSON["pid"].integer
+                    self.joinParty(pid!,
+                        JSONUpdateCompletion: {
+                            LocalUser.sharedUser.party = pid
+                            respondToChangeAttempt(true)
+                        }, failureAddOn: {
+                            respondToChangeAttempt(false)
+                        }
+                    )
+                } else {
+                    // Server didn't accept request for new party with supplied information
+                    respondToChangeAttempt(false)
+                }
+            }, failure: defaultAFHTTPFailureBlock
+        )
+    }
+    
+    func updatePartyInfo(name: String, privacy: Bool, strictness: Int, respondToChangeAttempt: (Bool) -> (), failure: AFHTTPFailureBlock = defaultAFHTTPFailureBlockForSigningIn) {
+        let user = LocalUser.sharedUser
+        
+        OSAPI.sharedClient.PUTParty(name, privacy: privacy, strictness: strictness,
             success: { data, responseObject in
                 let responseJSON = JSONValue(responseObject)
                 println(responseJSON)

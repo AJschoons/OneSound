@@ -349,25 +349,47 @@ extension OSAPI {
     }
     
     // Create a new party
-    func POSTParty(partyName: String, partyPrivacy: Bool, partyStrictness: Int, success: AFHTTPSuccessBlock, failure: AFHTTPFailureBlock, extraAttempts: Int = defaultEA) {
+    func POSTParty(name: String, privacy: Bool, strictness: Int, success: AFHTTPSuccessBlock, failure: AFHTTPFailureBlock, extraAttempts: Int = defaultEA) {
 
         let urlString = "\(baseURLString)party"
         
         // Create parameters to pass
         var params = Dictionary<String, AnyObject>()
-        params.updateValue(partyName, forKey: "name")
-        params.updateValue(partyPrivacy, forKey: "privacy")
-        params.updateValue(partyStrictness, forKey: "strictness")
+        params.updateValue(name, forKey: "name")
+        params.updateValue(privacy, forKey: "privacy")
+        params.updateValue(strictness, forKey: "strictness")
         
         let failureWithExtraAttempt: AFHTTPFailureBlock = { task, error in
             if errorShouldBeHandledWithRepeatedRequest(task, error, attemptsLeft: extraAttempts) {
-                self.POSTParty(partyName, partyPrivacy: partyPrivacy, partyStrictness: partyStrictness, success: success, failure: failure, extraAttempts: (extraAttempts - 1))
+                self.POSTParty(name, privacy: privacy, strictness: strictness, success: success, failure: failure, extraAttempts: (extraAttempts - 1))
             } else {
                 failure!(task: task, error: error)
             }
         }
         
         POST(urlString, parameters: params, success: success, failure: failure)
+    }
+    
+    // Update a party's info
+    func PUTParty(name: String, privacy: Bool, strictness: Int, success: AFHTTPSuccessBlock, failure: AFHTTPFailureBlock, extraAttempts: Int = defaultEA) {
+        
+        let urlString = "\(baseURLString)party"
+        
+        // Create parameters to pass
+        var params = Dictionary<String, AnyObject>()
+        params.updateValue(name, forKey: "name")
+        params.updateValue(privacy, forKey: "privacy")
+        params.updateValue(strictness, forKey: "strictness")
+        
+        let failureWithExtraAttempt: AFHTTPFailureBlock = { task, error in
+            if errorShouldBeHandledWithRepeatedRequest(task, error, attemptsLeft: extraAttempts) {
+                self.PUTParty(name, privacy: privacy, strictness: strictness, success: success, failure: failure, extraAttempts: (extraAttempts - 1))
+            } else {
+                failure!(task: task, error: error)
+            }
+        }
+        
+        PUT(urlString, parameters: params, success: success, failure: failure)
     }
     
     // Search for a party by name

@@ -8,6 +8,9 @@
 
 import UIKit
 
+let LoginViewControllerIdentifier = "LoginViewController"
+let LoginStoryboardName = "Login"
+
 protocol LoginViewControllerDelegate {
     func loginViewControllerCancelled()
 }
@@ -132,7 +135,7 @@ class LoginViewController: UITableViewController {
     func setDoneButtonState() {
         if accountAlreadyExists {
             // Only allow Done to be pressed if user information has changed from what is already is
-            if countElements(nameCellTextField.text as String) > 2 && nameCellTextField.text != LocalUser.sharedUser.name || color.OneSoundColorOptionToUserColor().rawValue != LocalUser.sharedUser.color {
+            if countElements(nameCellTextField.text as String) > 2 && userInfoHasChanged() {
                 navigationItem.rightBarButtonItem!.enabled = true
             } else {
                 navigationItem.rightBarButtonItem!.enabled = false
@@ -144,6 +147,11 @@ class LoginViewController: UITableViewController {
                 navigationItem.rightBarButtonItem!.enabled = false
             }
         }
+    }
+    
+    func userInfoHasChanged() -> Bool {
+        let user = LocalUser.sharedUser
+        return nameCellTextField.text != user.name || color.OneSoundColorOptionToUserColor().rawValue != user.color
     }
     
     func updateNameCellTextFieldCount() {

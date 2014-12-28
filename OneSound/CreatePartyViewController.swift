@@ -8,6 +8,9 @@
 
 import UIKit
 
+let CreatePartyViewControllerIdentifier = "CreatePartyViewController"
+let CreatePartyStoryboardName = "CreateParty"
+
 protocol CreatePartyViewControllerDelegate {
     func CreatePartyViewControllerDone()
 }
@@ -15,6 +18,7 @@ protocol CreatePartyViewControllerDelegate {
 class CreatePartyViewController: UITableViewController {
         
     let validCharacters = "abcdefghijklmnopqrstuvwxyz1234567890 "
+    let footerViewHeight = 60
     
     @IBOutlet weak var nameCell: UITableViewCell!
     @IBOutlet weak var nameCellTextField: UITextField!
@@ -25,7 +29,7 @@ class CreatePartyViewController: UITableViewController {
     @IBOutlet weak var strictnessCellStrictnessLabel: UILabel!
     
     var strictness: PartyStrictnessOption = .Default
-    var partyAlreadyExists = false // TODO: figure out if partyAlreadyExists is actually ever used/needed
+    var partyAlreadyExists = false
     
     var delegate: CreatePartyViewControllerDelegate?
     
@@ -34,7 +38,7 @@ class CreatePartyViewController: UITableViewController {
         
         // Setup nav bar
         if partyAlreadyExists {
-            navigationItem.title = "Change Settings"
+            navigationItem.title = "Party Settings"
         } else {
             navigationItem.title = "Create Party"
         }
@@ -48,7 +52,7 @@ class CreatePartyViewController: UITableViewController {
         nameCellTextField.addTarget(self, action: "textFieldDidChange", forControlEvents: UIControlEvents.EditingChanged)
         updateNameCellTextFieldCount()
         
-        // TODO: Initialize cells that need to be
+        // TODO: Initialize cells that need to be (privacy)
         if partyAlreadyExists {
             if let previousStrictness = PartyStrictnessOption(rawValue: LocalParty.sharedParty.strictness) {
                 strictness = previousStrictness
@@ -60,6 +64,31 @@ class CreatePartyViewController: UITableViewController {
         if partyAlreadyExists {
             nameCellTextField.text = LocalParty.sharedParty.name
             updateNameCellTextFieldCount()
+        }
+        
+        if partyAlreadyExists {
+            // Add a tableView footer with a button to leave the party
+            let footerView = UIView(frame: CGRectMake(0, 0, tableView.frame.width, CGFloat(footerViewHeight)))
+            footerView.backgroundColor = UIColor.clearColor()
+            tableView.tableFooterView = footerView
+            
+            let button = UIButton.buttonWithType(UIButtonType.System) as UIButton
+            button.setTitle("Leave Party", forState: UIControlState.Normal)
+            button.setTitleColor(UIColor.white(), forState: UIControlState.Normal)
+            button.addTarget(self, action: "leaveParty", forControlEvents: UIControlEvents.TouchUpInside)
+            button.titleLabel!.textColor = UIColor.white()
+            button.titleLabel!.textAlignment = NSTextAlignment.Center
+            button.titleLabel!.font = UIFont.systemFontOfSize(15)
+            button.backgroundColor = UIColor.red()
+            button.layer.cornerRadius = 3.0
+            button.setTranslatesAutoresizingMaskIntoConstraints(false)
+            
+            footerView.addSubview(button)
+            
+            button.addConstraint(NSLayoutConstraint(item: button, attribute: NSLayoutAttribute.Width, relatedBy: NSLayoutRelation.Equal, toItem: nil, attribute: NSLayoutAttribute.NotAnAttribute, multiplier: 1, constant: 110))
+            button.addConstraint(NSLayoutConstraint(item: button, attribute: NSLayoutAttribute.Height, relatedBy: NSLayoutRelation.Equal, toItem: nil, attribute: NSLayoutAttribute.NotAnAttribute, multiplier: 1, constant: 30))
+            footerView.addConstraint(NSLayoutConstraint(item: button, attribute: NSLayoutAttribute.Bottom, relatedBy: NSLayoutRelation.Equal, toItem: footerView, attribute: NSLayoutAttribute.Bottom, multiplier: 1, constant: 0))
+            footerView.addConstraint(NSLayoutConstraint(item: button, attribute: NSLayoutAttribute.CenterX, relatedBy: NSLayoutRelation.Equal, toItem: footerView, attribute: NSLayoutAttribute.CenterX, multiplier: 1, constant: 0))
         }
         
         // Give the privacy cell a switch
@@ -76,42 +105,17 @@ class CreatePartyViewController: UITableViewController {
     }
     
     func cancel() {
-        // TODO: see if there's any relevant actions to be taken when the party is cancelled
-        /*
-        if !accountAlreadyExists {
-            LocalUser.sharedUser.setupGuestAccount()
-        }
-        if delegate != nil {
-            delegate!.loginViewControllerCancelled()
-        }
-        */
         tableView.endEditing(true)
         dismissViewControllerAnimated(true, completion: nil)
     }
     
     func done() {
-        // TODO: find out what the delegate method for "done" should be doing
-        
-        //dismissViewControllerAnimated(true, completion: nil)
-        let partyName = nameCellTextField.text
-        
         if !partyAlreadyExists {
             println("Creating NEW party")
-            LocalParty.sharedParty.createNewParty(nameCellTextField.text, partyPrivacy: privacyCellSwitch.on, partyStrictness: strictness.rawValue,
+            LocalParty.sharedParty.createNewParty(nameCellTextField.text, privacy: privacyCellSwitch.on, strictness: strictness.rawValue,
                 respondToChangeAttempt: { partyWasCreated in
                     if partyWasCreated {
-                        self.tableView.endEditing(true)
-                        self.dismissViewControllerAnimated(true, completion: nil)
-                        
-                        if LocalParty.sharedParty.setup == true {
-                            let delegate = UIApplication.sharedApplication().delegate as AppDelegate
-                            let snvc = delegate.revealViewController!.rearViewController as SideNavigationViewController
-                            snvc.programaticallySelectRow(1)
-                        }
-                        
-                        if self.delegate != nil {
-                            self.delegate!.CreatePartyViewControllerDone()
-                        }
+                        self.onSuccessfulPartyCreateOrUpdateOrLeave()
                     } else {
                         let alert = UIAlertView(title: "Could not create party", message: "Please try a new name, changing the settings, or restarting the app", delegate: nil, cancelButtonTitle: "Ok")
                         alert.show()
@@ -119,30 +123,40 @@ class CreatePartyViewController: UITableViewController {
                 }
             )
         } else {
-            println("updating party")
-            // TODO: updating party code
-            
-            /*
-            var newUserName: String? = nil
-            var newUserColor: String? = nil
-            if userName != LocalUser.sharedUser.name {
-                newUserName = userName
-            }
-            if userColor != LocalUser.sharedUser.color {
-                newUserColor = userColor
-            }
-            LocalUser.sharedUser.updateServerWithNewNameAndColor(newUserName, color: newUserColor, respondToChangeAttempt:
-                { nameIsValid in
-                    if nameIsValid {
-                        self.tableView.endEditing(true)
-                        self.dismissViewControllerAnimated(true, nil)
+            println("updating party information")
+            LocalParty.sharedParty.updatePartyInfo(nameCellTextField.text, privacy: privacyCellSwitch.on, strictness: strictness.rawValue,
+                respondToChangeAttempt: { partyWasUpdated in
+                    if partyWasUpdated {
+                        self.onSuccessfulPartyCreateOrUpdateOrLeave()
                     } else {
-                        self.notifyThatUserNameIsTaken()
+                        let alert = UIAlertView(title: "Could not update party", message: "Please try a new name, changing the settings, or restarting the app", delegate: nil, cancelButtonTitle: "Ok")
+                        alert.show()
                     }
                 }
             )
-            */
         }
+    }
+    
+    func onSuccessfulPartyCreateOrUpdateOrLeave() {
+        self.tableView.endEditing(true)
+        self.dismissViewControllerAnimated(true, completion: nil)
+        
+        if LocalParty.sharedParty.setup == true {
+            let delegate = UIApplication.sharedApplication().delegate as AppDelegate
+            let snvc = delegate.revealViewController!.rearViewController as SideNavigationViewController
+            snvc.programaticallySelectRow(1)
+        }
+        
+        if self.delegate != nil {
+            self.delegate!.CreatePartyViewControllerDone()
+        }
+    }
+    
+    func leaveParty() {
+        // "Leave" handled in the UIAlertViewDelegate extension
+        let alert = UIAlertView(title: "Leaving Party as Host", message: "Leaving a party you're hosting will stop the party from playing music for everyone else. You can always join back, but don't leave if you want it to keep going", delegate: self, cancelButtonTitle: "Cancel", otherButtonTitles: "Leave")
+        alert.tag = 103
+        alert.show()
     }
     
     func textFieldDidChange() {
@@ -152,14 +166,13 @@ class CreatePartyViewController: UITableViewController {
     
     func setDoneButtonState() {
         if partyAlreadyExists {
-            /*
             // Only allow Done to be pressed if party information has changed from what is already is
-            if countElements(nameCellTextField.text as String) > 2 && nameCellTextField.text != LocalParty.sharedParty.name || color.OneSoundColorOptionToUserColor().toRaw() != LocalUser.sharedUser.color {
-                navigationItem.rightBarButtonItem.enabled = true
+            // TODO: add in a check for privacy info change
+            if countElements(nameCellTextField.text as String) > 2 && partyInfoHasChanged() {
+                navigationItem.rightBarButtonItem!.enabled = true
             } else {
-                navigationItem.rightBarButtonItem.enabled = false
+                navigationItem.rightBarButtonItem!.enabled = false
             }
-            */
         } else {
             if countElements(nameCellTextField.text as String) > 2 {
                 navigationItem.rightBarButtonItem!.enabled = true
@@ -167,6 +180,12 @@ class CreatePartyViewController: UITableViewController {
                 navigationItem.rightBarButtonItem!.enabled = false
             }
         }
+    }
+    
+    func partyInfoHasChanged() -> Bool {
+        // TODO: add in a check for privacy info change
+        let party = LocalParty.sharedParty
+        return (nameCellTextField.text != party.name) || (strictness.rawValue != party.strictness)
     }
     
     func updateNameCellTextFieldCount() {
@@ -277,5 +296,25 @@ extension CreatePartyViewController: CreatePartyStrictnessViewControllerDelegate
         }
         
         navigationController!.popViewControllerAnimated(true)
+    }
+}
+
+extension CreatePartyViewController: UIAlertViewDelegate {
+    func alertView(alertView: UIAlertView!, clickedButtonAtIndex buttonIndex: Int) {
+        if alertView.tag == 103 {
+            if buttonIndex == 1 {
+                // If host is leaving the party
+                LocalParty.sharedParty.leaveParty(
+                    respondToChangeAttempt: { partyWasLeft in
+                        if partyWasLeft {
+                            self.onSuccessfulPartyCreateOrUpdateOrLeave()
+                        } else {
+                            let alert = UIAlertView(title: "Could not leave party", message: "Please try again, or just create a new one", delegate: nil, cancelButtonTitle: "Ok")
+                            alert.show()
+                        }
+                    }
+                )
+            }
+        }
     }
 }

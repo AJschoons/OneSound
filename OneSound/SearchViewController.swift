@@ -68,8 +68,8 @@ class SearchViewController: UIViewController {
     
     func createParty() {
         if LocalUser.sharedUser.guest == false {
-            let createPartyStoryboard = UIStoryboard(name: "CreateParty", bundle: nil)
-            let createPartyViewController = createPartyStoryboard.instantiateViewControllerWithIdentifier("CreatePartyViewController") as CreatePartyViewController
+            let createPartyStoryboard = UIStoryboard(name: CreatePartyStoryboardName, bundle: nil)
+            let createPartyViewController = createPartyStoryboard.instantiateViewControllerWithIdentifier(CreatePartyViewControllerIdentifier) as CreatePartyViewController
             createPartyViewController.partyAlreadyExists = false
             // TODO: create the delegate methods and see what they mean
             //createPartyViewController.delegate = self
