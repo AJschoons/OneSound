@@ -33,7 +33,7 @@ class SearchViewController: UIViewController {
         searchResultsTable.reloadData()
         loadingAnimationShouldBeAnimating(true)
         
-        let searchStr = partySearchTextField.text.stringByAddingPercentEscapesUsingEncoding(NSUTF8StringEncoding)!
+        let searchStr = partySearchTextField.text
         
         OSAPI.sharedClient.GETPartySearch(searchStr,
             success: {data, responseObject in

@@ -57,6 +57,7 @@
 		81751FF7196DEB1D00B9F9A9 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 81751FF6196DEB1D00B9F9A9 /* UIKit.framework */; };
 		8176451A197EA192001BF7A7 /* StoriesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81764518197EA192001BF7A7 /* StoriesViewController.swift */; };
 		8176451B197EA192001BF7A7 /* StoriesViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 81764519197EA192001BF7A7 /* StoriesViewController.xib */; };
+		818750561A50C624000CC353 /* PartyPlaylistManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 818750551A50C624000CC353 /* PartyPlaylistManager.swift */; };
 		81929C88196C2C2C006F336B /* OneSoundHTTPClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81929C87196C2C2C006F336B /* OneSoundHTTPClient.swift */; };
 		81936FC8196C656F005E42F4 /* FrontViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81936FC6196C656F005E42F4 /* FrontViewController.swift */; };
 		81936FC9196C656F005E42F4 /* FrontViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 81936FC7196C656F005E42F4 /* FrontViewController.xib */; };
@@ -145,6 +146,7 @@
 		81751FF6196DEB1D00B9F9A9 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		81764518197EA192001BF7A7 /* StoriesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StoriesViewController.swift; sourceTree = "<group>"; };
 		81764519197EA192001BF7A7 /* StoriesViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = StoriesViewController.xib; sourceTree = "<group>"; };
+		818750551A50C624000CC353 /* PartyPlaylistManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PartyPlaylistManager.swift; sourceTree = "<group>"; };
 		81929C81196B71F3006F336B /* OneSound-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "OneSound-Bridging-Header.h"; sourceTree = "<group>"; };
 		81929C84196B736B006F336B /* Podfile */ = {isa = PBXFileReference; lastKnownFileType = text; path = Podfile; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		81929C87196C2C2C006F336B /* OneSoundHTTPClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OneSoundHTTPClient.swift; sourceTree = "<group>"; };
@@ -286,6 +288,7 @@
 				8100A95F196F075300EB1156 /* Utility + Bridging Header */,
 				8100A961196F07A100EB1156 /* Networking */,
 				8100A960196F078400EB1156 /* Models */,
+				818750541A50C5C8000CC353 /* Managers */,
 				8100A962196F07EB00EB1156 /* UI */,
 			);
 			path = OneSound;
@@ -417,6 +420,14 @@
 				8103D66A19805E9000AE5A27 /* LoggingInSpashViewController.xib */,
 			);
 			name = Other;
+			sourceTree = "<group>";
+		};
+		818750541A50C5C8000CC353 /* Managers */ = {
+			isa = PBXGroup;
+			children = (
+				818750551A50C624000CC353 /* PartyPlaylistManager.swift */,
+			);
+			name = Managers;
 			sourceTree = "<group>";
 		};
 		8195347D19777A5C000B97A3 /* Modal */ = {
@@ -655,6 +666,7 @@
 				81414DCE197DD1F800081132 /* EnumHackExtensions.swift in Sources */,
 				815831111974308E0011D3CE /* OneSound Colors.swift in Sources */,
 				8158314219748F730011D3CE /* PartyMembersViewController.swift in Sources */,
+				818750561A50C624000CC353 /* PartyPlaylistManager.swift in Sources */,
 				8158313A19747F7B0011D3CE /* PartyTabBarController.swift in Sources */,
 				8195347B19775FCE000B97A3 /* LoginColorCell.swift in Sources */,
 				8108DF97199BBC900040B8E7 /* CreatePartyViewController.swift in Sources */,

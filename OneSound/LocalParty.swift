@@ -50,14 +50,17 @@ class LocalParty: NSObject {
     
     var delegate: LocalPartyDelegate!
     
+    let playlistManager = PartyPlaylistManager()
+    
     var partyID: Int!
     var isPrivate: Bool!
     var hostUserID: Int?
     var name: String!
     var strictness: Int!
     
-    var songs = [Song]()
+    //var songs = [Song]()
     var members = [User]()
+    
     var currentSong: Song?
     var currentUser: User?
     var queueSong: Song?
@@ -612,7 +615,7 @@ class LocalParty: NSObject {
         name = ""
         strictness = 0
         
-        songs = []
+        playlistManager.reset()
         members = []
         currentSong = nil
         currentUser = nil
@@ -645,7 +648,7 @@ extension LocalParty {
         let shouldAttempt = !recentlyGotNextSong
         disallowGetNextSongCallTemporarily()
         
-        if shouldAttempt {
+        if partyID != 0 && partyID != nil && shouldAttempt {
             let localUser = LocalUser.sharedUser
             OSAPI.sharedClient.GETNextSong(pid,
                 success: { data, responseObject in
@@ -681,40 +684,43 @@ extension LocalParty {
     }
     
     func updateCurrentSongAndUser(pid: Int, completion: completionClosure? = nil, noCurrentSong: completionClosure? = nil, failureAddOn: completionClosure? = nil) {
-        OSAPI.sharedClient.GETCurrentSong(pid,
-            success: { data, responseObject in
-                let responseJSON = JSONValue(responseObject)
-                println(responseJSON)
-                
-                self.currentSong = Song(json: responseJSON)
-                self.currentUser = User(json: responseJSON["user"])
-                
-                if completion != nil {
-                    completion!()
-                }
-            },
-            failure: { task, error in
-                var shouldDoDefaultFailureBlock = true
-                
-                if let response = task.response as? NSHTTPURLResponse {
-                    println("errorResponseCode:\(response.statusCode)")
-                    if response.statusCode == 404 && noCurrentSong != nil {
-                        shouldDoDefaultFailureBlock = false
-                        if noCurrentSong != nil {
-                            noCurrentSong!()
+        
+        if partyID != 0 && partyID != nil {
+            OSAPI.sharedClient.GETCurrentSong(pid,
+                success: { data, responseObject in
+                    let responseJSON = JSONValue(responseObject)
+                    println(responseJSON)
+                    
+                    self.currentSong = Song(json: responseJSON)
+                    self.currentUser = User(json: responseJSON["user"])
+                    
+                    if completion != nil {
+                        completion!()
+                    }
+                },
+                failure: { task, error in
+                    var shouldDoDefaultFailureBlock = true
+                    
+                    if let response = task.response as? NSHTTPURLResponse {
+                        println("errorResponseCode:\(response.statusCode)")
+                        if response.statusCode == 404 && noCurrentSong != nil {
+                            shouldDoDefaultFailureBlock = false
+                            if noCurrentSong != nil {
+                                noCurrentSong!()
+                            }
                         }
+                        
                     }
                     
-                }
-                
-                if shouldDoDefaultFailureBlock == true {
-                    if failureAddOn != nil {
-                        failureAddOn!()
+                    if shouldDoDefaultFailureBlock == true {
+                        if failureAddOn != nil {
+                            failureAddOn!()
+                        }
+                        defaultAFHTTPFailureBlock!(task: task, error: error)
                     }
-                    defaultAFHTTPFailureBlock!(task: task, error: error)
                 }
-            }
-        )
+            )
+        }
     }
     
     func joinParty(pid: Int, JSONUpdateCompletion: completionClosure? = nil, failureAddOn: completionClosure? = nil) {
@@ -732,7 +738,6 @@ extension LocalParty {
                     
                     self.updateMainPartyInfoFromJSON(responseJSON, JSONUpdateCompletion)
                     self.updatePartyMembers(pid)
-                    self.updatePartySongs(pid)
                 }, failure: { task, error in
                     if failureAddOn != nil {
                         failureAddOn!()
@@ -743,17 +748,6 @@ extension LocalParty {
         } else {
             println("ERROR: trying to join a party with pid = 0")
         }
-    }
-
-    func updatePartySongs(pid: Int, completion: completionClosure? = nil) {
-        OSAPI.sharedClient.GETPartyPlaylist(pid,
-            success: { data, responseObject in
-                let responseJSON = JSONValue(responseObject)
-                println(responseJSON)
-                self.updatePartySongInfoFromJSON(responseJSON, completion: completion)
-            },
-            failure: defaultAFHTTPFailureBlock
-        )
     }
     
     func updatePartyMembers(pid: Int, completion: completionClosure? = nil) {
@@ -859,24 +853,6 @@ extension LocalParty {
         }
         
         println("UPDATED PARTY WITH \(self.members.count) MEMBERS")
-    }
-    
-    func updatePartySongInfoFromJSON(json: JSONValue, completion: completionClosure? = nil) {
-        var newSongsArray = [Song]()
-        
-        var songsArray = json.array
-        if songsArray != nil {
-            for song in songsArray! {
-                newSongsArray.append(Song(json: song))
-            }
-            songs = newSongsArray
-        }
-        
-        if completion != nil {
-            completion!()
-        }
-        
-        println("UPDATED PARTY WITH \(self.songs.count) SONGS")
     }
     
     func updateMainPartyInfoFromJSON(json: JSONValue, completion: completionClosure? = nil) {
