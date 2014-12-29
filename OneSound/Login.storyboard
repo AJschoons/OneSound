@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6254" systemVersion="14C81f" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6254" systemVersion="14B25" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6247"/>
     </dependencies>
@@ -15,7 +15,7 @@
                         <sections>
                             <tableViewSection headerTitle="Name" footerTitle="Must have 3-15 characters. Only a-z, A-Z, 0-9 allowed" id="Wyo-xR-7vY">
                                 <cells>
-                                    <tableViewCell contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" id="JXU-bm-gRK">
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" rowHeight="44" id="JXU-bm-gRK">
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="JXU-bm-gRK" id="fSh-hC-wDJ">
                                             <autoresizingMask key="autoresizingMask"/>
@@ -50,8 +50,7 @@
                                                 <constraint firstItem="Ush-wc-gyX" firstAttribute="centerY" secondItem="xCk-eN-exj" secondAttribute="centerY" constant="0.5" id="9iy-1J-I24"/>
                                                 <constraint firstAttribute="bottom" secondItem="fBs-me-nkp" secondAttribute="bottom" id="EHj-r4-osd"/>
                                                 <constraint firstItem="fBs-me-nkp" firstAttribute="leading" secondItem="fSh-hC-wDJ" secondAttribute="leading" id="FvP-cf-QSr"/>
-                                                <constraint firstItem="xCk-eN-exj" firstAttribute="top" secondItem="fSh-hC-wDJ" secondAttribute="top" constant="11.5" id="HOH-TS-JmD"/>
-                                                <constraint firstAttribute="centerY" secondItem="xCk-eN-exj" secondAttribute="centerY" constant="-0.25" id="NC4-Hc-aUb"/>
+                                                <constraint firstAttribute="centerY" secondItem="xCk-eN-exj" secondAttribute="centerY" id="NC4-Hc-aUb"/>
                                                 <constraint firstItem="fBs-me-nkp" firstAttribute="top" secondItem="fSh-hC-wDJ" secondAttribute="top" id="WQK-pm-AvW"/>
                                                 <constraint firstAttribute="trailing" secondItem="fBs-me-nkp" secondAttribute="trailing" constant="-5" id="mLn-cg-vRS"/>
                                                 <constraint firstAttribute="trailing" secondItem="Ush-wc-gyX" secondAttribute="trailing" constant="15" id="mNK-IV-V7X"/>
