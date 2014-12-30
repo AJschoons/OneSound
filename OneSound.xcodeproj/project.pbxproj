@@ -65,6 +65,7 @@
 		8195347C19775FCE000B97A3 /* LoginColorCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8195347A19775FCE000B97A3 /* LoginColorCell.xib */; };
 		81953480197857E6000B97A3 /* LocalUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8195347F197857E6000B97A3 /* LocalUser.swift */; };
 		81953482197860A7000B97A3 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 81953481197860A7000B97A3 /* Security.framework */; };
+		81ACB3E81A5273AD0039529E /* PartyMembersManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81ACB3E71A5273AD0039529E /* PartyMembersManager.swift */; };
 		81B17D8F196F2A680062943C /* SideNavigationMenuCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81B17D8D196F2A680062943C /* SideNavigationMenuCell.swift */; };
 		81B17D90196F2A680062943C /* SideNavigationMenuCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 81B17D8E196F2A680062943C /* SideNavigationMenuCell.xib */; };
 		81BC27BD199DC0E2006233AE /* PartySongCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81BC27BB199DC0E2006233AE /* PartySongCell.swift */; };
@@ -157,6 +158,7 @@
 		8195347F197857E6000B97A3 /* LocalUser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocalUser.swift; sourceTree = "<group>"; };
 		81953481197860A7000B97A3 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		81953483197862F5000B97A3 /* OneSound.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = OneSound.entitlements; sourceTree = "<group>"; };
+		81ACB3E71A5273AD0039529E /* PartyMembersManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PartyMembersManager.swift; sourceTree = "<group>"; };
 		81B17D8D196F2A680062943C /* SideNavigationMenuCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SideNavigationMenuCell.swift; sourceTree = "<group>"; };
 		81B17D8E196F2A680062943C /* SideNavigationMenuCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SideNavigationMenuCell.xib; sourceTree = "<group>"; };
 		81BC27BB199DC0E2006233AE /* PartySongCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PartySongCell.swift; sourceTree = "<group>"; };
@@ -426,6 +428,7 @@
 			isa = PBXGroup;
 			children = (
 				818750551A50C624000CC353 /* PartyPlaylistManager.swift */,
+				81ACB3E71A5273AD0039529E /* PartyMembersManager.swift */,
 			);
 			name = Managers;
 			sourceTree = "<group>";
@@ -674,6 +677,7 @@
 				8176451A197EA192001BF7A7 /* StoriesViewController.swift in Sources */,
 				8130D7D41986B8EB00DD4B47 /* LocalParty.swift in Sources */,
 				8158314C1976D54F0011D3CE /* LoginViewController.swift in Sources */,
+				81ACB3E81A5273AD0039529E /* PartyMembersManager.swift in Sources */,
 				8158311A197471ED0011D3CE /* PartyMainViewController.swift in Sources */,
 				81583116197443940011D3CE /* SideNavigationUserCell.swift in Sources */,
 				81929C88196C2C2C006F336B /* OneSoundHTTPClient.swift in Sources */,
@@ -798,7 +802,7 @@
 				CLANG_X86_VECTOR_INSTRUCTIONS = default;
 				CODE_SIGN_ENTITLEMENTS = OneSound/OneSound.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Adam Schoonmaker (RNKT643CPZ)";
 				GCC_PRECOMPILE_PREFIX_HEADER = NO;
 				GCC_SHORT_ENUMS = YES;
 				INFOPLIST_FILE = OneSound/Info.plist;
@@ -822,7 +826,7 @@
 				CLANG_X86_VECTOR_INSTRUCTIONS = default;
 				CODE_SIGN_ENTITLEMENTS = OneSound/OneSound.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Adam Schoonmaker (RNKT643CPZ)";
 				GCC_PRECOMPILE_PREFIX_HEADER = NO;
 				GCC_SHORT_ENUMS = YES;
 				INFOPLIST_FILE = OneSound/Info.plist;

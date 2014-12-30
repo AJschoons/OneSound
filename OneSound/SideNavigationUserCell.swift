@@ -51,7 +51,7 @@ class SideNavigationUserCell: UITableViewCell {
                 println("full user with valid photo; use their photo")
                 userImage.image = LocalUser.sharedUser.photo
                 
-                let blurredImage = LocalUser.sharedUser.photo!.applyBlurWithRadius(5, tintColor: nil, saturationDeltaFactor: 1.3, maskImage: nil)
+                let blurredImage = LocalUser.sharedUser.photo!.applyBlurWithRadius(2, tintColor: nil, saturationDeltaFactor: 1.3, maskImage: nil)
                 blurredUserImage.image = blurredImage
                 
                 setupOSLabelToDefaultDesiredLook(userLabel)
@@ -109,7 +109,7 @@ class SideNavigationUserCell: UITableViewCell {
                             let image = UIImage(data: imageData)
                             userImage.image = image
                             
-                            let blurredImage = image!.applyBlurWithRadius(5, tintColor: nil, saturationDeltaFactor: 1.3, maskImage: nil)
+                            let blurredImage = image!.applyBlurWithRadius(2, tintColor: nil, saturationDeltaFactor: 1.3, maskImage: nil)
                             blurredUserImage.image = blurredImage
                             
                             setupOSLabelToDefaultDesiredLook(userLabel)

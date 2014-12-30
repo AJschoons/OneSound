@@ -64,7 +64,7 @@ class SideNavigationViewController: UITableViewController {
         
         sideMenuSelectedIcons = [nil, UIImage(named: "sideMenuPartyIconSelected"), UIImage(named: "sideMenuSearchIconSelected"), UIImage(named: "sideMenuProfileIconSelected")]
         sideMenuUnselectedIcons = [nil, UIImage(named: "sideMenuPartyIconUnselected"), UIImage(named: "sideMenuSearchIconUnselected"), UIImage(named: "sideMenuProfileIconUnselected")]
-        sideMenuItemLabels = [nil, "Party", "Search", "Profile"]
+        sideMenuItemLabels = [nil, "Party", "Party Search", "Profile"]
         
         // Register the cells
         var nib = UINib(nibName: "SideNavigationMenuCell", bundle: nil)

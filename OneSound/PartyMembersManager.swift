@@ -1,31 +1,31 @@
 //
-//  PartyPlaylistManager.swift
+//  PartyMembersManager.swift
 //  OneSound
 //
-//  Created by adam on 12/28/14.
+//  Created by adam on 12/30/14.
 //  Copyright (c) 2014 Adam Schoonmaker. All rights reserved.
 //
 
 import Foundation
 
-// A class to manage the party's playlist, with paging
-class PartyPlaylistManager
+// A class to manage the party's members, with paging
+class PartyMembersManager
 {
     var hasMorePages: Bool {
         return currentPage < totalPages
     }
     
-    private(set) var songs = [Song]()
+    private(set) var users = [User]()
     // Used while updating so table still has something to show
-    private var updatedSongs = [Song]()
+    private var updatedUsers = [User]()
     
     private var currentPage = 0
     
     private var totalPages: Int {
-        return Int(ceil(Double(totalSongs) / Double(pageSize))) - 1
+        return Int(ceil(Double(totalUsers) / Double(pageSize))) - 1
     }
     private var pageSize = 20 // Songs/Page
-    private var totalSongs = 0
+    private var totalUsers = 0
     
     private var updating = false
     
@@ -40,12 +40,12 @@ class PartyPlaylistManager
             updating = true
             
             let pageStartingFromZero = currentPage - 1
-            OSAPI.sharedClient.GETPartyPlaylist(LocalParty.sharedParty.partyID, page: currentPage, pageSize: pageSize,
+            OSAPI.sharedClient.GETPartyMembers(LocalParty.sharedParty.partyID, page: currentPage, pageSize: pageSize,
                 success: { data, responseObject in
                     let responseJSON = JSONValue(responseObject)
-                    //println(responseJSON)
+                    println(responseJSON)
                     
-                    self.updatePlaylistFromJSON(responseJSON, completion: completion)
+                    self.updateMembersFromJSON(responseJSON, completion: completion)
                 },
                 failure: defaultAFHTTPFailureBlock
             )
@@ -55,43 +55,42 @@ class PartyPlaylistManager
     // Resets all information to like new
     func reset()
     {
-        songs = []
-        totalSongs = 0
+        users = []
+        totalUsers = 0
         clearForUpdate()
     }
     
-    // Keeps the songs for displaying while updating
+    // Keeps the members for displaying while updating
     func clearForUpdate()
     {
-        updatedSongs = []
+        updatedUsers = []
         currentPage = -1
         updating = false
     }
     
-    private func updatePlaylistFromJSON(json: JSONValue, completion: completionClosure? = nil)
+    private func updateMembersFromJSON(json: JSONValue, completion: completionClosure? = nil)
     {
-        totalSongs = json["paging"]["total_count"].integer!
+        totalUsers = json["paging"]["total_count"].integer!
         
-        var songsArray = json["results"].array
-        var songsAdded = 0
+        var usersArray = json["results"].array
+        var usersAdded = 0
         
-        if songsArray != nil
+        if usersArray != nil
         {
-            songsAdded = songsArray!.count
+            usersAdded = usersArray!.count
             
             // If the page is zero, clears the array
-            if currentPage == 0 { updatedSongs = [] }
+            if currentPage == 0 { updatedUsers = [] }
             
-            for song in songsArray!
+            for user in usersArray!
             {
-                updatedSongs.append(Song(json: song))
+                updatedUsers.append(User(json: user))
             }
         }
         
-        songs = updatedSongs
+        users = updatedUsers
         updating = false
         if completion != nil { completion!() }
-        println("UPDATED PLAYLIST WITH \(songsAdded) SONGS OF THE \(self.songs.count)")
+        println("UPDATED MEMBERS WITH \(usersAdded) USERS OF THE \(self.users.count)")
     }
-    
 }

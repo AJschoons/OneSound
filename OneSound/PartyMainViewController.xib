@@ -51,7 +51,7 @@
                     <nil key="highlightedColor"/>
                 </label>
                 <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" alpha="0.0" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Text for a more detailed message below the main message" textAlignment="center" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="UYc-8M-RBr">
-                    <rect key="frame" x="20" y="244" width="560" height="13.5"/>
+                    <rect key="frame" x="20" y="244" width="560" height="14"/>
                     <fontDescription key="fontDescription" type="system" pointSize="11"/>
                     <color key="textColor" red="0.5170014500617981" green="0.51698595285415649" blue="0.51699477434158325" alpha="1" colorSpace="calibratedRGB"/>
                     <nil key="highlightedColor"/>
@@ -102,7 +102,7 @@
                     <color key="trackTintColor" red="0.83041405680000002" green="0.83038914200000002" blue="0.83040332790000004" alpha="1" colorSpace="calibratedRGB"/>
                 </progressView>
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Song Name" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="none" minimumScaleFactor="0.75000000000000022" translatesAutoresizingMaskIntoConstraints="NO" id="oBv-JJ-MLy" customClass="OSLabel" customModule="OneSound" customModuleProvider="target">
-                    <rect key="frame" x="10" y="268.5" width="537" height="24"/>
+                    <rect key="frame" x="10" y="269" width="537" height="24"/>
                     <fontDescription key="fontDescription" type="boldSystem" pointSize="20"/>
                     <color key="textColor" red="1" green="0.99997437000274658" blue="0.99999129772186279" alpha="1" colorSpace="calibratedRGB"/>
                     <nil key="highlightedColor"/>
@@ -180,7 +180,7 @@
                             </constraints>
                         </view>
                         <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="YLg-Nv-CF4">
-                            <rect key="frame" x="338" y="75" width="112.5" height="24"/>
+                            <rect key="frame" x="338" y="75" width="113" height="24"/>
                             <color key="backgroundColor" red="0.106306769" green="0.82194298509999997" blue="0.60250616069999996" alpha="1" colorSpace="calibratedRGB"/>
                             <constraints>
                                 <constraint firstAttribute="height" constant="24" id="nBH-lc-6hA"/>
@@ -270,7 +270,7 @@
                             </constraints>
                         </view>
                         <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="1234567891234567" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="16" translatesAutoresizingMaskIntoConstraints="NO" id="TR4-6S-KZ0">
-                            <rect key="frame" x="12" y="73" width="177.5" height="22"/>
+                            <rect key="frame" x="12" y="73" width="178" height="22"/>
                             <constraints>
                                 <constraint firstAttribute="height" constant="22" id="63R-qv-5dZ"/>
                                 <constraint firstAttribute="width" relation="lessThanOrEqual" constant="180" id="FTH-a0-cra"/>

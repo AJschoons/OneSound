@@ -51,15 +51,13 @@ class LocalParty: NSObject {
     var delegate: LocalPartyDelegate!
     
     let playlistManager = PartyPlaylistManager()
+    let membersManager = PartyMembersManager()
     
     var partyID: Int!
     var isPrivate: Bool!
     var hostUserID: Int?
     var name: String!
     var strictness: Int!
-    
-    //var songs = [Song]()
-    var members = [User]()
     
     var currentSong: Song?
     var currentUser: User?
@@ -97,12 +95,18 @@ class LocalParty: NSObject {
         super.init()
         
         partyRefreshTimer = NSTimer.scheduledTimerWithTimeInterval(10, target: self, selector: "onPartyRefreshTimer", userInfo: nil, repeats: true)
-        
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "audioPlayerInterruption:", name: AVAudioSessionInterruptionNotification, object: nil)
+
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "handleAudioSessionInterruption:", name: AVAudioSessionInterruptionNotification, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "handleMediaServicesReset", name: AVAudioSessionMediaServicesWereResetNotification, object: nil)
         
         // Refresh the party info when the user info changes
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "refreshForUserInfoChange", name: LocalUserInformationDidChangeNotification, object: nil)
         
+        initializeAudioSession()
+        initializeAudioPlayer()
+    }
+    
+    func initializeAudioSession() {
         // Setup audio session
         audioSession = AVAudioSession.sharedInstance()
         
@@ -125,7 +129,9 @@ class LocalParty: NSObject {
                 println(setCategoryError)
             }
         }
-        
+    }
+    
+    func initializeAudioPlayer() {
         // Setup audio player
         let equalizerB:(Float32, Float32, Float32, Float32, Float32, Float32, Float32, Float32, Float32, Float32, Float32, Float32, Float32, Float32, Float32, Float32, Float32, Float32, Float32, Float32, Float32, Float32, Float32, Float32) = (50, 100, 200, 400, 800, 600, 2600, 16000, 0, 0, 0, 0, 0, 0 , 0, 0, 0, 0, 0, 0, 0, 0 , 0, 0 )
         var optns:STKAudioPlayerOptions = STKAudioPlayerOptions(flushQueueOnSeek: true, enableVolumeMixer: true, equalizerBandFrequencies:equalizerB,readBufferSize: (64 * 1024), bufferSizeInSeconds: 10, secondsRequiredToStartPlaying: 1, gracePeriodAfterSeekInSeconds: 0.5, secondsRequiredToStartPlayingAfterBufferUnderun: 7.5)
@@ -616,7 +622,7 @@ class LocalParty: NSObject {
         strictness = 0
         
         playlistManager.reset()
-        members = []
+        membersManager.reset()
         currentSong = nil
         currentUser = nil
         queueSong = nil
@@ -737,7 +743,6 @@ extension LocalParty {
                     LocalUser.sharedUser.party = pid
                     
                     self.updateMainPartyInfoFromJSON(responseJSON, JSONUpdateCompletion)
-                    self.updatePartyMembers(pid)
                 }, failure: { task, error in
                     if failureAddOn != nil {
                         failureAddOn!()
@@ -748,17 +753,6 @@ extension LocalParty {
         } else {
             println("ERROR: trying to join a party with pid = 0")
         }
-    }
-    
-    func updatePartyMembers(pid: Int, completion: completionClosure? = nil) {
-        OSAPI.sharedClient.GETPartyMembers(pid,
-            success: { data, responseObject in
-                let responseJSON = JSONValue(responseObject)
-                println(responseJSON)
-                self.updatePartyMembersInfoFromJSON(responseJSON, completion: completion)
-            },
-            failure: defaultAFHTTPFailureBlock
-        )
     }
     
     func createNewParty(name: String, privacy: Bool, strictness: Int, respondToChangeAttempt: (Bool) -> (), failure: AFHTTPFailureBlock = defaultAFHTTPFailureBlockForSigningIn) {
@@ -835,24 +829,6 @@ extension LocalParty {
                     respondToChangeAttempt(false)
                 }
             }, failure: defaultAFHTTPFailureBlock)
-    }
-    
-    func updatePartyMembersInfoFromJSON(json: JSONValue, completion: completionClosure? = nil) {
-        var newMembersArray = [User]()
-        
-        var membersArray = json.array
-        if membersArray != nil {
-            for user in membersArray! {
-                newMembersArray.append(User(json: user))
-            }
-            members = newMembersArray
-        }
-        
-        if completion != nil {
-            completion!()
-        }
-        
-        println("UPDATED PARTY WITH \(self.members.count) MEMBERS")
     }
     
     func updateMainPartyInfoFromJSON(json: JSONValue, completion: completionClosure? = nil) {
@@ -940,43 +916,40 @@ extension LocalParty: STKAudioPlayerDelegate {
 
 extension LocalParty {
     // MARK: handling AVAudioSession notifications
-    // TODO: handle audio session interruptions
-    func audioPlayerInterruption(n: NSNotification) {
+    func handleAudioSessionInterruption(n: NSNotification) {
+        if n.name != AVAudioSessionInterruptionNotification || n.userInfo == nil || !userIsHost { return }
+        
         println("AVAudioSessionInterruptionNotification")
-        if userIsHost {
-            // TODO: figure out a way around this error
-            /*
-            let userInfo = n.userInfo as NSDictionary
-            let interruptionType = userInfo[AVAudioSessionInterruptionTypeKey] as UInt
-            switch interruptionType {
-            case AVAudioSessionInterruptionType.Began.toRaw():
-                println("interruption began")
-                // TODO: respond to began interruption
-                /* apples example
-                if (playing) {
-                playing = NO;
-                interruptedOnPlayback = YES;
-                [self updateUserInterface];
+        var info = n.userInfo!
+        var interruptionTypeValue: UInt = 0
+        (info[AVAudioSessionInterruptionTypeKey] as NSValue).getValue(&interruptionTypeValue)
+        if let type = AVAudioSessionInterruptionType(rawValue: interruptionTypeValue) {
+            switch type {
+            case .Began:
+                // Audio has stopped, already inactive
+                // Change state of UI, etc., to reflect non-playing state
+                println("began")
+                pauseSong()
+            case .Ended:
+                // Make session active
+                // Update user interface
+                println("ended")
+                var interruptionOptionValue: UInt = 0
+                (info[AVAudioSessionInterruptionOptionKey] as NSValue).getValue(&interruptionOptionValue)
+                let option = AVAudioSessionInterruptionOptions(rawValue: interruptionOptionValue)
+                if option == AVAudioSessionInterruptionOptions.OptionShouldResume {
+                    // AVAudioSessionInterruptionOptionShouldResume option
+                    // Here you should continue playback
+                    playSong()
                 }
-                */
-            case AVAudioSessionInterruptionType.Ended.toRaw():
-                println("interruption ended")
-                // TODO: respond to ended interruption
-                /* apples example
-                if (interruptedOnPlayback) {
-                [player prepareToPlay];
-                [player play];
-                playing = YES;
-                interruptedOnPlayback = NO;
-                }
-                */
-            default:
-                println("ERROR interruption type was neither began or ended")
             }
-            */
         }
     }
     
-    // TODO: "Responding to a Media Server Reset"
-    // Apple says it's rare but can happen; do this when the app is baically done?
+    // Apple: "Responding to a Media Server Reset"
+    // Apple says it's rare but can happen
+    func handleMediaServicesReset() {
+        initializeAudioSession()
+        initializeAudioPlayer()
+    }
 }

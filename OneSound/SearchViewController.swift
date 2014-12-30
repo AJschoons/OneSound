@@ -86,8 +86,7 @@ class SearchViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view.
-        title = "Search"
+        title = "Party Search"
         
         // Setup the revealViewController to work for this view controller,
         // add its sideMenu icon to the nav bar

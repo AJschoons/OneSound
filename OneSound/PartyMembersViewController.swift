@@ -14,6 +14,7 @@ let PartyMemberCellIdentifier = "PartyMemberCell"
 class PartyMembersViewController: UIViewController {
     
     let userThumbnailImageCache = (UIApplication.sharedApplication().delegate as AppDelegate).userThumbnailImageCache
+    let membersManager = LocalParty.sharedParty.membersManager
     
     @IBOutlet weak var messageLabel1: UILabel?
     @IBOutlet weak var messageLabel2: UILabel?
@@ -21,6 +22,8 @@ class PartyMembersViewController: UIViewController {
     @IBOutlet weak var membersTable: UITableView!
     
     var tableViewController: UITableViewController!
+    
+    let heightForRows: CGFloat = 64.0
     
     override func viewDidLoad() {
         // Make view respond to network reachability changes
@@ -53,8 +56,10 @@ class PartyMembersViewController: UIViewController {
         refresh()
     }
     
-    func reloadTableData() {
-        membersTable.reloadData()
+    override func viewDidDisappear(animated: Bool) {
+        super.viewDidDisappear(animated)
+        // Scrolls back to top so that top of list is loaded
+        membersTable.contentOffset = CGPointMake(0, 0 - membersTable.contentInset.top)
     }
     
     func refresh() {
@@ -68,11 +73,14 @@ class PartyMembersViewController: UIViewController {
                         hideMessages()
                         hideMembersTable(false)
                         
-                        LocalParty.sharedParty.updatePartyMembers(LocalParty.sharedParty.partyID!,
+                        membersManager.clearForUpdate()
+                        membersManager.update(
                             completion: {
-                                self.membersTable.reloadData()
-                                self.loadImagesForOnScreenRows()
-                                self.tableViewController.refreshControl!.endRefreshing()
+                                dispatchAsyncToMainQueue(action: {
+                                    self.membersTable.reloadData()
+                                    self.loadImagesForOnScreenRows()
+                                    self.tableViewController.refreshControl!.endRefreshing()
+                                })
                             }
                         )
                     } else {
@@ -122,11 +130,12 @@ class PartyMembersViewController: UIViewController {
 
 extension PartyMembersViewController: UITableViewDataSource {
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return LocalParty.sharedParty.members.count
+        let userCount = membersManager.users.count
+        return membersManager.hasMorePages ? (userCount + 1) : (userCount)
     }
     
     func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-        if LocalParty.sharedParty.members.count > 0 {
+        if membersManager.users.count > 0 {
             tableView.backgroundView = nil
             return 1
         } else {
@@ -137,39 +146,62 @@ extension PartyMembersViewController: UITableViewDataSource {
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let membersCell = membersTable.dequeueReusableCellWithIdentifier(PartyMemberCellIdentifier, forIndexPath: indexPath) as PartyMemberCell
+        if indexPath.row < membersManager.users.count {
+            return memberCellForRowAtIndexPath(indexPath, fromTableView: tableView)
+        } else {
+            return loadingCell()
+        }
+    }
+    
+    func loadingCell() -> UITableViewCell {
+        let cell = UITableViewCell(style: UITableViewCellStyle.Default, reuseIdentifier: nil)
+        cell.separatorInset = UIEdgeInsetsMake(0, 0, 0, cell.bounds.size.width)
+        cell.backgroundColor = UIColor.clearColor()
+        let f = cell.frame
+        cell.frame = CGRectMake(f.origin.x, f.origin.y, f.width, heightForRows)
         
-        if indexPath.row <= LocalParty.sharedParty.members.count {
-            let user = LocalParty.sharedParty.members[indexPath.row]
-            
-            setUserInfoLabelsText(upvoteLabel: membersCell.userUpvoteLabel, numUpvotes: user.upvoteCount, songLabel: membersCell.userSongLabel, numSongs: user.songCount, hotnessLabel: membersCell.userHotnessLabel, percentHotness: user.hotnessPercent, userNameLabel: membersCell.userNameLabel, userName: user.name)
-            
-            membersCell.backgroundColor = user.colorToUIColor
-            membersCell.userImage.image = guestUserImageForUserCell
-            
-            if user.guest == false && user.photoURL != nil {
-                if tableView.dragging == false && tableView.decelerating == false {
-                    
-                    userThumbnailImageCache.queryDiskCacheForKey(user.photoURL!,
-                        done: { image, imageCacheType in
-                            if image != nil {
-                                let updateCell = self.membersTable.cellForRowAtIndexPath(indexPath) as? PartyMemberCell
-                                
-                                if updateCell != nil {
-                                    // If the cell for that row is still visible and correct
-                                    updateCell!.userImage.image = image
-                                    updateCell!.setNeedsLayout()
-                                }
-                            } else {
-                                self.startImageDownload(user.photoURL!, forIndexPath: indexPath)
+        cell.tag = LoadingCellTag
+        
+        let activityIndicator = UIActivityIndicatorView(activityIndicatorStyle: UIActivityIndicatorViewStyle.Gray)
+        activityIndicator.center = cell.center
+        cell.addSubview(activityIndicator)
+        activityIndicator.startAnimating()
+        
+        return cell
+    }
+    
+    func memberCellForRowAtIndexPath(indexPath: NSIndexPath, fromTableView tableView: UITableView) -> PartyMemberCell {
+        var membersCell = membersTable.dequeueReusableCellWithIdentifier(PartyMemberCellIdentifier, forIndexPath: indexPath) as PartyMemberCell
+        
+        let user = membersManager.users[indexPath.row]
+        
+        setUserInfoLabelsText(upvoteLabel: membersCell.userUpvoteLabel, numUpvotes: user.upvoteCount, songLabel: membersCell.userSongLabel, numSongs: user.songCount, hotnessLabel: membersCell.userHotnessLabel, percentHotness: user.hotnessPercent, userNameLabel: membersCell.userNameLabel, userName: user.name)
+        
+        membersCell.backgroundColor = user.colorToUIColor
+        membersCell.userImage.image = guestUserImageForUserCell
+        
+        if user.guest == false && user.photoURL != nil {
+            if tableView.dragging == false && tableView.decelerating == false {
+                
+                userThumbnailImageCache.queryDiskCacheForKey(user.photoURL!,
+                    done: { image, imageCacheType in
+                        if image != nil {
+                            let updateCell = self.membersTable.cellForRowAtIndexPath(indexPath) as? PartyMemberCell
+                            
+                            if updateCell != nil {
+                                // If the cell for that row is still visible and correct
+                                updateCell!.userImage.image = image
+                                updateCell!.setNeedsLayout()
                             }
+                        } else {
+                            self.startImageDownload(user.photoURL!, forIndexPath: indexPath)
                         }
-                    )
-                    
-                }
-            } else {
-                membersCell.userImage.image = guestUserImageForUserCell
+                    }
+                )
+                
             }
+        } else {
+            membersCell.userImage.image = guestUserImageForUserCell
         }
         
         return membersCell
@@ -210,7 +242,7 @@ extension PartyMembersViewController: UITableViewDataSource {
         let visiblePaths = membersTable.indexPathsForVisibleRows() as [NSIndexPath]
         
         for path in visiblePaths {
-            let user = LocalParty.sharedParty.members[path.row]
+            let user = membersManager.users[path.row]
             
             if user.photoURL != nil {
                 userThumbnailImageCache.queryDiskCacheForKey(user.photoURL!,
@@ -242,7 +274,19 @@ extension PartyMembersViewController: UITableViewDataSource {
 
 extension PartyMembersViewController: UITableViewDelegate {
     func tableView(tableView: UITableView!, heightForRowAtIndexPath indexPath: NSIndexPath!) -> CGFloat {
-        return 64.0
+        return heightForRows
+    }
+    
+    func tableView(tableView: UITableView, willDisplayCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath) {
+        if cell.tag == LoadingCellTag {
+            membersManager.update(
+                completion: {
+                    self.membersTable.reloadData()
+                    self.loadImagesForOnScreenRows()
+                    self.tableViewController.refreshControl!.endRefreshing()
+                }
+            )
+        }
     }
 }
 
@@ -262,12 +306,3 @@ extension PartyMembersViewController: UIScrollViewDelegate {
         loadImagesForOnScreenRows()
     }
 }
-
-/*
-extension PartyMembersViewController: SDWebImageManagerDelegate {
-    func imageManager(imageManager: SDWebImageManager!, transformDownloadedImage image: UIImage!, withURL imageURL: NSURL!) -> UIImage! {
-        println("transforming downloaded image")
-        return cropBiggestCenteredSquareImageFromImage(image, sideLength: 50)
-    }
-}
-*/

@@ -338,18 +338,23 @@ extension OSAPI {
         GET(urlString, parameters: params, success: success, failure: failureWithExtraAttempt)
     }
     
-    func GETPartyMembers(pid: Int, success: AFHTTPSuccessBlock, failure: AFHTTPFailureBlock, extraAttempts: Int = defaultEA) {
+    // Get the party's members
+    func GETPartyMembers(pid: Int, page: Int, pageSize: Int, success: AFHTTPSuccessBlock, failure: AFHTTPFailureBlock, extraAttempts: Int = defaultEA) {
         let urlString = "\(baseURLString)party/\(pid)/members"
+        
+        var params = Dictionary<String, AnyObject>()
+        params.updateValue(page, forKey: "page")
+        params.updateValue(pageSize, forKey: "limit") // Server is 20 by default
         
         let failureWithExtraAttempt: AFHTTPFailureBlock = { task, error in
             if errorShouldBeHandledWithRepeatedRequest(task, error, attemptsLeft: extraAttempts) {
-                self.GETPartyMembers(pid, success: success, failure: failure, extraAttempts: (extraAttempts - 1))
+                self.GETPartyMembers(pid, page: page, pageSize: pageSize, success: success, failure: failure, extraAttempts: (extraAttempts - 1))
             } else {
                 failure!(task: task, error: error)
             }
         }
         
-        GET(urlString, parameters: nil, success: success, failure: failureWithExtraAttempt)
+        GET(urlString, parameters: params, success: success, failure: failureWithExtraAttempt)
     }
     
     // Create a new party
