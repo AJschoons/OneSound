@@ -70,7 +70,7 @@ class PartyTabBarController: UITabBarController {
             navigationItem.rightBarButtonItem = pMainVC.rightBarButton
             if pMainVC.rightBarButton == pMainVC.createPartyButton {
                 // Disabled when guest
-                navigationItem.rightBarButtonItem!.enabled = !LocalUser.sharedUser.guest
+                navigationItem.rightBarButtonItem!.enabled = !UserManager.sharedUser.guest
             }
         }
     }

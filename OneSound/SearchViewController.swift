@@ -67,7 +67,7 @@ class SearchViewController: UIViewController {
     }
     
     func createParty() {
-        if LocalUser.sharedUser.guest == false {
+        if UserManager.sharedUser.guest == false {
             let createPartyStoryboard = UIStoryboard(name: CreatePartyStoryboardName, bundle: nil)
             let createPartyViewController = createPartyStoryboard.instantiateViewControllerWithIdentifier(CreatePartyViewControllerIdentifier) as CreatePartyViewController
             createPartyViewController.partyAlreadyExists = false
@@ -120,9 +120,9 @@ class SearchViewController: UIViewController {
         
         // Make view respond to network reachability changes
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "refresh", name: AFNetworkingReachabilityDidChangeNotification, object: nil)
-        // Make sure view knows the user is setup so it won't keep displaying 'Not signed into account' when there is no  internet connection when app launches and then the network comes back and LocalUser is setup
+        // Make sure view knows the user is setup so it won't keep displaying 'Not signed into account' when there is no  internet connection when app launches and then the network comes back and UserManager is setup
         // Also will refresh the "Create" button
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "refresh", name: LocalUserInformationDidChangeNotification, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "refresh", name: UserManagerInformationDidChangeNotification, object: nil)
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -164,10 +164,10 @@ class SearchViewController: UIViewController {
         println("refreshing PartyMembersViewController")
         
         if AFNetworkReachabilityManager.sharedManager().reachable {
-            if LocalUser.sharedUser.setup == true {
+            if UserManager.sharedUser.setup == true {
                 hideMessages()
                 
-                if LocalUser.sharedUser.guest == true {
+                if UserManager.sharedUser.guest == true {
                     createPartyButton.enabled = false
                 } else {
                     createPartyButton.enabled = true
@@ -263,19 +263,19 @@ extension SearchViewController: UITableViewDelegate {
         
         let selectedParty = searchResultsArray[indexPath.row]
         
-        if LocalUser.sharedUser.setup == true {
-            LocalParty.sharedParty.joinParty(selectedParty.partyID,
+        if UserManager.sharedUser.setup == true {
+            PartyManager.sharedParty.joinParty(selectedParty.partyID,
                 JSONUpdateCompletion: {
-                    LocalParty.sharedParty.refresh()
+                    PartyManager.sharedParty.refresh()
                     self.searchResultsArray = [Party]() // Remove the results so they have to search again
                     
-                    if LocalParty.sharedParty.setup == true {
+                    if PartyManager.sharedParty.setup == true {
                         let delegate = UIApplication.sharedApplication().delegate as AppDelegate
                         let snvc = delegate.revealViewController!.rearViewController as SideNavigationViewController
                         snvc.programaticallySelectRow(1)
                     }
                 }, failureAddOn: {
-                    LocalParty.sharedParty.refresh()
+                    PartyManager.sharedParty.refresh()
                     self.searchResultsArray = [] // Remove the results so they have to search again
                     tableView.reloadData()
                     let alert = UIAlertView(title: "Problem Joining Party", message: "Unable to join party at this time, please try again", delegate: nil, cancelButtonTitle: "Ok")

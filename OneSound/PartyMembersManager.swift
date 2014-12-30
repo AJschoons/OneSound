@@ -40,7 +40,7 @@ class PartyMembersManager
             updating = true
             
             let pageStartingFromZero = currentPage - 1
-            OSAPI.sharedClient.GETPartyMembers(LocalParty.sharedParty.partyID, page: currentPage, pageSize: pageSize,
+            OSAPI.sharedClient.GETPartyMembers(PartyManager.sharedParty.partyID, page: currentPage, pageSize: pageSize,
                 success: { data, responseObject in
                     let responseJSON = JSONValue(responseObject)
                     println(responseJSON)

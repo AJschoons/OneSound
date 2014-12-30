@@ -80,11 +80,11 @@ class PartyMainViewController: UIViewController {
     }
     
     @IBAction func play(sender: AnyObject) {
-        LocalParty.sharedParty.playSong()
+        PartyManager.sharedParty.playSong()
     }
     
     @IBAction func pause(sender: AnyObject) {
-        LocalParty.sharedParty.pauseSong()
+        PartyManager.sharedParty.pauseSong()
     }
     
     @IBAction func addSong(sender: AnyObject) {
@@ -94,7 +94,7 @@ class PartyMainViewController: UIViewController {
     }
     
     func createParty() {
-        if LocalUser.sharedUser.guest == false {
+        if UserManager.sharedUser.guest == false {
             let createPartyStoryboard = UIStoryboard(name: CreatePartyStoryboardName, bundle: nil)
             let createPartyViewController = createPartyStoryboard.instantiateViewControllerWithIdentifier(CreatePartyViewControllerIdentifier) as CreatePartyViewController
             createPartyViewController.partyAlreadyExists = false
@@ -111,7 +111,7 @@ class PartyMainViewController: UIViewController {
     }
     
     func leaveParty() {
-        LocalParty.sharedParty.leaveParty(
+        PartyManager.sharedParty.leaveParty(
             respondToChangeAttempt: { partyWasLeft in
                 if partyWasLeft {
                     self.parentViewController!.navigationItem.title = "Party"
@@ -125,7 +125,7 @@ class PartyMainViewController: UIViewController {
     }
     
     func changePartySettings() {
-        if LocalParty.sharedParty.userIsHost {
+        if PartyManager.sharedParty.userIsHost {
             let createPartyStoryboard = UIStoryboard(name: CreatePartyStoryboardName, bundle: nil)
             let createPartyViewController = createPartyStoryboard.instantiateViewControllerWithIdentifier(CreatePartyViewControllerIdentifier) as CreatePartyViewController
             createPartyViewController.partyAlreadyExists = true
@@ -143,13 +143,13 @@ class PartyMainViewController: UIViewController {
     
     
     override func viewDidLoad() {
-        // This is the delegate to the LocalParty
-        LocalParty.sharedParty.delegate = self
+        // This is the delegate to the PartyManager
+        PartyManager.sharedParty.delegate = self
         
         // Make view respond to network reachability changes
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "refresh", name: AFNetworkingReachabilityDidChangeNotification, object: nil)
-        // Make sure view knows the user is setup so it won't keep displaying 'Not signed into account' when there is no  internet connection when app launches and then the network comes back and LocalUser is setup
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "refresh", name: LocalUserInformationDidChangeNotification, object: nil)
+        // Make sure view knows the user is setup so it won't keep displaying 'Not signed into account' when there is no  internet connection when app launches and then the network comes back and UserManager is setup
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "refresh", name: UserManagerInformationDidChangeNotification, object: nil)
         // Should update when a party song is added
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "refreshAfterAddingSong", name: PartySongWasAddedNotification, object: nil)
         
@@ -187,9 +187,9 @@ class PartyMainViewController: UIViewController {
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
-        let party = LocalParty.sharedParty
+        let party = PartyManager.sharedParty
         if party.setup == true && party.name != nil {
-            parentViewController!.navigationItem.title = LocalParty.sharedParty.name
+            parentViewController!.navigationItem.title = PartyManager.sharedParty.name
             
             if !party.userIsHost {
                 partyRefreshTimer = NSTimer.scheduledTimerWithTimeInterval(10, target: self, selector: "refresh", userInfo: nil, repeats: true)
@@ -229,8 +229,8 @@ class PartyMainViewController: UIViewController {
                 setThumbsUpUnselected()
                 
                 // Clear song vote
-                if let currentSong = LocalParty.sharedParty.currentSong {
-                    LocalParty.sharedParty.songClearVote(currentSong.songID)
+                if let currentSong = PartyManager.sharedParty.currentSong {
+                    PartyManager.sharedParty.songClearVote(currentSong.songID)
                 }
                 changeUserUpvoteLabelCountBy(-1)
             } else {
@@ -238,8 +238,8 @@ class PartyMainViewController: UIViewController {
                 setThumbsUpSelected()
                 
                 // Upvote song
-                if let currentSong = LocalParty.sharedParty.currentSong {
-                    LocalParty.sharedParty.songUpvote(currentSong.songID)
+                if let currentSong = PartyManager.sharedParty.currentSong {
+                    PartyManager.sharedParty.songUpvote(currentSong.songID)
                 }
                 changeUserUpvoteLabelCountBy(1)
                 
@@ -258,8 +258,8 @@ class PartyMainViewController: UIViewController {
                 setThumbsDownUnselected()
                 
                 // Clear song vote
-                if let currentSong = LocalParty.sharedParty.currentSong {
-                    LocalParty.sharedParty.songClearVote(currentSong.songID)
+                if let currentSong = PartyManager.sharedParty.currentSong {
+                    PartyManager.sharedParty.songClearVote(currentSong.songID)
                 }
                 changeUserUpvoteLabelCountBy(1)
             } else {
@@ -267,8 +267,8 @@ class PartyMainViewController: UIViewController {
                 setThumbsDownSelected()
                 
                 // Downvote song
-                if let currentSong = LocalParty.sharedParty.currentSong {
-                    LocalParty.sharedParty.songDownvote(currentSong.songID)
+                if let currentSong = PartyManager.sharedParty.currentSong {
+                    PartyManager.sharedParty.songDownvote(currentSong.songID)
                 }
                 changeUserUpvoteLabelCountBy(-1)
                 
@@ -340,7 +340,7 @@ class PartyMainViewController: UIViewController {
     }
     
     func onPartyRefreshTimer() {
-        if !LocalParty.sharedParty.userIsHost { refresh() }
+        if !PartyManager.sharedParty.userIsHost { refresh() }
     }
     
     func refreshAfterAddingSong() {
@@ -350,7 +350,7 @@ class PartyMainViewController: UIViewController {
     
     func refresh() {
         println("refreshing PartyMainViewController")
-        LocalParty.sharedParty.refresh()
+        PartyManager.sharedParty.refresh()
     }
     
     func clearAllSongInfo() {
@@ -550,7 +550,7 @@ class PartyMainViewController: UIViewController {
     
     /*
     func updateControls() {
-        if let player = LocalParty.sharedParty.audioPlayer {
+        if let player = PartyManager.sharedParty.audioPlayer {
             
             if player.state == STKAudioPlayerStatePlaying {
                 
@@ -655,7 +655,7 @@ class PartyMainViewController: UIViewController {
     
 }
 
-extension PartyMainViewController: LocalPartyDelegate {
+extension PartyMainViewController: PartyManagerDelegate {
     
 }
 
@@ -684,7 +684,7 @@ extension PartyMainViewController {
     override func remoteControlReceivedWithEvent(event: UIEvent) {
         let rc = event.subtype
         println("received remote control \(rc.rawValue)")
-        let party = LocalParty.sharedParty
+        let party = PartyManager.sharedParty
         
         switch rc {
         case .RemoteControlTogglePlayPause:

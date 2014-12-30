@@ -125,7 +125,7 @@ class SongStore: NSObject {
                             // If the song downloads w/o an error then cache it
                             self._privateSongAudioDictionary.updateValue(data, forKey: key)
                             // Make the party refresh after the song is completed downloading
-                            LocalParty.sharedParty.refresh()
+                            PartyManager.sharedParty.refresh()
                         } else {
                             completion(nil)
                         }

@@ -61,7 +61,7 @@ class LoggingInSpashViewController: UIViewController {
         navC.setNavigationBarHidden(false, animated: false)
         navC.popViewControllerAnimated(false)
         
-        if LocalParty.sharedParty.setup == true {
+        if PartyManager.sharedParty.setup == true {
             let delegate = UIApplication.sharedApplication().delegate as AppDelegate
             let snvc = delegate.revealViewController!.rearViewController as SideNavigationViewController
             snvc.programaticallySelectRow(1)

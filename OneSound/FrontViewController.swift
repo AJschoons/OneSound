@@ -21,7 +21,7 @@ class FrontViewController: UIViewController {
     
     @IBAction func resetUserInfo(sender: AnyObject) {
         println("deleted all user info")
-        let user = LocalUser.sharedUser
+        let user = UserManager.sharedUser
         user.deleteAllSavedUserInformation()
     }
     

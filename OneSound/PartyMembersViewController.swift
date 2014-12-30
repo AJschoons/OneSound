@@ -14,7 +14,7 @@ let PartyMemberCellIdentifier = "PartyMemberCell"
 class PartyMembersViewController: UIViewController {
     
     let userThumbnailImageCache = (UIApplication.sharedApplication().delegate as AppDelegate).userThumbnailImageCache
-    let membersManager = LocalParty.sharedParty.membersManager
+    let membersManager = PartyManager.sharedParty.membersManager
     
     @IBOutlet weak var messageLabel1: UILabel?
     @IBOutlet weak var messageLabel2: UILabel?
@@ -28,8 +28,8 @@ class PartyMembersViewController: UIViewController {
     override func viewDidLoad() {
         // Make view respond to network reachability changes
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "refresh", name: AFNetworkingReachabilityDidChangeNotification, object: nil)
-        // Make sure view knows the user is setup so it won't keep displaying 'Not signed into account' when there is no  internet connection when app launches and then the network comes back and LocalUser is setup
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "refresh", name: LocalUserInformationDidChangeNotification, object: nil)
+        // Make sure view knows the user is setup so it won't keep displaying 'Not signed into account' when there is no  internet connection when app launches and then the network comes back and UserManager is setup
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "refresh", name: UserManagerInformationDidChangeNotification, object: nil)
         
         // Creating an (empty) footer stops table from showing empty cells
         membersTable.tableFooterView = UIView(frame: CGRectZero)
@@ -66,9 +66,9 @@ class PartyMembersViewController: UIViewController {
         println("refreshing PartyMembersViewController")
         
         if AFNetworkReachabilityManager.sharedManager().reachable {
-            if LocalUser.sharedUser.setup == true {
-                if LocalUser.sharedUser.party != nil && LocalUser.sharedUser.party != 0 {
-                    if LocalParty.sharedParty.setup == true {
+            if UserManager.sharedUser.setup == true {
+                if UserManager.sharedUser.party != nil && UserManager.sharedUser.party != 0 {
+                    if PartyManager.sharedParty.setup == true {
                         // Actually show members stuff
                         hideMessages()
                         hideMembersTable(false)

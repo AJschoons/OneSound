@@ -181,10 +181,10 @@ extension AddSongViewController: UITableViewDelegate {
         let selectedSong = searchResultsArray[indexPath.row]
         let source = "sc"
         
-        if LocalUser.sharedUser.setup == true {
-            if LocalParty.sharedParty.setup == true {
+        if UserManager.sharedUser.setup == true {
+            if PartyManager.sharedParty.setup == true {
 
-                OSAPI.sharedClient.POSTSong(LocalParty.sharedParty.partyID, externalID: selectedSong.externalID, source: source, title: selectedSong.name, artist: selectedSong.artistName, duration: selectedSong.duration, artworkURL: selectedSong.artworkURL,
+                OSAPI.sharedClient.POSTSong(PartyManager.sharedParty.partyID, externalID: selectedSong.externalID, source: source, title: selectedSong.name, artist: selectedSong.artistName, duration: selectedSong.duration, artworkURL: selectedSong.artworkURL,
                     success: { data, responseObject in
                         self.dismissViewControllerAnimated(true, completion: nil)
                         NSNotificationCenter.defaultCenter().postNotificationName(PartySongWasAddedNotification, object: nil)

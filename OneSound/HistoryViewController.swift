@@ -30,8 +30,8 @@ class HistoryViewController: UIViewController {
         
         // Make view respond to network reachability changes
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "refresh", name: AFNetworkingReachabilityDidChangeNotification, object: nil)
-        // Make sure view knows the user is setup so it won't keep displaying 'Not signed into account' when there is no  internet connection when app launches and then the network comes back and LocalUser is setup
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "refresh", name: LocalUserInformationDidChangeNotification, object: nil)
+        // Make sure view knows the user is setup so it won't keep displaying 'Not signed into account' when there is no  internet connection when app launches and then the network comes back and UserManager is setup
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "refresh", name: UserManagerInformationDidChangeNotification, object: nil)
         
         hideMessages()
     }
@@ -49,12 +49,11 @@ class HistoryViewController: UIViewController {
         println("refreshing HistoryViewController")
         
         if AFNetworkReachabilityManager.sharedManager().reachable {
-            let localUser = LocalUser.sharedUser
-            if LocalUser.sharedUser.setup == true {
+            if UserManager.sharedUser.setup == true {
                 validUser = true
-                LocalUser.sharedUser.updateUserInformationFromServer(
+                UserManager.sharedUser.updateUserInformationFromServer(
                     addToSuccess: {
-                        if LocalUser.sharedUser.guest == true {
+                        if UserManager.sharedUser.guest == true {
                             //self.setUserInfoHidden(true)
                             //self.setStoriesTableToHidden(true)
                             self.hideMessages()

@@ -19,7 +19,7 @@
 		8108DF9A199BDD150040B8E7 /* CreatePartyStrictnessViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8108DF98199BDD150040B8E7 /* CreatePartyStrictnessViewController.swift */; };
 		812795091A49F20E0092D880 /* OSLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 812795081A49F20E0092D880 /* OSLabel.swift */; };
 		8130D7D21986B8BD00DD4B47 /* Party.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8130D7D11986B8BD00DD4B47 /* Party.swift */; };
-		8130D7D41986B8EB00DD4B47 /* LocalParty.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8130D7D31986B8EB00DD4B47 /* LocalParty.swift */; };
+		8130D7D41986B8EB00DD4B47 /* PartyManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8130D7D31986B8EB00DD4B47 /* PartyManager.swift */; };
 		8130D7D6198714C900DD4B47 /* SoundCloudClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8130D7D5198714C900DD4B47 /* SoundCloudClient.swift */; };
 		813FCE081977583C00419097 /* LoginColorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 813FCE071977583C00419097 /* LoginColorViewController.swift */; };
 		81414DCE197DD1F800081132 /* EnumHackExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81414DCD197DD1F800081132 /* EnumHackExtensions.swift */; };
@@ -63,7 +63,7 @@
 		81936FC9196C656F005E42F4 /* FrontViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 81936FC7196C656F005E42F4 /* FrontViewController.xib */; };
 		8195347B19775FCE000B97A3 /* LoginColorCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8195347919775FCE000B97A3 /* LoginColorCell.swift */; };
 		8195347C19775FCE000B97A3 /* LoginColorCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8195347A19775FCE000B97A3 /* LoginColorCell.xib */; };
-		81953480197857E6000B97A3 /* LocalUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8195347F197857E6000B97A3 /* LocalUser.swift */; };
+		81953480197857E6000B97A3 /* UserManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8195347F197857E6000B97A3 /* UserManager.swift */; };
 		81953482197860A7000B97A3 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 81953481197860A7000B97A3 /* Security.framework */; };
 		81ACB3E81A5273AD0039529E /* PartyMembersManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81ACB3E71A5273AD0039529E /* PartyMembersManager.swift */; };
 		81B17D8F196F2A680062943C /* SideNavigationMenuCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81B17D8D196F2A680062943C /* SideNavigationMenuCell.swift */; };
@@ -108,7 +108,7 @@
 		8108DF98199BDD150040B8E7 /* CreatePartyStrictnessViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CreatePartyStrictnessViewController.swift; sourceTree = "<group>"; };
 		812795081A49F20E0092D880 /* OSLabel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OSLabel.swift; sourceTree = "<group>"; };
 		8130D7D11986B8BD00DD4B47 /* Party.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Party.swift; sourceTree = "<group>"; };
-		8130D7D31986B8EB00DD4B47 /* LocalParty.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocalParty.swift; sourceTree = "<group>"; };
+		8130D7D31986B8EB00DD4B47 /* PartyManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PartyManager.swift; sourceTree = "<group>"; };
 		8130D7D5198714C900DD4B47 /* SoundCloudClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SoundCloudClient.swift; sourceTree = "<group>"; };
 		813FCE0619774ECF00419097 /* TestingPlayground.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = TestingPlayground.playground; sourceTree = "<group>"; };
 		813FCE071977583C00419097 /* LoginColorViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginColorViewController.swift; sourceTree = "<group>"; };
@@ -155,7 +155,7 @@
 		81936FC7196C656F005E42F4 /* FrontViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = FrontViewController.xib; sourceTree = "<group>"; };
 		8195347919775FCE000B97A3 /* LoginColorCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginColorCell.swift; sourceTree = "<group>"; };
 		8195347A19775FCE000B97A3 /* LoginColorCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LoginColorCell.xib; sourceTree = "<group>"; };
-		8195347F197857E6000B97A3 /* LocalUser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocalUser.swift; sourceTree = "<group>"; };
+		8195347F197857E6000B97A3 /* UserManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserManager.swift; sourceTree = "<group>"; };
 		81953481197860A7000B97A3 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		81953483197862F5000B97A3 /* OneSound.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = OneSound.entitlements; sourceTree = "<group>"; };
 		81ACB3E71A5273AD0039529E /* PartyMembersManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PartyMembersManager.swift; sourceTree = "<group>"; };
@@ -216,9 +216,7 @@
 			isa = PBXGroup;
 			children = (
 				81527127196C5A8E00464068 /* User.swift */,
-				8195347F197857E6000B97A3 /* LocalUser.swift */,
 				8130D7D11986B8BD00DD4B47 /* Party.swift */,
-				8130D7D31986B8EB00DD4B47 /* LocalParty.swift */,
 				81DA8A66198A9FE00037EAD1 /* Song.swift */,
 				81EAC5F81998132000F02894 /* SongStore.swift */,
 				81BCC2BA199D60DD00A3500F /* SongSearchResult.swift */,
@@ -427,8 +425,10 @@
 		818750541A50C5C8000CC353 /* Managers */ = {
 			isa = PBXGroup;
 			children = (
+				8130D7D31986B8EB00DD4B47 /* PartyManager.swift */,
 				818750551A50C624000CC353 /* PartyPlaylistManager.swift */,
 				81ACB3E71A5273AD0039529E /* PartyMembersManager.swift */,
+				8195347F197857E6000B97A3 /* UserManager.swift */,
 			);
 			name = Managers;
 			sourceTree = "<group>";
@@ -663,7 +663,7 @@
 				816FD445196F22B0003CCB1C /* SideNavigationViewController.swift in Sources */,
 				81BCC2B7199D2EA900A3500F /* AddSongViewController.swift in Sources */,
 				8158311F197477990011D3CE /* HistoryViewController.swift in Sources */,
-				81953480197857E6000B97A3 /* LocalUser.swift in Sources */,
+				81953480197857E6000B97A3 /* UserManager.swift in Sources */,
 				81C92CF01A3CCFE900BE63D1 /* PartySearchResultCell.swift in Sources */,
 				815831271974786C0011D3CE /* FollowingViewController.swift in Sources */,
 				81414DCE197DD1F800081132 /* EnumHackExtensions.swift in Sources */,
@@ -675,7 +675,7 @@
 				8108DF97199BBC900040B8E7 /* CreatePartyViewController.swift in Sources */,
 				8130D7D21986B8BD00DD4B47 /* Party.swift in Sources */,
 				8176451A197EA192001BF7A7 /* StoriesViewController.swift in Sources */,
-				8130D7D41986B8EB00DD4B47 /* LocalParty.swift in Sources */,
+				8130D7D41986B8EB00DD4B47 /* PartyManager.swift in Sources */,
 				8158314C1976D54F0011D3CE /* LoginViewController.swift in Sources */,
 				81ACB3E81A5273AD0039529E /* PartyMembersManager.swift in Sources */,
 				8158311A197471ED0011D3CE /* PartyMainViewController.swift in Sources */,

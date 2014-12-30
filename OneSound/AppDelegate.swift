@@ -66,8 +66,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         setupAppAFNetworkingTools()
         
         // Create the user
-        LocalUser.sharedUser
-        //LocalUser.sharedUser.deleteAllSavedUserInformation()
+        UserManager.sharedUser
+        //UserManager.sharedUser.deleteAllSavedUserInformation()
         
         // Login flow is handled by AFNetworkingReachability manager and FBLogin status change
         
@@ -124,7 +124,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 extension AppDelegate {
     // MARK: App launching related code
     
-    func setupAppLocalUserBySigningInWithLoginFlow() {
+    func setupAppUserManagerBySigningInWithLoginFlow() {
         // Whenever a person opens the app, check for a cached session
         if FBSession.activeSession().state == FBSessionState.CreatedTokenLoaded {
             // If there IS one, just open the session silently, w/o showing the user the login UI
@@ -146,13 +146,13 @@ extension AppDelegate {
             var userAPIToken: String? = SSKeychain.passwordForService(service, account: userAccessTokenKeychainKey)
             
             if userID == nil || userAPIToken == nil {
-                // If no guest user, then request a guest user to be created, set it up, save in keychain, save to LocalUser
+                // If no guest user, then request a guest user to be created, set it up, save in keychain, save to UserManager
                 println("Guest user NOT found")
-                LocalUser.sharedUser.setupGuestAccount()
+                UserManager.sharedUser.setupGuestAccount()
             } else {
-                // Got guest user from keychain, request their information and save to LocalUser
+                // Got guest user from keychain, request their information and save to UserManager
                 println("Guest user FOUND")
-                LocalUser.sharedUser.signIntoGuestAccount(userID!, userAccessToken: userAPIToken!)
+                UserManager.sharedUser.signIntoGuestAccount(userID!, userAccessToken: userAPIToken!)
             }
         }
     }
@@ -227,9 +227,9 @@ extension AppDelegate {
             } else if (reachability == AFNetworkReachabilityStatus.ReachableViaWiFi) || (reachability == AFNetworkReachabilityStatus.ReachableViaWWAN) {
                 println("Network has changed to reachable")
                 
-                if LocalUser.sharedUser.setup == false {
+                if UserManager.sharedUser.setup == false {
                     // Try setting up the user if network reachable but still not setup
-                    self.setupAppLocalUserBySigningInWithLoginFlow()
+                    self.setupAppUserManagerBySigningInWithLoginFlow()
                 }
             }
         })
@@ -268,11 +268,11 @@ extension AppDelegate {
                 println("userfbAuthToken:\(userFBAccessToken)")
                 
                 if userFBAccessToken != nil {
-                    LocalUser.sharedUser.signIntoFullAccount(userID!, userAccessToken: userAPIToken!, fbAuthToken: userFBAccessToken)
+                    UserManager.sharedUser.signIntoFullAccount(userID!, userAccessToken: userAPIToken!, fbAuthToken: userFBAccessToken)
                 } else {
                     // Reset all data and let user know to sign back into facebook
                     // The Facebook SDK session state will change to closed / login failed, and will be handled accordingly
-                    LocalUser.sharedUser.deleteAllSavedUserInformation(
+                    UserManager.sharedUser.deleteAllSavedUserInformation(
                         completion: {
                             let alert = UIAlertView(title: "Facebook Information Expired", message: "The Facebook login information has expired. Please restart the app and sign in again. The temporary new guest account that has been provided does not have any information from the Facebook verified account", delegate: nil, cancelButtonTitle: "Ok")
                             alert.show()
@@ -281,18 +281,18 @@ extension AppDelegate {
                 }
             } else {
                 println("UserID and userAPIToken NOT found from keychain, setup guest user")
-                LocalUser.sharedUser.setupGuestAccount()
+                UserManager.sharedUser.setupGuestAccount()
             }
         } else if (state == FBSessionState.Closed) || (state == FBSessionState.ClosedLoginFailed) {
             // was using FBSessionStateClosed and FBSessionStateClosedLoginFailed until using forked facebook iOS SDK
             // If the session is closed, delete all old info and setup a guest account if the user had a full account
             println("Facebook session state change: Closed/Login Failed")
             
-            if LocalUser.sharedUser.guest == false {
+            if UserManager.sharedUser.guest == false {
                 println("User was NOT a guest; delete all their saved info & clear facebook token, setup new guest account")
-                LocalUser.sharedUser.deleteAllSavedUserInformation(
+                UserManager.sharedUser.deleteAllSavedUserInformation(
                     completion: {
-                        LocalUser.sharedUser.setupGuestAccount()
+                        UserManager.sharedUser.setupGuestAccount()
                     }
                 )
             } else {
@@ -455,7 +455,7 @@ extension AppDelegate {
     override func remoteControlReceivedWithEvent(event: UIEvent) {
         let rc = event.subtype
         println("received remote control \(rc.rawValue)")
-        let party = LocalParty.sharedParty
+        let party = PartyManager.sharedParty
         
         switch rc {
         case .RemoteControlTogglePlayPause:

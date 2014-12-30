@@ -44,7 +44,7 @@ class ProfileViewController: UIViewController {
         let fbSession = FBSession.activeSession()
         // Only sign in if not already signed in
         
-        if LocalUser.sharedUser.guest == true {
+        if UserManager.sharedUser.guest == true {
             // Make sure if a guest is clicking the button, they can try signing in
             fbSession.closeAndClearTokenInformation()
         }
@@ -63,7 +63,7 @@ class ProfileViewController: UIViewController {
     @IBAction func signOut(sender: AnyObject) {
         // Only proceeds if refresh leaves view controller with a valid user
         if refresh() {
-            if LocalUser.sharedUser.guest == true {
+            if UserManager.sharedUser.guest == true {
                 // Let the guest know that signing out a guest account doesn't really do anything
                 let alert = UIAlertView(title: "Signing Out Guest", message: "Signing out of guest account deletes current guest account and signs into a new guest account. To sign into a full account, login with Facebook, and your guest account is automatically upgraded.", delegate: self, cancelButtonTitle: "Cancel", otherButtonTitles: "Ok")
                 alert.tag = 101
@@ -113,8 +113,8 @@ class ProfileViewController: UIViewController {
         
         // Make view respond to network reachability changes
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "refresh", name: AFNetworkingReachabilityDidChangeNotification, object: nil)
-        // Make sure view knows the user is setup so it won't keep displaying 'Not signed into account' when there is no  internet connection when app launches and then the network comes back and LocalUser is setup
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "refresh", name: LocalUserInformationDidChangeNotification, object: nil)
+        // Make sure view knows the user is setup so it won't keep displaying 'Not signed into account' when there is no  internet connection when app launches and then the network comes back and UserManager is setup
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "refresh", name: UserManagerInformationDidChangeNotification, object: nil)
         //NSNotificationCenter.defaultCenter().addObserver(self, selector: "refresh", name: FacebookSessionChangeNotification, object: nil)
         
         // Try getting saved info from UserDefaults for full users
@@ -147,12 +147,11 @@ class ProfileViewController: UIViewController {
         println("refreshing ProfileViewController")
         
         if AFNetworkReachabilityManager.sharedManager().reachable {
-            let localUser = LocalUser.sharedUser
-            if LocalUser.sharedUser.setup == true {
+            if UserManager.sharedUser.setup == true {
                 validUser = true
-                LocalUser.sharedUser.updateUserInformationFromServer(
+                UserManager.sharedUser.updateUserInformationFromServer(
                     addToSuccess: {
-                        if LocalUser.sharedUser.guest == true {
+                        if UserManager.sharedUser.guest == true {
                             self.setUserInfoHidden(true)
                             self.setStoriesTableToHidden(true)
                             self.showMessages("Guests can only join and use parties", detailLine: "Please sign in with Facebook to use Profiles", showMessageBelowUserInfo: false)
@@ -203,15 +202,15 @@ class ProfileViewController: UIViewController {
         setVisibilityOfUserInfoToHidden(hidden)
         
         if !hidden {
-            let user = LocalUser.sharedUser
+            let user = UserManager.sharedUser
             
             setUserInfoLabelsText(upvoteLabel: userUpvoteLabel, numUpvotes: user.upvoteCount, songLabel: userSongLabel, numSongs: user.songCount, hotnessLabel: userHotnessLabel, percentHotness: user.hotnessPercent, userNameLabel: userNameLabel, userName: user.name)
 
             
-            if LocalUser.sharedUser.photo != nil {
-                userImage!.image = LocalUser.sharedUser.photo
+            if UserManager.sharedUser.photo != nil {
+                userImage!.image = UserManager.sharedUser.photo
             } else {
-                userImage!.backgroundColor = LocalUser.sharedUser.colorToUIColor
+                userImage!.backgroundColor = UserManager.sharedUser.colorToUIColor
             }
         }
     }
@@ -262,7 +261,7 @@ class ProfileViewController: UIViewController {
                     } else {
                         let userSavedColor = defaults.objectForKey(userColorKey) as? String
                         if userSavedColor != nil  {
-                            userImage!.backgroundColor = LocalUser.colorToUIColor(userSavedColor!)
+                            userImage!.backgroundColor = UserManager.colorToUIColor(userSavedColor!)
                         } else {
                             // In case the userSavedColor info can't be retrieved
                             userImage!.backgroundColor = UIColor.grayDark()
@@ -334,8 +333,8 @@ extension ProfileViewController: UIAlertViewDelegate {
             // If guest is trying to log out
             if buttonIndex == 1 {
                 // If guest wants to sign out, delete all info and get new guest account, then refresh
-                LocalUser.sharedUser.deleteAllSavedUserInformation()
-                LocalUser.sharedUser.setupGuestAccount()
+                UserManager.sharedUser.deleteAllSavedUserInformation()
+                UserManager.sharedUser.setupGuestAccount()
                 refresh()
             }
         } else if alertView.tag == 102 {

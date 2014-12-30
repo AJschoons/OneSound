@@ -1,5 +1,5 @@
 //
-//  LocalParty.swift
+//  PartyManager.swift
 //  OneSound
 //
 //  Created by adam on 7/28/14.
@@ -10,7 +10,7 @@ import UIKit
 import AVFoundation
 import MediaPlayer
 
-protocol LocalPartyDelegate {
+protocol PartyManagerDelegate {
     func updateSongProgress(progress: Float)
     func setAudioPlayerButtonsForPlaying(audioPlayerIsPlaying: Bool)
     func setPartyInfoHidden(hidden: Bool)
@@ -44,11 +44,11 @@ enum PartyStrictnessOption: Int {
     }
 }
 
-class LocalParty: NSObject {
+class PartyManager: NSObject {
     
     let songImageCache = (UIApplication.sharedApplication().delegate as AppDelegate).songImageCache
     
-    var delegate: LocalPartyDelegate!
+    var delegate: PartyManagerDelegate!
     
     let playlistManager = PartyPlaylistManager()
     let membersManager = PartyMembersManager()
@@ -84,11 +84,11 @@ class LocalParty: NSObject {
     
     var numOnSongPlayingTimerTicks = 0
     
-    class var sharedParty: LocalParty {
+    class var sharedParty: PartyManager {
     struct Static {
-        static let localParty = LocalParty()
+        static let partyManager = PartyManager()
         }
-        return Static.localParty
+        return Static.partyManager
     }
     
     override init() {
@@ -100,7 +100,7 @@ class LocalParty: NSObject {
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "handleMediaServicesReset", name: AVAudioSessionMediaServicesWereResetNotification, object: nil)
         
         // Refresh the party info when the user info changes
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "refreshForUserInfoChange", name: LocalUserInformationDidChangeNotification, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "refreshForUserInfoChange", name: UserManagerInformationDidChangeNotification, object: nil)
         
         initializeAudioSession()
         initializeAudioPlayer()
@@ -161,12 +161,12 @@ class LocalParty: NSObject {
     }
     
     func refresh() {
-        println("refreshing LocalParty")
+        println("refreshing PartyManager")
         
-        let user = LocalUser.sharedUser
+        let user = UserManager.sharedUser
         if AFNetworkReachabilityManager.sharedManager().reachable {
-            if LocalUser.sharedUser.setup == true {
-                if LocalUser.sharedUser.party != nil && LocalUser.sharedUser.party != 0 {
+            if UserManager.sharedUser.setup == true {
+                if UserManager.sharedUser.party != nil && UserManager.sharedUser.party != 0 {
                     if setup == true {
                         setDelegatePartyInfoVisible()
                         
@@ -245,7 +245,7 @@ class LocalParty: NSObject {
         if shouldTryAnotherRefresh {
             shouldTryAnotherRefresh = false
             // If the party is valid but not setup, try joining it and then refreshing it once more
-            joinParty(LocalUser.sharedUser.party!,
+            joinParty(UserManager.sharedUser.party!,
                 JSONUpdateCompletion: {
                     // TODO: find a better way to accomplish this
                     self.shouldTryAnotherRefresh = true
@@ -614,7 +614,7 @@ class LocalParty: NSObject {
         
         clearSongInfo()
         
-        LocalUser.sharedUser.party = nil
+        UserManager.sharedUser.party = nil
         partyID = 0
         isPrivate = false
         hostUserID = 0
@@ -647,7 +647,7 @@ class LocalParty: NSObject {
     }
 }
 
-extension LocalParty {
+extension PartyManager {
     // MARK: Party networking related code for user's active party
     
     func getNextSong(pid: Int, completion: ((song: Song, user: User) -> ())? = nil, noCurrentSong: completionClosure? = nil, failureAddOn: completionClosure? = nil) {
@@ -655,7 +655,6 @@ extension LocalParty {
         disallowGetNextSongCallTemporarily()
         
         if partyID != 0 && partyID != nil && shouldAttempt {
-            let localUser = LocalUser.sharedUser
             OSAPI.sharedClient.GETNextSong(pid,
                 success: { data, responseObject in
                     let responseJSON = JSONValue(responseObject)
@@ -734,13 +733,13 @@ extension LocalParty {
         resetAllPartyInfo()
         
         if pid != 0 {
-            let user = LocalUser.sharedUser
+            let user = UserManager.sharedUser
             OSAPI.sharedClient.GETParty(pid,
                 success: { data, responseObject in
                     let responseJSON = JSONValue(responseObject)
                     //println(responseJSON)
                     
-                    LocalUser.sharedUser.party = pid
+                    UserManager.sharedUser.party = pid
                     
                     self.updateMainPartyInfoFromJSON(responseJSON, JSONUpdateCompletion)
                 }, failure: { task, error in
@@ -756,7 +755,7 @@ extension LocalParty {
     }
     
     func createNewParty(name: String, privacy: Bool, strictness: Int, respondToChangeAttempt: (Bool) -> (), failure: AFHTTPFailureBlock = defaultAFHTTPFailureBlockForSigningIn) {
-        let user = LocalUser.sharedUser
+        let user = UserManager.sharedUser
         
         OSAPI.sharedClient.POSTParty(name, privacy: privacy, strictness: strictness,
             success: { data, responseObject in
@@ -769,7 +768,7 @@ extension LocalParty {
                     let pid = responseJSON["pid"].integer
                     self.joinParty(pid!,
                         JSONUpdateCompletion: {
-                            LocalUser.sharedUser.party = pid
+                            UserManager.sharedUser.party = pid
                             respondToChangeAttempt(true)
                         }, failureAddOn: {
                             respondToChangeAttempt(false)
@@ -784,7 +783,7 @@ extension LocalParty {
     }
     
     func updatePartyInfo(name: String, privacy: Bool, strictness: Int, respondToChangeAttempt: (Bool) -> (), failure: AFHTTPFailureBlock = defaultAFHTTPFailureBlockForSigningIn) {
-        let user = LocalUser.sharedUser
+        let user = UserManager.sharedUser
         
         OSAPI.sharedClient.PUTParty(partyID, name: name, privacy: privacy, strictness: strictness,
             success: { data, responseObject in
@@ -813,7 +812,7 @@ extension LocalParty {
     
     // Leaves a party. If successful, clears the party info. respondToChangeAttempt = true if left party, else false
     func leaveParty(# respondToChangeAttempt: (Bool) -> ()) {
-        let user = LocalUser.sharedUser
+        let user = UserManager.sharedUser
         OSAPI.sharedClient.DELETEUserParty(user.id,
             success: { data, responseObject in
                 let responseJSON = JSONValue(responseObject)
@@ -842,7 +841,7 @@ extension LocalParty {
         name = json["name"].string
         strictness = json["strictness"].integer
         
-        if hostUserID == LocalUser.sharedUser.id {
+        if hostUserID == UserManager.sharedUser.id {
             userIsHost = true
             println("*** USER IS HOST ***")
         } else {
@@ -855,26 +854,26 @@ extension LocalParty {
     }
 }
 
-extension LocalParty {
+extension PartyManager {
     // MARK: Party networking related code for song voting
     
     func songUpvote(sid: Int) {
-        let user = LocalUser.sharedUser
+        let user = UserManager.sharedUser
         OSAPI.sharedClient.POSTSongUpvote(sid, success: nil, failure: defaultAFHTTPFailureBlock)
     }
     
     func songDownvote(sid: Int) {
-        let user = LocalUser.sharedUser
+        let user = UserManager.sharedUser
         OSAPI.sharedClient.POSTSongDownvote(sid, success: nil, failure: defaultAFHTTPFailureBlock)
     }
     
     func songClearVote(sid: Int) {
-        let user = LocalUser.sharedUser
+        let user = UserManager.sharedUser
         OSAPI.sharedClient.DELETESongVote(sid, success: nil, failure: defaultAFHTTPFailureBlock)
     }
 }
 
-extension LocalParty: STKAudioPlayerDelegate {
+extension PartyManager: STKAudioPlayerDelegate {
     // MARK: STKAudioPlayer delegate methods
     
     // Raised when an item has started playing
@@ -914,7 +913,7 @@ extension LocalParty: STKAudioPlayerDelegate {
     }
 }
 
-extension LocalParty {
+extension PartyManager {
     // MARK: handling AVAudioSession notifications
     func handleAudioSessionInterruption(n: NSNotification) {
         if n.name != AVAudioSessionInterruptionNotification || n.userInfo == nil || !userIsHost { return }

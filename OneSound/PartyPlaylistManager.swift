@@ -40,7 +40,7 @@ class PartyPlaylistManager
             updating = true
             
             let pageStartingFromZero = currentPage - 1
-            OSAPI.sharedClient.GETPartyPlaylist(LocalParty.sharedParty.partyID, page: currentPage, pageSize: pageSize,
+            OSAPI.sharedClient.GETPartyPlaylist(PartyManager.sharedParty.partyID, page: currentPage, pageSize: pageSize,
                 success: { data, responseObject in
                     let responseJSON = JSONValue(responseObject)
                     //println(responseJSON)

@@ -16,7 +16,7 @@ class PartySongsViewController: UIViewController {
 
     let songCellImagePlaceholder = UIImage(named: "songCellImagePlaceholder")
     let songTableViewImageCache = (UIApplication.sharedApplication().delegate as AppDelegate).songTableViewImageCache
-    let playlistManager = LocalParty.sharedParty.playlistManager
+    let playlistManager = PartyManager.sharedParty.playlistManager
     
     @IBOutlet weak var messageLabel1: UILabel?
     @IBOutlet weak var messageLabel2: UILabel?
@@ -40,11 +40,11 @@ class PartySongsViewController: UIViewController {
         
         // Make view respond to network reachability changes
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "refresh", name: AFNetworkingReachabilityDidChangeNotification, object: nil)
-        // Make sure view knows the user is setup so it won't keep displaying 'Not signed into account' when there is no  internet connection when app launches and then the network comes back and LocalUser is setup
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "refresh", name: LocalUserInformationDidChangeNotification, object: nil)
+        // Make sure view knows the user is setup so it won't keep displaying 'Not signed into account' when there is no  internet connection when app launches and then the network comes back and UserManager is setup
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "refresh", name: UserManagerInformationDidChangeNotification, object: nil)
         // Should update when a party song is added
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "refresh", name: PartySongWasAddedNotification, object: nil)
-        //NSNotificationCenter.defaultCenter().addObserver(self, selector: "reloadTableData", name: LocalPartySongInformationDidChangeNotification, object: nil)
+        //NSNotificationCenter.defaultCenter().addObserver(self, selector: "reloadTableData", name: PartyManagerSongInformationDidChangeNotification, object: nil)
         
         // Creating an (empty) footer stops table from showing empty cells
         songsTable.tableFooterView = UIView(frame: CGRectZero)
@@ -83,9 +83,9 @@ class PartySongsViewController: UIViewController {
         println("refreshing PartySongViewController")
         
         if AFNetworkReachabilityManager.sharedManager().reachable {
-            if LocalUser.sharedUser.setup == true {
-                if LocalUser.sharedUser.party != nil && LocalUser.sharedUser.party != 0 {
-                    if LocalParty.sharedParty.setup == true {
+            if UserManager.sharedUser.setup == true {
+                if UserManager.sharedUser.party != nil && UserManager.sharedUser.party != 0 {
+                    if PartyManager.sharedParty.setup == true {
                         // Actually show songs stuff
                         addSongButton.enabled = true
                         hideMessages()

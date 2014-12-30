@@ -54,7 +54,7 @@ class LoginViewController: UITableViewController {
         
         // Initialize color label to the initial color
         if accountAlreadyExists {
-            color = UserColors(rawValue: LocalUser.sharedUser.color)!.UserColorsToOneSoundColorOption()
+            color = UserColors(rawValue: UserManager.sharedUser.color)!.UserColorsToOneSoundColorOption()
             colorCellColorLabel.text = color.rawValue
         } else {
             colorCellColorLabel.text = color.rawValue
@@ -62,7 +62,7 @@ class LoginViewController: UITableViewController {
         
         // Give the name text field the accounts name if it already exists
         if accountAlreadyExists {
-            nameCellTextField.text = LocalUser.sharedUser.name
+            nameCellTextField.text = UserManager.sharedUser.name
             updateNameCellTextFieldCount()
         }
         
@@ -78,7 +78,7 @@ class LoginViewController: UITableViewController {
     
     func cancel() {
         if !accountAlreadyExists {
-            LocalUser.sharedUser.setupGuestAccount()
+            UserManager.sharedUser.setupGuestAccount()
         }
         if delegate != nil {
             delegate!.loginViewControllerCancelled()
@@ -95,7 +95,7 @@ class LoginViewController: UITableViewController {
         if !accountAlreadyExists {
             println("Creating FULL account")
             
-            LocalUser.sharedUser.setupFullAccount(userName, userColor: userColor, userID: userID, userAccessToken: userAPIToken, providerToken: userFacebookToken,
+            UserManager.sharedUser.setupFullAccount(userName, userColor: userColor, userID: userID, userAccessToken: userAPIToken, providerToken: userFacebookToken,
                 respondToChangeAttempt: { nameIsValid in
                     if nameIsValid {
                         self.tableView.endEditing(true)
@@ -108,13 +108,13 @@ class LoginViewController: UITableViewController {
         } else {
             var newUserName: String? = nil
             var newUserColor: String? = nil
-            if userName != LocalUser.sharedUser.name {
+            if userName != UserManager.sharedUser.name {
                 newUserName = userName
             }
-            if userColor != LocalUser.sharedUser.color {
+            if userColor != UserManager.sharedUser.color {
                 newUserColor = userColor
             }
-            LocalUser.sharedUser.updateServerWithNewNameAndColor(newUserName, color: newUserColor, respondToChangeAttempt:
+            UserManager.sharedUser.updateServerWithNewNameAndColor(newUserName, color: newUserColor, respondToChangeAttempt:
                 { nameIsValid in
                     if nameIsValid {
                         self.tableView.endEditing(true)
@@ -150,7 +150,7 @@ class LoginViewController: UITableViewController {
     }
     
     func userInfoHasChanged() -> Bool {
-        let user = LocalUser.sharedUser
+        let user = UserManager.sharedUser
         return nameCellTextField.text != user.name || color.OneSoundColorOptionToUserColor().rawValue != user.color
     }
     

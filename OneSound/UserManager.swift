@@ -8,7 +8,7 @@
 
 import Foundation
 
-let LocalUserInformationDidChangeNotification = "LocalUserInformationDidChange"
+let UserManagerInformationDidChangeNotification = "UserManagerInformationDidChange"
 let service = "com.AdamSchoonmaker.OneSound"
 let userIDKeychainKey = "userID"
 let userAccessTokenKeychainKey = "userAccessToken"
@@ -23,7 +23,7 @@ let userUpvoteCountKey = "upvote"
 let userSongCountKey = "song"
 let userHotnessPercentKey = "hotness"
 
-class LocalUser {
+class UserManager {
 
     var pL = true
     
@@ -46,11 +46,11 @@ class LocalUser {
     
     var party: Int?
     
-    class var sharedUser: LocalUser {
+    class var sharedUser: UserManager {
     struct Static {
-        static let localUser = LocalUser()
+        static let userManager = UserManager()
         }
-        return Static.localUser
+        return Static.userManager
     }
     
     // Maybe added later?
@@ -137,7 +137,7 @@ class LocalUser {
     }
 }
 
-extension LocalUser {
+extension UserManager {
     // MARK: Login flow and other networking related code
     
     // For use in the login flow of signing a guest user in
@@ -279,7 +279,7 @@ extension LocalUser {
                 if status == "success" {
                     // Update new user information
                     let newUserAccessToken = responseJSON["access_token"].string
-                    LocalUser.sharedUser.updateUserInformationAfterSignIn(userID: userID, accessToken: newUserAccessToken!, respondToChangeAttempt: respondToChangeAttempt, failure: failure)
+                    UserManager.sharedUser.updateUserInformationAfterSignIn(userID: userID, accessToken: newUserAccessToken!, respondToChangeAttempt: respondToChangeAttempt, failure: failure)
                 } else {
                     // Server didn't accept request for new account with that name / color
                     respondToChangeAttempt(false)
@@ -327,23 +327,23 @@ extension LocalUser {
                 println(responseJSON)
                 
                 // Update shared User's information, UserDefaults, and Keychain info
-                LocalUser.sharedUser.updateUserFromJSON(responseJSON, accessToken: token,
+                UserManager.sharedUser.updateUserFromJSON(responseJSON, accessToken: token,
                     completion: {
                         // Join the party that the user is in
-                        if LocalUser.sharedUser.party != nil && LocalUser.sharedUser.party != 0 {
-                            LocalParty.sharedParty.joinParty(LocalUser.sharedUser.party!,
+                        if UserManager.sharedUser.party != nil && UserManager.sharedUser.party != 0 {
+                            PartyManager.sharedParty.joinParty(UserManager.sharedUser.party!,
                                 JSONUpdateCompletion: {
-                                    LocalParty.sharedParty.refresh()
+                                    PartyManager.sharedParty.refresh()
                                 }, failureAddOn: {
-                                    LocalParty.sharedParty.refresh()
+                                    PartyManager.sharedParty.refresh()
                                 }
                             )
                         }
                         
                         // Save the accounts info in the keychain
-                        self.updateKeychainInfoForLocalUser(id, accessToken: token)
-                        // Send out LocalUserInformationDidChangeNotification
-                        NSNotificationCenter.defaultCenter().postNotificationName(LocalUserInformationDidChangeNotification, object: nil)
+                        self.updateKeychainInfoForUserManager(id, accessToken: token)
+                        // Send out UserManagerInformationDidChangeNotification
+                        NSNotificationCenter.defaultCenter().postNotificationName(UserManagerInformationDidChangeNotification, object: nil)
                         // Let the app know it can it can nav away from the splash screen
                         NSNotificationCenter.defaultCenter().postNotificationName(FinishedLoginFlowNotification, object: nil)
                         
@@ -365,7 +365,7 @@ extension LocalUser {
                 let status = responseJSON["status"].string
                 
                 if status == "success" {
-                    NSNotificationCenter.defaultCenter().postNotificationName(LocalUserInformationDidChangeNotification, object: nil)
+                    NSNotificationCenter.defaultCenter().postNotificationName(UserManagerInformationDidChangeNotification, object: nil)
                     self.updateUserInformationFromServer()
                     respondToChangeAttempt(true)
                 } else {
@@ -375,7 +375,7 @@ extension LocalUser {
     }
     
     func updateUserFromJSON(json: JSONValue, accessToken: String, completion: completionClosure? = nil, forcePhotoUpdate: Bool = false) {
-        println("Updating LocalUser from JSON")
+        println("Updating UserManager from JSON")
         
         setup = true
         
@@ -410,7 +410,7 @@ extension LocalUser {
             NSUserDefaults.standardUserDefaults().removeObjectForKey(userPhotoUIImageKey)
         }
         
-        updateUserDefaultsForLocalUser()
+        updateUserDefaultsForUserManager()
         
         if completion != nil {
             completion!()
@@ -425,7 +425,7 @@ extension LocalUser {
                     self.photo = cropBiggestCenteredSquareImageFromImage(image!, sideLength: smallestSide)
                     println("Saved new photo for user")
                     NSUserDefaults.standardUserDefaults().setObject(UIImagePNGRepresentation(self.photo), forKey: userPhotoUIImageKey)
-                    NSNotificationCenter.defaultCenter().postNotificationName(LocalUserInformationDidChangeNotification, object: nil)
+                    NSNotificationCenter.defaultCenter().postNotificationName(UserManagerInformationDidChangeNotification, object: nil)
                 } else {
                     println("UNABLE to save new photo for user; download failed")
                 }
@@ -452,8 +452,8 @@ extension LocalUser {
         )
     }
     
-    func updateUserDefaultsForLocalUser() {
-        println("Updating information for LocalUser in UserDefaults")
+    func updateUserDefaultsForUserManager() {
+        println("Updating information for UserManager in UserDefaults")
         
         let defaults = NSUserDefaults.standardUserDefaults()
         defaults.setObject(name, forKey: userNameKey)
@@ -464,9 +464,9 @@ extension LocalUser {
         defaults.setInteger(hotnessPercent, forKey: userHotnessPercentKey)
     }
     
-    func updateKeychainInfoForLocalUser(userID: Int, accessToken: String) {
+    func updateKeychainInfoForUserManager(userID: Int, accessToken: String) {
         // Save the account's info in the keychain
-        println("Updating information for LocalUser in Keychain")
+        println("Updating information for UserManager in Keychain")
         println("Saved userID to keychain:\(userID)")
         println("Saved accessToken to keychain:\(accessToken)")
         

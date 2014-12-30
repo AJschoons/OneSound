@@ -33,25 +33,25 @@ class SideNavigationUserCell: UITableViewCell {
         
         // Make view respond to network reachability changes and user information changes
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "refresh", name: AFNetworkingReachabilityDidChangeNotification, object: nil)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "refresh", name: LocalUserInformationDidChangeNotification, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "refresh", name: UserManagerInformationDidChangeNotification, object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "refresh", name: FacebookSessionChangeNotification, object: nil)
     }
     
     func refresh() {
         println("refreshing SideNavigationUserCell")
         
-        if LocalUser.sharedUser.setup == true {
+        if UserManager.sharedUser.setup == true {
             // If user exists
             println("user is setup")
-            let userName = LocalUser.sharedUser.name
+            let userName = UserManager.sharedUser.name
             userLabel.text = userName
             
-            if LocalUser.sharedUser.guest == false && LocalUser.sharedUser.photo != nil {
+            if UserManager.sharedUser.guest == false && UserManager.sharedUser.photo != nil {
                 // If user isn't a guest and has a valid photo
                 println("full user with valid photo; use their photo")
-                userImage.image = LocalUser.sharedUser.photo
+                userImage.image = UserManager.sharedUser.photo
                 
-                let blurredImage = LocalUser.sharedUser.photo!.applyBlurWithRadius(2, tintColor: nil, saturationDeltaFactor: 1.3, maskImage: nil)
+                let blurredImage = UserManager.sharedUser.photo!.applyBlurWithRadius(2, tintColor: nil, saturationDeltaFactor: 1.3, maskImage: nil)
                 blurredUserImage.image = blurredImage
                 
                 setupOSLabelToDefaultDesiredLook(userLabel)
@@ -69,7 +69,7 @@ class SideNavigationUserCell: UITableViewCell {
                 // If user guest or doesn't have valid photo
                 println("guest user or invalid photo, use user color")
                 userImage.image = nil
-                userImage.backgroundColor = LocalUser.sharedUser.colorToUIColor
+                userImage.backgroundColor = UserManager.sharedUser.colorToUIColor
                 
                 blurredUserImage.image = nil
                 
@@ -95,7 +95,7 @@ class SideNavigationUserCell: UITableViewCell {
                     resetOSLabelToBlackUILabel(userLabel)
                     
                     if userSavedColor != nil {
-                        userImage.backgroundColor = LocalUser.colorToUIColor(userSavedColor!)
+                        userImage.backgroundColor = UserManager.colorToUIColor(userSavedColor!)
                     } else {
                         // In case the userSavedColor info can't be retrieved
                         userImage.backgroundColor = UIColor.grayDark()
@@ -130,7 +130,7 @@ class SideNavigationUserCell: UITableViewCell {
                             resetOSLabelToBlackUILabel(userLabel)
                             
                             if userSavedColor != nil  {
-                                userImage.backgroundColor = LocalUser.colorToUIColor(userSavedColor!)
+                                userImage.backgroundColor = UserManager.colorToUIColor(userSavedColor!)
                             } else {
                                 // In case the userSavedColor info can't be retrieved
                                 userImage.backgroundColor = UIColor.grayDark()
@@ -144,7 +144,7 @@ class SideNavigationUserCell: UITableViewCell {
                         resetOSLabelToBlackUILabel(userLabel)
                         
                         if userSavedColor != nil  {
-                            userImage.backgroundColor = LocalUser.colorToUIColor(userSavedColor!)
+                            userImage.backgroundColor = UserManager.colorToUIColor(userSavedColor!)
                         } else {
                             // In case the userSavedColor info can't be retrieved
                             userImage.backgroundColor = UIColor.grayDark()

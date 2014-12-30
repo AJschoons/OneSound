@@ -54,7 +54,7 @@ class CreatePartyViewController: UITableViewController {
         
         // TODO: Initialize cells that need to be (privacy)
         if partyAlreadyExists {
-            if let previousStrictness = PartyStrictnessOption(rawValue: LocalParty.sharedParty.strictness) {
+            if let previousStrictness = PartyStrictnessOption(rawValue: PartyManager.sharedParty.strictness) {
                 strictness = previousStrictness
             }
         }
@@ -62,7 +62,7 @@ class CreatePartyViewController: UITableViewController {
         
         // Give the name text field the party's name if it already exists
         if partyAlreadyExists {
-            nameCellTextField.text = LocalParty.sharedParty.name
+            nameCellTextField.text = PartyManager.sharedParty.name
             updateNameCellTextFieldCount()
         }
         
@@ -92,7 +92,7 @@ class CreatePartyViewController: UITableViewController {
     func done() {
         if !partyAlreadyExists {
             println("Creating NEW party")
-            LocalParty.sharedParty.createNewParty(nameCellTextField.text, privacy: privacyCellSwitch.on, strictness: strictness.rawValue,
+            PartyManager.sharedParty.createNewParty(nameCellTextField.text, privacy: privacyCellSwitch.on, strictness: strictness.rawValue,
                 respondToChangeAttempt: { partyWasCreated in
                     if partyWasCreated {
                         self.onSuccessfulPartyCreateOrUpdateOrLeave()
@@ -104,7 +104,7 @@ class CreatePartyViewController: UITableViewController {
             )
         } else {
             println("updating party information")
-            LocalParty.sharedParty.updatePartyInfo(nameCellTextField.text, privacy: privacyCellSwitch.on, strictness: strictness.rawValue,
+            PartyManager.sharedParty.updatePartyInfo(nameCellTextField.text, privacy: privacyCellSwitch.on, strictness: strictness.rawValue,
                 respondToChangeAttempt: { partyWasUpdated in
                     if partyWasUpdated {
                         self.onSuccessfulPartyCreateOrUpdateOrLeave()
@@ -121,7 +121,7 @@ class CreatePartyViewController: UITableViewController {
         self.tableView.endEditing(true)
         self.dismissViewControllerAnimated(true, completion: nil)
         
-        if LocalParty.sharedParty.setup == true {
+        if PartyManager.sharedParty.setup == true {
             let delegate = UIApplication.sharedApplication().delegate as AppDelegate
             let snvc = delegate.revealViewController!.rearViewController as SideNavigationViewController
             snvc.programaticallySelectRow(1)
@@ -164,7 +164,7 @@ class CreatePartyViewController: UITableViewController {
     
     func partyInfoHasChanged() -> Bool {
         // TODO: add in a check for privacy info change
-        let party = LocalParty.sharedParty
+        let party = PartyManager.sharedParty
         return (nameCellTextField.text != party.name) || (strictness.rawValue != party.strictness)
     }
     
@@ -308,7 +308,7 @@ extension CreatePartyViewController: UIAlertViewDelegate {
         if alertView.tag == 103 {
             if buttonIndex == 1 {
                 // If host is leaving the party
-                LocalParty.sharedParty.leaveParty(
+                PartyManager.sharedParty.leaveParty(
                     respondToChangeAttempt: { partyWasLeft in
                         if partyWasLeft {
                             self.onSuccessfulPartyCreateOrUpdateOrLeave()

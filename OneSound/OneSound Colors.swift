@@ -46,7 +46,7 @@ enum OneSoundColorOption: String {
     func OneSoundColorOptionToUserColor() -> UserColors {
         switch self {
         case .Random:
-            return LocalUser.sharedUser.randomColor()
+            return UserManager.sharedUser.randomColor()
         case .Green:
             return UserColors.Green
         case .Turquiose:
