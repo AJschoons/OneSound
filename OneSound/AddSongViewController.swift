@@ -12,6 +12,8 @@ let AddSongViewControllerNibName = "AddSongViewController"
 let SongSearchResultCellIdentifier = "SongSearchResultCell"
 let PartySongWasAddedNotification = "PartySongWasAdded"
 
+let SongDurationMaxInSeconds = 600 // 10 minute max
+
 class AddSongViewController: UIViewController {
 
     @IBOutlet weak var songSearchTextField: UITextField!
@@ -58,9 +60,10 @@ class AddSongViewController: UIViewController {
                         if duration != nil {
                             // Soundcloud duration is returned in milliseconds; convert to seconds
                             duration! /= 1000
+                            if duration < SongDurationMaxInSeconds {
+                                newSongSearchResults.append(SongSearchResult(source: source, externalID: id!, name: name!, artistName: artistName!, duration: duration!, artworkURL: artworkURL, numberOfPlaybacks: playbacks))
+                            }
                         }
-                        
-                        newSongSearchResults.append(SongSearchResult(source: source, externalID: id!, name: name!, artistName: artistName!, duration: duration!, artworkURL: artworkURL, numberOfPlaybacks: playbacks))
                     }
                 }
                 
@@ -167,7 +170,7 @@ extension AddSongViewController: UITableViewDataSource {
         var durationText: String = (result.duration != nil) ? timeInSecondsToFormattedMinSecondTimeLabelString(result.duration!) : ""
         var popularityText: String = (result.numberOfPlaybacks != nil) ? "\(thousandsFormatter.stringFromNumber(NSNumber(integer: result.numberOfPlaybacks!))!) playbacks" : ""
         
-        cell.nameLabel.text = nameText
+        cell.setName(nameText)
         cell.artistNameLabel.text = artistText
         cell.durationLabel.text = durationText
         cell.popularityLabel.text = popularityText

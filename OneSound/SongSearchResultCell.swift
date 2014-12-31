@@ -22,4 +22,9 @@ class SongSearchResultCell: UITableViewCell {
         // Initialization code
     }
     
+    func setName(name: String) {
+        nameLabel.text = name
+        nameLabel.adjustFontSizeToFit(minFontSize: 11, heightToAdjustFor: 16)
+    }
+    
 }

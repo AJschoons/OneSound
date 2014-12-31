@@ -26,7 +26,7 @@ class Song {
     // Display data
     var name: String!
     var artistName: String!
-    var duration: Int!
+    var duration: Int! // Song duration in seconds
     var artworkURL: String?
     
     init(json: JSONValue) {

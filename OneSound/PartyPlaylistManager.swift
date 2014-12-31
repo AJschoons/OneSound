@@ -9,8 +9,8 @@
 import Foundation
 
 // A class to manage the party's playlist, with paging
-class PartyPlaylistManager
-{
+class PartyPlaylistManager {
+    
     var hasMorePages: Bool {
         return currentPage < totalPages
     }
@@ -31,12 +31,10 @@ class PartyPlaylistManager
     
     
     // Increments the current page and adds the new data to updatedSongs
-    func update(completion: completionClosure? = nil)
-    {
+    func update(completion: completionClosure? = nil) {
         ++currentPage
         
-        if !updating
-        {
+        if !updating {
             updating = true
             
             let pageStartingFromZero = currentPage - 1
@@ -53,37 +51,33 @@ class PartyPlaylistManager
     }
     
     // Resets all information to like new
-    func reset()
-    {
+    func reset() {
         songs = []
         totalSongs = 0
         clearForUpdate()
     }
     
     // Keeps the songs for displaying while updating
-    func clearForUpdate()
-    {
+    func clearForUpdate() {
         updatedSongs = []
         currentPage = -1
         updating = false
     }
     
-    private func updatePlaylistFromJSON(json: JSONValue, completion: completionClosure? = nil)
-    {
+    private func updatePlaylistFromJSON(json: JSONValue, completion: completionClosure? = nil) {
+        
         totalSongs = json["paging"]["total_count"].integer!
         
         var songsArray = json["results"].array
         var songsAdded = 0
         
-        if songsArray != nil
-        {
+        if songsArray != nil {
             songsAdded = songsArray!.count
             
             // If the page is zero, clears the array
             if currentPage == 0 { updatedSongs = [] }
             
-            for song in songsArray!
-            {
+            for song in songsArray! {
                 updatedSongs.append(Song(json: song))
             }
         }
