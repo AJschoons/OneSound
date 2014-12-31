@@ -272,12 +272,13 @@ extension AppDelegate {
                 } else {
                     // Reset all data and let user know to sign back into facebook
                     // The Facebook SDK session state will change to closed / login failed, and will be handled accordingly
+                    /*
                     UserManager.sharedUser.deleteAllSavedUserInformation(
                         completion: {
                             let alert = UIAlertView(title: "Facebook Information Expired", message: "The Facebook login information has expired. Please restart the app and sign in again. The temporary new guest account that has been provided does not have any information from the Facebook verified account", delegate: nil, cancelButtonTitle: "Ok")
                             alert.show()
                         }
-                    )
+                    )*/
                 }
             } else {
                 println("UserID and userAPIToken NOT found from keychain, setup guest user")

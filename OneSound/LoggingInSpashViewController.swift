@@ -72,6 +72,9 @@ class LoggingInSpashViewController: UIViewController {
         navC.overlay.backgroundColor = UIColor.blackColor()
         navC.overlay.alpha = 0.0
         navC.view.addSubview(navC.overlay)
+        
+        let alert = UIAlertView(title: "Welcome to party, bitches", message: "You're one of the lucky first 20 people to use OneSound, the app where everyone is the DJ. If you haven't already, sign in with Facebook below, and then go to the 'Party Search' tab, search 'New Years,' and join. This pre-release version expires in 30 days. Hope it treats you well, and Happy New Years!", delegate: nil, cancelButtonTitle: "Gotcha, now let's turn up!")
+        alert.show()
     }
     
     override func prefersStatusBarHidden() -> Bool {

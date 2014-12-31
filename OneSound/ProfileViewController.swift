@@ -349,6 +349,10 @@ extension ProfileViewController: UIAlertViewDelegate {
             // If full user is trying to sign out, let the FB session state change handle sign out and updating to new guest account
             if buttonIndex == 1 {
                 FBSession.activeSession().closeAndClearTokenInformation()
+                if let appDelegate = UIApplication.sharedApplication().delegate as? AppDelegate {
+                    appDelegate.sessionStateChanged(FBSession.activeSession(), state: FBSessionState.Closed, error: nil)
+                }
+                
             }
         }
     }
