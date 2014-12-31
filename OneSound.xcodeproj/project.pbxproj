@@ -21,6 +21,7 @@
 		8130D7D21986B8BD00DD4B47 /* Party.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8130D7D11986B8BD00DD4B47 /* Party.swift */; };
 		8130D7D41986B8EB00DD4B47 /* PartyManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8130D7D31986B8EB00DD4B47 /* PartyManager.swift */; };
 		8130D7D6198714C900DD4B47 /* SoundCloudClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8130D7D5198714C900DD4B47 /* SoundCloudClient.swift */; };
+		813897991A5465B0008BBC77 /* OSTriangleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 813897981A5465B0008BBC77 /* OSTriangleView.swift */; };
 		813FCE081977583C00419097 /* LoginColorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 813FCE071977583C00419097 /* LoginColorViewController.swift */; };
 		81414DCE197DD1F800081132 /* EnumHackExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81414DCD197DD1F800081132 /* EnumHackExtensions.swift */; };
 		81414DD1197DF9CF00081132 /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81414DCF197DF9CF00081132 /* ProfileViewController.swift */; };
@@ -110,6 +111,7 @@
 		8130D7D11986B8BD00DD4B47 /* Party.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Party.swift; sourceTree = "<group>"; };
 		8130D7D31986B8EB00DD4B47 /* PartyManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PartyManager.swift; sourceTree = "<group>"; };
 		8130D7D5198714C900DD4B47 /* SoundCloudClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SoundCloudClient.swift; sourceTree = "<group>"; };
+		813897981A5465B0008BBC77 /* OSTriangleView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OSTriangleView.swift; sourceTree = "<group>"; };
 		813FCE0619774ECF00419097 /* TestingPlayground.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = TestingPlayground.playground; sourceTree = "<group>"; };
 		813FCE071977583C00419097 /* LoginColorViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginColorViewController.swift; sourceTree = "<group>"; };
 		81414DCD197DD1F800081132 /* EnumHackExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EnumHackExtensions.swift; sourceTree = "<group>"; };
@@ -208,6 +210,7 @@
 				813FCE0619774ECF00419097 /* TestingPlayground.playground */,
 				81414DCD197DD1F800081132 /* EnumHackExtensions.swift */,
 				812795081A49F20E0092D880 /* OSLabel.swift */,
+				813897981A5465B0008BBC77 /* OSTriangleView.swift */,
 			);
 			name = "Utility + Bridging Header";
 			sourceTree = "<group>";
@@ -680,6 +683,7 @@
 				81ACB3E81A5273AD0039529E /* PartyMembersManager.swift in Sources */,
 				8158311A197471ED0011D3CE /* PartyMainViewController.swift in Sources */,
 				81583116197443940011D3CE /* SideNavigationUserCell.swift in Sources */,
+				813897991A5465B0008BBC77 /* OSTriangleView.swift in Sources */,
 				81929C88196C2C2C006F336B /* OneSoundHTTPClient.swift in Sources */,
 				81062FC2196B6DAA0057D230 /* TestViewController.swift in Sources */,
 				816FD447196F22DB003CCB1C /* FrontNavigationController.swift in Sources */,

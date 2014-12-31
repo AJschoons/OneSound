@@ -299,38 +299,40 @@ extension PartySongsViewController: UITableViewDataSource {
     }
     
     func loadImagesForOnScreenRows() {
-        let visiblePaths = songsTable.indexPathsForVisibleRows() as [NSIndexPath]
-        
-        for path in visiblePaths {
-            if path.row < playlistManager.songs.count {
-                let song = playlistManager.songs[path.row]
-                
-                if song.artworkURL != nil {
-                    // From when using the image as background for the full cell
-                    //let largerArtworkURL = song.artworkURL!.replaceSubstringWithString("-large.jpg", newSubstring: "-t500x500.jpg")
-                    let artworkURL = song.artworkURL!
+        if playlistManager.songs.count > 0 {
+            let visiblePaths = songsTable.indexPathsForVisibleRows() as [NSIndexPath]
+            
+            for path in visiblePaths {
+                if path.row < playlistManager.songs.count {
+                    let song = playlistManager.songs[path.row]
                     
-                    songTableViewImageCache.queryDiskCacheForKey(artworkURL,
-                        done: { image, imageCacheType in
-                            if image != nil {
-                                let updateCell = self.songsTable.cellForRowAtIndexPath(path) as? PartySongCell
-                                
-                                if updateCell != nil {
-                                    // If the cell for that row is still visible and correct
-                                    updateCell!.songImage.image = image
-                                    updateCell!.songImage.setNeedsLayout()
+                    if song.artworkURL != nil {
+                        // From when using the image as background for the full cell
+                        //let largerArtworkURL = song.artworkURL!.replaceSubstringWithString("-large.jpg", newSubstring: "-t500x500.jpg")
+                        let artworkURL = song.artworkURL!
+                        
+                        songTableViewImageCache.queryDiskCacheForKey(artworkURL,
+                            done: { image, imageCacheType in
+                                if image != nil {
+                                    let updateCell = self.songsTable.cellForRowAtIndexPath(path) as? PartySongCell
+                                    
+                                    if updateCell != nil {
+                                        // If the cell for that row is still visible and correct
+                                        updateCell!.songImage.image = image
+                                        updateCell!.songImage.setNeedsLayout()
+                                    }
+                                } else {
+                                    self.startImageDownload(artworkURL, forIndexPath: path)
                                 }
-                            } else {
-                                self.startImageDownload(artworkURL, forIndexPath: path)
                             }
+                        )
+                    } else {
+                        let updateCell = self.songsTable.cellForRowAtIndexPath(path) as? PartySongCell
+                        
+                        if updateCell != nil {
+                            // If the cell for that row is still visible and correct
+                            updateCell!.songImage.image = songCellImagePlaceholder
                         }
-                    )
-                } else {
-                    let updateCell = self.songsTable.cellForRowAtIndexPath(path) as? PartySongCell
-                    
-                    if updateCell != nil {
-                        // If the cell for that row is still visible and correct
-                        updateCell!.songImage.image = songCellImagePlaceholder
                     }
                 }
             }

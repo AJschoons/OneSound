@@ -18,6 +18,8 @@ class PartyMemberCell: UITableViewCell {
     @IBOutlet weak var userSongLabel: UILabel!
     @IBOutlet weak var userHotnessLabel: UILabel!
     
+    @IBOutlet weak var triangleView: OSTriangleView!
+    
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code

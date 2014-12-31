@@ -177,7 +177,7 @@ extension PartyMembersViewController: UITableViewDataSource {
         
         setUserInfoLabelsText(upvoteLabel: membersCell.userUpvoteLabel, numUpvotes: user.upvoteCount, songLabel: membersCell.userSongLabel, numSongs: user.songCount, hotnessLabel: membersCell.userHotnessLabel, percentHotness: user.hotnessPercent, userNameLabel: membersCell.userNameLabel, userName: user.name)
         
-        membersCell.backgroundColor = user.colorToUIColor
+        membersCell.triangleView.color = user.colorToUIColor
         membersCell.userImage.image = guestUserImageForUserCell
         
         if user.guest == false && user.photoURL != nil {
@@ -239,33 +239,35 @@ extension PartyMembersViewController: UITableViewDataSource {
     }
     
     func loadImagesForOnScreenRows() {
-        let visiblePaths = membersTable.indexPathsForVisibleRows() as [NSIndexPath]
-        
-        for path in visiblePaths {
-            let user = membersManager.users[path.row]
+        if membersManager.users.count > 0 {
+            let visiblePaths = membersTable.indexPathsForVisibleRows() as [NSIndexPath]
             
-            if user.photoURL != nil {
-                userThumbnailImageCache.queryDiskCacheForKey(user.photoURL!,
-                    done: { image, imageCacheType in
-                        if image != nil {
-                            let updateCell = self.membersTable.cellForRowAtIndexPath(path) as? PartyMemberCell
-                            
-                            if updateCell != nil {
-                                // If the cell for that row is still visible and correct
-                                updateCell!.userImage.image = image
-                                updateCell!.userImage.setNeedsLayout()
-                            }
-                        } else {
-                            self.startImageDownload(user.photoURL!, forIndexPath: path)
-                        }
-                    }
-                )
-            } else {
-                let updateCell = self.membersTable.cellForRowAtIndexPath(path) as? PartyMemberCell
+            for path in visiblePaths {
+                let user = membersManager.users[path.row]
                 
-                if updateCell != nil {
-                    // If the cell for that row is still visible and correct
-                    updateCell!.userImage.image = guestUserImageForUserCell
+                if user.photoURL != nil {
+                    userThumbnailImageCache.queryDiskCacheForKey(user.photoURL!,
+                        done: { image, imageCacheType in
+                            if image != nil {
+                                let updateCell = self.membersTable.cellForRowAtIndexPath(path) as? PartyMemberCell
+                                
+                                if updateCell != nil {
+                                    // If the cell for that row is still visible and correct
+                                    updateCell!.userImage.image = image
+                                    updateCell!.userImage.setNeedsLayout()
+                                }
+                            } else {
+                                self.startImageDownload(user.photoURL!, forIndexPath: path)
+                            }
+                        }
+                    )
+                } else {
+                    let updateCell = self.membersTable.cellForRowAtIndexPath(path) as? PartyMemberCell
+                    
+                    if updateCell != nil {
+                        // If the cell for that row is still visible and correct
+                        updateCell!.userImage.image = guestUserImageForUserCell
+                    }
                 }
             }
         }

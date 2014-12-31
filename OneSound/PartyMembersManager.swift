@@ -31,19 +31,17 @@ class PartyMembersManager
     
     
     // Increments the current page and adds the new data to updatedSongs
-    func update(completion: completionClosure? = nil)
-    {
+    func update(completion: completionClosure? = nil) {
         ++currentPage
         
-        if !updating
-        {
+        if !updating {
             updating = true
             
             let pageStartingFromZero = currentPage - 1
             OSAPI.sharedClient.GETPartyMembers(PartyManager.sharedParty.partyID, page: currentPage, pageSize: pageSize,
                 success: { data, responseObject in
                     let responseJSON = JSONValue(responseObject)
-                    println(responseJSON)
+                    //println(responseJSON)
                     
                     self.updateMembersFromJSON(responseJSON, completion: completion)
                 },
@@ -53,37 +51,32 @@ class PartyMembersManager
     }
     
     // Resets all information to like new
-    func reset()
-    {
+    func reset() {
         users = []
         totalUsers = 0
         clearForUpdate()
     }
     
     // Keeps the members for displaying while updating
-    func clearForUpdate()
-    {
+    func clearForUpdate() {
         updatedUsers = []
         currentPage = -1
         updating = false
     }
     
-    private func updateMembersFromJSON(json: JSONValue, completion: completionClosure? = nil)
-    {
+    private func updateMembersFromJSON(json: JSONValue, completion: completionClosure? = nil) {
         totalUsers = json["paging"]["total_count"].integer!
         
         var usersArray = json["results"].array
         var usersAdded = 0
         
-        if usersArray != nil
-        {
+        if usersArray != nil {
             usersAdded = usersArray!.count
             
             // If the page is zero, clears the array
             if currentPage == 0 { updatedUsers = [] }
             
-            for user in usersArray!
-            {
+            for user in usersArray! {
                 updatedUsers.append(User(json: user))
             }
         }
