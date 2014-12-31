@@ -112,9 +112,9 @@ class ProfileViewController: UIViewController {
         facebookSignInButton!.layer.cornerRadius = 3.0
         
         // Make view respond to network reachability changes
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "refresh", name: AFNetworkingReachabilityDidChangeNotification, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "refreshIfVisible", name: AFNetworkingReachabilityDidChangeNotification, object: nil)
         // Make sure view knows the user is setup so it won't keep displaying 'Not signed into account' when there is no  internet connection when app launches and then the network comes back and UserManager is setup
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "refresh", name: UserManagerInformationDidChangeNotification, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "refreshIfVisible", name: UserManagerInformationDidChangeNotification, object: nil)
         //NSNotificationCenter.defaultCenter().addObserver(self, selector: "refresh", name: FacebookSessionChangeNotification, object: nil)
         
         // Try getting saved info from UserDefaults for full users
@@ -124,6 +124,8 @@ class ProfileViewController: UIViewController {
         // Register the cell
         var nib = UINib(nibName: "StoryTableViewCell", bundle: nil)
         storiesTable!.registerNib(nib, forCellReuseIdentifier: storyCellIdentifier)
+        
+        signOutButton!.tintColor = UIColor.red()
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -139,6 +141,12 @@ class ProfileViewController: UIViewController {
         setUserInfoHidden(true)
         setStoriesTableToHidden(true)
         */
+    }
+    
+    func refreshIfVisible() {
+        if isViewLoaded() && view.window != nil {
+            refresh()
+        }
     }
     
     func refresh() -> Bool {

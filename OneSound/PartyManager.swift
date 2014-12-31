@@ -418,6 +418,15 @@ class PartyManager: NSObject {
         }
     }
     
+    func skipSong() {
+        // TODO: make this work
+        if audioPlayer.state == STKAudioPlayerStatePlaying {
+            pauseSong()
+            getNextSongForDelegate()
+        }
+        
+    }
+    
     func onSongPlayingTimer(timer: NSTimer!) {
         if audioPlayerHasAudioToPlay {
             let progress = audioPlayer.progress

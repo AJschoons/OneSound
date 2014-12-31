@@ -170,7 +170,7 @@ extension AddSongViewController: UITableViewDataSource {
         var durationText: String = (result.duration != nil) ? timeInSecondsToFormattedMinSecondTimeLabelString(result.duration!) : ""
         var popularityText: String = (result.numberOfPlaybacks != nil) ? "\(thousandsFormatter.stringFromNumber(NSNumber(integer: result.numberOfPlaybacks!))!) playbacks" : ""
         
-        cell.setName(nameText)
+        cell.nameLabel.text = nameText
         cell.artistNameLabel.text = artistText
         cell.durationLabel.text = durationText
         cell.popularityLabel.text = popularityText

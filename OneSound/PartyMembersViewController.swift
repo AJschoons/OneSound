@@ -27,9 +27,9 @@ class PartyMembersViewController: UIViewController {
     
     override func viewDidLoad() {
         // Make view respond to network reachability changes
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "refresh", name: AFNetworkingReachabilityDidChangeNotification, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "refreshIfVisible", name: AFNetworkingReachabilityDidChangeNotification, object: nil)
         // Make sure view knows the user is setup so it won't keep displaying 'Not signed into account' when there is no  internet connection when app launches and then the network comes back and UserManager is setup
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "refresh", name: UserManagerInformationDidChangeNotification, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "refreshIfVisible", name: UserManagerInformationDidChangeNotification, object: nil)
         
         // Creating an (empty) footer stops table from showing empty cells
         membersTable.tableFooterView = UIView(frame: CGRectZero)
@@ -60,6 +60,12 @@ class PartyMembersViewController: UIViewController {
         super.viewDidDisappear(animated)
         // Scrolls back to top so that top of list is loaded
         membersTable.contentOffset = CGPointMake(0, 0 - membersTable.contentInset.top)
+    }
+    
+    func refreshIfVisible() {
+        if isViewLoaded() && view.window != nil {
+            refresh()
+        }
     }
     
     func refresh() {

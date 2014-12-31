@@ -39,12 +39,14 @@ class CreatePartyViewController: UITableViewController {
         // Setup nav bar
         if partyAlreadyExists {
             navigationItem.title = "Party Settings"
+            navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Back", style: UIBarButtonItemStyle.Plain, target: self, action: "cancel")
+            navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Update", style: UIBarButtonItemStyle.Done, target: self, action: "done")
         } else {
             navigationItem.title = "Create Party"
+            navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Cancel, target: self, action: "cancel")
+            navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Done, target: self, action: "done")
         }
         
-        navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Cancel, target: self, action: "cancel")
-        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Done, target: self, action: "done")
         navigationItem.rightBarButtonItem!.enabled = false
         
         // Initialize the text field's delegate and character count label
@@ -68,7 +70,7 @@ class CreatePartyViewController: UITableViewController {
         
         if partyAlreadyExists {
             // Add a tableView footer with a button to leave the party
-            setupLeavePartyButtonInTableFooterView()
+            setupButtonsInTableFooterView()
         }
         
         // Give the privacy cell a switch
@@ -139,6 +141,11 @@ class CreatePartyViewController: UITableViewController {
         alert.show()
     }
     
+    func skipSong() {
+        // TODO: get this to work
+        PartyManager.sharedParty.skipSong()
+    }
+    
     func textFieldDidChange() {
         updateNameCellTextFieldCount()
         setDoneButtonState()
@@ -194,7 +201,53 @@ class CreatePartyViewController: UITableViewController {
         tableView.endEditing(true)
     }
     
-    func setupLeavePartyButtonInTableFooterView() {
+    // footerViewHeight = 95
+    /*
+    func setupButtonsInTableFooterView() {
+        let footerView = UIView(frame: CGRectMake(0, 0, tableView.frame.width, CGFloat(footerViewHeight)))
+        footerView.backgroundColor = UIColor.clearColor()
+        tableView.tableFooterView = footerView
+        
+        let skipSongButton = UIButton.buttonWithType(UIButtonType.System) as UIButton
+        skipSongButton.setTitle("Skip Song", forState: UIControlState.Normal)
+        skipSongButton.setTitleColor(UIColor.white(), forState: UIControlState.Normal)
+        skipSongButton.addTarget(self, action: "skipSong", forControlEvents: UIControlEvents.TouchUpInside)
+        skipSongButton.titleLabel!.textColor = UIColor.white()
+        skipSongButton.titleLabel!.textAlignment = NSTextAlignment.Center
+        skipSongButton.titleLabel!.font = UIFont.systemFontOfSize(15)
+        skipSongButton.backgroundColor = UIColor.red()
+        skipSongButton.layer.cornerRadius = 3.0
+        skipSongButton.setTranslatesAutoresizingMaskIntoConstraints(false)
+        
+        let leavePartyButton = UIButton.buttonWithType(UIButtonType.System) as UIButton
+        leavePartyButton.setTitle("Leave Party", forState: UIControlState.Normal)
+        leavePartyButton.setTitleColor(UIColor.white(), forState: UIControlState.Normal)
+        leavePartyButton.addTarget(self, action: "leaveParty", forControlEvents: UIControlEvents.TouchUpInside)
+        leavePartyButton.titleLabel!.textColor = UIColor.white()
+        leavePartyButton.titleLabel!.textAlignment = NSTextAlignment.Center
+        leavePartyButton.titleLabel!.font = UIFont.systemFontOfSize(15)
+        leavePartyButton.backgroundColor = UIColor.red()
+        leavePartyButton.layer.cornerRadius = 3.0
+        leavePartyButton.setTranslatesAutoresizingMaskIntoConstraints(false)
+        
+        footerView.addSubview(skipSongButton)
+        footerView.addSubview(leavePartyButton)
+        
+        skipSongButton.addConstraint(NSLayoutConstraint(item: skipSongButton, attribute: NSLayoutAttribute.Width, relatedBy: NSLayoutRelation.Equal, toItem: nil, attribute: NSLayoutAttribute.NotAnAttribute, multiplier: 1, constant: 110))
+        skipSongButton.addConstraint(NSLayoutConstraint(item: skipSongButton, attribute: NSLayoutAttribute.Height, relatedBy: NSLayoutRelation.Equal, toItem: nil, attribute: NSLayoutAttribute.NotAnAttribute, multiplier: 1, constant: 30))
+        footerView.addConstraint(NSLayoutConstraint(item: skipSongButton, attribute: NSLayoutAttribute.Bottom, relatedBy: NSLayoutRelation.Equal, toItem: leavePartyButton, attribute: NSLayoutAttribute.Top, multiplier: 1, constant: -10))
+        footerView.addConstraint(NSLayoutConstraint(item: skipSongButton, attribute: NSLayoutAttribute.CenterX, relatedBy: NSLayoutRelation.Equal, toItem: footerView, attribute: NSLayoutAttribute.CenterX, multiplier: 1, constant: 0))
+        
+        leavePartyButton.addConstraint(NSLayoutConstraint(item: leavePartyButton, attribute: NSLayoutAttribute.Width, relatedBy: NSLayoutRelation.Equal, toItem: nil, attribute: NSLayoutAttribute.NotAnAttribute, multiplier: 1, constant: 110))
+        leavePartyButton.addConstraint(NSLayoutConstraint(item: leavePartyButton, attribute: NSLayoutAttribute.Height, relatedBy: NSLayoutRelation.Equal, toItem: nil, attribute: NSLayoutAttribute.NotAnAttribute, multiplier: 1, constant: 30))
+        footerView.addConstraint(NSLayoutConstraint(item: leavePartyButton, attribute: NSLayoutAttribute.Bottom, relatedBy: NSLayoutRelation.Equal, toItem: footerView, attribute: NSLayoutAttribute.Bottom, multiplier: 1, constant: 0))
+        footerView.addConstraint(NSLayoutConstraint(item: leavePartyButton, attribute: NSLayoutAttribute.CenterX, relatedBy: NSLayoutRelation.Equal, toItem: footerView, attribute: NSLayoutAttribute.CenterX, multiplier: 1, constant: 0))
+    }
+    */
+    
+    // Before adding other buttons
+    // footerViewHeight = 60 back then, btw
+    func setupButtonsInTableFooterView() {
         let footerView = UIView(frame: CGRectMake(0, 0, tableView.frame.width, CGFloat(footerViewHeight)))
         footerView.backgroundColor = UIColor.clearColor()
         tableView.tableFooterView = footerView

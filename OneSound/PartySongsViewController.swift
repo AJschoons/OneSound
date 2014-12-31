@@ -39,9 +39,9 @@ class PartySongsViewController: UIViewController {
         addSongButton = UIBarButtonItem(title: "Add", style: UIBarButtonItemStyle.Plain, target: self, action: "addSong")
         
         // Make view respond to network reachability changes
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "refresh", name: AFNetworkingReachabilityDidChangeNotification, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "refreshIfVisible", name: AFNetworkingReachabilityDidChangeNotification, object: nil)
         // Make sure view knows the user is setup so it won't keep displaying 'Not signed into account' when there is no  internet connection when app launches and then the network comes back and UserManager is setup
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "refresh", name: UserManagerInformationDidChangeNotification, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "refreshIfVisible", name: UserManagerInformationDidChangeNotification, object: nil)
         // Should update when a party song is added
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "refresh", name: PartySongWasAddedNotification, object: nil)
         //NSNotificationCenter.defaultCenter().addObserver(self, selector: "reloadTableData", name: PartyManagerSongInformationDidChangeNotification, object: nil)
@@ -77,6 +77,12 @@ class PartySongsViewController: UIViewController {
         super.viewDidDisappear(animated)
         // Scrolls back to top so that top of playlist is loaded
         songsTable.contentOffset = CGPointMake(0, 0 - songsTable.contentInset.top)
+    }
+    
+    func refreshIfVisible() {
+        if isViewLoaded() && view.window != nil {
+            refresh()
+        }
     }
     
     func refresh() {
@@ -203,30 +209,11 @@ extension PartySongsViewController: UITableViewDataSource {
         songCell.songImage.image = songCellImagePlaceholder
         
         if song.name != nil {
-            songCell.setSongName(song.name!)
-            
-            // Make the label text be left-aligned if the text is too big
-            /*
-            let stringSize = (song.name! as NSString).sizeWithAttributes([NSFontAttributeName: songCell.songName.font])
-            if (stringSize.width + 1) > songCell.songName.frame.width {
-                songCell.songName.textAlignment = NSTextAlignment.Left
-            } else {
-                songCell.songName.textAlignment = NSTextAlignment.Center
-            }
-            */
+            songCell.songName.text = song.name!
         }
         
         if song.artistName != nil {
             songCell.songArtist.text = song.artistName!
-            /*
-            // Make the label text be left-aligned if the text is too big
-            let stringSize = (song.artistName! as NSString).sizeWithAttributes([NSFontAttributeName: songCell.songArtist.font])
-            if (stringSize.width + 1) > songCell.songArtist.frame.width {
-                songCell.songArtist.textAlignment = NSTextAlignment.Left
-            } else {
-                songCell.songArtist.textAlignment = NSTextAlignment.Center
-            }
-            */
         }
         
         songCell.resetThumbsUpDownButtons()

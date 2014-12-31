@@ -44,11 +44,6 @@ class PartySongCell: UITableViewCell {
         selectionStyle = UITableViewCellSelectionStyle.None
     }
     
-    func setSongName(name: String) {
-        songName.text = name
-        songName.adjustFontSizeToFit(minFontSize: 12, heightToAdjustFor: 16)
-    }
-    
     func handleThumbsUp(button: AnyObject) {
         if let thumbsUpButton = button as? UIButton {
             if thumbsUpButton.selected {
