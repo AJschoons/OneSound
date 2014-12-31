@@ -203,20 +203,22 @@ extension PartySongsViewController: UITableViewDataSource {
         songCell.songImage.image = songCellImagePlaceholder
         
         if song.name != nil {
-            songCell.songName.text = song.name!
+            songCell.setSongName(song.name!)
             
             // Make the label text be left-aligned if the text is too big
+            /*
             let stringSize = (song.name! as NSString).sizeWithAttributes([NSFontAttributeName: songCell.songName.font])
             if (stringSize.width + 1) > songCell.songName.frame.width {
                 songCell.songName.textAlignment = NSTextAlignment.Left
             } else {
                 songCell.songName.textAlignment = NSTextAlignment.Center
             }
+            */
         }
         
         if song.artistName != nil {
             songCell.songArtist.text = song.artistName!
-            
+            /*
             // Make the label text be left-aligned if the text is too big
             let stringSize = (song.artistName! as NSString).sizeWithAttributes([NSFontAttributeName: songCell.songArtist.font])
             if (stringSize.width + 1) > songCell.songArtist.frame.width {
@@ -224,6 +226,7 @@ extension PartySongsViewController: UITableViewDataSource {
             } else {
                 songCell.songArtist.textAlignment = NSTextAlignment.Center
             }
+            */
         }
         
         songCell.resetThumbsUpDownButtons()

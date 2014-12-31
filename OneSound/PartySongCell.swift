@@ -12,7 +12,7 @@ let PartySongCellNibName = "PartySongCell"
 
 class PartySongCell: UITableViewCell {
 
-    @IBOutlet weak var songName: UILabel!
+    @IBOutlet private(set) weak var songName: UILabel!
     @IBOutlet weak var songArtist: UILabel!
     @IBOutlet weak var songImage: UIImageView!
     @IBOutlet weak var thumbsDownButton: UIButton!
@@ -42,6 +42,11 @@ class PartySongCell: UITableViewCell {
         songImage.layer.masksToBounds = true
         
         selectionStyle = UITableViewCellSelectionStyle.None
+    }
+    
+    func setSongName(name: String) {
+        songName.text = name
+        songName.adjustFontSizeToFit(minFontSize: 12, heightToAdjustFor: 16)
     }
     
     func handleThumbsUp(button: AnyObject) {

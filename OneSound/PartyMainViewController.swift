@@ -459,7 +459,7 @@ class PartyMainViewController: UIViewController {
                     NSKernAttributeName: songTimeLabel.kerning
                 ])
         
-        self.songNameLabel!.adjustFontSizeToFit(minFontSize: 16, heightToAdjustFor: 25)
+        songNameLabel!.adjustFontSizeToFit(minFontSize: 16, heightToAdjustFor: 25)
     }
     
     func setPartySongImage(# songToPlay: Bool, artworkToShow: Bool, loadingSong: Bool, image: UIImage?) {
