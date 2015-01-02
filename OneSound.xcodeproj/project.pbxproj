@@ -22,6 +22,7 @@
 		8130D7D41986B8EB00DD4B47 /* PartyManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8130D7D31986B8EB00DD4B47 /* PartyManager.swift */; };
 		8130D7D6198714C900DD4B47 /* SoundCloudClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8130D7D5198714C900DD4B47 /* SoundCloudClient.swift */; };
 		813897991A5465B0008BBC77 /* OSTriangleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 813897981A5465B0008BBC77 /* OSTriangleView.swift */; };
+		8138979A1A572234008BBC77 /* Podfile in Resources */ = {isa = PBXBuildFile; fileRef = 81929C84196B736B006F336B /* Podfile */; };
 		813FCE081977583C00419097 /* LoginColorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 813FCE071977583C00419097 /* LoginColorViewController.swift */; };
 		81414DCE197DD1F800081132 /* EnumHackExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81414DCD197DD1F800081132 /* EnumHackExtensions.swift */; };
 		81414DD1197DF9CF00081132 /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81414DCF197DF9CF00081132 /* ProfileViewController.swift */; };
@@ -595,6 +596,7 @@
 				81583117197443940011D3CE /* SideNavigationUserCell.xib in Resources */,
 				81631F3519994BB000C55A6F /* PartyMemberCell.xib in Resources */,
 				81583120197477990011D3CE /* HistoryViewController.xib in Resources */,
+				8138979A1A572234008BBC77 /* Podfile in Resources */,
 				81BCC2BF199D65AC00A3500F /* SongSearchResultCell.xib in Resources */,
 				81BCC2B8199D2EA900A3500F /* AddSongViewController.xib in Resources */,
 				81583124197477E30011D3CE /* SearchViewController.xib in Resources */,
