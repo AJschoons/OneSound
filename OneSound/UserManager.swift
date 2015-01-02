@@ -9,12 +9,14 @@
 import Foundation
 
 let UserManagerInformationDidChangeNotification = "UserManagerInformationDidChange"
+
 let service = "com.AdamSchoonmaker.OneSound"
 let userIDKeychainKey = "userID"
 let userAccessTokenKeychainKey = "userAccessToken"
 let userGuestBoolKeychainKey = "userGuestBool"
-let userFacebookUIDKeychainKey = "userFacebookUID"
-let userFacebookAuthenticationTokenKeychainKey = "userFacebookAuthenticationTokenKey"
+let userGuestBoolKeychainValueIsGuest = "true"
+let userGuestBoolKeychainValueIsNotGuest = "false"
+
 let userNameKey = "name"
 let userColorKey = "color"
 let userGuestKey = "guest"
@@ -472,6 +474,9 @@ extension UserManager {
         
         SSKeychain.setPassword(String(userID), forService: service, account: userIDKeychainKey)
         SSKeychain.setPassword(accessToken, forService: service, account: userAccessTokenKeychainKey)
+        
+        var userGuestKeychainValue = guest! ? userGuestBoolKeychainValueIsGuest : userGuestBoolKeychainValueIsNotGuest
+        SSKeychain.setPassword(userGuestKeychainValue, forService: service, account: userGuestBoolKeychainKey)
     }
     
     func deleteAllSavedUserInformation(completion: completionClosure? = nil) {
@@ -480,6 +485,7 @@ extension UserManager {
         
         SSKeychain.deletePasswordForService(service, account: userIDKeychainKey)
         SSKeychain.deletePasswordForService(service, account: userAccessTokenKeychainKey)
+        SSKeychain.deletePasswordForService(service, account: userGuestBoolKeychainKey)
         
         let defaults = NSUserDefaults.standardUserDefaults()
         defaults.removeObjectForKey(userNameKey)

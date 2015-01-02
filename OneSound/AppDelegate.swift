@@ -139,20 +139,38 @@ extension AppDelegate {
                 }
             )
         } else {
-            // If no facebook token, check for guest user
-            println("Cached facebook token unavailable, check for guest user")
+            // If no facebook token, check keychain info for user
+            println("Cached facebook token unavailable, check keychain for user")
             
             var userID: Int? = SSKeychain.passwordForService(service, account: userIDKeychainKey) != nil ? SSKeychain.passwordForService(service, account: userIDKeychainKey).toInt() : nil
             var userAPIToken: String? = SSKeychain.passwordForService(service, account: userAccessTokenKeychainKey)
+            var userGuestBool: String? = SSKeychain.passwordForService(service, account: userGuestBoolKeychainKey)
             
-            if userID == nil || userAPIToken == nil {
-                // If no guest user, then request a guest user to be created, set it up, save in keychain, save to UserManager
-                println("Guest user NOT found")
+            if userID == nil || userAPIToken == nil || userGuestBool == nil {
+                // If no user, then request a guest user to be created, set it up, save in keychain, save to UserManager
+                println("user NOT found in keychain")
                 UserManager.sharedUser.setupGuestAccount()
             } else {
-                // Got guest user from keychain, request their information and save to UserManager
-                println("Guest user FOUND")
-                UserManager.sharedUser.signIntoGuestAccount(userID!, userAccessToken: userAPIToken!)
+                // Got user from keychain
+                println("user WAS found in keychain")
+                if userGuestBool == userGuestBoolKeychainValueIsGuest {
+                    // Sign them into the guest account
+                    println("keychain user is guest")
+                    UserManager.sharedUser.signIntoGuestAccount(userID!, userAccessToken: userAPIToken!)
+                } else if userGuestBool == userGuestBoolKeychainValueIsNotGuest {
+                    // Show them the Facebook login UI and give them chance to sign in
+                    println("keychain user is NOT guest")
+                    FBSession.openActiveSessionWithReadPermissions(facebookSessionPermissions, allowLoginUI: true,
+                        completionHandler: { session, state, error in
+                            // Handler for session state changes
+                            // This method will be called EACH time the session state changes,
+                            // also for intermediate states and NOT just when the session open
+                            self.sessionStateChanged(session, state: state, error: error)
+                        }
+                    )
+                } else {
+                    println("ERROR: invalid guest bool keychain value")
+                }
             }
         }
     }
@@ -272,10 +290,21 @@ extension AppDelegate {
                 } else {
                     // Reset all data and let user know to sign back into facebook
                     // The Facebook SDK session state will change to closed / login failed, and will be handled accordingly
+                    /*
                     UserManager.sharedUser.deleteAllSavedUserInformation(
                         completion: {
                             let alert = UIAlertView(title: "Facebook Information Expired", message: "The Facebook login information has expired. Please restart the app and sign in again. The temporary new guest account that has been provided does not have any information from the Facebook verified account", delegate: nil, cancelButtonTitle: "Ok")
                             alert.show()
+                        }
+                    )*/
+                    
+                    // Try to have them sign back into Facebook
+                    FBSession.openActiveSessionWithReadPermissions(facebookSessionPermissions, allowLoginUI: true,
+                        completionHandler: { session, state, error in
+                            // Handler for session state changes
+                            // This method will be called EACH time the session state changes,
+                            // also for intermediate states and NOT just when the session open
+                            self.sessionStateChanged(session, state: state, error: error)
                         }
                     )
                 }
@@ -288,7 +317,7 @@ extension AppDelegate {
             // If the session is closed, delete all old info and setup a guest account if the user had a full account
             println("Facebook session state change: Closed/Login Failed")
             
-            if UserManager.sharedUser.guest == false {
+            if UserManager.sharedUser.guest != nil && UserManager.sharedUser.guest == false {
                 println("User was NOT a guest; delete all their saved info & clear facebook token, setup new guest account")
                 UserManager.sharedUser.deleteAllSavedUserInformation(
                     completion: {
