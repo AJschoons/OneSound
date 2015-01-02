@@ -22,7 +22,7 @@
 		8130D7D41986B8EB00DD4B47 /* PartyManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8130D7D31986B8EB00DD4B47 /* PartyManager.swift */; };
 		8130D7D6198714C900DD4B47 /* SoundCloudClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8130D7D5198714C900DD4B47 /* SoundCloudClient.swift */; };
 		813897991A5465B0008BBC77 /* OSTriangleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 813897981A5465B0008BBC77 /* OSTriangleView.swift */; };
-		8138979C1A5724AB008BBC77 /* Podfile in Resources */ = {isa = PBXBuildFile; fileRef = 8138979B1A5724AB008BBC77 /* Podfile */; };
+		8138979E1A57256F008BBC77 /* Podfile in Resources */ = {isa = PBXBuildFile; fileRef = 8138979D1A57256F008BBC77 /* Podfile */; };
 		813FCE081977583C00419097 /* LoginColorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 813FCE071977583C00419097 /* LoginColorViewController.swift */; };
 		81414DCE197DD1F800081132 /* EnumHackExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81414DCD197DD1F800081132 /* EnumHackExtensions.swift */; };
 		81414DD1197DF9CF00081132 /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81414DCF197DF9CF00081132 /* ProfileViewController.swift */; };
@@ -113,7 +113,7 @@
 		8130D7D31986B8EB00DD4B47 /* PartyManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PartyManager.swift; sourceTree = "<group>"; };
 		8130D7D5198714C900DD4B47 /* SoundCloudClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SoundCloudClient.swift; sourceTree = "<group>"; };
 		813897981A5465B0008BBC77 /* OSTriangleView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OSTriangleView.swift; sourceTree = "<group>"; };
-		8138979B1A5724AB008BBC77 /* Podfile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = Podfile; path = ../../../../../Desktop/Podfile; sourceTree = "<group>"; };
+		8138979D1A57256F008BBC77 /* Podfile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Podfile; sourceTree = "<group>"; };
 		813FCE0619774ECF00419097 /* TestingPlayground.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = TestingPlayground.playground; sourceTree = "<group>"; };
 		813FCE071977583C00419097 /* LoginColorViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginColorViewController.swift; sourceTree = "<group>"; };
 		81414DCD197DD1F800081132 /* EnumHackExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EnumHackExtensions.swift; sourceTree = "<group>"; };
@@ -264,7 +264,7 @@
 		81062F94196B6C7E0057D230 = {
 			isa = PBXGroup;
 			children = (
-				8138979B1A5724AB008BBC77 /* Podfile */,
+				8138979D1A57256F008BBC77 /* Podfile */,
 				81062F9F196B6C7E0057D230 /* OneSound */,
 				81062FB4196B6C7E0057D230 /* OneSoundTests */,
 				81062F9E196B6C7E0057D230 /* Products */,
@@ -588,7 +588,6 @@
 				8158313F19748F080011D3CE /* PartySongsViewController.xib in Resources */,
 				8158311B197471ED0011D3CE /* PartyMainViewController.xib in Resources */,
 				815CB6E31976D749000FD4B7 /* Login.storyboard in Resources */,
-				8138979C1A5724AB008BBC77 /* Podfile in Resources */,
 				81062FAC196B6C7E0057D230 /* Images.xcassets in Resources */,
 				815831281974786C0011D3CE /* FollowingViewController.xib in Resources */,
 				8103D66C19805E9000AE5A27 /* LoggingInSpashViewController.xib in Resources */,
@@ -597,6 +596,7 @@
 				81583117197443940011D3CE /* SideNavigationUserCell.xib in Resources */,
 				81631F3519994BB000C55A6F /* PartyMemberCell.xib in Resources */,
 				81583120197477990011D3CE /* HistoryViewController.xib in Resources */,
+				8138979E1A57256F008BBC77 /* Podfile in Resources */,
 				81BCC2BF199D65AC00A3500F /* SongSearchResultCell.xib in Resources */,
 				81BCC2B8199D2EA900A3500F /* AddSongViewController.xib in Resources */,
 				81583124197477E30011D3CE /* SearchViewController.xib in Resources */,
