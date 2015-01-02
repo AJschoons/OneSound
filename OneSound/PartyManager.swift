@@ -196,6 +196,10 @@ class PartyManager: NSObject {
             }
         } else {
             // Not connected to the internet
+            if audioPlayerIsPlaying {
+                audioPlayer.pause()
+            }
+            
             dispatchAsyncToMainQueue(action: {
                 self.delegate.showMessages("Not connected to the internet", detailLine: "Please connect to the internet to use OneSound")
                 self.delegate.setPartyMainVCRightBarButton(create: false, leave: false, settings: false)
