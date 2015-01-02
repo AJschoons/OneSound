@@ -559,8 +559,15 @@ func setTableBackgroundViewWithMessages(tableView: UITableView, mainLine: String
     bgView.addConstraint(NSLayoutConstraint(item: messageLabel2, attribute: NSLayoutAttribute.Right, relatedBy: NSLayoutRelation.Equal, toItem: bgView, attribute: NSLayoutAttribute.Right, multiplier: 1, constant: 0))
 }
 
-func getFrontNavigationController() -> FrontNavigationController? {
+func getAppDelegate() -> AppDelegate? {
     if let appDelegate = UIApplication.sharedApplication().delegate as? AppDelegate {
+        return appDelegate
+    }
+    return nil
+}
+
+func getFrontNavigationController() -> FrontNavigationController? {
+    if let appDelegate = getAppDelegate() {
         if let rvc = appDelegate.revealViewController {
             if let fnc = rvc.frontViewController as? FrontNavigationController {
                 return fnc
