@@ -7,7 +7,7 @@
 #import "AFNetworking.h"
 #import "AFNetworkActivityIndicatorManager.h"
 #import "AFNetworkActivityLogger.h"
-#import "SWRevealViewController.h"
+//#import "SWRevealViewController.h"
 #import "SSKeychain.h"
 #import "FacebookSDK.h"
 //#import "THLabel.h" // Using OSLabel

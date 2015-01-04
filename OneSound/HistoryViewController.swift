@@ -20,13 +20,12 @@ class HistoryViewController: UIViewController {
         // Do any additional setup after loading the view.
         title = "History"
         
-        // Setup the revealViewController to work for this view controller,
-        // add its sideMenu icon to the nav bar
-        let revealController = revealViewController()
-        revealController.panGestureRecognizer()
-        revealController.tapGestureRecognizer()
-        let revealButtonItem = UIBarButtonItem(image: UIImage(named: "sideMenuToggleIcon"), style: UIBarButtonItemStyle.Plain, target: revealController, action: "revealToggle:")
-        navigationItem.leftBarButtonItem = revealButtonItem
+        // Stop view from being covered by the nav bar / laid out from top of screen
+        edgesForExtendedLayout = UIRectEdge.None
+        
+        let fnc = getFrontNavigationController()
+        let sideMenuButtonItem = UIBarButtonItem(image: UIImage(named: "sideMenuToggleIcon"), style: UIBarButtonItemStyle.Plain, target: fnc, action: "toggleSideMenu")
+        navigationItem.leftBarButtonItem = sideMenuButtonItem
         
         // Make view respond to network reachability changes
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "refresh", name: AFNetworkingReachabilityDidChangeNotification, object: nil)

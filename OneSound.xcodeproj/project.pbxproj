@@ -59,6 +59,9 @@
 		81751FF7196DEB1D00B9F9A9 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 81751FF6196DEB1D00B9F9A9 /* UIKit.framework */; };
 		8176451A197EA192001BF7A7 /* StoriesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81764518197EA192001BF7A7 /* StoriesViewController.swift */; };
 		8176451B197EA192001BF7A7 /* StoriesViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 81764519197EA192001BF7A7 /* StoriesViewController.xib */; };
+		8179444E1A5751C000A9C636 /* ENSideMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8179444C1A5751C000A9C636 /* ENSideMenu.swift */; };
+		8179444F1A5751C000A9C636 /* ENSideMenuNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8179444D1A5751C000A9C636 /* ENSideMenuNavigationController.swift */; };
+		817944511A5752DE00A9C636 /* OSFrontNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 817944501A5752DE00A9C636 /* OSFrontNavigationController.swift */; };
 		818750561A50C624000CC353 /* PartyPlaylistManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 818750551A50C624000CC353 /* PartyPlaylistManager.swift */; };
 		81929C88196C2C2C006F336B /* OneSoundHTTPClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81929C87196C2C2C006F336B /* OneSoundHTTPClient.swift */; };
 		81936FC8196C656F005E42F4 /* FrontViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81936FC6196C656F005E42F4 /* FrontViewController.swift */; };
@@ -151,6 +154,9 @@
 		81751FF6196DEB1D00B9F9A9 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		81764518197EA192001BF7A7 /* StoriesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StoriesViewController.swift; sourceTree = "<group>"; };
 		81764519197EA192001BF7A7 /* StoriesViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = StoriesViewController.xib; sourceTree = "<group>"; };
+		8179444C1A5751C000A9C636 /* ENSideMenu.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ENSideMenu.swift; sourceTree = "<group>"; };
+		8179444D1A5751C000A9C636 /* ENSideMenuNavigationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ENSideMenuNavigationController.swift; sourceTree = "<group>"; };
+		817944501A5752DE00A9C636 /* OSFrontNavigationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OSFrontNavigationController.swift; sourceTree = "<group>"; };
 		818750551A50C624000CC353 /* PartyPlaylistManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PartyPlaylistManager.swift; sourceTree = "<group>"; };
 		81929C81196B71F3006F336B /* OneSound-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "OneSound-Bridging-Header.h"; sourceTree = "<group>"; };
 		81929C87196C2C2C006F336B /* OneSoundHTTPClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OneSoundHTTPClient.swift; sourceTree = "<group>"; };
@@ -241,6 +247,7 @@
 			isa = PBXGroup;
 			children = (
 				816FD446196F22DB003CCB1C /* FrontNavigationController.swift */,
+				817944501A5752DE00A9C636 /* OSFrontNavigationController.swift */,
 				8158311C197472000011D3CE /* MainViewControllers */,
 				8195347D19777A5C000B97A3 /* Modal */,
 				8100A963196F086000EB1156 /* Side Menu */,
@@ -264,6 +271,7 @@
 		81062F94196B6C7E0057D230 = {
 			isa = PBXGroup;
 			children = (
+				8179444B1A5751C000A9C636 /* ENSideMenu Library */,
 				8138979D1A57256F008BBC77 /* Podfile */,
 				81062F9F196B6C7E0057D230 /* OneSound */,
 				81062FB4196B6C7E0057D230 /* OneSoundTests */,
@@ -424,6 +432,15 @@
 				8103D66A19805E9000AE5A27 /* LoggingInSpashViewController.xib */,
 			);
 			name = Other;
+			sourceTree = "<group>";
+		};
+		8179444B1A5751C000A9C636 /* ENSideMenu Library */ = {
+			isa = PBXGroup;
+			children = (
+				8179444C1A5751C000A9C636 /* ENSideMenu.swift */,
+				8179444D1A5751C000A9C636 /* ENSideMenuNavigationController.swift */,
+			);
+			path = "ENSideMenu Library";
 			sourceTree = "<group>";
 		};
 		818750541A50C5C8000CC353 /* Managers */ = {
@@ -652,6 +669,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8179444E1A5751C000A9C636 /* ENSideMenu.swift in Sources */,
 				815831451975CD450011D3CE /* SwiftUtilities.swift in Sources */,
 				81583123197477E30011D3CE /* SearchViewController.swift in Sources */,
 				8103D66B19805E9000AE5A27 /* LoggingInSpashViewController.swift in Sources */,
@@ -664,6 +682,7 @@
 				8108DF9A199BDD150040B8E7 /* CreatePartyStrictnessViewController.swift in Sources */,
 				81BCC2BE199D65AC00A3500F /* SongSearchResultCell.swift in Sources */,
 				81527128196C5A8E00464068 /* User.swift in Sources */,
+				817944511A5752DE00A9C636 /* OSFrontNavigationController.swift in Sources */,
 				812795091A49F20E0092D880 /* OSLabel.swift in Sources */,
 				816FD445196F22B0003CCB1C /* SideNavigationViewController.swift in Sources */,
 				81BCC2B7199D2EA900A3500F /* AddSongViewController.swift in Sources */,
@@ -680,6 +699,7 @@
 				8108DF97199BBC900040B8E7 /* CreatePartyViewController.swift in Sources */,
 				8130D7D21986B8BD00DD4B47 /* Party.swift in Sources */,
 				8176451A197EA192001BF7A7 /* StoriesViewController.swift in Sources */,
+				8179444F1A5751C000A9C636 /* ENSideMenuNavigationController.swift in Sources */,
 				8130D7D41986B8EB00DD4B47 /* PartyManager.swift in Sources */,
 				8158314C1976D54F0011D3CE /* LoginViewController.swift in Sources */,
 				81ACB3E81A5273AD0039529E /* PartyMembersManager.swift in Sources */,

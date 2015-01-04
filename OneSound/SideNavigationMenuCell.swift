@@ -12,7 +12,7 @@ class SideNavigationMenuCell: UITableViewCell {
 
     @IBOutlet weak var sideMenuItemIcon: UIImageView!
     @IBOutlet weak var sideMenuItemLabel: UILabel!
-    var selectedIcon: UIImage?
+    //var selectedIcon: UIImage? // Selections no longer shown
     var unselectedIcon: UIImage?
     
     override func awakeFromNib() {
@@ -21,18 +21,5 @@ class SideNavigationMenuCell: UITableViewCell {
         
         // Stop cell color from changing when selected
         selectionStyle = UITableViewCellSelectionStyle.None
-    }
-
-    override func setSelected(selected: Bool, animated: Bool) {
-        super.setSelected(selected, animated: animated)
-
-        // Configure the view for the selected state
-        if selected {
-            sideMenuItemIcon.image = selectedIcon
-            sideMenuItemLabel.textColor = UIColor.blue()
-        } else {
-            sideMenuItemIcon.image = unselectedIcon
-            sideMenuItemLabel.textColor = UIColor.grayDark()
-        }
     }
 }

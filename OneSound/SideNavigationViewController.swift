@@ -34,12 +34,9 @@ class SideNavigationViewController: UITableViewController {
     var firstTimeAppearing = true
 
     override func viewDidLoad() {
-        /*
-        let fnc = (UIApplication.sharedApplication().delegate as AppDelegate).revealViewController!.frontViewController as FrontNavigationController
-        let viewControllerToNavTo = menuViewControllers[initiallySelectedRow]!
-        let loggingInSplashViewController = LoggingInSpashViewController(nibName: LoggingInSpashViewControllerNibName, bundle: nil)
-        fnc.setViewControllers([viewControllerToNavTo, loggingInSplashViewController], animated: false)
-        */
+        let fnc = getFrontNavigationController()
+        let sideMenuButtonItem = UIBarButtonItem(image: UIImage(named: "sideMenuToggleIcon"), style: UIBarButtonItemStyle.Plain, target: fnc, action: "toggleSideMenu")
+        navigationItem.leftBarButtonItem = sideMenuButtonItem
 
         super.viewDidLoad()
         
@@ -48,6 +45,11 @@ class SideNavigationViewController: UITableViewController {
         // Customize the tableView
         tableView.scrollEnabled = false
         tableView.separatorStyle = UITableViewCellSeparatorStyle.None
+        //tableView.backgroundColor = UIColor(white: 1, alpha: 0.35)
+        tableView.backgroundColor = UIColor.clearColor()
+        
+        // Used to shift info down below nav bar
+        tableView.contentInset = UIEdgeInsetsMake(64.0, 0, 0, 0)
         
         // First items are nil so index match table table row
         /*
@@ -62,7 +64,7 @@ class SideNavigationViewController: UITableViewController {
         sideMenuItemLabels = [nil, "Party", "History", "Search", "Following", "Stories", "Profile"]
         */
         
-        sideMenuSelectedIcons = [nil, UIImage(named: "sideMenuPartyIconSelected"), UIImage(named: "sideMenuSearchIconSelected"), UIImage(named: "sideMenuProfileIconSelected")]
+        //sideMenuSelectedIcons = [nil, UIImage(named: "sideMenuPartyIconSelected"), UIImage(named: "sideMenuSearchIconSelected"), UIImage(named: "sideMenuProfileIconSelected")]
         sideMenuUnselectedIcons = [nil, UIImage(named: "sideMenuPartyIconUnselected"), UIImage(named: "sideMenuSearchIconUnselected"), UIImage(named: "sideMenuProfileIconUnselected")]
         sideMenuItemLabels = [nil, "Party", "Party Search", "Profile"]
         
@@ -120,7 +122,7 @@ extension SideNavigationViewController: UITableViewDataSource {
             // If a menu cell
             let menuCell = tableView.dequeueReusableCellWithIdentifier(menuCellIdentifier, forIndexPath: indexPath) as SideNavigationMenuCell
             menuCell.sideMenuItemLabel.text = sideMenuItemLabels[indexPath.row]
-            menuCell.selectedIcon = sideMenuSelectedIcons[indexPath.row]
+            //menuCell.selectedIcon = sideMenuSelectedIcons[indexPath.row]
             menuCell.unselectedIcon = sideMenuUnselectedIcons[indexPath.row]
             menuCell.sideMenuItemIcon.image = menuCell.unselectedIcon
             
@@ -152,15 +154,11 @@ extension SideNavigationViewController: UITableViewDelegate {
                     menuCell!.setSelected(selected, animated: false)
                 }
             }
-            
-            let revealViewController = (UIApplication.sharedApplication().delegate as AppDelegate).revealViewController
-            let fnc = revealViewController!.frontViewController as FrontNavigationController
-            
+        
             let menuViewController = menuViewControllers[indexPath.row]!
-            fnc.setViewControllers([menuViewController], animated: false)
-            
-            // Animate to FrontNavigationController; hide SideNavigation
-            revealViewController!.setFrontViewPosition(FrontViewPosition.Left, animated: true)
+            let fnc = getFrontNavigationController()
+            fnc?.setContentViewController(menuViewController)
+            fnc?.sideMenu?.hideSideMenu()
         }
     }
     
@@ -169,7 +167,9 @@ extension SideNavigationViewController: UITableViewDelegate {
             return topCellHeight
         } else {
             if let window = view.window {
-                return ((view.window!.bounds.height - topCellHeight - 20) / 6.0)
+                // = windowHeight - topCellHeight - statusBarHeight - navBarHeight
+                //let height = (view.window!.bounds.height - topCellHeight - 20 - 64) / 6.0
+                return 50
             }
             return 0
         }

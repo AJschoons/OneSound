@@ -31,7 +31,6 @@ PODS:
   - SDWebImage/Core (3.7.1)
   - SSKeychain (1.2.2)
   - StreamingKit (0.1.25)
-  - SWRevealViewController (2.3.0)
   - UIImageEffects (0.0.1)
 
 DEPENDENCIES:
@@ -41,7 +40,6 @@ DEPENDENCIES:
   - SDWebImage (~> 3.7)
   - SSKeychain (~> 1.2)
   - StreamingKit (~> 0.1)
-  - SWRevealViewController (~> 2.1)
   - UIImageEffects
 
 SPEC CHECKSUMS:
@@ -52,7 +50,6 @@ SPEC CHECKSUMS:
   SDWebImage: 116e88633b5b416ea0ca4b334a4ac59cf72dd38d
   SSKeychain: cc48bd3ad24fcd9125adb9e0d23dd50b8bbd08b9
   StreamingKit: 5b36623e7246cccddb8db3aee79c43bb180a51be
-  SWRevealViewController: f6d80638b8e12323e87ac79562345403a799cb77
   UIImageEffects: 69cd1e1f8fc4042a8fefcf4a0727cbf213e4dbfb
 
 COCOAPODS: 0.35.0

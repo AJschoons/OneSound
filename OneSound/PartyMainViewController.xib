@@ -38,11 +38,11 @@
         </placeholder>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
         <view clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="ggx-wY-78Y">
-            <rect key="frame" x="0.0" y="0.0" width="600" height="487"/>
+            <rect key="frame" x="0.0" y="64" width="600" height="551"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" alpha="0.0" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Some text that shows the main message" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="dg1-oM-G78">
-                    <rect key="frame" x="20" y="227" width="560" height="17"/>
+                    <rect key="frame" x="20" y="259" width="560" height="17"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="17" id="ViH-Kq-BeR"/>
                     </constraints>
@@ -51,20 +51,20 @@
                     <nil key="highlightedColor"/>
                 </label>
                 <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" alpha="0.0" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Text for a more detailed message below the main message" textAlignment="center" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="UYc-8M-RBr">
-                    <rect key="frame" x="20" y="244" width="560" height="14"/>
+                    <rect key="frame" x="20" y="276" width="560" height="13.5"/>
                     <fontDescription key="fontDescription" type="system" pointSize="11"/>
                     <color key="textColor" red="0.5170014500617981" green="0.51698595285415649" blue="0.51699477434158325" alpha="1" colorSpace="calibratedRGB"/>
                     <nil key="highlightedColor"/>
                 </label>
                 <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="NMo-td-Wl0">
-                    <rect key="frame" x="0.0" y="0.0" width="600" height="320"/>
+                    <rect key="frame" x="0.0" y="64" width="600" height="320"/>
                     <constraints>
                         <constraint firstAttribute="width" secondItem="NMo-td-Wl0" secondAttribute="height" multiplier="1:1" priority="999" id="Oe3-nL-FA0"/>
                         <constraint firstAttribute="height" relation="lessThanOrEqual" constant="320" placeholder="YES" id="i8X-bv-Z8n"/>
                     </constraints>
                 </imageView>
                 <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="soundcloudLogo" translatesAutoresizingMaskIntoConstraints="NO" id="5if-AM-htS">
-                    <rect key="frame" x="15" y="15" width="32" height="32"/>
+                    <rect key="frame" x="15" y="79" width="32" height="32"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="32" id="InK-ma-ZY1">
                             <variation key="heightClass=regular-widthClass=compact" constant="35"/>
@@ -75,7 +75,7 @@
                     </constraints>
                 </imageView>
                 <button opaque="NO" contentMode="scaleToFill" restorationIdentifier="play" contentHorizontalAlignment="center" contentVerticalAlignment="center" adjustsImageWhenHighlighted="NO" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="QJc-pb-IIu">
-                    <rect key="frame" x="0.0" y="0.0" width="600" height="320"/>
+                    <rect key="frame" x="0.0" y="64" width="600" height="320"/>
                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                     <color key="tintColor" red="0.1783866286277771" green="0.73694926500320435" blue="0.94469857215881348" alpha="1" colorSpace="calibratedRGB"/>
                     <state key="normal" image="playIcon">
@@ -86,7 +86,7 @@
                     </connections>
                 </button>
                 <button opaque="NO" contentMode="scaleToFill" restorationIdentifier="pause" contentHorizontalAlignment="center" contentVerticalAlignment="center" adjustsImageWhenHighlighted="NO" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="HIU-WJ-aqj">
-                    <rect key="frame" x="0.0" y="0.0" width="600" height="320"/>
+                    <rect key="frame" x="0.0" y="64" width="600" height="320"/>
                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                     <color key="tintColor" red="0.1783866286277771" green="0.73694926500320435" blue="0.94469857215881348" alpha="1" colorSpace="calibratedRGB"/>
                     <state key="normal">
@@ -97,18 +97,18 @@
                     </connections>
                 </button>
                 <progressView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="dy3-EB-EWF">
-                    <rect key="frame" x="0.0" y="318" width="600" height="2"/>
+                    <rect key="frame" x="0.0" y="382" width="600" height="2"/>
                     <color key="progressTintColor" red="0.17838662860000001" green="0.73694926500000002" blue="0.94469857219999998" alpha="1" colorSpace="calibratedRGB"/>
                     <color key="trackTintColor" red="0.83041405680000002" green="0.83038914200000002" blue="0.83040332790000004" alpha="1" colorSpace="calibratedRGB"/>
                 </progressView>
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Song Name" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="none" minimumScaleFactor="0.75000000000000022" translatesAutoresizingMaskIntoConstraints="NO" id="oBv-JJ-MLy" customClass="OSLabel" customModule="OneSound" customModuleProvider="target">
-                    <rect key="frame" x="10" y="269" width="537" height="24"/>
+                    <rect key="frame" x="10" y="333" width="537" height="24"/>
                     <fontDescription key="fontDescription" type="boldSystem" pointSize="20"/>
                     <color key="textColor" red="1" green="0.99997437000274658" blue="0.99999129772186279" alpha="1" colorSpace="calibratedRGB"/>
                     <nil key="highlightedColor"/>
                 </label>
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Artist Name" lineBreakMode="tailTruncation" baselineAdjustment="none" minimumFontSize="10" translatesAutoresizingMaskIntoConstraints="NO" id="dAA-if-muq" customClass="OSLabel" customModule="OneSound" customModuleProvider="target">
-                    <rect key="frame" x="10" y="296" width="537" height="14"/>
+                    <rect key="frame" x="10" y="360" width="537" height="14"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="14" id="NH3-Nk-en1"/>
                     </constraints>
@@ -117,7 +117,7 @@
                     <nil key="highlightedColor"/>
                 </label>
                 <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="00:00" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="none" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Flu-ww-wQ5" customClass="OSLabel" customModule="OneSound" customModuleProvider="target">
-                    <rect key="frame" x="555" y="296" width="35" height="14"/>
+                    <rect key="frame" x="555" y="360" width="35" height="14"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="14" id="1MF-MA-QO3"/>
                         <constraint firstAttribute="width" constant="35" id="bUD-Nf-wT8"/>
@@ -127,10 +127,10 @@
                     <nil key="highlightedColor"/>
                 </label>
                 <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="LLm-8r-LuE">
-                    <rect key="frame" x="0.0" y="0.0" width="600" height="320"/>
+                    <rect key="frame" x="0.0" y="64" width="600" height="320"/>
                 </imageView>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="qdb-42-GJA">
-                    <rect key="frame" x="0.0" y="320" width="600" height="167"/>
+                    <rect key="frame" x="0.0" y="384" width="600" height="167"/>
                     <subviews>
                         <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" adjustsImageWhenHighlighted="NO" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="4R2-5J-Pth">
                             <rect key="frame" x="314" y="75" width="24" height="24"/>
@@ -180,7 +180,7 @@
                             </constraints>
                         </view>
                         <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="YLg-Nv-CF4">
-                            <rect key="frame" x="338" y="75" width="113" height="24"/>
+                            <rect key="frame" x="338" y="75" width="112.5" height="24"/>
                             <color key="backgroundColor" red="0.106306769" green="0.82194298509999997" blue="0.60250616069999996" alpha="1" colorSpace="calibratedRGB"/>
                             <constraints>
                                 <constraint firstAttribute="height" constant="24" id="nBH-lc-6hA"/>
@@ -270,7 +270,7 @@
                             </constraints>
                         </view>
                         <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="1234567891234567" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="16" translatesAutoresizingMaskIntoConstraints="NO" id="TR4-6S-KZ0">
-                            <rect key="frame" x="12" y="73" width="178" height="22"/>
+                            <rect key="frame" x="12" y="73" width="177.5" height="22"/>
                             <constraints>
                                 <constraint firstAttribute="height" constant="22" id="63R-qv-5dZ"/>
                                 <constraint firstAttribute="width" relation="lessThanOrEqual" constant="180" id="FTH-a0-cra"/>
@@ -607,7 +607,7 @@
                     </variation>
                 </view>
                 <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="AAT-uz-eSM">
-                    <rect key="frame" x="255" y="389" width="90" height="30"/>
+                    <rect key="frame" x="255" y="453" width="90" height="30"/>
                     <color key="backgroundColor" red="0.17838662860000001" green="0.73694926500000002" blue="0.94469857219999998" alpha="1" colorSpace="calibratedRGB"/>
                     <constraints>
                         <constraint firstAttribute="width" constant="90" id="XAe-W2-ALd">
@@ -670,17 +670,17 @@
                 <constraint firstItem="NMo-td-Wl0" firstAttribute="bottom" secondItem="HIU-WJ-aqj" secondAttribute="bottom" id="soT-IG-2FZ">
                     <variation key="widthClass=compact" constant="20"/>
                 </constraint>
-                <constraint firstItem="NMo-td-Wl0" firstAttribute="top" secondItem="ggx-wY-78Y" secondAttribute="top" id="t8d-qn-D2K"/>
                 <constraint firstItem="qdb-42-GJA" firstAttribute="leading" secondItem="ggx-wY-78Y" secondAttribute="leading" id="uJw-4H-CRK"/>
                 <constraint firstItem="Flu-ww-wQ5" firstAttribute="leading" secondItem="oBv-JJ-MLy" secondAttribute="trailing" constant="8" id="vJ7-sf-g5S"/>
                 <constraint firstItem="NMo-td-Wl0" firstAttribute="top" secondItem="HIU-WJ-aqj" secondAttribute="top" id="weL-IA-agR"/>
                 <constraint firstItem="NMo-td-Wl0" firstAttribute="bottom" secondItem="QJc-pb-IIu" secondAttribute="bottom" id="x2f-IA-dFB">
                     <variation key="widthClass=compact" constant="20"/>
                 </constraint>
+                <constraint firstItem="NMo-td-Wl0" firstAttribute="top" secondItem="ggx-wY-78Y" secondAttribute="top" constant="64" id="yLr-ze-tH3"/>
                 <constraint firstItem="NMo-td-Wl0" firstAttribute="leading" secondItem="QJc-pb-IIu" secondAttribute="leading" id="ywN-ze-zFh"/>
             </constraints>
             <simulatedStatusBarMetrics key="simulatedStatusBarMetrics" statusBarStyle="lightContent"/>
-            <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" translucent="NO" prompted="NO"/>
+            <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" prompted="NO"/>
             <simulatedTabBarMetrics key="simulatedBottomBarMetrics" translucent="NO"/>
             <point key="canvasLocation" x="327" y="289.5"/>
         </view>

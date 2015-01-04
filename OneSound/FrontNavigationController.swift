@@ -15,10 +15,6 @@ import UIKit
 class FrontNavigationController: UINavigationController {
     
     var overlay = UIView()
-    var pL = false
-    
-    var firstTimeAppearing = true
-    var overlayHasBeenSet = false
     
     override func viewDidLoad() {
         super.viewDidLoad()

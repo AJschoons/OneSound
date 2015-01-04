@@ -44,9 +44,9 @@ var errorAlertIsShowing = false
 class AppDelegate: UIResponder, UIApplicationDelegate {
                             
     var window: UIWindow?
-    var revealViewController: SWRevealViewController?
-    var panGestureStartedFrom: FrontViewPosition = FrontViewPosition.RightMostRemoved
-    // FrontViewPosition.RightMostRemoved so it won't init as a used/relevant enum val
+
+    var sideMenuViewController: SideNavigationViewController!
+    var frontNavigationController: OSFrontNavigationController!
     
     var songTableViewImageCache = SDImageCache(namespace: "songTableViewImages")
     var songImageCache = SDImageCache(namespace: "songImages")
@@ -67,7 +67,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         // Create the user
         UserManager.sharedUser
-        //UserManager.sharedUser.deleteAllSavedUserInformation()
         
         // Login flow is handled by AFNetworkingReachability manager and FBLogin status change
         
@@ -174,39 +173,23 @@ extension AppDelegate {
             }
         }
     }
-    
-    func setupAppWindowAndViewHierarchy() {
-        // Setup side menu and general navigation hierarchy
-    
-        let rearViewController = SideNavigationViewController()
-        
-        let frontNavigationController = FrontNavigationController()
-        let loggingInSplashViewController = LoggingInSpashViewController(nibName: LoggingInSpashViewControllerNibName, bundle: nil)
-        
-        let rearNavigationController = UINavigationController(rootViewController: rearViewController)
-        
-        let revealController = SWRevealViewController(rearViewController: rearViewController, frontViewController: frontNavigationController)
-        
-        // Configure side menu
-        revealController.delegate = self
-        revealController.rearViewRevealWidth = 200.0
-        revealController.rearViewRevealOverdraw = 0.0
-        revealController.frontViewShadowOpacity = 0.0
-        revealController.bounceBackOnOverdraw = false
-        revealController.bounceBackOnLeftOverdraw = false
-        revealController.quickFlickVelocity = 1000000 // Disables quick Flicks
-        revealViewController = revealController
 
+    // Setup side menu and general navigation hierarchy
+    func setupAppWindowAndViewHierarchy() {
         // Setup the front nav controller to initially have the splash screen visible with a (determined) view controller as it's rootViewController
-        let snc = revealController.rearViewController as SideNavigationViewController
         // By default starts at the profile page (for now)
         // TODO: find the last saved row and nav to that
-        let rowInitiallySelected = snc.initiallySelectedRow
+        sideMenuViewController = SideNavigationViewController()
+        
+        let rowInitiallySelected = sideMenuViewController.initiallySelectedRow
         println(rowInitiallySelected)
-        let viewControllerToNavTo = snc.menuViewControllers[rowInitiallySelected]!
+        let viewControllerToNavTo = sideMenuViewController.menuViewControllers[rowInitiallySelected]!
+        let loggingInSplashViewController = LoggingInSpashViewController(nibName: LoggingInSpashViewControllerNibName, bundle: nil)
+        
+        frontNavigationController = OSFrontNavigationController(menuTableViewController: sideMenuViewController, contentViewController: viewControllerToNavTo)
         frontNavigationController.setViewControllers([viewControllerToNavTo, loggingInSplashViewController], animated: false)
         
-        window!.rootViewController = revealViewController
+        window!.rootViewController = frontNavigationController
         window!.backgroundColor = UIColor.whiteColor()
         window!.makeKeyAndVisible()
     }
@@ -218,16 +201,19 @@ extension AppDelegate {
         UINavigationBar.appearance().shadowImage = UIImage(named: "navigationBarShadow")
         UINavigationBar.appearance().tintColor = UIColor.blue()
         UINavigationBar.appearance().barTintColor = UIColor.white()
+        UINavigationBar.appearance().translucent = true
         
         UITabBar.appearance().backgroundImage = UIImage(named: "tabBarBackground")
         UITabBar.appearance().shadowImage = UIImage(named: "tabBarShadow")
         UITabBar.appearance().tintColor = UIColor.blue()
         UITabBar.appearance().barTintColor = UIColor.white()
+        UITabBar.appearance().translucent = true
         
         UIToolbar.appearance().setBackgroundImage(UIImage(named: "toolbarBackground"), forToolbarPosition: UIBarPosition.Bottom, barMetrics: UIBarMetrics.Default)
         UIToolbar.appearance().setShadowImage(UIImage(named: "toolbarShadow"), forToolbarPosition: UIBarPosition.Bottom)
         UIToolbar.appearance().tintColor = UIColor.blue()
         UIToolbar.appearance().barTintColor = UIColor.white()
+        UIToolbar.appearance().translucent = true
     }
     
     func setupAppAFNetworkingTools() {
@@ -381,102 +367,6 @@ extension AppDelegate {
     // Manages results of all the actions taken outside the app (successful login/auth or cancellation)
     func application(application: UIApplication!, openURL url: NSURL!, sourceApplication: String!, annotation: AnyObject!) -> Bool {
         return FBAppCall.handleOpenURL(url, sourceApplication: sourceApplication)
-    }
-}
-
-extension AppDelegate: SWRevealViewControllerDelegate {
-    // MARK: SWRevealViewController Delegate methods
-    // Customizes fading of OSFrontNavigationController
-    
-    func revealController(revealController: SWRevealViewController, animateToPosition position: FrontViewPosition) {
-        if position == FrontViewPosition.Right {
-            // If will move to show side nav
-            printlnC(pL, pG, "animate side nav to VISIBLE")
-            
-            if let fnc = revealController.frontViewController as? FrontNavigationController {
-                //UIApplication.sharedApplication().setStatusBarHidden(true, withAnimation: UIStatusBarAnimation.Slide)
-                fnc.hideKeyboardOfVisibleViewController()
-                UIView.animateWithDuration(revealController.toggleAnimationDuration, animations: {
-                    fnc.setOverlayAlpha(0.5)
-                    })
-            }
-        } else if position == FrontViewPosition.Left {
-            // If will move to hide side nav
-            printlnC(pL, pG, "animate side nav to HIDDEN")
-            if let fnc = revealController.frontViewController as? FrontNavigationController {
-                //UIApplication.sharedApplication().setStatusBarHidden(false, withAnimation: UIStatusBarAnimation.Slide)
-                UIView.animateWithDuration(revealController.toggleAnimationDuration, animations: {
-                        fnc.setOverlayAlpha(0.0)
-                    })
-            }
-        }
-    }
-    
-    func revealController(revealController: SWRevealViewController, panGestureMovedToLocation location: CGFloat, progress: CGFloat) {
-        if let fnc = revealController.frontViewController as? FrontNavigationController {
-            UIView.animateWithDuration(0.03, animations: {
-                let progressDouble = Double(progress)
-                fnc.setOverlayAlpha(CGFloat(customExponentialEaseOut(progressDouble) / 2.0))
-                })
-        }
-    }
-    
-    func revealController(revealController: SWRevealViewController, panGestureBeganFromLocation location: CGFloat, progress: CGFloat) {
-        if location < revealController.rearViewRevealWidth / 2.0 {
-            // If pan began with side nav hidden, set the most recent pan start to FrontViewPositionLeft
-            printlnC(pL, pG, "pan began with side nav HIDDEN")
-            panGestureStartedFrom = FrontViewPosition.Left
-            
-            if let fnc = revealController.frontViewController as? FrontNavigationController {
-                fnc.hideKeyboardOfVisibleViewController()
-            }
-            
-            let pgVelocity = revealController.panGestureRecognizer().velocityInView(revealController.frontViewController.view)
-            if pgVelocity.x > 0 {
-                // If side nav is hidden and pan gesture is to the right side, hide the status bar
-                // Fixes bug where swiping left while side nav is hidden still hides the status bar
-                //UIApplication.sharedApplication().setStatusBarHidden(true, withAnimation: UIStatusBarAnimation.Slide)
-            }
-        } else if location >= revealController.rearViewRevealWidth / 2.0 {
-            // If pan began with side nav visible, set the most recent pan start to FrontViewPositionRight
-            printlnC(pL, pG, "pan began with side nav VISIBLE")
-            panGestureStartedFrom = FrontViewPosition.Right
-        }
-    }
-    
-    func revealController(revealController: SWRevealViewController, panGestureEndedToLocation location: CGFloat, progress: CGFloat) {
-        // Seems that this is the val SFReveal uses to decide where a paritally moved pan should go
-        let criticalWidthDenom = CGFloat(2.0)
-        
-        if panGestureStartedFrom == FrontViewPosition.Left {
-            // If pan started with side nav HIDDEN
-            printlnC(pL, pG, "pan ended after starting with side nav HIDDEN")
-            if location >= revealController.rearViewRevealWidth / criticalWidthDenom {
-                // If pan ended to the right of critical width point, make side nav VISIBLE
-                printlnC(pL, pG, "    pan ended over 1/\(criticalWidthDenom) of the way to side nav VISIBLE, animate side nav to VISIBLE")
-                revealController.setFrontViewPosition(FrontViewPosition.Right, animated: true)
-                
-                if let fnc = revealController.frontViewController as? FrontNavigationController {
-                    fnc.hideKeyboardOfVisibleViewController()
-                }
-            } else {
-                // If pan ended to the left of critical width point, make side nav HIDDEN
-                printlnC(pL, pG, "    pan didn't reach 1/\(criticalWidthDenom) of the way to side nav VISIBLE, animate side nav to HIDDEN")
-                revealController.setFrontViewPosition(FrontViewPosition.Left, animated: true)
-            }
-        } else if panGestureStartedFrom == FrontViewPosition.Right {
-            // If pan started with side nav VISIBLE
-            printlnC(pL, pG, "pan ended after starting with side nav VISIBLE")
-            if location <= (revealController.rearViewRevealWidth - (revealController.rearViewRevealWidth / criticalWidthDenom)) {
-                // If pan ended to the left of critical width point, make side nav HIDDEN
-                printlnC(pL, pG, "    pan ended over 1/\(criticalWidthDenom) of the way to side nav HIDDEN, animate side nav to HIDDEN")
-                revealController.setFrontViewPosition(FrontViewPosition.Left, animated: true)
-            } else {
-                // If pan ended to the right of critical width point, make side nav VISIBLE
-                printlnC(pL, pG, "    pan didn't reach 1/\(criticalWidthDenom) of the way to side nav HIDDEN, animate side nav to VISIBLE")
-                revealController.setFrontViewPosition(FrontViewPosition.Right, animated: true)
-            }
-        }
     }
 }
 

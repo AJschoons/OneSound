@@ -49,6 +49,9 @@ class LoginViewController: UITableViewController {
         
         navigationItem.rightBarButtonItem!.enabled = false
         
+        // Stop view from being covered by the nav bar / laid out from top of screen
+        edgesForExtendedLayout = UIRectEdge.None
+        
         // Initialize the text field's delegate and character count label
         nameCellTextField.delegate = self
         nameCellTextField.addTarget(self, action: "textFieldDidChange", forControlEvents: UIControlEvents.EditingChanged)

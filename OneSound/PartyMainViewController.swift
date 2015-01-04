@@ -143,6 +143,9 @@ class PartyMainViewController: UIViewController {
     
     
     override func viewDidLoad() {
+        // Stops bottom of view from flowing under tab bar, but not top, for some reason
+        edgesForExtendedLayout = UIRectEdge.None
+        
         // This is the delegate to the PartyManager
         PartyManager.sharedParty.delegate = self
         

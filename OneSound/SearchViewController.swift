@@ -75,9 +75,7 @@ class SearchViewController: UIViewController {
             //createPartyViewController.delegate = self
             let navC = UINavigationController(rootViewController: createPartyViewController)
             
-            let delegate = UIApplication.sharedApplication().delegate as AppDelegate
-            let fvc = delegate.revealViewController!.frontViewController
-            fvc.presentViewController(navC, animated: true, completion: nil)
+            getFrontNavigationController()?.presentViewController(navC, animated: true, completion: nil)
         } else {
             let alert = UIAlertView(title: "Guests cannot create parties", message: "Please become a full account by logging in with Facebook, then try again", delegate: nil, cancelButtonTitle: "Ok")
             alert.show()
@@ -88,13 +86,12 @@ class SearchViewController: UIViewController {
         super.viewDidLoad()
         title = "Party Search"
         
-        // Setup the revealViewController to work for this view controller,
-        // add its sideMenu icon to the nav bar
-        let revealController = revealViewController()
-        revealController.panGestureRecognizer()
-        revealController.tapGestureRecognizer()
-        let revealButtonItem = UIBarButtonItem(image: UIImage(named: "sideMenuToggleIcon"), style: UIBarButtonItemStyle.Plain, target: revealController, action: "revealToggle:")
-        navigationItem.leftBarButtonItem = revealButtonItem
+        let fnc = getFrontNavigationController()
+        let sideMenuButtonItem = UIBarButtonItem(image: UIImage(named: "sideMenuToggleIcon"), style: UIBarButtonItemStyle.Plain, target: fnc, action: "toggleSideMenu")
+        navigationItem.leftBarButtonItem = sideMenuButtonItem
+        
+        // Stop view from being covered by the nav bar / laid out from top of screen
+        edgesForExtendedLayout = UIRectEdge.None
         
         createPartyButton = UIBarButtonItem(title: "Create", style: UIBarButtonItemStyle.Plain, target: self, action: "createParty")
         navigationItem.rightBarButtonItem = createPartyButton
@@ -270,9 +267,7 @@ extension SearchViewController: UITableViewDelegate {
                     self.searchResultsArray = [Party]() // Remove the results so they have to search again
                     
                     if PartyManager.sharedParty.setup == true {
-                        let delegate = UIApplication.sharedApplication().delegate as AppDelegate
-                        let snvc = delegate.revealViewController!.rearViewController as SideNavigationViewController
-                        snvc.programaticallySelectRow(1)
+                        getAppDelegate()!.sideMenuViewController.programaticallySelectRow(1)
                     }
                 }, failureAddOn: {
                     PartyManager.sharedParty.refresh()

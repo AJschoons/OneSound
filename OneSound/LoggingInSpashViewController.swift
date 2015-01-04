@@ -35,6 +35,12 @@ class LoggingInSpashViewController: UIViewController {
     override func viewWillAppear(animated: Bool) {
         navigationController!.setNavigationBarHidden(true, animated: animated)
         animatedOneSoundOne!.startAnimating()
+        
+        // Show the side menu so the frame can get set (would otherwise 'slide down' first time being shown)
+        // Then hide it
+        (navigationController as? OSFrontNavigationController)?.sideMenu?.showSideMenu()
+        (navigationController as? OSFrontNavigationController)?.sideMenu?.hideSideMenu()
+        
         super.viewWillAppear(animated)
     }
     
@@ -51,7 +57,7 @@ class LoggingInSpashViewController: UIViewController {
     }
     
     func finishedLoginFlow() {
-        let navC = navigationController as FrontNavigationController
+        let navC = navigationController as OSFrontNavigationController
         
         // Setup transition for going to nav controller and execute it by popping this view controller
         let transtion = CATransition()
@@ -62,16 +68,10 @@ class LoggingInSpashViewController: UIViewController {
         navC.popViewControllerAnimated(false)
         
         if PartyManager.sharedParty.setup == true {
-            let delegate = UIApplication.sharedApplication().delegate as AppDelegate
-            let snvc = delegate.revealViewController!.rearViewController as SideNavigationViewController
-            snvc.programaticallySelectRow(1)
+            getAppDelegate().sideMenuViewController.programaticallySelectRow(1)
         }
         
-        // Add the overlay to the frontNavController that's used with the side menu
-        navC.overlay.frame = CGRectMake(0, 20, UIScreen.mainScreen().bounds.height, UIScreen.mainScreen().bounds.height - 20)
-        navC.overlay.backgroundColor = UIColor.blackColor()
-        navC.overlay.alpha = 0.0
-        navC.view.addSubview(navC.overlay)
+        navC.setupOverlay()
         
         let alert = UIAlertView(title: "Welcome to party, bitches", message: "You're one of the lucky first 20 people to use OneSound, the app where everyone is the DJ. If you haven't already, sign in with Facebook below, and then go to the 'Party Search' tab, search 'New Years,' and join. This pre-release version expires in 30 days. Hope it treats you well, and Happy New Years!", delegate: nil, cancelButtonTitle: "Gotcha, now let's turn up!")
         alert.show()

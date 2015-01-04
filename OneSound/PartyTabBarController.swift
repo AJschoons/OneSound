@@ -17,7 +17,7 @@ class PartyTabBarController: UITabBarController {
         delegate = self
         tabBar.barTintColor = UIColor.white()
         tabBar.tintColor = UIColor.blue()
-        tabBar.translucent = false
+        automaticallyAdjustsScrollViewInsets = false
         
         let partyMembersViewController = PartyMembersViewController(nibName: PartyMembersViewControllerNibName, bundle: nil)
         partyMembersViewController.tabBarItem.title = "Members"
@@ -38,14 +38,10 @@ class PartyTabBarController: UITabBarController {
     }
     
     override func viewWillAppear(animated: Bool) {
-        // Setup the revealViewController to work for this view controller,
-        // add its sideMenu icon to the nav bar
-        let revealController = revealViewController()
-        revealController.panGestureRecognizer()
-        revealController.tapGestureRecognizer()
-        let revealButtonItem = UIBarButtonItem(image: UIImage(named: "sideMenuToggleIcon"), style: UIBarButtonItemStyle.Plain, target: revealController, action: "revealToggle:")
-        navigationItem.leftBarButtonItem = revealButtonItem
-        
+        let fnc = getFrontNavigationController()
+        let sideMenuButtonItem = UIBarButtonItem(image: UIImage(named: "sideMenuToggleIcon"), style: UIBarButtonItemStyle.Plain, target: fnc, action: "toggleSideMenu")
+        navigationItem.leftBarButtonItem = sideMenuButtonItem
+    
         // Refresh the item at the selected index
         // Otherwise they'd only refresh when another tab is selected, and not when 
         // navigated from the side menu

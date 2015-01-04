@@ -93,6 +93,9 @@ class AddSongViewController: UIViewController {
         navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Cancel, target: self, action: "cancel")
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Search", style: UIBarButtonItemStyle.Plain, target: self, action: "search")
         navigationItem.rightBarButtonItem!.enabled = false
+        
+        // Stop view from being covered by the nav bar / laid out from top of screen
+        edgesForExtendedLayout = UIRectEdge.None
 
         let nib = UINib(nibName: SongSearchResultCellNibName, bundle: nil)
         searchResultsTable.registerNib(nib, forCellReuseIdentifier: SongSearchResultCellIdentifier)

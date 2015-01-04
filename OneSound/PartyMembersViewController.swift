@@ -48,11 +48,16 @@ class PartyMembersViewController: UIViewController {
         tableViewController.refreshControl!.backgroundColor = UIColor.blue()
         tableViewController.refreshControl!.tintColor = UIColor.white()
         tableViewController.refreshControl!.addTarget(self, action: "refresh", forControlEvents: UIControlEvents.ValueChanged)
+        tableViewController.automaticallyAdjustsScrollViewInsets = true
     }
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         parentViewController!.navigationItem.title = "Members"
+        
+        // Allows cells to flow under nav bar and tab bar, but not stop scrolling behind them when content stops
+        membersTable.contentInset = UIEdgeInsetsMake(64, 0, 49, 0)
+        
         refresh()
     }
     

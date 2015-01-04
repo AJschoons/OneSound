@@ -14,10 +14,11 @@
                 <rect key="frame" x="0.0" y="0.0" width="320" height="43"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="5ck-5E-sbA">
+                    <imageView hidden="YES" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="5ck-5E-sbA">
                         <rect key="frame" x="0.0" y="0.0" width="200" height="149.5"/>
+                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                     </imageView>
-                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="QYz-Hy-nEE">
+                    <imageView hidden="YES" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="QYz-Hy-nEE">
                         <rect key="frame" x="50" y="10" width="100" height="100"/>
                         <color key="backgroundColor" red="0.1063067689538002" green="0.82194298505783081" blue="0.60250616073608398" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
@@ -25,20 +26,14 @@
                             <constraint firstAttribute="height" constant="100" id="qZl-2n-9Rj"/>
                         </constraints>
                     </imageView>
-                    <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Name of User" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="NK2-Sa-VVV" customClass="OSLabel" customModule="OneSound" customModuleProvider="target">
+                    <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Name of User" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="NK2-Sa-VVV">
                         <rect key="frame" x="20" y="118" width="160" height="20.5"/>
                         <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
                         <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                         <nil key="highlightedColor"/>
                     </label>
-                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="cDj-Yu-8Ws" userLabel="seperator">
-                        <rect key="frame" x="0.0" y="149" width="200" height="1"/>
-                        <color key="backgroundColor" red="0.83041405680000002" green="0.83038914200000002" blue="0.83040332790000004" alpha="1" colorSpace="calibratedRGB"/>
-                        <constraints>
-                            <constraint firstAttribute="height" constant="1" id="WVF-pi-rFR"/>
-                        </constraints>
-                    </view>
                 </subviews>
+                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                 <constraints>
                     <constraint firstAttribute="centerX" secondItem="QYz-Hy-nEE" secondAttribute="centerX" id="0Ov-HK-oHb"/>
                     <constraint firstItem="5ck-5E-sbA" firstAttribute="trailing" secondItem="H2p-sc-9uM" secondAttribute="trailingMargin" constant="8" id="9Ux-rC-tKe"/>
@@ -48,16 +43,11 @@
                     <constraint firstItem="5ck-5E-sbA" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leadingMargin" constant="-8" id="T8y-Kd-Zc3"/>
                     <constraint firstItem="NK2-Sa-VVV" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="20" id="Vym-53-BTe"/>
                     <constraint firstAttribute="bottomMargin" secondItem="5ck-5E-sbA" secondAttribute="bottom" constant="-8" id="W66-uK-uf9"/>
-                    <constraint firstAttribute="trailingMargin" secondItem="cDj-Yu-8Ws" secondAttribute="trailing" constant="-8" id="Wea-Uq-XQj"/>
                     <constraint firstAttribute="bottom" secondItem="NK2-Sa-VVV" secondAttribute="bottom" constant="11.5" id="WzE-al-rB8"/>
-                    <constraint firstAttribute="bottomMargin" secondItem="cDj-Yu-8Ws" secondAttribute="bottom" constant="-9" id="eOD-GI-Mjd"/>
                     <constraint firstAttribute="trailing" secondItem="NK2-Sa-VVV" secondAttribute="trailing" constant="20" id="jMk-4H-znQ"/>
-                    <constraint firstItem="cDj-Yu-8Ws" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leadingMargin" constant="-8" id="qqg-pk-1Z9"/>
                 </constraints>
             </tableViewCellContentView>
             <connections>
-                <outlet property="blurredUserImage" destination="5ck-5E-sbA" id="rqW-gD-8ge"/>
-                <outlet property="userImage" destination="QYz-Hy-nEE" id="oRo-oI-NqB"/>
                 <outlet property="userLabel" destination="NK2-Sa-VVV" id="mCo-jb-bba"/>
             </connections>
             <point key="canvasLocation" x="263" y="346"/>

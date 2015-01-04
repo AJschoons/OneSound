@@ -35,11 +35,9 @@ class FrontViewController: UIViewController {
         // Do any additional setup after loading the view.
         title = "Front View"
         
-        let revealController = revealViewController()
-        revealController.panGestureRecognizer()
-        revealController.tapGestureRecognizer()
-        let revealButtonItem = UIBarButtonItem(image: UIImage(named: "sideMenuToggleIcon"), style: UIBarButtonItemStyle.Plain, target: revealController, action: "revealToggle:")
-        navigationItem.leftBarButtonItem = revealButtonItem
+        let fnc = getFrontNavigationController()
+        let sideMenuButtonItem = UIBarButtonItem(image: UIImage(named: "sideMenuToggleIcon"), style: UIBarButtonItemStyle.Plain, target: fnc, action: "toggleSideMenu")
+        navigationItem.leftBarButtonItem = sideMenuButtonItem
     }
 }
 

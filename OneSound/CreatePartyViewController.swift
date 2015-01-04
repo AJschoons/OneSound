@@ -49,6 +49,9 @@ class CreatePartyViewController: UITableViewController {
         
         navigationItem.rightBarButtonItem!.enabled = false
         
+        // Stop view from being covered by the nav bar / laid out from top of screen
+        edgesForExtendedLayout = UIRectEdge.None
+        
         // Initialize the text field's delegate and character count label
         nameCellTextField.delegate = self
         nameCellTextField.addTarget(self, action: "textFieldDidChange", forControlEvents: UIControlEvents.EditingChanged)
@@ -124,9 +127,7 @@ class CreatePartyViewController: UITableViewController {
         self.dismissViewControllerAnimated(true, completion: nil)
         
         if PartyManager.sharedParty.setup == true {
-            let delegate = UIApplication.sharedApplication().delegate as AppDelegate
-            let snvc = delegate.revealViewController!.rearViewController as SideNavigationViewController
-            snvc.programaticallySelectRow(1)
+            getAppDelegate().sideMenuViewController.programaticallySelectRow(1)
         }
         
         if self.delegate != nil {

@@ -222,9 +222,7 @@ extension UserManager {
                     let loginViewController = loginStoryboard.instantiateViewControllerWithIdentifier(LoginViewControllerIdentifier) as LoginViewController
                     let navC = UINavigationController(rootViewController: loginViewController)
                     
-                    let delegate = UIApplication.sharedApplication().delegate as AppDelegate
-                    let fvc = delegate.revealViewController!.frontViewController
-                    fvc.presentViewController(navC, animated: true,
+                    getFrontNavigationController()!.presentViewController(navC, animated: true,
                         completion: {
                             loginViewController.userID = userID
                             loginViewController.userAPIToken = userAccessToken

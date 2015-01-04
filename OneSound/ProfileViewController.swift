@@ -83,9 +83,7 @@ class ProfileViewController: UIViewController {
         loginViewController.delegate = self
         let navC = UINavigationController(rootViewController: loginViewController)
         
-        let delegate = UIApplication.sharedApplication().delegate as AppDelegate
-        let fvc = delegate.revealViewController!.frontViewController
-        fvc.presentViewController(navC, animated: true, completion: nil)
+        getFrontNavigationController()?.presentViewController(navC, animated: true, completion: nil)
     }
     
     override func viewDidLoad() {
@@ -93,13 +91,12 @@ class ProfileViewController: UIViewController {
         // Do any additional setup after loading the view.
         title = "Profile"
         
-        // Setup the revealViewController to work for this view controller,
-        // add its sideMenu icon to the nav bar
-        let revealController = revealViewController()
-        revealController.panGestureRecognizer()
-        revealController.tapGestureRecognizer()
-        let revealButtonItem = UIBarButtonItem(image: UIImage(named: "sideMenuToggleIcon"), style: UIBarButtonItemStyle.Plain, target: revealController, action: "revealToggle:")
-        navigationItem.leftBarButtonItem = revealButtonItem
+        let fnc = getFrontNavigationController()
+        let sideMenuButtonItem = UIBarButtonItem(image: UIImage(named: "sideMenuToggleIcon"), style: UIBarButtonItemStyle.Plain, target: fnc, action: "toggleSideMenu")
+        navigationItem.leftBarButtonItem = sideMenuButtonItem
+        
+        // Stop view from being covered by the nav bar / laid out from top of screen
+        edgesForExtendedLayout = UIRectEdge.None
         
         disableButtons()
         hideMessages()
