@@ -15,11 +15,11 @@
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="nc4-5Q-tZM" customClass="OSTriangleView" customModule="OneSound" customModuleProvider="target">
-                        <rect key="frame" x="290" y="0.0" width="30" height="20"/>
+                        <rect key="frame" x="288" y="0.0" width="32" height="22"/>
                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstAttribute="width" constant="30" id="WD8-h2-BFp"/>
-                            <constraint firstAttribute="height" constant="20" id="sjx-y9-49T"/>
+                            <constraint firstAttribute="width" constant="32" id="WD8-h2-BFp"/>
+                            <constraint firstAttribute="height" constant="22" id="sjx-y9-49T"/>
                         </constraints>
                     </view>
                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Lng-Z6-1PC">

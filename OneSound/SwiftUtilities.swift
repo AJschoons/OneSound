@@ -258,7 +258,7 @@ func formatFirstThreeDigitsOfIntFromBaseWithPostfix(numberToFormat num: Int, bas
     if numWas1000OrGreater {
         let digitsFromBase = abs(Int(num / base))
         
-        if digitsFromBase < 1000  {
+        if digitsFromBase < 1000 {
             switch digitsFromBase {
             case 0...9:
                 let tenthsDigit = Int(num / (base / 10)) % 10

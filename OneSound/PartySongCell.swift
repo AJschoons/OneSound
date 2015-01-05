@@ -18,6 +18,9 @@ class PartySongCell: UITableViewCell {
     @IBOutlet weak var thumbsDownButton: UIButton!
     @IBOutlet weak var thumbsUpButton: UIButton!
     
+    @IBOutlet weak private var triangleView: OSTriangleView!
+    @IBOutlet weak private var voteCountLabel: UILabel!
+    
     var songID: Int!
     
     @IBAction func onThumbsDown(sender: AnyObject) {
@@ -42,6 +45,18 @@ class PartySongCell: UITableViewCell {
         songImage.layer.masksToBounds = true
         
         selectionStyle = UITableViewCellSelectionStyle.None
+    }
+    
+    // Sets the vote count label and triangle color
+    func setVoteCount(count: Int) {
+        var triangleColor: UIColor
+        if count > 0 { triangleColor = UIColor.green() }
+        else if count == 0 { triangleColor = UIColor.orange() }
+        else { triangleColor = UIColor.red() }
+        triangleView.color = triangleColor
+        triangleView.setNeedsDisplay()
+
+        voteCountLabel.text = intFormattedToShortStringForDisplay(abs(count))
     }
     
     func handleThumbsUp(button: AnyObject) {

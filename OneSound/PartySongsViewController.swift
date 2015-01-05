@@ -209,16 +209,10 @@ extension PartySongsViewController: UITableViewDataSource {
         var song = playlistManager.songs[indexPath.row]
         
         songCell.songID = song.songID
-        
         songCell.songImage.image = songCellImagePlaceholder
-        
-        if song.name != nil {
-            songCell.songName.text = song.name!
-        }
-        
-        if song.artistName != nil {
-            songCell.songArtist.text = song.artistName!
-        }
+        if song.name != nil { songCell.songName.text = song.name! }
+        if song.artistName != nil { songCell.songArtist.text = song.artistName! }
+        if song.voteCount != nil { songCell.setVoteCount(song.voteCount!) }
         
         songCell.resetThumbsUpDownButtons()
         if song.userVote != nil {

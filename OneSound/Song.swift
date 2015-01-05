@@ -18,28 +18,28 @@ class Song {
     var songID: Int!
     var source: String!
     var externalID: Int!
-    var voteCount: Int!
     var userID: Int!
     var partyID: Int!
-    var userVote: UserSongVote?
     
     // Display data
     var name: String!
     var artistName: String!
     var duration: Int! // Song duration in seconds
     var artworkURL: String?
+    var userVote: UserSongVote?
+    var voteCount: Int!
     
     init(json: JSONValue) {
         songID = json["sid"].integer
         source = json["source"].string
         externalID = json["external_id"].integer
-        voteCount = json["vote_count"].integer
         userID = json["uid"].integer
         
         name = json["title"].string
         artistName = json["artist"].string
         duration = json["length"].integer
         artworkURL = json["album"].string
+        voteCount = json["vote_count"].integer
         
         if let vote = json["user_vote"].integer {
             userVote = UserSongVote(rawValue: vote)

@@ -19,9 +19,35 @@ typealias repeatBlock = () -> ()
 
 let defaultAFHTTPFailureBlock: AFHTTPFailureBlock = { task, error in
     if task != nil && errorAlertIsShowing == false {
-        //println(error.userInfo)
-        // TODO: find a way to get the status code server response from errors
-        if error != nil {
+        var haveHTTPCodeErrorMessage = false
+        
+        if let response = task.response as? NSHTTPURLResponse {
+            let code = response.statusCode
+            if code == 400 || code == 401 || code == 404 || code == 500 || code == 503 {
+                haveHTTPCodeErrorMessage = true
+                errorAlertIsShowing = true
+                var alertView: UIAlertView
+                
+                switch code {
+                case 400:
+                    alertView = UIAlertView(title: "Bad Request", message: "Sent invalided JSON request to the server", delegate: OSAPI.sharedClient, cancelButtonTitle: "Ok")
+                case 401:
+                    alertView = UIAlertView(title: "Unauthorized", message: "Authentication is required and has failed or has not yet been provided", delegate: OSAPI.sharedClient, cancelButtonTitle: "Ok")
+                case 404:
+                    alertView = UIAlertView(title: "Not Found", message: "The requested resource could not be found but may be available again in the future", delegate: OSAPI.sharedClient, cancelButtonTitle: "Ok")
+                case 500:
+                    alertView = UIAlertView(title: "Internal Server Error", message: "Sorry, we're having problems on our end. Please try again", delegate: OSAPI.sharedClient, cancelButtonTitle: "Ok")
+                case 503:
+                    alertView = UIAlertView(title: "Service Unavailable", message: "Either OneSound, SoundCloud, or one of our other providers is currently unavailble. Please try again", delegate: OSAPI.sharedClient, cancelButtonTitle: "Ok")
+                default:
+                    alertView = UIAlertView(title: "Down For Maintenance", message: "OneSound is currently down for maintenance, we will have it back up shortly. Please try again", delegate: OSAPI.sharedClient, cancelButtonTitle: "Ok")
+                }
+                alertView.show()
+            }
+            
+        }
+        
+        if error != nil && !haveHTTPCodeErrorMessage {
             errorAlertIsShowing = true
             var alertView: UIAlertView
             let code = error.code
