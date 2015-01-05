@@ -14,7 +14,7 @@ let PartySongWasAddedNotification = "PartySongWasAdded"
 
 let SongDurationMaxInSeconds = 600 // 10 minute max
 
-class AddSongViewController: OSModalViewController {
+class AddSongViewController: UIViewController {
 
     @IBOutlet weak var songSearchTextField: UITextField!
     @IBOutlet weak var searchResultsTable: UITableView!

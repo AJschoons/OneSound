@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="6254" systemVersion="14B25" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
     <dependencies>
+        <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6247"/>
     </dependencies>
     <objects>
@@ -18,6 +19,7 @@
                 <outlet property="spacer3" destination="etC-fY-YB5" id="FPP-tH-gLg"/>
                 <outlet property="spacer4" destination="clQ-gd-PYY" id="itv-do-tV9"/>
                 <outlet property="storiesTable" destination="eCU-Oq-8c7" id="qWe-Pj-ENf"/>
+                <outlet property="toolbar" destination="shI-29-vIk" id="TfO-Bj-4AJ"/>
                 <outlet property="userHotnessIcon" destination="0gB-z2-YIA" id="vo5-ya-YzX"/>
                 <outlet property="userHotnessLabel" destination="aOy-fc-1VA" id="Nln-nc-Byw"/>
                 <outlet property="userImage" destination="sLF-a5-XKr" id="zHD-k5-xIc"/>

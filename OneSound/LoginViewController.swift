@@ -46,8 +46,14 @@ class LoginViewController: UITableViewController {
             navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Cancel, target: self, action: "cancel")
             navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Done, target: self, action: "done")
         }
-        
         navigationItem.rightBarButtonItem!.enabled = false
+        
+        navigationController?.navigationBar.setBackgroundImage(UIImage(named: "navigationBarBackground"), forBarMetrics: UIBarMetrics.Default)
+        navigationController?.navigationBar.shadowImage = UIImage(named: "navigationBarShadow")
+        navigationController?.navigationBar.tintColor = UIColor.blue()
+        navigationController?.navigationBar.barTintColor = UIColor.white()
+        navigationController?.navigationBar.translucent = true
+        navigationController?.navigationBar
         
         // Stop view from being covered by the nav bar / laid out from top of screen
         edgesForExtendedLayout = UIRectEdge.None

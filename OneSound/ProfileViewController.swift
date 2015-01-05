@@ -14,6 +14,7 @@ class ProfileViewController: UIViewController {
     
     @IBOutlet weak var signOutButton: UIBarButtonItem?
     @IBOutlet weak var settingsButton: UIBarButtonItem?
+    @IBOutlet weak var toolbar: UIToolbar!
     
     @IBOutlet weak var messageLabel1: UILabel?
     @IBOutlet weak var messageLabel2: UILabel?
@@ -107,6 +108,12 @@ class ProfileViewController: UIViewController {
         
         facebookSignInButton!.backgroundColor = UIColor.blue()
         facebookSignInButton!.layer.cornerRadius = 3.0
+        
+        toolbar.setBackgroundImage(UIImage(named: "toolbarBackground"), forToolbarPosition: UIBarPosition.Bottom, barMetrics: UIBarMetrics.Default)
+        toolbar.setShadowImage(UIImage(named: "toolbarShadow"), forToolbarPosition: UIBarPosition.Bottom)
+        toolbar.tintColor = UIColor.blue()
+        toolbar.barTintColor = UIColor.white()
+        toolbar.translucent = true
         
         // Make view respond to network reachability changes
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "refreshIfVisible", name: AFNetworkingReachabilityDidChangeNotification, object: nil)

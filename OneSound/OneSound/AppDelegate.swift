@@ -194,6 +194,35 @@ extension AppDelegate {
         window!.makeKeyAndVisible()
     }
     
+    func setupAppDefaultBarAppearances() {
+        // Set navigation bar and tab bar shadows throughout app, plus other appearances
+        // Doesn't work if trying to support iOS 7
+        /*
+        if UINavigationBar.conformsToProtocol(UIAppearanceContainer) {
+            UINavigationBar.appearance().setBackgroundImage(UIImage(named: "navigationBarBackground"), forBarMetrics: UIBarMetrics.Default)
+            UINavigationBar.appearance().shadowImage = UIImage(named: "navigationBarShadow")
+            UINavigationBar.appearance().tintColor = UIColor.blue()
+            UINavigationBar.appearance().barTintColor = UIColor.white()
+            UINavigationBar.appearance().translucent = true
+        }
+        
+        if UITabBar.conformsToProtocol(UIAppearanceContainer) {
+            UITabBar.appearance().backgroundImage = UIImage(named: "tabBarBackground")
+            UITabBar.appearance().shadowImage = UIImage(named: "tabBarShadow")
+            UITabBar.appearance().tintColor = UIColor.blue()
+            UITabBar.appearance().barTintColor = UIColor.white()
+            UITabBar.appearance().translucent = true
+        }
+        
+        if UIToolbar.conformsToProtocol(UIAppearanceContainer) {
+            UIToolbar.appearance().setBackgroundImage(UIImage(named: "toolbarBackground"), forToolbarPosition: UIBarPosition.Bottom, barMetrics: UIBarMetrics.Default)
+            UIToolbar.appearance().setShadowImage(UIImage(named: "toolbarShadow"), forToolbarPosition: UIBarPosition.Bottom)
+            UIToolbar.appearance().tintColor = UIColor.blue()
+            UIToolbar.appearance().barTintColor = UIColor.white()
+            UIToolbar.appearance().translucent = true
+        }*/
+    }
+    
     func setupAppAFNetworkingTools() {
         // Start monitoring network reachability
         AFNetworkReachabilityManager.sharedManager().startMonitoring()
@@ -221,36 +250,6 @@ extension AppDelegate {
         
         // Start showing network activity
         AFNetworkActivityIndicatorManager.sharedManager().enabled = true
-    }
-    
-    func setupAppDefaultBarAppearances() {
-        // Set navigation bar and tab bar shadows throughout app, plus other appearances
-        // Doesn't work if trying to support iOS 7, moved to the OS base classes of VC, NavVC, TabVC
-        
-        /*
-        if UINavigationBar.conformsToProtocol(UIAppearanceContainer) {
-        UINavigationBar.appearance().setBackgroundImage(UIImage(named: "navigationBarBackground"), forBarMetrics: UIBarMetrics.Default)
-        UINavigationBar.appearance().shadowImage = UIImage(named: "navigationBarShadow")
-        UINavigationBar.appearance().tintColor = UIColor.blue()
-        UINavigationBar.appearance().barTintColor = UIColor.white()
-        UINavigationBar.appearance().translucent = true
-        }
-        
-        if UITabBar.conformsToProtocol(UIAppearanceContainer) {
-        UITabBar.appearance().backgroundImage = UIImage(named: "tabBarBackground")
-        UITabBar.appearance().shadowImage = UIImage(named: "tabBarShadow")
-        UITabBar.appearance().tintColor = UIColor.blue()
-        UITabBar.appearance().barTintColor = UIColor.white()
-        UITabBar.appearance().translucent = true
-        }
-        
-        if UIToolbar.conformsToProtocol(UIAppearanceContainer) {
-        UIToolbar.appearance().setBackgroundImage(UIImage(named: "toolbarBackground"), forToolbarPosition: UIBarPosition.Bottom, barMetrics: UIBarMetrics.Default)
-        UIToolbar.appearance().setShadowImage(UIImage(named: "toolbarShadow"), forToolbarPosition: UIBarPosition.Bottom)
-        UIToolbar.appearance().tintColor = UIColor.blue()
-        UIToolbar.appearance().barTintColor = UIColor.white()
-        UIToolbar.appearance().translucent = true
-        }*/
     }
 }
 

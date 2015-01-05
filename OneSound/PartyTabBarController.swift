@@ -10,13 +10,11 @@ import UIKit
 
 let PartyTabBarControllerNibName = "PartyTabBarController"
 
-class PartyTabBarController: UITabBarController {
+class PartyTabBarController: OSTabBarController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
         delegate = self
-        tabBar.barTintColor = UIColor.white()
-        tabBar.tintColor = UIColor.blue()
         automaticallyAdjustsScrollViewInsets = false
         
         let partyMembersViewController = PartyMembersViewController(nibName: PartyMembersViewControllerNibName, bundle: nil)

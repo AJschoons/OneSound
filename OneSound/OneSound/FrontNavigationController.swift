@@ -38,3 +38,9 @@ class FrontNavigationController: UINavigationController {
         }
     }
 }
+
+extension FrontNavigationController: UIBarPositioningDelegate {
+    func positionForBar(bar: UIBarPositioning!) -> UIBarPosition {
+        return UIBarPosition.TopAttached
+    }
+}

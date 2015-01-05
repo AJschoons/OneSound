@@ -38,8 +38,8 @@ class LoggingInSpashViewController: UIViewController {
         
         // Show the side menu so the frame can get set (would otherwise 'slide down' first time being shown)
         // Then hide it
-        (navigationController as? OSFrontNavigationController)?.sideMenu?.showSideMenu()
-        (navigationController as? OSFrontNavigationController)?.sideMenu?.hideSideMenu()
+        //let sideMenu = (navigationController as? OSFrontNavigationController)?.sideMenu?
+        //sideMenu?.showSideMenu()
         
         super.viewWillAppear(animated)
     }

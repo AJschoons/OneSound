@@ -82,7 +82,7 @@ public class ENSideMenu : NSObject {
     }
     private let menuPosition:ENSideMenuPosition = .Left
     public var bouncingEnabled :Bool = true
-    private let sideMenuContainerView =  UIView()
+    public let sideMenuContainerView =  UIView()
     public var menuTableViewController : UITableViewController!
     private var animator : UIDynamicAnimator!
     private let sourceView : UIView!
@@ -92,10 +92,6 @@ public class ENSideMenu : NSObject {
     
     var userImage: UIImageView!
     
-    var blurEffect = UIBlurEffect(style: UIBlurEffectStyle.Light)
-    var blurView: UIVisualEffectView!
-    var vibrancyView: UIVisualEffectView!
-    
     private var pushMag: CGFloat = 20
     private var gravMag: CGFloat = 2
     
@@ -103,7 +99,6 @@ public class ENSideMenu : NSObject {
         super.init()
         self.sourceView = sourceView
         self.menuPosition = menuPosition
-        self.setupMenuView()
     
         animator = UIDynamicAnimator(referenceView:sourceView)
         
@@ -129,22 +124,11 @@ public class ENSideMenu : NSObject {
 
     public convenience init(sourceView: UIView, menuTableViewController: UITableViewController, menuPosition: ENSideMenuPosition) {
         self.init(sourceView: sourceView, menuPosition: menuPosition)
+        setupMenuView(menuTableViewController)
         self.menuTableViewController = menuTableViewController
         self.menuTableViewController.tableView.frame = sideMenuContainerView.bounds
         self.menuTableViewController.tableView.autoresizingMask = .FlexibleHeight | .FlexibleWidth
         sideMenuContainerView.addSubview(self.menuTableViewController.tableView)
-        
-        let vibrancyEffect = UIVibrancyEffect(forBlurEffect: blurEffect)
-        vibrancyView = UIVisualEffectView(effect: vibrancyEffect)
-        
-        // set the vibrancy frame to effect everything
-        let smcvBounds = sideMenuContainerView.bounds
-        let vibrancyViewFrame = CGRectMake(smcvBounds.origin.x, smcvBounds.origin.y + sideNavigationUserCellUserImageBottomDisanceFromTop, smcvBounds.size.width, smcvBounds.size.height - sideNavigationUserCellUserImageBottomDisanceFromTop)
-        vibrancyView.frame = smcvBounds
-        
-        vibrancyView.autoresizingMask = .FlexibleHeight | .FlexibleWidth
-        vibrancyView.contentView.addSubview(menuTableViewController.view)
-        blurView.contentView.addSubview(vibrancyView)
     }
     
     private func updateFrame() {
@@ -160,7 +144,7 @@ public class ENSideMenu : NSObject {
         sideMenuContainerView.frame = menuFrame
     }
 
-    private func setupMenuView() {
+    private func setupMenuView(menuTableViewController: UITableViewController) {
         
         // Configure side menu container
         updateFrame()
@@ -175,13 +159,27 @@ public class ENSideMenu : NSObject {
         
         sourceView.addSubview(sideMenuContainerView)
         
+        // iOS 8
         if (NSClassFromString("UIVisualEffectView") != nil) {
             // Add blur view
-            blurEffect = UIBlurEffect(style: .Light)
-            blurView = UIVisualEffectView(effect: blurEffect)
+            let blurView = UIVisualEffectView(effect: UIBlurEffect(style: UIBlurEffectStyle.Light))
             blurView.frame = sideMenuContainerView.bounds
             blurView.autoresizingMask = .FlexibleHeight | .FlexibleWidth
             sideMenuContainerView.addSubview(blurView)
+            
+            let vibrancyEffect = UIVibrancyEffect(forBlurEffect: UIBlurEffect(style: UIBlurEffectStyle.Light))
+            let vibrancyView = UIVisualEffectView(effect: vibrancyEffect)
+            
+            // set the vibrancy frame to effect everything
+            let smcvBounds = sideMenuContainerView.bounds
+            let vibrancyViewFrame = CGRectMake(smcvBounds.origin.x, smcvBounds.origin.y + sideNavigationUserCellUserImageBottomDisanceFromTop, smcvBounds.size.width, smcvBounds.size.height - sideNavigationUserCellUserImageBottomDisanceFromTop)
+            vibrancyView.frame = sideMenuContainerView.bounds
+            
+            vibrancyView.autoresizingMask = .FlexibleHeight | .FlexibleWidth
+            vibrancyView.contentView.addSubview(menuTableViewController.view)
+            blurView.contentView.addSubview(vibrancyView)
+        } else {
+            // iOS 7 support?
         }
         
         userImage = UIImageView()

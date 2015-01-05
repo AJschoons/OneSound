@@ -14,21 +14,36 @@ let userImageDistanceFromTopOfSideNavigationUserCell: CGFloat = 10
 
 class SideNavigationUserCell: UITableViewCell {
 
-    //@IBOutlet weak var userImage: UIImageView! // Moved to ENSideMenu so wouldn't get vibrancy effect as table subview
+    @IBOutlet weak var userImage: UIImageView! // Moved to ENSideMenu so wouldn't get vibrancy effect as table subview
     //@IBOutlet weak var blurredUserImage: UIImageView! // Removed after blurred side menu added
     @IBOutlet weak var userLabel: UILabel!
     
-    var userImage: UIImageView!
+    var userImageToUse: UIImageView!
     
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
         
-        userImage = getFrontNavigationController()?.sideMenu?.userImage
-        userImage.layer.cornerRadius = 5
-        //userImage.layer.borderColor = UIColor.black().CGColor
-        //userImage.layer.borderWidth = 1.0
-        userImage.clipsToBounds = true
+        if (NSClassFromString("UIVisualEffectView") != nil) {
+            // iOS 8 has blurred menu
+            // Must use the user image that's "behind" the table so the image doesn't get blurred
+            // This image isn't a subview of the table
+            userImageToUse = getFrontNavigationController()?.sideMenu?.userImage
+            getFrontNavigationController()?.sideMenu?.userImage.hidden = false
+            userImage.hidden = true
+        } else {
+            // iOS 7 has static white menu
+            // Must use the user image that's "in front of" the table
+            // Image is subview of table
+            userImageToUse = userImage
+            userImage.hidden = false
+            getFrontNavigationController()?.sideMenu?.userImage.hidden = true
+            //userImage.layer.borderColor = UIColor.black().CGColor
+            //userImage.layer.borderWidth = 1.0
+        }
+        
+        userImageToUse.layer.cornerRadius = 5
+        userImageToUse.clipsToBounds = true
         
         backgroundColor = UIColor.clearColor()
         
@@ -55,12 +70,12 @@ class SideNavigationUserCell: UITableViewCell {
             if UserManager.sharedUser.guest == false && UserManager.sharedUser.photo != nil {
                 // If user isn't a guest and has a valid photo
                 println("full user with valid photo; use their photo")
-                userImage.image = UserManager.sharedUser.photo
+                userImageToUse.image = UserManager.sharedUser.photo
             } else {
                 // If user guest or doesn't have valid photo
                 println("guest user or invalid photo, use user color")
-                userImage.image = nil
-                userImage.backgroundColor = UserManager.sharedUser.colorToUIColor
+                userImageToUse.image = nil
+                userImageToUse.backgroundColor = UserManager.sharedUser.colorToUIColor
                 
             }
         }
@@ -78,13 +93,13 @@ class SideNavigationUserCell: UITableViewCell {
                 userLabel.text = userSavedName
                 if userSavedIsGuest {
                     println("saved user was guest")
-                    userImage.image = nil
+                    userImageToUse.image = nil
                     
                     if userSavedColor != nil {
-                        userImage.backgroundColor = UserManager.colorToUIColor(userSavedColor!)
+                        userImageToUse.backgroundColor = UserManager.colorToUIColor(userSavedColor!)
                     } else {
                         // In case the userSavedColor info can't be retrieved
-                        userImage.backgroundColor = UIColor.grayDark()
+                        userImageToUse.backgroundColor = UIColor.grayDark()
                     }
                 } else {
                     // Deal with non-guests here
@@ -93,30 +108,30 @@ class SideNavigationUserCell: UITableViewCell {
                         if imageData != nil {
                             println("image data valid, use their image")
                             let image = UIImage(data: imageData)
-                            userImage.image = image
+                            userImageToUse.image = image
                             
                             var blurredImage = image!.applyBlurWithRadius(2, tintColor: nil, saturationDeltaFactor: 1.3, maskImage: nil)
                         } else {
                             println("image data valid but was nil, try using their color")
-                            userImage.image = nil
+                            userImageToUse.image = nil
                             
                             if userSavedColor != nil  {
-                                userImage.backgroundColor = UserManager.colorToUIColor(userSavedColor!)
+                                userImageToUse.backgroundColor = UserManager.colorToUIColor(userSavedColor!)
                             } else {
                                 // In case the userSavedColor info can't be retrieved
-                                userImage.backgroundColor = UIColor.grayDark()
+                                userImageToUse.backgroundColor = UIColor.grayDark()
                             }
                         }
                     } else {
                         // Couldn't get image
                         println("image data invalid, use their color")
-                        userImage.image = nil
+                        userImageToUse.image = nil
                         
                         if userSavedColor != nil  {
-                            userImage.backgroundColor = UserManager.colorToUIColor(userSavedColor!)
+                            userImageToUse.backgroundColor = UserManager.colorToUIColor(userSavedColor!)
                         } else {
                             // In case the userSavedColor info can't be retrieved
-                            userImage.backgroundColor = UIColor.grayDark()
+                            userImageToUse.backgroundColor = UIColor.grayDark()
                         }
                     }
                 }
@@ -124,8 +139,8 @@ class SideNavigationUserCell: UITableViewCell {
                 // Can't retrieve any user info
                 println("user isn't setup")
                 userLabel.text = "Not Signed In"
-                userImage.image = nil
-                userImage.backgroundColor = UIColor.grayDark()
+                userImageToUse.image = nil
+                userImageToUse.backgroundColor = UIColor.grayDark()
             }
         }
     }

@@ -52,24 +52,6 @@ extension SCClient {
 extension SCClient {
     // MARK: searching songs and getting songs by their id
     
-    func getSoundCloudSongByID(songID: Int, success: AFHTTPSuccessBlock, failure: AFHTTPFailureBlock, extraAttempts: Int = defaultEA) {
-        // Create a URL string from the base URL string, then user/:uid
-        let urlString = "\(SCBaseURL)tracks/\(songID).json"
-        
-        var params = Dictionary<String, AnyObject>()
-        params.updateValue(SCClientID, forKey: "consumer_key")
-        
-        let failureWithExtraAttempt: AFHTTPFailureBlock = { task, error in
-            if errorShouldBeHandledWithRepeatedRequest(task, error, attemptsLeft: extraAttempts) {
-                self.getSoundCloudSongByID(songID, success: success, failure: failure, extraAttempts: (extraAttempts - 1))
-            } else {
-                failure!(task: task, error: error)
-            }
-        }
-        
-        httpSessionManager.GET(urlString, parameters: params, success: success, failure: failure)
-    }
-    
     func searchSoundCloudForSongWithString(str: String, success: AFHTTPSuccessBlock, failure: AFHTTPFailureBlock, extraAttempts: Int = defaultEA) {
         // Create a URL string from the base URL string, then user/:uid
         let urlString = "\(SCBaseURL)tracks.json"
@@ -85,6 +67,25 @@ extension SCClient {
         let failureWithExtraAttempt: AFHTTPFailureBlock = { task, error in
             if errorShouldBeHandledWithRepeatedRequest(task, error, attemptsLeft: extraAttempts) {
                 self.searchSoundCloudForSongWithString(str, success: success, failure: failure, extraAttempts: (extraAttempts - 1))
+            } else {
+                failure!(task: task, error: error)
+            }
+        }
+        
+        httpSessionManager.GET(urlString, parameters: params, success: success, failure: failure)
+    }
+    
+    // (Only used when initially testing audio player for party)
+    func getSoundCloudSongByID(songID: Int, success: AFHTTPSuccessBlock, failure: AFHTTPFailureBlock, extraAttempts: Int = defaultEA) {
+        // Create a URL string from the base URL string, then user/:uid
+        let urlString = "\(SCBaseURL)tracks/\(songID).json"
+        
+        var params = Dictionary<String, AnyObject>()
+        params.updateValue(SCClientID, forKey: "consumer_key")
+        
+        let failureWithExtraAttempt: AFHTTPFailureBlock = { task, error in
+            if errorShouldBeHandledWithRepeatedRequest(task, error, attemptsLeft: extraAttempts) {
+                self.getSoundCloudSongByID(songID, success: success, failure: failure, extraAttempts: (extraAttempts - 1))
             } else {
                 failure!(task: task, error: error)
             }

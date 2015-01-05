@@ -45,8 +45,14 @@ class SideNavigationViewController: UITableViewController {
         // Customize the tableView
         tableView.scrollEnabled = false
         tableView.separatorStyle = UITableViewCellSeparatorStyle.None
-        //tableView.backgroundColor = UIColor(white: 1, alpha: 0.35)
-        tableView.backgroundColor = UIColor.clearColor()
+        
+        if (NSClassFromString("UIVisualEffectView") != nil) {
+            // iOS 8 has blurred menu
+            tableView.backgroundColor = UIColor.clearColor()
+        } else {
+            // iOS 7 has static white menu
+            tableView.backgroundColor = UIColor.whiteColor()
+        }
         
         // Used to shift info down below nav bar
         tableView.contentInset = UIEdgeInsetsMake(64.0, 0, 0, 0)

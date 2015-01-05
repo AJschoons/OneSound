@@ -54,7 +54,7 @@ class PartySongCell: UITableViewCell {
         else if count == 0 { triangleColor = UIColor.orange() }
         else { triangleColor = UIColor.red() }
         triangleView.color = triangleColor
-        triangleView.setNeedsDisplay()
+        triangleView.setNeedsDisplay() // Force it to redraw
 
         voteCountLabel.text = intFormattedToShortStringForDisplay(abs(count))
     }

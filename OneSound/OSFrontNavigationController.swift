@@ -18,6 +18,18 @@ class OSFrontNavigationController: ENSideMenuNavigationController {
         sideMenu!.delegate = self
         sideMenu!.menuWidth = 160.0
         sideMenu!.bouncingEnabled = false
+        
+        navigationBar.setBackgroundImage(UIImage(named: "navigationBarBackground"), forBarMetrics: UIBarMetrics.Default)
+        navigationBar.shadowImage = UIImage(named: "navigationBarShadow")
+        navigationBar.tintColor = UIColor.blue()
+        navigationBar.barTintColor = UIColor.white()
+        navigationBar.translucent = true
+        
+        toolbar.setBackgroundImage(UIImage(named: "toolbarBackground"), forToolbarPosition: UIBarPosition.Bottom, barMetrics: UIBarMetrics.Default)
+        toolbar.setShadowImage(UIImage(named: "toolbarShadow"), forToolbarPosition: UIBarPosition.Bottom)
+        toolbar.tintColor = UIColor.blue()
+        toolbar.barTintColor = UIColor.white()
+        toolbar.translucent = true
     }
 
     required init(coder aDecoder: NSCoder) {
@@ -64,5 +76,11 @@ extension OSFrontNavigationController: ENSideMenuDelegate {
     
     func getOverlay() -> UIView? {
         return overlay
+    }
+}
+
+extension FrontNavigationController: UIBarPositioningDelegate {
+    func positionForBar(bar: UIBarPositioning!) -> UIBarPosition {
+        return UIBarPosition.TopAttached
     }
 }

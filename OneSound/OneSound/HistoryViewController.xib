@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="6254" systemVersion="14B25" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6247"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="HistoryViewController" customModule="OneSound" customModuleProvider="target">
+            <connections>
+                <outlet property="messageLabel1" destination="eEy-hd-IFO" id="oP5-Jy-raz"/>
+                <outlet property="messageLabel2" destination="6BJ-11-cKD" id="hBu-sI-ELY"/>
+                <outlet property="view" destination="j1r-gq-Ylb" id="9iz-ss-8Mc"/>
+            </connections>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="j1r-gq-Ylb">
+            <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Some text that shows the main message" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="eEy-hd-IFO">
+                    <rect key="frame" x="20" y="284" width="560" height="17"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="17" id="gJ1-SC-fEz"/>
+                    </constraints>
+                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                    <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                    <nil key="highlightedColor"/>
+                </label>
+                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Text for a more detailed message below the main message" textAlignment="center" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="6BJ-11-cKD">
+                    <rect key="frame" x="20" y="301" width="560" height="14"/>
+                    <fontDescription key="fontDescription" type="system" pointSize="11"/>
+                    <color key="textColor" red="0.5170014500617981" green="0.51698595285415649" blue="0.51699477434158325" alpha="1" colorSpace="calibratedRGB"/>
+                    <nil key="highlightedColor"/>
+                </label>
+            </subviews>
+            <color key="backgroundColor" red="0.95075207949999996" green="0.95072358850000005" blue="0.95073968170000001" alpha="1" colorSpace="calibratedRGB"/>
+            <constraints>
+                <constraint firstItem="6BJ-11-cKD" firstAttribute="leading" secondItem="j1r-gq-Ylb" secondAttribute="leading" constant="20" id="605-27-wTq"/>
+                <constraint firstItem="eEy-hd-IFO" firstAttribute="leading" secondItem="j1r-gq-Ylb" secondAttribute="leading" constant="20" id="Mgf-uL-hDK"/>
+                <constraint firstItem="6BJ-11-cKD" firstAttribute="top" secondItem="eEy-hd-IFO" secondAttribute="bottom" id="O9t-NA-khF"/>
+                <constraint firstAttribute="trailing" secondItem="eEy-hd-IFO" secondAttribute="trailing" constant="20" id="TLd-Nl-Kfk"/>
+                <constraint firstAttribute="centerY" secondItem="eEy-hd-IFO" secondAttribute="centerY" constant="7.5" id="UZ6-D8-zRW"/>
+                <constraint firstAttribute="centerX" secondItem="eEy-hd-IFO" secondAttribute="centerX" id="d8a-Qe-RNS"/>
+                <constraint firstAttribute="trailing" secondItem="6BJ-11-cKD" secondAttribute="trailing" constant="20" id="e5d-w6-GA4"/>
+            </constraints>
+        </view>
+    </objects>
+</document>
