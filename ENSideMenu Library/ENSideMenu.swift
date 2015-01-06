@@ -88,7 +88,7 @@ public class ENSideMenu : NSObject {
     private let sourceView : UIView!
     private var needUpdateApperance : Bool = false
     public weak var delegate : ENSideMenuDelegate?
-    private var isMenuOpen : Bool = false
+    private(set) var isMenuOpen : Bool = false
     
     var userImage: UIImageView!
     

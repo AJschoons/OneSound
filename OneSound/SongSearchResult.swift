@@ -12,13 +12,12 @@ class SongSearchResult {
     
     var source: String!
     var externalID: Int!
+    var artworkURL: String?
     
+    // Data to displays
     var name: String!
     var artistName: String!
     var duration: Int!
-    
-    var artworkURL: String?
-    
     var numberOfPlaybacks: Int?
     
     init(source: String, externalID: Int, name: String, artistName: String, duration: Int, artworkURL: String?, numberOfPlaybacks: Int?) {

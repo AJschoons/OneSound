@@ -56,10 +56,19 @@ class OSFrontNavigationController: ENSideMenuNavigationController {
         overlay!.alpha = 0.0
         overlay!.userInteractionEnabled = true
         view.addSubview(overlay!)
+        
+        // Add left swipe gesture recognizer for closing the menu when open from the overlay
+        let leftSwipeGestureRecognizer = UISwipeGestureRecognizer(target: self, action: "handleOverlayLeftSwipe")
+        leftSwipeGestureRecognizer.direction = UISwipeGestureRecognizerDirection.Left
+        overlay!.addGestureRecognizer(leftSwipeGestureRecognizer)
     }
     
     func toggleSideMenu() {
         sideMenu!.toggleMenu()
+    }
+    
+    func handleOverlayLeftSwipe() {
+        if sideMenu!.isMenuOpen { sideMenu!.hideSideMenu() }
     }
 }
 
