@@ -92,6 +92,8 @@ public class ENSideMenu : NSObject {
     
     var userImage: UIImageView!
     
+    //let blurView = FXBlurView()
+    
     private var pushMag: CGFloat = 20
     private var gravMag: CGFloat = 2
     
@@ -129,6 +131,7 @@ public class ENSideMenu : NSObject {
         self.menuTableViewController.tableView.frame = sideMenuContainerView.bounds
         self.menuTableViewController.tableView.autoresizingMask = .FlexibleHeight | .FlexibleWidth
         sideMenuContainerView.addSubview(self.menuTableViewController.tableView)
+        //blurView.addSubview(self.menuTableViewController.tableView) // if iOS 7
     }
     
     private func updateFrame() {
@@ -180,6 +183,16 @@ public class ENSideMenu : NSObject {
             blurView.contentView.addSubview(vibrancyView)
         } else {
             // iOS 7 support?
+            /*
+            blurView.underlyingView = getFrontNavigationController()?.view
+            blurView.tintColor = UIColor.clearColor()
+            blurView.updateInterval = 30
+            blurView.blurRadius = 30
+            blurView.dynamic = true
+            blurView.frame = sideMenuContainerView.bounds
+            //blurView.autoresizingMask = .FlexibleHeight | .FlexibleWidth
+            sideMenuContainerView.addSubview(blurView)
+            */
         }
         
         userImage = UIImageView()

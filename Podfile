@@ -13,6 +13,7 @@ pod 'SDWebImage', '~> 3.7'
 pod 'StreamingKit', '~> 0.1'
 pod 'UIImageEffects'
 #pod 'ENSwiftSideMenu', '~> 0.0' // Swift static libraries unsupported
+#pod 'FXBlurView', '~> 1.6' // Might add later for blurring in iOS 7?
 
 end
 

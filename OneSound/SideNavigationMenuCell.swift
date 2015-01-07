@@ -12,8 +12,6 @@ class SideNavigationMenuCell: UITableViewCell {
 
     @IBOutlet weak var sideMenuItemIcon: UIImageView!
     @IBOutlet weak var sideMenuItemLabel: UILabel!
-    //var selectedIcon: UIImage? // Selections no longer shown
-    var unselectedIcon: UIImage?
     
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -21,5 +19,13 @@ class SideNavigationMenuCell: UITableViewCell {
         
         // Stop cell color from changing when selected
         selectionStyle = UITableViewCellSelectionStyle.None
+        
+        if (NSClassFromString("UIVisualEffectView") != nil) {
+            // iOS 8 has blurred menu
+            sideMenuItemLabel.textColor = UIColor.black()
+        } else {
+            // iOS 7 has static white menu
+            sideMenuItemLabel.textColor = UIColor.grayDark()
+        }
     }
 }

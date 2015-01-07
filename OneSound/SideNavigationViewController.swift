@@ -17,8 +17,7 @@ class SideNavigationViewController: UITableViewController {
     let menuCellIdentifier = "sideNavigationMenuCell"
     let userCellIdentifier = "sideNavigationUserCell"
     var topCellHeight: CGFloat = 150
-    var sideMenuSelectedIcons = [UIImage?]()
-    var sideMenuUnselectedIcons = [UIImage?]()
+    var sideMenuIcons = [UIImage?]()
     var sideMenuItemLabels = [String?]()
     var userCell: SideNavigationUserCell?
     /*
@@ -45,33 +44,26 @@ class SideNavigationViewController: UITableViewController {
         // Customize the tableView
         tableView.scrollEnabled = false
         tableView.separatorStyle = UITableViewCellSeparatorStyle.None
+        // Used to shift info down below nav bar
+        tableView.contentInset = UIEdgeInsetsMake(64.0, 0, 0, 0)
         
+        var shouldUseGrayIcons = false
         if (NSClassFromString("UIVisualEffectView") != nil) {
             // iOS 8 has blurred menu
             tableView.backgroundColor = UIColor.clearColor()
         } else {
             // iOS 7 has static white menu
             tableView.backgroundColor = UIColor.whiteColor()
+            shouldUseGrayIcons = true
         }
         
-        // Used to shift info down below nav bar
-        tableView.contentInset = UIEdgeInsetsMake(64.0, 0, 0, 0)
-        
         // First items are nil so index match table table row
-        /*
-        sideMenuSelectedIcons = [nil, UIImage(named: "sideMenuPartyIconSelected"),
-            UIImage(named: "sideMenuHistoryIconSelected"), UIImage(named: "sideMenuSearchIconSelected"),
-            UIImage(named: "sideMenuFollowingIconSelected"), UIImage(named: "sideMenuStoriesIconSelected"),
-            UIImage(named: "sideMenuProfileIconSelected")]
-        sideMenuUnselectedIcons = [nil, UIImage(named: "sideMenuPartyIconUnselected"),
-            UIImage(named: "sideMenuHistoryIconUnselected"), UIImage(named: "sideMenuSearchIconUnselected"),
-            UIImage(named: "sideMenuFollowingIconUnselected"), UIImage(named: "sideMenuStoriesIconUnselected"),
-            UIImage(named: "sideMenuProfileIconUnselected")]
-        sideMenuItemLabels = [nil, "Party", "History", "Search", "Following", "Stories", "Profile"]
-        */
-        
-        //sideMenuSelectedIcons = [nil, UIImage(named: "sideMenuPartyIconSelected"), UIImage(named: "sideMenuSearchIconSelected"), UIImage(named: "sideMenuProfileIconSelected")]
-        sideMenuUnselectedIcons = [nil, UIImage(named: "sideMenuPartyIconUnselected"), UIImage(named: "sideMenuSearchIconUnselected"), UIImage(named: "sideMenuProfileIconUnselected")]
+        if shouldUseGrayIcons {
+            sideMenuIcons = [nil, UIImage(named: "sideMenuPartyIconGray"), UIImage(named: "sideMenuSearchIconGray"), UIImage(named: "sideMenuProfileIconGray")]
+        } else {
+            sideMenuIcons = [nil, UIImage(named: "sideMenuPartyIconBlack"), UIImage(named: "sideMenuSearchIconBlack"), UIImage(named: "sideMenuProfileIconBlack")]
+        }
+
         sideMenuItemLabels = [nil, "Party", "Party Search", "Profile"]
         
         // Register the cells
@@ -128,9 +120,7 @@ extension SideNavigationViewController: UITableViewDataSource {
             // If a menu cell
             let menuCell = tableView.dequeueReusableCellWithIdentifier(menuCellIdentifier, forIndexPath: indexPath) as SideNavigationMenuCell
             menuCell.sideMenuItemLabel.text = sideMenuItemLabels[indexPath.row]
-            //menuCell.selectedIcon = sideMenuSelectedIcons[indexPath.row]
-            menuCell.unselectedIcon = sideMenuUnselectedIcons[indexPath.row]
-            menuCell.sideMenuItemIcon.image = menuCell.unselectedIcon
+            menuCell.sideMenuItemIcon.image = sideMenuIcons[indexPath.row]
             
             if firstTimeAppearing && indexPath.row == initiallySelectedRow {
                 tableView.selectRowAtIndexPath(indexPath, animated: true, scrollPosition: UITableViewScrollPosition.None)

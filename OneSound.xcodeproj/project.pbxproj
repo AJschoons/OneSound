@@ -73,6 +73,7 @@
 		8195E6841A5B370A00FD0CC8 /* OSViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8195E6831A5B370A00FD0CC8 /* OSViewController.swift */; };
 		8195E6861A5B398500FD0CC8 /* OSTabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8195E6851A5B398500FD0CC8 /* OSTabBarController.swift */; };
 		8195E6881A5B431A00FD0CC8 /* OSModalViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8195E6871A5B431A00FD0CC8 /* OSModalViewController.swift */; };
+		8195E68C1A5CB76D00FD0CC8 /* PartyAudioManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8195E68B1A5CB76D00FD0CC8 /* PartyAudioManager.swift */; };
 		81ACB3E81A5273AD0039529E /* PartyMembersManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81ACB3E71A5273AD0039529E /* PartyMembersManager.swift */; };
 		81B17D8F196F2A680062943C /* SideNavigationMenuCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81B17D8D196F2A680062943C /* SideNavigationMenuCell.swift */; };
 		81B17D90196F2A680062943C /* SideNavigationMenuCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 81B17D8E196F2A680062943C /* SideNavigationMenuCell.xib */; };
@@ -173,6 +174,8 @@
 		8195E6831A5B370A00FD0CC8 /* OSViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OSViewController.swift; sourceTree = "<group>"; };
 		8195E6851A5B398500FD0CC8 /* OSTabBarController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OSTabBarController.swift; sourceTree = "<group>"; };
 		8195E6871A5B431A00FD0CC8 /* OSModalViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OSModalViewController.swift; sourceTree = "<group>"; };
+		8195E6891A5C7BAE00FD0CC8 /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = SDKROOT; };
+		8195E68B1A5CB76D00FD0CC8 /* PartyAudioManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PartyAudioManager.swift; sourceTree = "<group>"; };
 		81ACB3E71A5273AD0039529E /* PartyMembersManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PartyMembersManager.swift; sourceTree = "<group>"; };
 		81B17D8D196F2A680062943C /* SideNavigationMenuCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SideNavigationMenuCell.swift; sourceTree = "<group>"; };
 		81B17D8E196F2A680062943C /* SideNavigationMenuCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SideNavigationMenuCell.xib; sourceTree = "<group>"; };
@@ -452,6 +455,7 @@
 			isa = PBXGroup;
 			children = (
 				8130D7D31986B8EB00DD4B47 /* PartyManager.swift */,
+				8195E68B1A5CB76D00FD0CC8 /* PartyAudioManager.swift */,
 				818750551A50C624000CC353 /* PartyPlaylistManager.swift */,
 				81ACB3E71A5273AD0039529E /* PartyMembersManager.swift */,
 				8195347F197857E6000B97A3 /* UserManager.swift */,
@@ -516,6 +520,7 @@
 		F0954DF62FE441E2A671CB82 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				8195E6891A5C7BAE00FD0CC8 /* Accelerate.framework */,
 				81953481197860A7000B97A3 /* Security.framework */,
 				81751FF6196DEB1D00B9F9A9 /* UIKit.framework */,
 				81751FF4196DEB0F00B9F9A9 /* Foundation.framework */,
@@ -701,6 +706,7 @@
 				8195E6841A5B370A00FD0CC8 /* OSViewController.swift in Sources */,
 				81527128196C5A8E00464068 /* User.swift in Sources */,
 				817944511A5752DE00A9C636 /* OSFrontNavigationController.swift in Sources */,
+				8195E68C1A5CB76D00FD0CC8 /* PartyAudioManager.swift in Sources */,
 				812795091A49F20E0092D880 /* OSLabel.swift in Sources */,
 				816FD445196F22B0003CCB1C /* SideNavigationViewController.swift in Sources */,
 				81BCC2B7199D2EA900A3500F /* AddSongViewController.swift in Sources */,
