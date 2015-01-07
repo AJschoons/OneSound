@@ -279,6 +279,7 @@
 		81062F94196B6C7E0057D230 = {
 			isa = PBXGroup;
 			children = (
+				8179444B1A5751C000A9C636 /* ENSideMenu Library */,
 				8138979D1A57256F008BBC77 /* Podfile */,
 				81062F9F196B6C7E0057D230 /* OneSound */,
 				81062FB4196B6C7E0057D230 /* OneSoundTests */,
@@ -300,7 +301,6 @@
 		81062F9F196B6C7E0057D230 /* OneSound */ = {
 			isa = PBXGroup;
 			children = (
-				8179444B1A5751C000A9C636 /* ENSideMenu Library */,
 				81953483197862F5000B97A3 /* OneSound.entitlements */,
 				81062FA2196B6C7E0057D230 /* AppDelegate.swift */,
 				81062FAB196B6C7E0057D230 /* Images.xcassets */,
@@ -448,8 +448,7 @@
 				8179444C1A5751C000A9C636 /* ENSideMenu.swift */,
 				8179444D1A5751C000A9C636 /* ENSideMenuNavigationController.swift */,
 			);
-			name = "ENSideMenu Library";
-			path = "../ENSideMenu Library";
+			path = "ENSideMenu Library";
 			sourceTree = "<group>";
 		};
 		818750541A50C5C8000CC353 /* Managers */ = {
@@ -854,15 +853,15 @@
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_X86_VECTOR_INSTRUCTIONS = default;
 				CODE_SIGN_ENTITLEMENTS = OneSound/OneSound.entitlements;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Distribution";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Adam Schoonmaker (RNKT643CPZ)";
 				GCC_PRECOMPILE_PREFIX_HEADER = NO;
 				GCC_SHORT_ENUMS = YES;
 				INFOPLIST_FILE = OneSound/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE = "fb28a507-1e24-4459-af46-33340af0c238";
 				SWIFT_OBJC_BRIDGING_HEADER = "OneSound/OneSound-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				TARGETED_DEVICE_FAMILY = 1;
@@ -878,15 +877,15 @@
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_X86_VECTOR_INSTRUCTIONS = default;
 				CODE_SIGN_ENTITLEMENTS = OneSound/OneSound.entitlements;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Distribution";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Adam Schoonmaker (RNKT643CPZ)";
 				GCC_PRECOMPILE_PREFIX_HEADER = NO;
 				GCC_SHORT_ENUMS = YES;
 				INFOPLIST_FILE = OneSound/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE = "fb28a507-1e24-4459-af46-33340af0c238";
 				SWIFT_OBJC_BRIDGING_HEADER = "OneSound/OneSound-Bridging-Header.h";
 				TARGETED_DEVICE_FAMILY = 1;
 			};

@@ -386,7 +386,7 @@ extension AppDelegate {
         
         switch rc {
         case .RemoteControlTogglePlayPause:
-            if party.audioManager.audioPlayer?.state == STKAudioPlayerStatePlaying {
+            if party.audioPlayer.state == STKAudioPlayerStatePlaying {
                 party.pauseSong()
             } else {
                 party.playSong()
