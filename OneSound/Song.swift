@@ -17,7 +17,7 @@ enum UserSongVote: Int {
 class Song {
     var songID: Int!
     var source: String!
-    var externalID: Int!
+    private var externalID: Int!
     var userID: Int!
     var partyID: Int!
     
@@ -28,6 +28,14 @@ class Song {
     var artworkURL: String?
     var userVote: UserSongVote?
     var voteCount: Int!
+    
+    var playAttempts = 0
+    
+    
+    func getExternalIDForPlaying() -> Int! {
+        ++playAttempts
+        return externalID
+    }
     
     init(json: JSONValue) {
         songID = json["sid"].integer

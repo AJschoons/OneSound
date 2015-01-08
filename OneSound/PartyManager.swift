@@ -44,6 +44,14 @@ enum PartyStrictnessOption: Int {
     }
 }
 
+enum PartyManagerState {
+    case None // User has no party
+    case Member // User is member of a party
+    case Host // User is hosting party
+    case HostStreamable // User is host party and this is the device that's streaming
+    
+}
+
 class PartyManager: NSObject {
     
     let songImageCache = (UIApplication.sharedApplication().delegate as AppDelegate).songImageCache
@@ -72,6 +80,8 @@ class PartyManager: NSObject {
     var userIsHost = false
     
     var shouldTryAnotherRefresh = true
+    
+    var state: PartyManagerState = .None
     
     class var sharedParty: PartyManager {
         struct Static {

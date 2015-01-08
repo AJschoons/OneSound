@@ -19,7 +19,7 @@ enum PartyAudioManagerState {
 
 class PartyAudioManager: NSObject {
     
-    var state: PartyAudioManagerState = .Inactive
+    private(set) var state: PartyAudioManagerState = .Inactive
     private var stateTime: Double = 0.0
     private let stateServicePeriod = 0.1 // Period in seconds of how often to update state
     
@@ -31,11 +31,11 @@ class PartyAudioManager: NSObject {
     private var playingStateTimeSinceLastMPNowPlayingRefresh = 0.0
     private let playingStateMPNowPlayingRefreshPeriod = 1.0
     
-    internal var userHasPressedPlay = false
-    private var attemptedToQueueSongForThisSong = false
+    private var userHasPressedPlay = false
+    private var attemptedToQueueSongForCurrentSong = false
     
-    var audioPlayer: STKAudioPlayer?
-    var audioSession: AVAudioSession!
+    private var audioPlayer: STKAudioPlayer?
+    private var audioSession: AVAudioSession!
     
     override init() {
         super.init()
@@ -60,11 +60,11 @@ class PartyAudioManager: NSObject {
             audioPlayer = nil
             audioSession.setCategory(AVAudioSessionCategoryAmbient, error: nil)
             userHasPressedPlay = false
-            attemptedToQueueSongForThisSong = false
+            attemptedToQueueSongForCurrentSong = false
             UIApplication.sharedApplication().endReceivingRemoteControlEvents()
         case .Empty:
             emptyStateTimeSinceLastGetNextSong = 0.0
-            attemptedToQueueSongForThisSong = false
+            attemptedToQueueSongForCurrentSong = false
             UIApplication.sharedApplication().beginReceivingRemoteControlEvents()
             partyManager.clearSongInfo()
             partyManager.getNextSong()
@@ -96,8 +96,9 @@ class PartyAudioManager: NSObject {
             
             if !AFNetworkReachabilityManager.sharedManager().reachable { onNetworkNotReachable(); return }
             
+            // Got next song
             if partyManager.currentSong != nil && partyManager.currentUser != nil {
-                let songToPlay = SCClient.sharedClient.getSongURLString(partyManager.currentSong!.externalID)
+                let songToPlay = SCClient.sharedClient.getSongURLString(partyManager.currentSong!.getExternalIDForPlaying())
                 audioPlayer!.play(songToPlay)
                 
                 if userHasPressedPlay {
@@ -138,11 +139,11 @@ class PartyAudioManager: NSObject {
                 
                 // Try queueing the next song
                 let timeRemaining = duration - progress
-                if timeRemaining < songTimeRemainingToQueueNextSong && !attemptedToQueueSongForThisSong {
-                    attemptedToQueueSongForThisSong = true
+                if timeRemaining < songTimeRemainingToQueueNextSong && !attemptedToQueueSongForCurrentSong {
+                    attemptedToQueueSongForCurrentSong = true
                     
                     partyManager.queueNextSong(completion: {
-                        let queueSongID = partyManager.queueSong?.externalID
+                        let queueSongID = partyManager.queueSong?.getExternalIDForPlaying()
                         if queueSongID != nil {
                             let songToQueue = SCClient.sharedClient.getSongURLString(queueSongID!)
                             self.audioPlayer!.queue(songToQueue)
@@ -174,6 +175,14 @@ class PartyAudioManager: NSObject {
     
     func onSongFinishedWithQueuedSong() {
         PartyManager.sharedParty.setDelegatePreparedToPlaySong()
+    }
+    
+    func onGotNextSongPlayAlreadyPressed() {
+        setState(.Playing)
+    }
+    
+    func onGotNextSongPlayNotAlreadyPressed() {
+        setState(.Paused)
     }
     
     func onUserBecameHost() {
@@ -274,9 +283,25 @@ extension PartyAudioManager: STKAudioPlayerDelegate {
     
     // Raised when an item has finished playing
     func audioPlayer(audioPlayer: STKAudioPlayer!, didFinishPlayingQueueItemId queueItemId: NSObject!, withReason stopReason:STKAudioPlayerStopReason, andProgress progress: Double, andDuration duration: Double) {
-
-        attemptedToQueueSongForThisSong = false
+        
+        attemptedToQueueSongForCurrentSong = false
         let partyManager = PartyManager.sharedParty
+        
+        // Song was most likely unstreamable if finished playing with such small amt of time
+        if progress < 0.5 {
+            var songInfo = ""
+            if let currentSongName = partyManager.currentSong?.name {
+                if let currentSongArtist = partyManager.currentSong?.artistName {
+                    songInfo = "'\(currentSongName)' uploaded by '\(currentSongArtist)' "
+                } else {
+                    songInfo = "'\(currentSongName)' "
+                }
+            }
+            
+            let alertMessage = "The SoundCloud song \(songInfo)being played could not be streamed. To play this song, try searching for a different version of it, or getting it from a different uploader"
+            let alert = UIAlertView(title: "Unstreamable Song Skipped", message: alertMessage, delegate: nil, cancelButtonTitle: "Okay")
+            alert.show()
+        }
         
         partyManager.delegate.updateSongProgress(0.0)
         
