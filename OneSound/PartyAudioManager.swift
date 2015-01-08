@@ -85,20 +85,16 @@ class PartyAudioManager: NSObject {
         switch state {
         case .Inactive:
             if partyManager.userIsHost {
-                if initializeAudioSessionForPlaying() {
-                    initializeAudioPlayerForPlaying()
-                    setState(.Empty)
-                    return
-                }
+                onUserBecameHost()
+                return
             }
             
         case .Empty:
             emptyStateTimeSinceLastGetNextSong += stateServicePeriod
             
-            if !partyManager.userIsHost {
-                setState(.Inactive)
-                return
-            }
+            if !partyManager.userIsHost  { onUserNoLongerHost(); return }
+            
+            if !AFNetworkReachabilityManager.sharedManager().reachable { onNetworkNotReachable(); return }
             
             if partyManager.currentSong != nil && partyManager.currentUser != nil {
                 let songToPlay = SCClient.sharedClient.getSongURLString(partyManager.currentSong!.externalID)
@@ -119,24 +115,16 @@ class PartyAudioManager: NSObject {
             }
             
         case .Paused:
-            if !partyManager.userIsHost {
-                setState(.Inactive)
-                return
-            }
+            if !partyManager.userIsHost  { onUserNoLongerHost(); return }
+            
+            if !AFNetworkReachabilityManager.sharedManager().reachable { onNetworkNotReachable(); return }
             
         case .Playing:
             playingStateTimeSinceLastMPNowPlayingRefresh += stateServicePeriod
             
-            if !partyManager.userIsHost {
-                setState(.Inactive)
-                return
-            }
+            if !partyManager.userIsHost  { onUserNoLongerHost(); return }
             
-            // TODO: add a PausedNoConnection state for this event
-            if !AFNetworkReachabilityManager.sharedManager().reachable {
-                setState(.Inactive)
-                return
-            }
+            if !AFNetworkReachabilityManager.sharedManager().reachable { onNetworkNotReachable(); return }
 
             let progress = audioPlayer!.progress // Number of seconds into the song
             let duration = audioPlayer!.duration // Song length in seconds
@@ -178,6 +166,42 @@ class PartyAudioManager: NSObject {
     
     func onPauseButton() {
         setState(.Paused)
+    }
+    
+    func onSongFinishedWithNoQueuedSong() {
+        setState(.Empty)
+    }
+    
+    func onSongFinishedWithQueuedSong() {
+        PartyManager.sharedParty.setDelegatePreparedToPlaySong()
+    }
+    
+    func onUserBecameHost() {
+        if initializeAudioSessionForPlaying() {
+            initializeAudioPlayerForPlaying()
+            setState(.Empty)
+            return
+        }
+    }
+    
+    func onUserNoLongerHost() {
+        setState(.Inactive)
+    }
+    
+    func onNetworkNotReachable() {
+        setState(.Inactive)
+    }
+    
+    func onAudioInterruptionBegan() {
+        setState(.Paused)
+    }
+    
+    func onAudioInterruptionEndedShouldResume() {
+        setState(.Playing)
+    }
+    
+    func onMediaServicesReset() {
+        setState(.Inactive)
     }
     
     func initializeAudioSessionForPlaying() -> Bool {
@@ -258,9 +282,9 @@ extension PartyAudioManager: STKAudioPlayerDelegate {
         
         // If there's a queued song
         if partyManager.setQueueSongAndUserToCurrent() {
-            partyManager.setDelegatePreparedToPlaySong()
+            onSongFinishedWithQueuedSong()
         } else {
-            setState(.Empty)
+            onSongFinishedWithNoQueuedSong()
         }
     }
     
@@ -285,7 +309,7 @@ extension PartyAudioManager {
                 // Audio has stopped, already inactive
                 // Change state of UI, etc., to reflect non-playing state
                 println("began")
-                setState(.Paused)
+                onAudioInterruptionBegan()
             case .Ended:
                 // Make session active
                 // Update user interface
@@ -296,7 +320,7 @@ extension PartyAudioManager {
                 if option == AVAudioSessionInterruptionOptions.OptionShouldResume {
                     // AVAudioSessionInterruptionOptionShouldResume option
                     // Here you should continue playback
-                    setState(.Playing)
+                    onAudioInterruptionEndedShouldResume()
                 }
             }
         }
@@ -305,6 +329,6 @@ extension PartyAudioManager {
     // Apple: "Responding to a Media Server Reset"
     // Apple says it's rare but can happen
     func handleMediaServicesReset() {
-        setState(.Inactive)
+        onMediaServicesReset()
     }
 }

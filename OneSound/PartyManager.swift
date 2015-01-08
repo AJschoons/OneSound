@@ -44,13 +44,6 @@ enum PartyStrictnessOption: Int {
     }
 }
 
-enum PartyManagerState {
-    case None // User has no party
-    case Member // User is member of a party
-    //case MemberNoHost // Host; audio is paused
-    case Host // User is hosting party
-}
-
 class PartyManager: NSObject {
     
     let songImageCache = (UIApplication.sharedApplication().delegate as AppDelegate).songImageCache
@@ -74,9 +67,7 @@ class PartyManager: NSObject {
     
     var setup = false
     
-    var songPlayingTimer: NSTimer?
     var partyRefreshTimer: NSTimer!
-    var recentNextSongCallTimer: NSTimer?
     
     var userIsHost = false
     
@@ -98,7 +89,7 @@ class PartyManager: NSObject {
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "refreshForUserInfoChange", name: UserManagerInformationDidChangeNotification, object: nil)
     }
     
-    // Call after the PartyManager shared instance is instantiated
+    // MUST be used; called after the PartyManager shared instance is instantiated in AppDelegate
     func setupAudioManager() {
         audioManager = PartyAudioManager()
     }
@@ -429,9 +420,6 @@ class PartyManager: NSObject {
         queueUser = nil
         
         setup = false
-        
-        songPlayingTimer = nil
-        recentNextSongCallTimer = nil
         
         userIsHost = false
         shouldTryAnotherRefresh = true
