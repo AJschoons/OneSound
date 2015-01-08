@@ -80,11 +80,11 @@ class PartyMainViewController: UIViewController {
     }
     
     @IBAction func play(sender: AnyObject) {
-        PartyManager.sharedParty.playSong()
+        PartyManager.sharedParty.audioManager.onPlayButton()
     }
     
     @IBAction func pause(sender: AnyObject) {
-        PartyManager.sharedParty.pauseSong()
+        PartyManager.sharedParty.audioManager.onPauseButton()
     }
     
     @IBAction func addSong(sender: AnyObject) {
@@ -674,43 +674,3 @@ extension PartyMainViewController: CreatePartyViewControllerDelegate {
         viewWillAppear(true)
     }
 }
-
-/*
-extension PartyMainViewController {
-    // MARK: handing play/pause from home screen, firstResponder info
-    
-    override func canBecomeFirstResponder() -> Bool { return true }
-    
-    override func canResignFirstResponder() -> Bool { return true }
-    
-    func assignFirstResponder() {
-        becomeFirstResponder()
-    }
-    
-    func unassignFirstResponder() {
-        resignFirstResponder()
-    }
-    
-    override func remoteControlReceivedWithEvent(event: UIEvent) {
-        let rc = event.subtype
-        println("received remote control \(rc.rawValue)")
-        let party = PartyManager.sharedParty
-        
-        switch rc {
-        case .RemoteControlTogglePlayPause:
-            if party.audioPlayer.state == STKAudioPlayerStatePlaying {
-                party.pauseSong()
-            } else {
-                party.playSong()
-            }
-        case .RemoteControlPlay:
-            party.playSong()
-        case .RemoteControlPause:
-            party.pauseSong()
-        default:
-            break
-        }
-        
-    }
-}
-*/

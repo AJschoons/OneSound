@@ -65,17 +65,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         setupAppAFNetworkingTools()
         
-        // Create the user
+        // Create the user manager
         UserManager.sharedUser
+        
+        // Create the party manager
+        PartyManager.sharedParty
+        PartyManager.sharedParty.setupAudioManager()
         
         // Login flow is handled by AFNetworkingReachability manager and FBLogin status change
         
         // Loads the FBLoginView before the view is shown
         FBLoginView.self
-        
-        let audioSession = AVAudioSession.sharedInstance()
-        audioSession.setCategory(AVAudioSessionCategoryPlayback, error: nil)
-        audioSession.setActive(true, error: nil)
         
         // Should help the AVAudioPlayer move to the next song when in background
         // Also needed for home screen control and AirPlay
@@ -382,19 +382,19 @@ extension AppDelegate {
     override func remoteControlReceivedWithEvent(event: UIEvent) {
         let rc = event.subtype
         println("received remote control \(rc.rawValue)")
-        let party = PartyManager.sharedParty
+        let audioManager = PartyManager.sharedParty.audioManager
         
         switch rc {
         case .RemoteControlTogglePlayPause:
-            if party.audioPlayer.state == STKAudioPlayerStatePlaying {
-                party.pauseSong()
+            if audioManager.state == .Playing {
+                audioManager.onPauseButton()
             } else {
-                party.playSong()
+                audioManager.onPlayButton()
             }
         case .RemoteControlPlay:
-            party.playSong()
+            audioManager.onPlayButton()
         case .RemoteControlPause:
-            party.pauseSong()
+            audioManager.onPauseButton()
         default:
             break
         }
