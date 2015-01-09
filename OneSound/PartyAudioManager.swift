@@ -10,6 +10,8 @@ import Foundation
 import AVFoundation
 import MediaPlayer
 
+let PartyAudioManagerStateChangeNotification = "PartyAudioManagerStateChange"
+
 enum PartyAudioManagerState {
     case Inactive // No player or audio session setup; for when not a host
     case Empty // Host; no audio playing or to play
@@ -42,6 +44,7 @@ class PartyAudioManager: NSObject {
         
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "handleAudioSessionInterruption:", name: AVAudioSessionInterruptionNotification, object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "handleMediaServicesReset", name: AVAudioSessionMediaServicesWereResetNotification, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "handleSongWasAddedNotification", name: PartySongWasAddedNotification, object: nil)
         
         audioSession = AVAudioSession.sharedInstance()
         setState(.Inactive)
@@ -76,6 +79,8 @@ class PartyAudioManager: NSObject {
             audioPlayer!.resume()
             partyManager.delegate.setAudioPlayerButtonsForPlaying(true)
         }
+        
+        NSNotificationCenter.defaultCenter().postNotificationName(PartyAudioManagerStateChangeNotification, object: nil)
     }
     
     func serviceState() {
@@ -84,7 +89,7 @@ class PartyAudioManager: NSObject {
         
         switch state {
         case .Inactive:
-            if partyManager.userIsHost == true {
+            if partyManager.state == .Host {
                 onUserBecameHost()
                 return
             }
@@ -92,7 +97,7 @@ class PartyAudioManager: NSObject {
         case .Empty:
             emptyStateTimeSinceLastGetNextSong += stateServicePeriod
             
-            if !partyManager.userIsHost  { onUserNoLongerHost(); return }
+            if partyManager.state != .Host { onUserNoLongerHost(); return }
             
             if !AFNetworkReachabilityManager.sharedManager().reachable { onNetworkNotReachable(); return }
             
@@ -100,6 +105,7 @@ class PartyAudioManager: NSObject {
             if partyManager.currentSong != nil && partyManager.currentUser != nil {
                 let songToPlay = SCClient.sharedClient.getSongURLString(partyManager.currentSong!.getExternalIDForPlaying())
                 audioPlayer!.play(songToPlay)
+                postPartyCurrentSongChangeUpdates()
                 
                 if userHasPressedPlay {
                     setState(.Playing)
@@ -116,14 +122,14 @@ class PartyAudioManager: NSObject {
             }
             
         case .Paused:
-            if !partyManager.userIsHost  { onUserNoLongerHost(); return }
+            if partyManager.state != .Host { onUserNoLongerHost(); return }
             
             if !AFNetworkReachabilityManager.sharedManager().reachable { onNetworkNotReachable(); return }
             
         case .Playing:
             playingStateTimeSinceLastMPNowPlayingRefresh += stateServicePeriod
             
-            if !partyManager.userIsHost  { onUserNoLongerHost(); return }
+            if partyManager.state != .Host { onUserNoLongerHost(); return }
             
             if !AFNetworkReachabilityManager.sharedManager().reachable { onNetworkNotReachable(); return }
 
@@ -174,7 +180,7 @@ class PartyAudioManager: NSObject {
     }
     
     func onSongFinishedWithQueuedSong() {
-        PartyManager.sharedParty.setDelegatePreparedToPlaySong()
+        postPartyCurrentSongChangeUpdates()
     }
     
     func onGotNextSongPlayAlreadyPressed() {
@@ -211,6 +217,18 @@ class PartyAudioManager: NSObject {
     
     func onMediaServicesReset() {
         setState(.Inactive)
+    }
+    
+    func postPartyCurrentSongChangeUpdates() {
+        NSNotificationCenter.defaultCenter().postNotificationName(PartyCurrentSongDidChangeNotification, object: nil)
+        PartyManager.sharedParty.updateMPNowPlayingInfoCenterInfo()
+    }
+    
+    func handleSongWasAddedNotification() {
+        if state == .Empty {
+            emptyStateTimeSinceLastGetNextSong = 0.0
+            PartyManager.sharedParty.getNextSong()
+        }
     }
     
     func initializeAudioSessionForPlaying() -> Bool {
@@ -322,7 +340,7 @@ extension PartyAudioManager: STKAudioPlayerDelegate {
 extension PartyAudioManager {
     // MARK: handling AVAudioSession notifications
     func handleAudioSessionInterruption(n: NSNotification) {
-        if n.name != AVAudioSessionInterruptionNotification || n.userInfo == nil || !PartyManager.sharedParty.userIsHost { return }
+        if n.name != AVAudioSessionInterruptionNotification || n.userInfo == nil || PartyManager.sharedParty.state != .Host { return }
         
         println("AVAudioSessionInterruptionNotification")
         var info = n.userInfo!

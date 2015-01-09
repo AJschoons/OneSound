@@ -10,6 +10,9 @@ import UIKit
 import AVFoundation
 import MediaPlayer
 
+let PartyManagerStateChangeNotification = "PartyManagerStateChange"
+let PartyCurrentSongDidChangeNotification = "PartyCurrentSongDidChange"
+
 protocol PartyManagerDelegate {
     func updateSongProgress(progress: Float)
     func setAudioPlayerButtonsForPlaying(audioPlayerIsPlaying: Bool)
@@ -66,21 +69,19 @@ class PartyManager: NSObject {
     var isPrivate: Bool! = false
     var name: String!
     var strictness: Int!
-    var userIsHost: Bool! = false
+    private var userIsHost: Bool! = false
     
     var currentSong: Song?
     var currentUser: User?
     var queueSong: Song?
     var queueUser: User?
     
-    var setup = false
-    
     var state: PartyManagerState = .None
     private var stateTime: Double = 0.0
     private let stateServicePeriod = 0.1 // Period in seconds of how often to update state
     
     private var timeSinceLastGetCurrentParty = 0.0
-    private let getCurrentPartyRefreshPeriod = 5.0
+    private let getCurrentPartyRefreshPeriod = 10.0
     
     class var sharedParty: PartyManager {
         struct Static {
@@ -122,6 +123,8 @@ class PartyManager: NSObject {
             // state not handled, yet
             somethingToDoOtherThanPrintln = true
         }
+        
+        NSNotificationCenter.defaultCenter().postNotificationName(PartyManagerStateChangeNotification, object: nil)
     }
     
     func serviceState() {
@@ -174,6 +177,12 @@ class PartyManager: NSObject {
             if state != .None { setState(.None) }
         }
     }
+    
+    func postPartySongDidChangeNotificationBasedOnState() {
+        if state != .Host {
+            NSNotificationCenter.defaultCenter().postNotificationName(PartyCurrentSongDidChangeNotification, object: nil)
+        }
+    }
     /*
     func refresh() {
         println("refreshing PartyManager")
@@ -217,7 +226,7 @@ class PartyManager: NSObject {
         }
 
     }*/
-    
+    /*
     func refreshForHost() {
         dispatchAsyncToMainQueue(action: {
             self.delegate.setPartyMainVCRightBarButton(create: false, leave: false, settings: true)
@@ -229,7 +238,7 @@ class PartyManager: NSObject {
             })
             //getNextSong()
         } else if audioManager.state == .Paused || audioManager.state == .Playing {
-            updateCurrentSongAndUserThenDelegate(onlyUpdateCurrentUserInfo: true)
+            //updateCurrentSongAndUserThenDelegate(onlyUpdateCurrentUserInfo: true)
         }
     }
     
@@ -238,9 +247,10 @@ class PartyManager: NSObject {
             self.delegate.setPartyMainVCRightBarButton(create: false, leave: true, settings: false)
         })
         
-        updateCurrentSongAndUserThenDelegate()
+        //updateCurrentSongAndUserThenDelegate()
     }
-    
+    */
+    /*
     func setDelegatePartyInfoVisible() {
         // Party is actually setup
         println("party is setup")
@@ -249,8 +259,9 @@ class PartyManager: NSObject {
             self.delegate.setPartyInfoHidden(false)
         })
         println("user is host: \(userIsHost)")
-    }
+    }*/
     
+    /*
     // Get and update the current song and user, then reflect that update in the delegate
     func updateCurrentSongAndUserThenDelegate(onlyUpdateCurrentUserInfo: Bool = false) {
         updateCurrentSongAndUser(partyID,
@@ -271,28 +282,18 @@ class PartyManager: NSObject {
             }
         )
     }
+    */
     
     // Only to be used for hosts
     func getNextSong() {
         getNextSong(partyID,
             completion: { song, user in
-                //self.audioIsDownloading = true
-                //dispatchAsyncToMainQueue(action: {
-                //    self.delegate.setPartySongImage(songToPlay: false, artworkToShow: false, loadingSong: true, image: nil)
-                //})
                 self.currentSong = song
                 self.currentUser = user
-                self.setDelegatePreparedToPlaySong()
             }, noCurrentSong: {
-                dispatchAsyncToMainQueue(action: {
-                    self.delegate.clearAllSongInfo()
-                })
+                
             }, failureAddOn: {
-                dispatchAsyncToMainQueue(action: {
-                    self.delegate.clearAllSongInfo()
-                    self.delegate.setPartyInfoHidden(true)
-                    self.delegate.showMessages("Unable to load current song", detailLine: "Please check internet connection and refresh the party")
-                })
+                
             }
         )
     }
@@ -312,6 +313,7 @@ class PartyManager: NSObject {
         )
     }
     
+    // Only for hosts
     // Move queue song info to current song info, clear the queue info after
     func setQueueSongAndUserToCurrent() -> Bool {
         if queueSong != nil && queueUser != nil {
@@ -326,14 +328,15 @@ class PartyManager: NSObject {
         return false
     }
     
+    /*
     func setDelegatePreparedToPlaySong() {
         
-        updateDelegateSongAndUserInformation()
-        updateMPNowPlayingInfoCenterInfo()
+        //updateDelegateSongAndUserInformation()
+        //updateMPNowPlayingInfoCenterInfo()
         
         //audioPlayer.play(songURLString)
         //playSong()
-    }
+    }*/
     
     func skipSong() {
         // TODO: make this work
@@ -345,6 +348,7 @@ class PartyManager: NSObject {
         */
     }
     
+    /*
     func updateDelegateSongAndUserInformation(onlyUpdateCurrentUserInfo: Bool = false) {
         if currentSong != nil && currentUser != nil {
             
@@ -376,7 +380,9 @@ class PartyManager: NSObject {
             }
         }
     }
+    */
     
+    /*
     func updateDelegateSongImage() {
         if currentSong!.artworkURL != nil {
             let largerArtworkURL = currentSong!.artworkURL!.replaceSubstringWithString("-large.jpg", newSubstring: "-t500x500.jpg")
@@ -411,6 +417,7 @@ class PartyManager: NSObject {
             })
         }
     }
+    */
     
     // Make sure to use this AFTER updateDelegateSongImage() and updateDelegateSongInformation()
     func updateMPNowPlayingInfoCenterInfo(elapsedTime: Double = 0) {
@@ -444,10 +451,6 @@ class PartyManager: NSObject {
         queueUser = nil
         
         MPNowPlayingInfoCenter.defaultCenter().nowPlayingInfo = ["" : ""]
-        
-        dispatchAsyncToMainQueue(action: {
-            self.delegate.clearAllSongInfo()
-        })
     }
     
     func resetAllPartyInfo() {
@@ -464,8 +467,6 @@ class PartyManager: NSObject {
         currentUser = nil
         queueSong = nil
         queueUser = nil
-        
-        setup = false
         
         userIsHost = false
         
@@ -513,7 +514,7 @@ extension PartyManager {
     
     func getNextSong(pid: Int, completion: ((song: Song, user: User) -> ())? = nil, noCurrentSong: completionClosure? = nil, failureAddOn: completionClosure? = nil) {
         
-        if partyID != 0 && partyID != nil {
+        if state != .None {
             OSAPI.sharedClient.GETNextSong(pid,
                 success: { data, responseObject in
                     let responseJSON = JSONValue(responseObject)
@@ -547,9 +548,10 @@ extension PartyManager {
         }
     }
     
+    /*
     func updateCurrentSongAndUser(pid: Int, completion: completionClosure? = nil, noCurrentSong: completionClosure? = nil, failureAddOn: completionClosure? = nil) {
         
-        if partyID != 0 && partyID != nil {
+        if state != .None {
             OSAPI.sharedClient.GETCurrentSong(pid,
                 success: { data, responseObject in
                     let responseJSON = JSONValue(responseObject)
@@ -586,6 +588,7 @@ extension PartyManager {
             )
         }
     }
+    */
     
     func joinParty(pid: Int, JSONUpdateCompletion: completionClosure? = nil, failureAddOn: completionClosure? = nil) {
         // Makes it so none of the old info stays when joining a party from an old one
@@ -675,8 +678,6 @@ extension PartyManager {
     }
     
     func updateMainPartyInfoFromJSON(json: JSONValue, completion: completionClosure? = nil) {
-        setup = true
-        
         println(json)
         
         partyID = json["pid"].integer
@@ -685,6 +686,28 @@ extension PartyManager {
         strictness = json["strictness"].integer
         userIsHost = json["host"].bool
         
+        if json["current_song"]["user"].object != nil {
+            // Got a song for the party
+            let newCurrentSong = Song(json: json["current_song"])
+            currentUser = User(json: json["current_song"]["user"])
+            
+            if currentSong == nil {
+                // Got a song when there previously wasn't one, so must be a song change
+                postPartySongDidChangeNotificationBasedOnState()
+            } else if currentSong != nil && newCurrentSong != currentSong! {
+                // The new song isn't the same as the old one; song change
+                postPartySongDidChangeNotificationBasedOnState()
+            }
+        } else {
+            // Did NOT get a song for the party
+            if currentSong != nil {
+                // There was a song, but now there isn't; song change
+                postPartySongDidChangeNotificationBasedOnState()
+            }
+            
+            currentSong = nil
+            currentUser = nil
+        }
         
         if completion != nil {
             completion!()

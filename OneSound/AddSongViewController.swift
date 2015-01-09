@@ -188,7 +188,7 @@ extension AddSongViewController: UITableViewDelegate {
         let source = "sc"
         
         if UserManager.sharedUser.setup == true {
-            if PartyManager.sharedParty.setup == true {
+            if PartyManager.sharedParty.state != .None {
 
                 OSAPI.sharedClient.POSTSong(PartyManager.sharedParty.partyID, externalID: selectedSong.externalID, source: source, title: selectedSong.name, artist: selectedSong.artistName, duration: selectedSong.duration, artworkURL: selectedSong.artworkURL,
                     success: { data, responseObject in

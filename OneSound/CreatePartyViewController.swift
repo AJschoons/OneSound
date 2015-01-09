@@ -132,7 +132,7 @@ class CreatePartyViewController: UITableViewController {
         self.tableView.endEditing(true)
         self.dismissViewControllerAnimated(true, completion: nil)
         
-        if PartyManager.sharedParty.setup == true {
+        if PartyManager.sharedParty.state != .None {
             getAppDelegate().sideMenuViewController.programaticallySelectRow(1)
         }
         

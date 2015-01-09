@@ -61,8 +61,6 @@ class PartyMainViewController: UIViewController {
     var partySettingsButton: UIBarButtonItem!
     var rightBarButton: UIBarButtonItem?
     
-    var partyRefreshTimer: NSTimer?
-    
     @IBAction func tallThumbsDownPressed(sender: AnyObject) {
         handleThumbsDownPress(sender)
     }
@@ -125,7 +123,7 @@ class PartyMainViewController: UIViewController {
     }
     
     func changePartySettings() {
-        if PartyManager.sharedParty.userIsHost == true {
+        if PartyManager.sharedParty.state == .Host || PartyManager.sharedParty.state == .HostStreamable  {
             let createPartyStoryboard = UIStoryboard(name: CreatePartyStoryboardName, bundle: nil)
             let createPartyViewController = createPartyStoryboard.instantiateViewControllerWithIdentifier(CreatePartyViewControllerIdentifier) as CreatePartyViewController
             createPartyViewController.partyAlreadyExists = true
@@ -155,6 +153,12 @@ class PartyMainViewController: UIViewController {
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "refreshIfVisible", name: UserManagerInformationDidChangeNotification, object: nil)
         // Should update when a party song is added
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "refreshAfterAddingSong", name: PartySongWasAddedNotification, object: nil)
+        // Refreshes after party state changes
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "refresh", name: PartyManagerStateChangeNotification, object: nil)
+        // Refreshes after the song changes
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "refresh", name: PartyCurrentSongDidChangeNotification, object: nil)
+        // Refreshes when audio state changes
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "refresh", name: PartyAudioManagerStateChangeNotification, object: nil)
         
         songProgress!.progress = 0.0
         
@@ -192,12 +196,8 @@ class PartyMainViewController: UIViewController {
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         let party = PartyManager.sharedParty
-        if party.setup == true && party.name != nil {
-            parentViewController!.navigationItem.title = PartyManager.sharedParty.name
-            
-            if !party.userIsHost {
-                partyRefreshTimer = NSTimer.scheduledTimerWithTimeInterval(10, target: self, selector: "refresh", userInfo: nil, repeats: true)
-            }
+        if party.state != .None {
+            parentViewController!.navigationItem.title = party.name
         }
         else {
             parentViewController!.navigationItem.title = "Party"
@@ -205,10 +205,6 @@ class PartyMainViewController: UIViewController {
         
         setRightBarButtonWhenSelected()
         refresh()
-    }
-    
-    override func viewWillDisappear(animated: Bool) {
-        if partyRefreshTimer != nil { partyRefreshTimer!.invalidate() }
     }
     
     func setPartyMainVCRightBarButton(# create: Bool, leave: Bool, settings: Bool) {
@@ -343,10 +339,6 @@ class PartyMainViewController: UIViewController {
         songProgress!.hidden = false
     }
     
-    func onPartyRefreshTimer() {
-        if !PartyManager.sharedParty.userIsHost { refresh() }
-    }
-    
     func refreshAfterAddingSong() {
         addSongButton.hidden = true
         refresh()
@@ -359,8 +351,111 @@ class PartyMainViewController: UIViewController {
     }
     
     func refresh() {
-        println("refreshing PartyMainViewController")
-        PartyManager.sharedParty.refresh()
+        if AFNetworkReachabilityManager.sharedManager().reachable {
+            if UserManager.sharedUser.setup == true {
+                let partyState = PartyManager.sharedParty.state
+                
+                if partyState != .None {
+                    hideMessages()
+                    setPartyInfoHidden(false)
+                }
+                
+                switch partyState {
+                case .Member:
+                    setPartyMainVCRightBarButton(create: false, leave: true, settings: false)
+                    updateSongAndUserInfo()
+                    
+                case .Host:
+                    setPartyMainVCRightBarButton(create: false, leave: false, settings: true)
+                    
+                    let audioManagerState = PartyManager.sharedParty.audioManager.state
+                    
+                    if audioManagerState == .Empty {
+                        clearAllSongInfo()
+                    } else if audioManagerState == .Paused {
+                        updateSongAndUserInfo()
+                        setAudioPlayerButtonsForPlaying(false)
+                    } else if audioManagerState == .Playing {
+                        updateSongAndUserInfo()
+                        setAudioPlayerButtonsForPlaying(true)
+                    }
+                    
+                case .HostStreamable:
+                    setPartyMainVCRightBarButton(create: false, leave: false, settings: true)
+                    
+                case .None:
+                    showMessages("Not member of a party", detailLine: "Become a party member by joining or creating a party")
+                    setPartyMainVCRightBarButton(create: true, leave: false, settings: false)
+                    setPartyInfoHidden(true)
+                }
+            } else {
+                // User not setup, not signed into full or guest account
+                showMessages("Not signed into an account", detailLine: "Please connect to the internet and restart OneSound")
+                setPartyMainVCRightBarButton(create: false, leave: false, settings: false)
+                setPartyInfoHidden(true)
+            }
+        } else {
+            showMessages("Not connected to the internet", detailLine: "Please connect to the internet to use OneSound")
+            setPartyMainVCRightBarButton(create: false, leave: false, settings: false)
+            setPartyInfoHidden(true)
+        }
+    }
+    
+    func updateSongAndUserInfo() {
+        let party = PartyManager.sharedParty
+        if party.currentSong != nil && party.currentUser != nil {
+            let currentSong = party.currentSong!
+            let currentUser = party.currentUser!
+            
+            var thumbsUp = false
+            var thumbsDown = false
+            
+            if currentSong.userVote != nil {
+                switch currentSong.userVote! {
+                case .Up:
+                    thumbsUp = true
+                case .Down:
+                    thumbsDown = true
+                default:
+                    break
+                }
+            }
+            
+            setPartySongUserInfo(currentUser, thumbsUp: thumbsUp, thumbsDown: thumbsDown)
+            setPartySongInfo(name: currentSong.name, artist: currentSong.artistName, time: timeInSecondsToFormattedMinSecondTimeLabelString(currentSong.duration))
+            updateSongImage()
+            showPartySongInfo()
+        }
+    }
+    
+    func updateSongImage() {
+        let party = PartyManager.sharedParty
+        
+        if let artworkURL = party.currentSong?.artworkURL {
+            
+            let largerArtworkURL = artworkURL.replaceSubstringWithString("-large.jpg", newSubstring: "-t500x500.jpg")
+            
+            party.songImageCache.queryDiskCacheForKey(largerArtworkURL,
+                done: { image, imageCacheType in
+                    if image != nil {
+                            self.setPartySongImage(songToPlay: true, artworkToShow: true, loadingSong: false, image: image)
+                    } else {
+                        SDWebImageManager.sharedManager().downloadImageWithURL(NSURL(string: largerArtworkURL), options: nil, progress: nil,
+                            completed: { image, error, cacheType, boolValue, url in
+                                if error == nil && image != nil {
+                                    party.songImageCache.storeImage(image, forKey: largerArtworkURL)
+                                    self.setPartySongImage(songToPlay: true, artworkToShow: true, loadingSong: false, image: image)
+                                } else {
+                                    self.setPartySongImage(songToPlay: true, artworkToShow: false, loadingSong: false, image: nil)
+                                }
+                            }
+                        )
+                    }
+                }
+            )
+        } else {
+            setPartySongImage(songToPlay: true, artworkToShow: false, loadingSong: false, image: nil)
+        }
     }
     
     func clearAllSongInfo() {

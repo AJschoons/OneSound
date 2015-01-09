@@ -41,7 +41,7 @@ class Song {
         songID = json["sid"].integer
         source = json["source"].string
         externalID = json["external_id"].integer
-        userID = json["uid"].integer
+        userID = json["user_uid"].integer
         
         name = json["title"].string
         artistName = json["artist"].string
@@ -53,4 +53,10 @@ class Song {
             userVote = UserSongVote(rawValue: vote)
         }
     }
+}
+
+extension Song: Equatable { }
+// MARK: Equatable
+func == (lhs: Song, rhs: Song) -> Bool {
+    return lhs.externalID == rhs.externalID && lhs.userID == rhs.userID
 }

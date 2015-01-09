@@ -266,7 +266,7 @@ extension SearchViewController: UITableViewDelegate {
                     PartyManager.sharedParty.refresh()
                     self.searchResultsArray = [Party]() // Remove the results so they have to search again
                     
-                    if PartyManager.sharedParty.setup == true {
+                    if PartyManager.sharedParty.state != .None {
                         getAppDelegate()!.sideMenuViewController.programaticallySelectRow(1)
                     }
                 }, failureAddOn: {

@@ -78,27 +78,21 @@ class PartyMembersViewController: UIViewController {
         
         if AFNetworkReachabilityManager.sharedManager().reachable {
             if UserManager.sharedUser.setup == true {
-                if UserManager.sharedUser.party != nil && UserManager.sharedUser.party != 0 {
-                    if PartyManager.sharedParty.setup == true {
-                        // Actually show members stuff
-                        hideMessages()
-                        hideMembersTable(false)
-                        
-                        membersManager.clearForUpdate()
-                        membersManager.update(
-                            completion: {
-                                dispatchAsyncToMainQueue(action: {
-                                    self.membersTable.reloadData()
-                                    self.loadImagesForOnScreenRows()
-                                    self.tableViewController.refreshControl!.endRefreshing()
-                                })
-                            }
-                        )
-                    } else {
-                        showMessages("Well, this is awkward", detailLine: "We're not really sure what happened, try refreshing the party!")
-                        hideMembersTable(true)
-                        tableViewController.refreshControl!.endRefreshing()
-                    }
+                if PartyManager.sharedParty.state != .None {
+                    // Actually show members stuff
+                    hideMessages()
+                    hideMembersTable(false)
+                    
+                    membersManager.clearForUpdate()
+                    membersManager.update(
+                        completion: {
+                            dispatchAsyncToMainQueue(action: {
+                                self.membersTable.reloadData()
+                                self.loadImagesForOnScreenRows()
+                                self.tableViewController.refreshControl!.endRefreshing()
+                            })
+                        }
+                    )
                 } else {
                     showMessages("Not member of a party", detailLine: "Become a party member by joining or creating a party")
                     hideMembersTable(true)
