@@ -48,7 +48,7 @@ enum PartyManagerState {
     case None // User has no party
     case Member // User is member of a party
     case Host // User is hosting party
-    case HostStreamable // User is host party and this is the device that's streaming
+    case HostStreamable // User is hosting party and this is the device that's streaming
     
 }
 
@@ -63,10 +63,10 @@ class PartyManager: NSObject {
     var audioManager: PartyAudioManager!
     
     var partyID: Int!
-    var isPrivate: Bool!
-    var hostUserID: Int?
+    var isPrivate: Bool! = false
     var name: String!
     var strictness: Int!
+    var userIsHost: Bool! = false
     
     var currentSong: Song?
     var currentUser: User?
@@ -75,13 +75,12 @@ class PartyManager: NSObject {
     
     var setup = false
     
-    var partyRefreshTimer: NSTimer!
-    
-    var userIsHost = false
-    
-    var shouldTryAnotherRefresh = true
-    
     var state: PartyManagerState = .None
+    private var stateTime: Double = 0.0
+    private let stateServicePeriod = 0.1 // Period in seconds of how often to update state
+    
+    private var timeSinceLastGetCurrentParty = 0.0
+    private let getCurrentPartyRefreshPeriod = 5.0
     
     class var sharedParty: PartyManager {
         struct Static {
@@ -93,10 +92,12 @@ class PartyManager: NSObject {
     override init() {
         super.init()
         
-        partyRefreshTimer = NSTimer.scheduledTimerWithTimeInterval(10, target: self, selector: "onPartyRefreshTimer", userInfo: nil, repeats: true)
-        
         // Refresh the party info when the user info changes
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "refreshForUserInfoChange", name: UserManagerInformationDidChangeNotification, object: nil)
+        
+        NSTimer.scheduledTimerWithTimeInterval(stateServicePeriod, target: self, selector: "serviceState", userInfo: nil, repeats: true)
+        
+        // Make sure to call setupAudioManager after init
     }
     
     // MUST be used; called after the PartyManager shared instance is instantiated in AppDelegate
@@ -104,17 +105,79 @@ class PartyManager: NSObject {
         audioManager = PartyAudioManager()
     }
     
+    func setState(newState: PartyManagerState) {
+        state = newState
+        stateTime = 0.0
+        
+        var somethingToDoOtherThanPrintln = true
+        switch newState {
+        case .None:
+            somethingToDoOtherThanPrintln = true
+            resetAllPartyInfo()
+        case .Member:
+            somethingToDoOtherThanPrintln = true
+        case .Host:
+            somethingToDoOtherThanPrintln = true
+        case .HostStreamable:
+            // state not handled, yet
+            somethingToDoOtherThanPrintln = true
+        }
+    }
+    
+    func serviceState() {
+        stateTime += stateServicePeriod
+        timeSinceLastGetCurrentParty += stateServicePeriod
+        
+        if timeSinceLastGetCurrentParty > getCurrentPartyRefreshPeriod {
+            refresh()
+        }
+        
+        var somethingToDoOtherThanPrintln = true
+        switch state {
+        case .None:
+            somethingToDoOtherThanPrintln = true
+        case .Member:
+            somethingToDoOtherThanPrintln = true
+        case .Host:
+            somethingToDoOtherThanPrintln = true
+        case .HostStreamable:
+            // state not handled, yet
+            somethingToDoOtherThanPrintln = true
+        }
+    }
+    
     func refreshForUserInfoChange() {
-        setup = false
+        if state != .None { setState(.None) }
         refresh()
     }
     
-    func onPartyRefreshTimer() {
-        if userIsHost { refresh() }
+    func refresh() {
+        timeSinceLastGetCurrentParty = 0.0
+        
+        if AFNetworkReachabilityManager.sharedManager().reachable && UserManager.sharedUser.setup {
+            getCurrentParty(
+                completion: {
+                    if self.userIsHost == true {
+                        if self.state != .Host { self.setState(.Host) }
+                    } else {
+                        if self.state != .Member { self.setState(.Member) }
+                    }
+                },
+                noCurrentParty: {
+                    if self.state != .None { self.setState(.None) }
+                },
+                failureAddOn: {
+                    if self.state != .None { self.setState(.None) }
+                }
+            )
+        } else {
+            if state != .None { setState(.None) }
+        }
     }
-    
+    /*
     func refresh() {
         println("refreshing PartyManager")
+        
         
         let user = UserManager.sharedUser
         if AFNetworkReachabilityManager.sharedManager().reachable {
@@ -123,13 +186,11 @@ class PartyManager: NSObject {
                     if setup == true {
                         setDelegatePartyInfoVisible()
                         
-                        if userIsHost {
+                        if userIsHost == true {
                             refreshForHost()
                         } else {
                             refreshForNonHost()
                         }
-                    } else {
-                        attemptToJoinPartyOneMoreTime()
                     }
                 } else {
                     // Party was nil, not member of a party
@@ -154,7 +215,8 @@ class PartyManager: NSObject {
                 self.delegate.setPartyInfoHidden(true)
             })
         }
-    }
+
+    }*/
     
     func refreshForHost() {
         dispatchAsyncToMainQueue(action: {
@@ -187,27 +249,6 @@ class PartyManager: NSObject {
             self.delegate.setPartyInfoHidden(false)
         })
         println("user is host: \(userIsHost)")
-    }
-    
-    func attemptToJoinPartyOneMoreTime() {
-        if shouldTryAnotherRefresh {
-            shouldTryAnotherRefresh = false
-            // If the party is valid but not setup, try joining it and then refreshing it once more
-            joinParty(UserManager.sharedUser.party!,
-                JSONUpdateCompletion: {
-                    // TODO: find a better way to accomplish this
-                    self.shouldTryAnotherRefresh = true
-                    self.refresh()
-                }, failureAddOn: {
-                    self.refresh()
-                }
-            )
-        } else {
-            dispatchAsyncToMainQueue(action: {
-                self.delegate.showMessages("Well, this is awkward", detailLine: "We're not really sure what happened, try refreshing the party!")
-                self.delegate.setPartyInfoHidden(true)
-            })
-        }
     }
     
     // Get and update the current song and user, then reflect that update in the delegate
@@ -410,15 +451,10 @@ class PartyManager: NSObject {
     }
     
     func resetAllPartyInfo() {
-        // Clears current and queued songs
-        //audioPlayer.stop()
-        
         clearSongInfo()
         
-        UserManager.sharedUser.party = nil
         partyID = 0
         isPrivate = false
-        hostUserID = 0
         name = ""
         strictness = 0
         
@@ -432,7 +468,6 @@ class PartyManager: NSObject {
         setup = false
         
         userIsHost = false
-        shouldTryAnotherRefresh = true
         
         MPNowPlayingInfoCenter.defaultCenter().nowPlayingInfo = ["" : ""]
         
@@ -444,6 +479,37 @@ class PartyManager: NSObject {
 
 extension PartyManager {
     // MARK: Party networking related code for user's active party
+    
+    // Used to get the user's party and refresh all the info
+    func getCurrentParty(completion: completionClosure? = nil, noCurrentParty: completionClosure? = nil, failureAddOn: completionClosure? = nil) {
+        OSAPI.sharedClient.GETPartyCurrent(
+            success: { data, responseObject in
+                let responseJSON = JSONValue(responseObject)
+                println(responseJSON)
+                
+                self.updateMainPartyInfoFromJSON(responseJSON, completion: completion)
+            }, failure: { task, error in
+                var shouldDoDefaultFailureBlock = true
+                
+                if let response = task.response as? NSHTTPURLResponse {
+                    println("errorResponseCode:\(response.statusCode)")
+                    if response.statusCode == 404 && noCurrentParty != nil {
+                        shouldDoDefaultFailureBlock = false
+                        if noCurrentParty != nil {
+                            noCurrentParty!()
+                        }
+                    }
+                }
+                
+                if shouldDoDefaultFailureBlock == true {
+                    if failureAddOn != nil {
+                        failureAddOn!()
+                    }
+                    defaultAFHTTPFailureBlock!(task: task, error: error)
+                }
+            }
+        )
+    }
     
     func getNextSong(pid: Int, completion: ((song: Song, user: User) -> ())? = nil, noCurrentSong: completionClosure? = nil, failureAddOn: completionClosure? = nil) {
         
@@ -532,8 +598,6 @@ extension PartyManager {
                     let responseJSON = JSONValue(responseObject)
                     //println(responseJSON)
                     
-                    UserManager.sharedUser.party = pid
-                    
                     self.updateMainPartyInfoFromJSON(responseJSON, JSONUpdateCompletion)
                 }, failure: { task, error in
                     if failureAddOn != nil {
@@ -558,15 +622,8 @@ extension PartyManager {
                 
                 if status == "success" {
                     // Update new party information
-                    let pid = responseJSON["pid"].integer
-                    self.joinParty(pid!,
-                        JSONUpdateCompletion: {
-                            UserManager.sharedUser.party = pid
-                            respondToChangeAttempt(true)
-                        }, failureAddOn: {
-                            respondToChangeAttempt(false)
-                        }
-                    )
+                    self.refresh()
+                    respondToChangeAttempt(true)
                 } else {
                     // Server didn't accept request for new party with supplied information
                     respondToChangeAttempt(false)
@@ -575,7 +632,7 @@ extension PartyManager {
         )
     }
     
-    func updatePartyInfo(name: String, privacy: Bool, strictness: Int, respondToChangeAttempt: (Bool) -> (), failure: AFHTTPFailureBlock = defaultAFHTTPFailureBlockForSigningIn) {
+    func changePartyInfo(name: String, privacy: Bool, strictness: Int, respondToChangeAttempt: (Bool) -> (), failure: AFHTTPFailureBlock = defaultAFHTTPFailureBlockForSigningIn) {
         let user = UserManager.sharedUser
         
         OSAPI.sharedClient.PUTParty(partyID, name: name, privacy: privacy, strictness: strictness,
@@ -584,17 +641,12 @@ extension PartyManager {
                 println(responseJSON)
                 let status = responseJSON["status"].string
                 
-                // TODO: probably don't need to join party after updating
-                // Could just update the info from the arguments provided
                 if status == "success" {
-                    // Update/get new party information
-                    self.joinParty(self.partyID,
-                        JSONUpdateCompletion: {
-                            respondToChangeAttempt(true)
-                        }, failureAddOn: {
-                            respondToChangeAttempt(false)
-                        }
-                    )
+                    // Update new party information
+                    self.name = name
+                    self.isPrivate = privacy
+                    self.strictness = strictness
+                    respondToChangeAttempt(true)
                 } else {
                     // Server didn't accept request for new party with supplied information
                     respondToChangeAttempt(false)
@@ -613,8 +665,7 @@ extension PartyManager {
                 let status = responseJSON["status"].string
                 
                 if status == "success" {
-                    // Clear all party information
-                    self.resetAllPartyInfo()
+                    self.setState(.None)
                     respondToChangeAttempt(true)
                 } else {
                     // Server didn't accept request for new party with supplied information
@@ -630,16 +681,10 @@ extension PartyManager {
         
         partyID = json["pid"].integer
         isPrivate = json["privacy"].bool
-        hostUserID = json["host"].integer
         name = json["name"].string
         strictness = json["strictness"].integer
+        userIsHost = json["host"].bool
         
-        if hostUserID == UserManager.sharedUser.id {
-            userIsHost = true
-            println("*** USER IS HOST ***")
-        } else {
-            userIsHost == false
-        }
         
         if completion != nil {
             completion!()

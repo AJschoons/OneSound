@@ -115,7 +115,7 @@ class CreatePartyViewController: UITableViewController {
             )
         } else {
             println("updating party information")
-            PartyManager.sharedParty.updatePartyInfo(nameCellTextField.text, privacy: privacyCellSwitch.on, strictness: strictness.rawValue,
+            PartyManager.sharedParty.changePartyInfo(nameCellTextField.text, privacy: privacyCellSwitch.on, strictness: strictness.rawValue,
                 respondToChangeAttempt: { partyWasUpdated in
                     if partyWasUpdated {
                         self.onSuccessfulPartyCreateOrUpdateOrLeave()

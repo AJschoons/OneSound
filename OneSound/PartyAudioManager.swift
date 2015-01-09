@@ -84,7 +84,7 @@ class PartyAudioManager: NSObject {
         
         switch state {
         case .Inactive:
-            if partyManager.userIsHost {
+            if partyManager.userIsHost == true {
                 onUserBecameHost()
                 return
             }

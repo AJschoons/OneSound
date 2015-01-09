@@ -329,6 +329,34 @@ extension OSAPI {
 extension OSAPI {
     // MARK: Party-related API
     
+    // Gets the user's current party info
+    func GETPartyCurrent(#success: AFHTTPSuccessBlock, failure: AFHTTPFailureBlock, extraAttempts: Int = defaultEA) {
+        
+        let urlString = "\(baseURLString)party/current"
+        
+        let failureWithExtraAttempt: AFHTTPFailureBlock = { task, error in
+            var shouldConsiderRepeatedRequest = true
+            
+            // Don't try extra attempts for a 404; will be handled
+            if let response = task.response as? NSHTTPURLResponse {
+                if response.statusCode == 404 {
+                    shouldConsiderRepeatedRequest = false
+                    failure!(task: task, error: error)
+                }
+            }
+            
+            if shouldConsiderRepeatedRequest {
+                if errorShouldBeHandledWithRepeatedRequest(task, error, attemptsLeft: extraAttempts) {
+                    self.GETPartyCurrent(success: success, failure: failure, extraAttempts: (extraAttempts - 1))
+                } else {
+                    failure!(task: task, error: error)
+                }
+            }
+        }
+        
+        GET(urlString, parameters: nil, success: success, failure: failureWithExtraAttempt)
+    }
+    
     // Allows user to join a party
     func GETParty(pid: Int, success: AFHTTPSuccessBlock, failure: AFHTTPFailureBlock, extraAttempts: Int = defaultEA) {
         

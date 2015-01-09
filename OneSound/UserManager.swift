@@ -46,7 +46,7 @@ class UserManager {
     
     var photo: UIImage?
     
-    var party: Int?
+    //var party: Int?
     
     class var sharedUser: UserManager {
     struct Static {
@@ -330,15 +330,7 @@ extension UserManager {
                 UserManager.sharedUser.updateUserFromJSON(responseJSON, accessToken: token,
                     completion: {
                         // Join the party that the user is in
-                        if UserManager.sharedUser.party != nil && UserManager.sharedUser.party != 0 {
-                            PartyManager.sharedParty.joinParty(UserManager.sharedUser.party!,
-                                JSONUpdateCompletion: {
-                                    PartyManager.sharedParty.refresh()
-                                }, failureAddOn: {
-                                    PartyManager.sharedParty.refresh()
-                                }
-                            )
-                        }
+                        PartyManager.sharedParty.refresh()
                         
                         // Save the accounts info in the keychain
                         self.updateKeychainInfoForUserManager(id, accessToken: token)
@@ -390,12 +382,6 @@ extension UserManager {
         hotnessPercent = json["hotness"].integer
         followers = json["followers"].integer
         following = json["following"].integer
-        
-        if let usersParty = json["party_pid"].integer {
-            party = usersParty
-        } else {
-            party = nil
-        }
         
         let photoStr = "photo"
         println("guest:\(guest) json[photo]:\(json[photoStr].string != nil) force:\(forcePhotoUpdate) photoUrl:\(photoURL) photoUrlChanged:\(photoURL != json[photoStr].string)")

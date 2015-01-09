@@ -125,7 +125,7 @@ class PartyMainViewController: UIViewController {
     }
     
     func changePartySettings() {
-        if PartyManager.sharedParty.userIsHost {
+        if PartyManager.sharedParty.userIsHost == true {
             let createPartyStoryboard = UIStoryboard(name: CreatePartyStoryboardName, bundle: nil)
             let createPartyViewController = createPartyStoryboard.instantiateViewControllerWithIdentifier(CreatePartyViewControllerIdentifier) as CreatePartyViewController
             createPartyViewController.partyAlreadyExists = true
