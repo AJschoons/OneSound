@@ -91,55 +91,6 @@ class PartyMainViewController: UIViewController {
         presentViewController(navC, animated: true, completion: nil)
     }
     
-    func createParty() {
-        if UserManager.sharedUser.guest == false {
-            let createPartyStoryboard = UIStoryboard(name: CreatePartyStoryboardName, bundle: nil)
-            let createPartyViewController = createPartyStoryboard.instantiateViewControllerWithIdentifier(CreatePartyViewControllerIdentifier) as CreatePartyViewController
-            createPartyViewController.partyAlreadyExists = false
-            createPartyViewController.delegate = self
-
-            let navC = UINavigationController(rootViewController: createPartyViewController)
-            if let fnc = getFrontNavigationController() {
-                fnc.presentViewController(navC, animated: true, completion: nil)
-            }
-        } else {
-            let alert = UIAlertView(title: "Guests cannot create parties", message: "Please become a full account by logging in with Facebook, then try again", delegate: nil, cancelButtonTitle: "Ok")
-            alert.show()
-        }
-    }
-    
-    func leaveParty() {
-        PartyManager.sharedParty.leaveParty(
-            respondToChangeAttempt: { partyWasLeft in
-                if partyWasLeft {
-                    self.parentViewController!.navigationItem.title = "Party"
-                    self.refresh()
-                } else {
-                    let alert = UIAlertView(title: "Could not leave party", message: "Please try again, or just create a new one", delegate: nil, cancelButtonTitle: "Ok")
-                    alert.show()
-                }
-            }
-        )
-    }
-    
-    func changePartySettings() {
-        if PartyManager.sharedParty.state == .Host || PartyManager.sharedParty.state == .HostStreamable  {
-            let createPartyStoryboard = UIStoryboard(name: CreatePartyStoryboardName, bundle: nil)
-            let createPartyViewController = createPartyStoryboard.instantiateViewControllerWithIdentifier(CreatePartyViewControllerIdentifier) as CreatePartyViewController
-            createPartyViewController.partyAlreadyExists = true
-            createPartyViewController.delegate = self
-            
-            let navC = UINavigationController(rootViewController: createPartyViewController)
-            if let fnc = getFrontNavigationController() {
-                fnc.presentViewController(navC, animated: true, completion: nil)
-            }
-        } else {
-            let alert = UIAlertView(title: "Only hosts edit party settings", message: "Please become the host before editing party settings, or make sure you still are the host", delegate: nil, cancelButtonTitle: "Ok")
-            alert.show()
-        }
-    }
-    
-    
     override func viewDidLoad() {
         // Stops bottom of view from flowing under tab bar, but not top, for some reason
         edgesForExtendedLayout = UIRectEdge.None
@@ -221,6 +172,385 @@ class PartyMainViewController: UIViewController {
             ptbc.updateRightBarButtonForMainParty()
         }
     }
+}
+
+extension PartyMainViewController {
+    // MARK: Refreshing
+    
+    func refresh() {
+        if AFNetworkReachabilityManager.sharedManager().reachable {
+            if UserManager.sharedUser.setup == true {
+                let partyState = PartyManager.sharedParty.state
+                
+                if partyState != .None {
+                    hideMessages()
+                    setPartyInfoHidden(false)
+                }
+                
+                switch partyState {
+                case .Member:
+                    setPartyMainVCRightBarButton(create: false, leave: true, settings: false)
+                    updateCurrentSongAndUserInfo()
+                    
+                case .Host:
+                    setPartyMainVCRightBarButton(create: false, leave: false, settings: true)
+                    
+                    let audioManagerState = PartyManager.sharedParty.audioManager.state
+                    
+                    if audioManagerState == .Empty {
+                        clearAllCurrentSongAndUserInfo()
+                        hideAudioPlayerButtonsForNoSongPlaying()
+                    } else if audioManagerState == .Paused {
+                        updateCurrentSongAndUserInfo()
+                        setAudioPlayerButtonsForPlaying(false)
+                    } else if audioManagerState == .Playing {
+                        updateCurrentSongAndUserInfo()
+                        setAudioPlayerButtonsForPlaying(true)
+                    }
+                    
+                case .HostStreamable:
+                    setPartyMainVCRightBarButton(create: false, leave: false, settings: true)
+                    updateCurrentSongAndUserInfo()
+                    
+                case .None:
+                    showMessages("Not member of a party", detailLine: "Become a party member by joining or creating a party")
+                    setPartyMainVCRightBarButton(create: true, leave: false, settings: false)
+                    setPartyInfoHidden(true)
+                }
+            } else {
+                showMessages("Not signed into an account", detailLine: "Please connect to the internet and restart OneSound")
+                setPartyMainVCRightBarButton(create: false, leave: false, settings: false)
+                setPartyInfoHidden(true)
+            }
+        } else {
+            showMessages("Not connected to the internet", detailLine: "Please connect to the internet to use OneSound")
+            setPartyMainVCRightBarButton(create: false, leave: false, settings: false)
+            setPartyInfoHidden(true)
+        }
+    }
+    
+    func refreshIfVisible() {
+        if isViewLoaded() && view.window != nil {
+            refresh()
+        }
+    }
+    
+    func refreshAfterAddingSong() {
+        addSongButton.hidden = true
+        refresh()
+    }
+}
+
+extension PartyMainViewController {
+    // MARK: Current song info setting/hiding
+
+    func updateCurrentSongProgress(progress: Float) {
+        songProgress!.progress = progress
+        songProgress!.hidden = false
+    }
+    
+    func updateCurrentSongAndUserInfo() {
+        let party = PartyManager.sharedParty
+        if party.currentSong != nil && party.currentUser != nil {
+            let currentSong = party.currentSong!
+            let currentUser = party.currentUser!
+            
+            var thumbsUp = false
+            var thumbsDown = false
+            
+            if currentSong.userVote != nil {
+                switch currentSong.userVote! {
+                case .Up:
+                    thumbsUp = true
+                case .Down:
+                    thumbsDown = true
+                default:
+                    break
+                }
+            }
+            
+            setCurrentSongUserInfo(currentUser, thumbsUp: thumbsUp, thumbsDown: thumbsDown)
+            setCurrentSongInfo(name: currentSong.name, artist: currentSong.artistName, time: timeInSecondsToFormattedMinSecondTimeLabelString(currentSong.duration))
+            updateSongImage()
+        } else {
+            clearAllCurrentSongAndUserInfo()
+        }
+    }
+    
+    func clearAllCurrentSongAndUserInfo() {
+        setCurrentSongImage(songToPlay: false, artworkToShow: false, loadingSong: false, image: nil)
+        setCurrentSongInfo(name: "", artist: "", time: "")
+        setCurrentSongUserInfo(nil, thumbsUp: false, thumbsDown: false)
+        resetThumbsUpDownButtons()
+    }
+    
+    func setCurrentSongUserInfo(user: User?, thumbsUp: Bool, thumbsDown: Bool) {
+        showCurrentSongUserInfo()
+        
+        if shorterIphoneScreen {
+            if user != nil {
+                shortUserLabel.text = user!.name
+            } else {
+                shortUserLabel.text = ""
+                shortUserLabel.hidden = true
+                shortThumbsUpButton.hidden = true
+                shortThumbsDownButton.hidden = true
+            }
+        } else {
+            if user != nil {
+                setUserInfoLabelsText(upvoteLabel: userUpvoteLabel, numUpvotes: user!.upvoteCount, songLabel: userSongLabel, numSongs: user!.songCount, hotnessLabel: userHotnessLabel, percentHotness: user!.hotnessPercent, userNameLabel: tallUserLabel, userName: user!.name)
+                
+                tallUserImage.image = defaultUserImageForMainParty
+                if user!.photoURL != nil {
+                    setUserImageUsingCache(user!.photoURL!)
+                }
+            } else {
+                tallUserLabel.text = ""
+                tallThumbsUpButton.hidden = true
+                tallThumbsDownButton.hidden = true
+                tallUserImage.hidden = true
+                
+                userUpvoteLabel.text = ""
+                userSongLabel.text = ""
+                userHotnessLabel.text = ""
+                userUpvoteLabel.hidden = true
+                userSongLabel.hidden = true
+                userHotnessLabel.hidden = true
+                userUpvoteIcon.hidden = true
+                userSongIcon.hidden = true
+                userHotnessIcon.hidden = true
+            }
+        }
+    }
+    
+    func setCurrentSongInfo(# name: String, artist: String, time: String) {
+        showCurrentSongInfo()
+        
+        songNameLabel.attributedText =
+            NSAttributedString(
+                string: name,
+                attributes:
+                [
+                    NSFontAttributeName: songNameLabel.font,
+                    NSForegroundColorAttributeName: songNameLabel.textColor,
+                    NSKernAttributeName: songNameLabel.kerning
+                ])
+        songArtistLabel.attributedText =
+            NSAttributedString(
+                string: artist,
+                attributes:
+                [
+                    NSFontAttributeName: songArtistLabel.font,
+                    NSForegroundColorAttributeName: songArtistLabel.textColor,
+                    NSKernAttributeName: songArtistLabel.kerning
+                ])
+        songTimeLabel.attributedText =
+            NSAttributedString(
+                string: time,
+                attributes:
+                [
+                    NSFontAttributeName: songTimeLabel.font,
+                    NSForegroundColorAttributeName: songTimeLabel.textColor,
+                    NSKernAttributeName: songTimeLabel.kerning
+                ])
+        
+        songNameLabel!.adjustFontSizeToFit(minFontSize: 16, heightToAdjustFor: 25)
+    }
+    
+    func showCurrentSongUserInfo() {
+        userView!.hidden = false
+        
+        if shorterIphoneScreen {
+            shortUserLabel.hidden = false
+            shortThumbsDownButton.hidden = false
+            shortThumbsUpButton.hidden = false
+        } else {
+            tallUserLabel.hidden = false
+            tallThumbsDownButton.hidden = false
+            tallThumbsUpButton.hidden = false
+            tallUserImage.hidden = false
+            
+            userUpvoteLabel.hidden = false
+            userSongLabel.hidden = false
+            userHotnessLabel.hidden = false
+            userUpvoteIcon.hidden = false
+            userSongIcon.hidden = false
+            userHotnessIcon.hidden = false
+        }
+    }
+    
+    func showCurrentSongInfo() {
+        songNameLabel!.hidden = false
+        songArtistLabel!.hidden = false
+        songTimeLabel!.hidden = false
+        songProgress!.hidden = false
+    }
+}
+
+extension PartyMainViewController {
+    // MARK: Song image setting/downloading
+    
+    func updateSongImage() {
+        let party = PartyManager.sharedParty
+        
+        if let artworkURL = party.currentSong?.artworkURL {
+            
+            let largerArtworkURL = artworkURL.replaceSubstringWithString("-large.jpg", newSubstring: "-t500x500.jpg")
+            
+            party.songImageCache.queryDiskCacheForKey(largerArtworkURL,
+                done: { image, imageCacheType in
+                    if image != nil {
+                        self.setCurrentSongImage(songToPlay: true, artworkToShow: true, loadingSong: false, image: image)
+                    } else {
+                        SDWebImageManager.sharedManager().downloadImageWithURL(NSURL(string: largerArtworkURL), options: nil, progress: nil,
+                            completed: { image, error, cacheType, boolValue, url in
+                                if error == nil && image != nil {
+                                    party.songImageCache.storeImage(image, forKey: largerArtworkURL)
+                                    self.setCurrentSongImage(songToPlay: true, artworkToShow: true, loadingSong: false, image: image)
+                                } else {
+                                    self.setCurrentSongImage(songToPlay: true, artworkToShow: false, loadingSong: false, image: nil)
+                                }
+                            }
+                        )
+                    }
+                }
+            )
+        } else {
+            setCurrentSongImage(songToPlay: true, artworkToShow: false, loadingSong: false, image: nil)
+        }
+    }
+    
+    func setCurrentSongImage(# songToPlay: Bool, artworkToShow: Bool, loadingSong: Bool, image: UIImage?) {
+        addSongButton.hidden = true
+        
+        if loadingSong {
+            songImage!.hidden = true
+            
+            songImageForLoadingSong.hidden = false
+            songImageForLoadingSong.startAnimating()
+            soundcloudLogo!.hidden = false
+            return
+        } else {
+            songImage!.hidden = false
+            
+            songImageForLoadingSong.hidden = true
+            songImageForLoadingSong.stopAnimating()
+        }
+        
+        if !songToPlay {
+            songImage!.image = songImageForNoSongToPlay
+            addSongButton.hidden = false
+            soundcloudLogo!.hidden = true
+            return
+        }
+        
+        soundcloudLogo!.hidden = false
+        
+        if !artworkToShow {
+            songImage!.image = songImageForNoSongArtwork
+            soundcloudLogo!.hidden = false
+            return
+        }
+        
+        if image != nil {
+            songImage!.image = image
+            //songImage = UIImageView(image: image)
+        } else {
+            songImage!.image = songImageForNoSongArtwork
+        }
+    }
+}
+
+extension PartyMainViewController {
+    // MARK: Song user image setting/downloading
+    
+    // Sets the user image from the cache if it's there, else downloads and caches it before setting
+    func setUserImageUsingCache(urlString: String) {
+        userMainPartyImageCache.queryDiskCacheForKey(urlString,
+            done: { image, imageCacheType in
+                if image != nil {
+                    self.tallUserImage.image = image
+                    self.tallUserImage.setNeedsLayout()
+                } else {
+                    self.startImageDownload(urlString)
+                }
+            }
+        )
+    }
+    
+    // Sets user image after downloading and caching the image at the urlString into the userMainPartyImageCache
+    func startImageDownload(urlString: String) {
+        SDWebImageManager.sharedManager().downloadImageWithURL(NSURL(string: urlString), options: nil, progress: nil,
+            completed: { image, error, cacheType, boolValue, url in
+                
+                if error == nil && image != nil {
+                    let processedImage = cropBiggestCenteredSquareImageFromImage(image, sideLength: self.tallUserImage.frame.height)
+                    
+                    self.userMainPartyImageCache.storeImage(processedImage, forKey: urlString)
+                    
+                    dispatchAsyncToMainQueue(action: {
+                        self.tallUserImage.image = processedImage
+                        self.tallUserImage.setNeedsLayout()
+                    })
+                } else {
+                    dispatchAsyncToMainQueue(action: {
+                        self.tallUserImage.image = defaultUserImageForMainParty
+                        self.tallUserImage.setNeedsLayout()
+                    })
+                }
+            }
+        )
+    }
+}
+
+extension PartyMainViewController {
+    // MARK: play/pause buttons
+    
+    func setAudioPlayerButtonsForPlaying(audioPlayerIsPlaying: Bool) {
+        // The song progress should always be visible when there's an audio player
+        songProgress!.hidden = false
+        songProgress!.alpha = 1.0
+        
+        if audioPlayerIsPlaying {
+            // Make pause button active
+            if playButton!.hidden == false {
+                // Play button is visible; hide it and then show the pause button, then fade it out again
+                UIView.animateWithDuration(PlayPauseButtonAnimationTime,
+                    animations: {
+                        self.playButton!.alpha = 0.0
+                    },
+                    completion: { boolVal in
+                        self.playButton!.hidden = true
+                        self.pauseButton!.hidden = false
+                        self.pauseButton!.alpha = 1.0
+                    }
+                )
+            } else {
+                // Play button is not visible, so just make the pause button active
+                pauseButton!.hidden = false
+                pauseButton!.alpha = 1.0
+            }
+        } else {
+            // Make play button visible and the pause button inactive
+            pauseButton!.hidden = true
+            pauseButton!.alpha = 0.0
+            playButton!.hidden = false
+            UIView.animateWithDuration(PlayPauseButtonAnimationTime,
+                animations: {
+                    self.playButton!.alpha = 1.0
+                }
+            )
+        }
+    }
+    
+    func hideAudioPlayerButtonsForNoSongPlaying() {
+        pauseButton!.hidden = true
+        playButton!.hidden = true
+    }
+}
+
+extension PartyMainViewController {
+    // MARK: Thumbs up/down button handling
     
     func handleThumbsUpPress(button: AnyObject) {
         if let thumbsUpButton = button as? UIButton {
@@ -333,279 +663,10 @@ class PartyMainViewController: UIViewController {
             tallThumbsDownButton.selected = false
         }
     }
-    
-    func updateSongProgress(progress: Float) {
-        songProgress!.progress = progress
-        songProgress!.hidden = false
-    }
-    
-    func refreshAfterAddingSong() {
-        addSongButton.hidden = true
-        refresh()
-    }
-    
-    func refreshIfVisible() {
-        if isViewLoaded() && view.window != nil {
-            refresh()
-        }
-    }
-    
-    func refresh() {
-        if AFNetworkReachabilityManager.sharedManager().reachable {
-            if UserManager.sharedUser.setup == true {
-                let partyState = PartyManager.sharedParty.state
-                
-                if partyState != .None {
-                    hideMessages()
-                    setPartyInfoHidden(false)
-                }
-                
-                switch partyState {
-                case .Member:
-                    setPartyMainVCRightBarButton(create: false, leave: true, settings: false)
-                    updateSongAndUserInfo()
-                    
-                case .Host:
-                    setPartyMainVCRightBarButton(create: false, leave: false, settings: true)
-                    
-                    let audioManagerState = PartyManager.sharedParty.audioManager.state
-                    
-                    if audioManagerState == .Empty {
-                        clearAllSongInfo()
-                    } else if audioManagerState == .Paused {
-                        updateSongAndUserInfo()
-                        setAudioPlayerButtonsForPlaying(false)
-                    } else if audioManagerState == .Playing {
-                        updateSongAndUserInfo()
-                        setAudioPlayerButtonsForPlaying(true)
-                    }
-                    
-                case .HostStreamable:
-                    setPartyMainVCRightBarButton(create: false, leave: false, settings: true)
-                    
-                case .None:
-                    showMessages("Not member of a party", detailLine: "Become a party member by joining or creating a party")
-                    setPartyMainVCRightBarButton(create: true, leave: false, settings: false)
-                    setPartyInfoHidden(true)
-                }
-            } else {
-                // User not setup, not signed into full or guest account
-                showMessages("Not signed into an account", detailLine: "Please connect to the internet and restart OneSound")
-                setPartyMainVCRightBarButton(create: false, leave: false, settings: false)
-                setPartyInfoHidden(true)
-            }
-        } else {
-            showMessages("Not connected to the internet", detailLine: "Please connect to the internet to use OneSound")
-            setPartyMainVCRightBarButton(create: false, leave: false, settings: false)
-            setPartyInfoHidden(true)
-        }
-    }
-    
-    func updateSongAndUserInfo() {
-        let party = PartyManager.sharedParty
-        if party.currentSong != nil && party.currentUser != nil {
-            let currentSong = party.currentSong!
-            let currentUser = party.currentUser!
-            
-            var thumbsUp = false
-            var thumbsDown = false
-            
-            if currentSong.userVote != nil {
-                switch currentSong.userVote! {
-                case .Up:
-                    thumbsUp = true
-                case .Down:
-                    thumbsDown = true
-                default:
-                    break
-                }
-            }
-            
-            setPartySongUserInfo(currentUser, thumbsUp: thumbsUp, thumbsDown: thumbsDown)
-            setPartySongInfo(name: currentSong.name, artist: currentSong.artistName, time: timeInSecondsToFormattedMinSecondTimeLabelString(currentSong.duration))
-            updateSongImage()
-            showPartySongInfo()
-        }
-    }
-    
-    func updateSongImage() {
-        let party = PartyManager.sharedParty
-        
-        if let artworkURL = party.currentSong?.artworkURL {
-            
-            let largerArtworkURL = artworkURL.replaceSubstringWithString("-large.jpg", newSubstring: "-t500x500.jpg")
-            
-            party.songImageCache.queryDiskCacheForKey(largerArtworkURL,
-                done: { image, imageCacheType in
-                    if image != nil {
-                            self.setPartySongImage(songToPlay: true, artworkToShow: true, loadingSong: false, image: image)
-                    } else {
-                        SDWebImageManager.sharedManager().downloadImageWithURL(NSURL(string: largerArtworkURL), options: nil, progress: nil,
-                            completed: { image, error, cacheType, boolValue, url in
-                                if error == nil && image != nil {
-                                    party.songImageCache.storeImage(image, forKey: largerArtworkURL)
-                                    self.setPartySongImage(songToPlay: true, artworkToShow: true, loadingSong: false, image: image)
-                                } else {
-                                    self.setPartySongImage(songToPlay: true, artworkToShow: false, loadingSong: false, image: nil)
-                                }
-                            }
-                        )
-                    }
-                }
-            )
-        } else {
-            setPartySongImage(songToPlay: true, artworkToShow: false, loadingSong: false, image: nil)
-        }
-    }
-    
-    func clearAllSongInfo() {
-        setPartySongImage(songToPlay: false, artworkToShow: false, loadingSong: false, image: nil)
-        setPartySongInfo(name: "", artist: "", time: "")
-        setPartySongUserInfo(nil, thumbsUp: false, thumbsDown: false)
-        resetThumbsUpDownButtons()
-    }
-    
-    func setPartySongUserInfo(user: User?, thumbsUp: Bool, thumbsDown: Bool) {
-        showPartySongUserInfo()
-        
-        if shorterIphoneScreen {
-            if user != nil {
-                shortUserLabel.text = user!.name
-            } else {
-                shortUserLabel.text = ""
-                shortUserLabel.hidden = true
-                shortThumbsUpButton.hidden = true
-                shortThumbsDownButton.hidden = true
-            }
-        } else {
-            if user != nil {
-                setUserInfoLabelsText(upvoteLabel: userUpvoteLabel, numUpvotes: user!.upvoteCount, songLabel: userSongLabel, numSongs: user!.songCount, hotnessLabel: userHotnessLabel, percentHotness: user!.hotnessPercent, userNameLabel: tallUserLabel, userName: user!.name)
-                
-                tallUserImage.image = defaultUserImageForMainParty
-                if user!.photoURL != nil {
-                    setUserMainPartyImageUsingCache(user!.photoURL!)
-                }
-            } else {
-                tallUserLabel.text = ""
-                tallThumbsUpButton.hidden = true
-                tallThumbsDownButton.hidden = true
-                tallUserImage.hidden = true
-                
-                userUpvoteLabel.text = ""
-                userSongLabel.text = ""
-                userHotnessLabel.text = ""
-                userUpvoteLabel.hidden = true
-                userSongLabel.hidden = true
-                userHotnessLabel.hidden = true
-                userUpvoteIcon.hidden = true
-                userSongIcon.hidden = true
-                userHotnessIcon.hidden = true
-            }
-        }
-    }
-    
-    func showPartySongUserInfo() {
-        userView!.hidden = false
-        
-        if shorterIphoneScreen {
-            shortUserLabel.hidden = false
-            shortThumbsDownButton.hidden = false
-            shortThumbsUpButton.hidden = false
-        } else {
-            tallUserLabel.hidden = false
-            tallThumbsDownButton.hidden = false
-            tallThumbsUpButton.hidden = false
-            tallUserImage.hidden = false
-            
-            userUpvoteLabel.hidden = false
-            userSongLabel.hidden = false
-            userHotnessLabel.hidden = false
-            userUpvoteIcon.hidden = false
-            userSongIcon.hidden = false
-            userHotnessIcon.hidden = false
-        }
-    }
-    
-    func showPartySongInfo() {
-        songNameLabel!.hidden = false
-        songArtistLabel!.hidden = false
-        songTimeLabel!.hidden = false
-        songProgress!.hidden = false
-    }
-    
-    func setPartySongInfo(# name: String, artist: String, time: String) {
-        showPartySongInfo()
-        
-        songNameLabel.attributedText =
-            NSAttributedString(
-                string: name,
-                attributes:
-                [
-                    NSFontAttributeName: songNameLabel.font,
-                    NSForegroundColorAttributeName: songNameLabel.textColor,
-                    NSKernAttributeName: songNameLabel.kerning
-                ])
-        songArtistLabel.attributedText =
-            NSAttributedString(
-                string: artist,
-                attributes:
-                [
-                    NSFontAttributeName: songArtistLabel.font,
-                    NSForegroundColorAttributeName: songArtistLabel.textColor,
-                    NSKernAttributeName: songArtistLabel.kerning
-                ])
-        songTimeLabel.attributedText =
-            NSAttributedString(
-                string: time,
-                attributes:
-                [
-                    NSFontAttributeName: songTimeLabel.font,
-                    NSForegroundColorAttributeName: songTimeLabel.textColor,
-                    NSKernAttributeName: songTimeLabel.kerning
-                ])
-        
-        songNameLabel!.adjustFontSizeToFit(minFontSize: 16, heightToAdjustFor: 25)
-    }
-    
-    func setPartySongImage(# songToPlay: Bool, artworkToShow: Bool, loadingSong: Bool, image: UIImage?) {
-        addSongButton.hidden = true
-        
-        if loadingSong {
-            songImage!.hidden = true
-            
-            songImageForLoadingSong.hidden = false
-            songImageForLoadingSong.startAnimating()
-            soundcloudLogo!.hidden = false
-            return
-        } else {
-            songImage!.hidden = false
-            
-            songImageForLoadingSong.hidden = true
-            songImageForLoadingSong.stopAnimating()
-        }
-        
-        if !songToPlay {
-            songImage!.image = songImageForNoSongToPlay
-            addSongButton.hidden = false
-            soundcloudLogo!.hidden = true
-            return
-        }
-        
-        soundcloudLogo!.hidden = false
-        
-        if !artworkToShow {
-            songImage!.image = songImageForNoSongArtwork
-            soundcloudLogo!.hidden = false
-            return
-        }
-        
-        if image != nil {
-            songImage!.image = image
-            //songImage = UIImageView(image: image)
-        } else {
-            songImage!.image = songImageForNoSongArtwork
-        }
-    }
+}
+
+extension PartyMainViewController {
+    // MARK: Hiding/showing party and messages
     
     func setPartyInfoHidden(hidden: Bool) {
         if songImage != nil {
@@ -653,54 +714,6 @@ class PartyMainViewController: UIViewController {
         }
     }
     
-    /*
-    func updateControls() {
-        if let player = PartyManager.sharedParty.audioPlayer {
-            
-            if player.state == STKAudioPlayerStatePlaying {
-                
-            }
-            
-        }
-    }*/
-    
-    func setAudioPlayerButtonsForPlaying(audioPlayerIsPlaying: Bool) {
-        // The song progress should always be visible when there's an audio player
-        songProgress!.hidden = false
-        songProgress!.alpha = 1.0
-        
-        if audioPlayerIsPlaying {
-            // Make pause button active
-            if playButton!.hidden == false {
-                // Play button is visible; hide it and then show the pause button, then fade it out again
-                UIView.animateWithDuration(PlayPauseButtonAnimationTime,
-                    animations: {
-                        self.playButton!.alpha = 0.0
-                    },
-                    completion: { boolVal in
-                        self.playButton!.hidden = true
-                        self.pauseButton!.hidden = false
-                        self.pauseButton!.alpha = 1.0
-                    }
-                )
-            } else {
-                // Play button is not visible, so just make the pause button active
-                pauseButton!.hidden = false
-                pauseButton!.alpha = 1.0
-            }
-        } else {
-            // Make play button visible and the pause button inactive
-            pauseButton!.hidden = true
-            pauseButton!.alpha = 0.0
-            playButton!.hidden = false
-            UIView.animateWithDuration(PlayPauseButtonAnimationTime,
-                animations: {
-                    self.playButton!.alpha = 1.0
-                }
-            )
-        }
-    }
-    
     func showMessages(mainLine: String?, detailLine: String?) {
         if mainLine != nil {
             messageLabel1!.alpha = 1
@@ -718,53 +731,68 @@ class PartyMainViewController: UIViewController {
         messageLabel2!.alpha = 0
         messageLabel2!.text = ""
     }
+}
+
+extension PartyMainViewController {
+    // MARK: Create/leave/change party functions
     
-    // Sets the user image from the cache if it's there, else downloads and caches it before setting
-    func setUserMainPartyImageUsingCache(urlString: String) {
-        userMainPartyImageCache.queryDiskCacheForKey(urlString,
-            done: { image, imageCacheType in
-                if image != nil {
-                    self.tallUserImage.image = image
-                    self.tallUserImage.setNeedsLayout()
+    func createParty() {
+        if UserManager.sharedUser.guest == false {
+            let createPartyStoryboard = UIStoryboard(name: CreatePartyStoryboardName, bundle: nil)
+            let createPartyViewController = createPartyStoryboard.instantiateViewControllerWithIdentifier(CreatePartyViewControllerIdentifier) as CreatePartyViewController
+            createPartyViewController.partyAlreadyExists = false
+            createPartyViewController.delegate = self
+            
+            let navC = UINavigationController(rootViewController: createPartyViewController)
+            if let fnc = getFrontNavigationController() {
+                fnc.presentViewController(navC, animated: true, completion: nil)
+            }
+        } else {
+            let alert = UIAlertView(title: "Guests cannot create parties", message: "Please become a full account by logging in with Facebook, then try again", delegate: nil, cancelButtonTitle: "Ok")
+            alert.show()
+        }
+    }
+    
+    func leaveParty() {
+        PartyManager.sharedParty.leaveParty(
+            respondToChangeAttempt: { partyWasLeft in
+                if partyWasLeft {
+                    self.parentViewController!.navigationItem.title = "Party"
+                    self.refresh()
                 } else {
-                    self.startImageDownload(urlString)
+                    let alert = UIAlertView(title: "Could not leave party", message: "Please try again, or just create a new one", delegate: nil, cancelButtonTitle: "Ok")
+                    alert.show()
                 }
             }
         )
     }
     
-    // Sets user image after downloading and caching the image at the urlString into the userMainPartyImageCache
-    func startImageDownload(urlString: String) {
-        SDWebImageManager.sharedManager().downloadImageWithURL(NSURL(string: urlString), options: nil, progress: nil,
-            completed: { image, error, cacheType, boolValue, url in
-                
-                if error == nil && image != nil {
-                    let processedImage = cropBiggestCenteredSquareImageFromImage(image, sideLength: self.tallUserImage.frame.height)
-                    
-                    self.userMainPartyImageCache.storeImage(processedImage, forKey: urlString)
-                    
-                    dispatchAsyncToMainQueue(action: {
-                        self.tallUserImage.image = processedImage
-                        self.tallUserImage.setNeedsLayout()
-                    })
-                } else {
-                    dispatchAsyncToMainQueue(action: {
-                        self.tallUserImage.image = defaultUserImageForMainParty
-                        self.tallUserImage.setNeedsLayout()
-                    })
-                }
+    func changePartySettings() {
+        if PartyManager.sharedParty.state == .Host || PartyManager.sharedParty.state == .HostStreamable  {
+            let createPartyStoryboard = UIStoryboard(name: CreatePartyStoryboardName, bundle: nil)
+            let createPartyViewController = createPartyStoryboard.instantiateViewControllerWithIdentifier(CreatePartyViewControllerIdentifier) as CreatePartyViewController
+            createPartyViewController.partyAlreadyExists = true
+            createPartyViewController.delegate = self
+            
+            let navC = UINavigationController(rootViewController: createPartyViewController)
+            if let fnc = getFrontNavigationController() {
+                fnc.presentViewController(navC, animated: true, completion: nil)
             }
-        )
+        } else {
+            let alert = UIAlertView(title: "Only hosts edit party settings", message: "Please become the host before editing party settings, or make sure you still are the host", delegate: nil, cancelButtonTitle: "Ok")
+            alert.show()
+        }
     }
-    
-    
 }
 
 extension PartyMainViewController: PartyManagerDelegate {
+    // MARK: PartyManagerDelegate
     
 }
 
 extension PartyMainViewController: CreatePartyViewControllerDelegate {
+    // MARK: CreatePartyViewControllerDelegate
+    
     func CreatePartyViewControllerDone() {
         viewWillAppear(true)
     }

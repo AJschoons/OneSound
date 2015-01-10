@@ -150,7 +150,7 @@ class CreatePartyViewController: UITableViewController {
     
     func skipSong() {
         // TODO: get this to work
-        PartyManager.sharedParty.skipSong()
+        PartyManager.sharedParty.audioManager.onSongSkip()
     }
     
     func textFieldDidChange() {

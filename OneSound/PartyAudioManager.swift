@@ -191,6 +191,10 @@ class PartyAudioManager: NSObject {
         setState(.Paused)
     }
     
+    func onSongSkip() {
+        // TODO: make this work
+    }
+    
     func onUserBecameHost() {
         if initializeAudioSessionForPlaying() {
             initializeAudioPlayerForPlaying()

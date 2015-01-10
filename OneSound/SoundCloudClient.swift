@@ -45,7 +45,8 @@ extension SCClient {
     }
     
     func getSongURLString(songID: Int) -> String {
-        return "\(SCBaseURL)tracks/\(songID)/stream?client_id=\(SCClientID)"
+        let songURLString = "\(SCBaseURL)tracks/\(songID)/stream?client_id=\(SCClientID)"
+        return songURLString
     }
 }
 
@@ -76,6 +77,7 @@ extension SCClient {
     }
     
     // (Only used when initially testing audio player for party)
+    /*
     func getSoundCloudSongByID(songID: Int, success: AFHTTPSuccessBlock, failure: AFHTTPFailureBlock, extraAttempts: Int = defaultEA) {
         // Create a URL string from the base URL string, then user/:uid
         let urlString = "\(SCBaseURL)tracks/\(songID).json"
@@ -92,5 +94,5 @@ extension SCClient {
         }
         
         httpSessionManager.GET(urlString, parameters: params, success: success, failure: failure)
-    }
+    }*/
 }
