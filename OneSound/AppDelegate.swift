@@ -48,10 +48,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var sideMenuViewController: SideNavigationViewController!
     var frontNavigationController: OSFrontNavigationController!
     
-    var songTableViewImageCache = SDImageCache(namespace: "songTableViewImages")
-    var songImageCache = SDImageCache(namespace: "songImages")
-    var userMainPartyImageCache = SDImageCache(namespace: "userMainPartyImages")
-    var userThumbnailImageCache = SDImageCache(namespace: "userThumbnailImages")
+    let songTableViewImageCache = SDImageCache(namespace: "songTableViewImages")
+    let currentSongImageCache = SDImageCache(namespace: "currentSongImages")
+    let userCurrentSongImageCache = SDImageCache(namespace: "userCurrentSongImages")
+    let userThumbnailImageCache = SDImageCache(namespace: "userThumbnailImages")
     
     var pL = false
 

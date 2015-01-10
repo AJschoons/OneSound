@@ -263,8 +263,18 @@ extension SearchViewController: UITableViewDelegate {
         if UserManager.sharedUser.setup == true {
             PartyManager.sharedParty.joinParty(selectedParty.partyID,
                 JSONUpdateCompletion: {
-                    PartyManager.sharedParty.refresh()
-                    self.searchResultsArray = [Party]() // Remove the results so they have to search again
+                    PartyManager.sharedParty.refresh(completion: {
+                        if PartyManager.sharedParty.state != .None {
+                            // Navigate to the party
+                            getAppDelegate()!.sideMenuViewController.programaticallySelectRow(1)
+                        } else {
+                            let alert = UIAlertView(title: "Problem Joining Party", message: "Unable to join party at this time, please try again", delegate: nil, cancelButtonTitle: "Ok")
+                            alert.show()
+                        }
+                        
+                        self.searchResultsArray = [Party]() // Remove the results so they have to search again
+                        tableView.reloadData()
+                    })
                     
                     if PartyManager.sharedParty.state != .None {
                         getAppDelegate()!.sideMenuViewController.programaticallySelectRow(1)

@@ -138,10 +138,10 @@ class PartyAudioManager: NSObject {
             
             if duration < 0.000001 {
                 // "in between" songs; duration is 0
-                partyManager.delegate.updateSongProgress(0.0)
+                partyManager.delegate.updateCurrentSongProgress(0.0)
             } else {
                 let progressPercent = Float(progress / duration)
-                partyManager.delegate.updateSongProgress(progressPercent)
+                partyManager.delegate.updateCurrentSongProgress(progressPercent)
                 
                 // Try queueing the next song
                 let timeRemaining = duration - progress
@@ -325,7 +325,7 @@ extension PartyAudioManager: STKAudioPlayerDelegate {
             alert.show()
         }
         
-        partyManager.delegate.updateSongProgress(0.0)
+        partyManager.delegate.updateCurrentSongProgress(0.0)
         
         // If there's a queued song
         if partyManager.setQueueSongAndUserToCurrent() {

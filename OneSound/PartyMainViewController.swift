@@ -24,7 +24,8 @@ let thumbsDownUnselectedMainParty = UIImage(named: "thumbsDownUnselectedMainPart
 
 class PartyMainViewController: UIViewController {
     
-    let userMainPartyImageCache = (UIApplication.sharedApplication().delegate as AppDelegate).userMainPartyImageCache
+    let currentSongImageCache = (UIApplication.sharedApplication().delegate as AppDelegate).currentSongImageCache
+    let userCurrentSongImageCache = (UIApplication.sharedApplication().delegate as AppDelegate).userCurrentSongImageCache
     
     @IBOutlet weak var messageLabel1: UILabel?
     @IBOutlet weak var messageLabel2: UILabel?
@@ -397,7 +398,7 @@ extension PartyMainViewController {
             
             let largerArtworkURL = artworkURL.replaceSubstringWithString("-large.jpg", newSubstring: "-t500x500.jpg")
             
-            party.songImageCache.queryDiskCacheForKey(largerArtworkURL,
+            currentSongImageCache.queryDiskCacheForKey(largerArtworkURL,
                 done: { image, imageCacheType in
                     if image != nil {
                         self.setCurrentSongImage(songToPlay: true, artworkToShow: true, loadingSong: false, image: image)
@@ -405,7 +406,7 @@ extension PartyMainViewController {
                         SDWebImageManager.sharedManager().downloadImageWithURL(NSURL(string: largerArtworkURL), options: nil, progress: nil,
                             completed: { image, error, cacheType, boolValue, url in
                                 if error == nil && image != nil {
-                                    party.songImageCache.storeImage(image, forKey: largerArtworkURL)
+                                    self.currentSongImageCache.storeImage(image, forKey: largerArtworkURL)
                                     self.setCurrentSongImage(songToPlay: true, artworkToShow: true, loadingSong: false, image: image)
                                 } else {
                                     self.setCurrentSongImage(songToPlay: true, artworkToShow: false, loadingSong: false, image: nil)
@@ -466,7 +467,7 @@ extension PartyMainViewController {
     
     // Sets the user image from the cache if it's there, else downloads and caches it before setting
     func setUserImageUsingCache(urlString: String) {
-        userMainPartyImageCache.queryDiskCacheForKey(urlString,
+        userCurrentSongImageCache.queryDiskCacheForKey(urlString,
             done: { image, imageCacheType in
                 if image != nil {
                     self.tallUserImage.image = image
@@ -486,7 +487,7 @@ extension PartyMainViewController {
                 if error == nil && image != nil {
                     let processedImage = cropBiggestCenteredSquareImageFromImage(image, sideLength: self.tallUserImage.frame.height)
                     
-                    self.userMainPartyImageCache.storeImage(processedImage, forKey: urlString)
+                    self.userCurrentSongImageCache.storeImage(processedImage, forKey: urlString)
                     
                     dispatchAsyncToMainQueue(action: {
                         self.tallUserImage.image = processedImage

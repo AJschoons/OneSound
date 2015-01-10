@@ -48,26 +48,26 @@ enum PartyManagerState {
 
 class PartyManager: NSObject {
     
-    let songImageCache = (UIApplication.sharedApplication().delegate as AppDelegate).songImageCache
-    
     var delegate: PartyManagerDelegate!
     
     let playlistManager = PartyPlaylistManager()
     let membersManager = PartyMembersManager()
-    var audioManager: PartyAudioManager!
+    private(set) var audioManager: PartyAudioManager!
     
-    var partyID: Int!
-    var isPrivate: Bool! = false
-    var name: String!
-    var strictness: Int!
-    private var userIsHost: Bool! = false
+    private(set) var partyID: Int!
+    private(set) var isPrivate: Bool! = false
+    private(set) var name: String!
+    private(set) var strictness: Int!
+    private var userIsHost: Bool! = false // Use the state to check host status, NOT the bool
+    private var userHasMusicControl: Bool! = false // Use the state to check streaming status, NOT the bool
+    private var userCanSkipSong: Bool! = false
     
-    var currentSong: Song?
-    var currentUser: User?
-    var queueSong: Song?
-    var queueUser: User?
+    private(set) var currentSong: Song?
+    private(set) var currentUser: User?
+    private(set) var queueSong: Song?
+    private(set) var queueUser: User?
     
-    var state: PartyManagerState = .None
+    private(set) var state: PartyManagerState = .None
     private var stateTime: Double = 0.0
     private let stateServicePeriod = 0.1 // Period in seconds of how often to update state
     
@@ -145,7 +145,7 @@ class PartyManager: NSObject {
         refresh()
     }
     
-    func refresh() {
+    func refresh(completion: completionClosure? = nil) {
         timeSinceLastGetCurrentParty = 0.0
         
         if AFNetworkReachabilityManager.sharedManager().reachable && UserManager.sharedUser.setup {
@@ -156,12 +156,15 @@ class PartyManager: NSObject {
                     } else {
                         if self.state != .Member { self.setState(.Member) }
                     }
+                    if completion != nil { completion!() }
                 },
                 noCurrentParty: {
                     if self.state != .None { self.setState(.None) }
+                    if completion != nil { completion!() }
                 },
                 failureAddOn: {
                     if self.state != .None { self.setState(.None) }
+                    if completion != nil { completion!() }
                 }
             )
         } else {
@@ -224,7 +227,8 @@ class PartyManager: NSObject {
         if currentSong != nil {
             if currentSong!.artworkURL != nil {
                 let largerArtworkURL = currentSong!.artworkURL!.replaceSubstringWithString("-large.jpg", newSubstring: "-t500x500.jpg")
-                songImageCache.queryDiskCacheForKey(largerArtworkURL,
+                let currentSongImageCache = getAppDelegate().currentSongImageCache
+                currentSongImageCache.queryDiskCacheForKey(largerArtworkURL,
                     done: { image, imageCacheType in
                         if image != nil && self.currentSong != nil {
                             let artwork = MPMediaItemArtwork(image: image)
@@ -440,15 +444,24 @@ extension PartyManager {
         strictness = json["strictness"].integer
         userIsHost = json["host"].bool
         
+        if userIsHost != nil && userIsHost == true {
+            userHasMusicControl = json["host_info"]["music_control"].bool
+            userCanSkipSong = json["host_info"]["skip_song"].bool
+        } else {
+            userHasMusicControl = false
+            userCanSkipSong = false
+        }
+        
         if json["current_song"]["user"].object != nil {
             // Got a song for the party
-            let newCurrentSong = Song(json: json["current_song"])
+            let oldCurrentSong = currentSong
+            currentSong = Song(json: json["current_song"])
             currentUser = User(json: json["current_song"]["user"])
             
-            if currentSong == nil {
+            if oldCurrentSong == nil {
                 // Got a song when there previously wasn't one, so must be a song change
                 postPartySongDidChangeNotificationBasedOnState()
-            } else if currentSong != nil && newCurrentSong != currentSong! {
+            } else if oldCurrentSong != nil && currentSong! != oldCurrentSong {
                 // The new song isn't the same as the old one; song change
                 postPartySongDidChangeNotificationBasedOnState()
             }
