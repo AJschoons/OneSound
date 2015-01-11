@@ -197,14 +197,20 @@ extension PartyMainViewController {
                     setPartyMainVCRightBarButton(create: false, leave: false, settings: true)
                     
                     let audioManagerState = PartyManager.sharedParty.audioManager.state
-                    
-                    if audioManagerState == .Empty {
+                    switch audioManagerState {
+                    case .Inactive:
                         clearAllCurrentSongAndUserInfo()
                         hideAudioPlayerButtonsForNoSongPlaying()
-                    } else if audioManagerState == .Paused {
+                        
+                    case .Empty:
+                        clearAllCurrentSongAndUserInfo()
+                        hideAudioPlayerButtonsForNoSongPlaying()
+                        
+                    case .Paused:
                         updateCurrentSongAndUserInfo()
                         setAudioPlayerButtonsForPlaying(false)
-                    } else if audioManagerState == .Playing {
+                        
+                    case .Playing:
                         updateCurrentSongAndUserInfo()
                         setAudioPlayerButtonsForPlaying(true)
                     }

@@ -102,7 +102,7 @@ class PartyAudioManager: NSObject {
             if !AFNetworkReachabilityManager.sharedManager().reachable { onNetworkNotReachable(); return }
             
             // Got next song
-            if partyManager.currentSong != nil && partyManager.currentUser != nil {
+            if partyManager.hasCurrentSong {
                 let songToPlay = SCClient.sharedClient.getSongURLString(partyManager.currentSong!.getExternalIDForPlaying())
                 audioPlayer!.play(songToPlay)
                 postPartyCurrentSongChangeUpdates()
@@ -123,14 +123,14 @@ class PartyAudioManager: NSObject {
             
         case .Paused:
             if partyManager.state != .Host { onUserNoLongerHost(); return }
-            
+            if !partyManager.hasCurrentSong { onPartyNoLongerHasCurrentSong(); return }
             if !AFNetworkReachabilityManager.sharedManager().reachable { onNetworkNotReachable(); return }
             
         case .Playing:
             playingStateTimeSinceLastMPNowPlayingRefresh += stateServicePeriod
             
             if partyManager.state != .Host { onUserNoLongerHost(); return }
-            
+            if !partyManager.hasCurrentSong { onPartyNoLongerHasCurrentSong(); return }
             if !AFNetworkReachabilityManager.sharedManager().reachable { onNetworkNotReachable(); return }
 
             let progress = audioPlayer!.progress // Number of seconds into the song
@@ -181,6 +181,10 @@ class PartyAudioManager: NSObject {
     
     func onSongFinishedWithQueuedSong() {
         postPartyCurrentSongChangeUpdates()
+    }
+    
+    func onPartyNoLongerHasCurrentSong() {
+        setState(.Empty)
     }
     
     func onGotNextSongPlayAlreadyPressed() {

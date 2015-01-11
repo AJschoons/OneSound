@@ -43,7 +43,6 @@ enum PartyManagerState {
     case Member // User is member of a party
     case Host // User is hosting party
     case HostStreamable // User is hosting party and this is the device that's streaming
-    
 }
 
 class PartyManager: NSObject {
@@ -66,6 +65,7 @@ class PartyManager: NSObject {
     private(set) var currentUser: User?
     private(set) var queueSong: Song?
     private(set) var queueUser: User?
+    var hasCurrentSong: Bool { return currentSong != nil && currentUser != nil }
     
     private(set) var state: PartyManagerState = .None
     private var stateTime: Double = 0.0
@@ -98,6 +98,7 @@ class PartyManager: NSObject {
     }
     
     func setState(newState: PartyManagerState) {
+        let oldState = state
         state = newState
         stateTime = 0.0
         
