@@ -10,15 +10,15 @@ import UIKit
 
 class SongSearchResult {
     
-    var source: String!
-    var externalID: Int!
-    var artworkURL: String?
+    private(set) var source: String!
+    private(set) var externalID: Int!
+    private(set) var artworkURL: String?
     
-    // Data to displays
-    var name: String!
-    var artistName: String!
-    var duration: Int!
-    var numberOfPlaybacks: Int?
+    // Data to display
+    private(set) var name: String!
+    private(set) var artistName: String!
+    private(set) var duration: Int!
+    private(set) var numberOfPlaybacks: Int?
     
     init(source: String, externalID: Int, name: String, artistName: String, duration: Int, artworkURL: String?, numberOfPlaybacks: Int?) {
         self.source = source

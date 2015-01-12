@@ -12,16 +12,16 @@ let numberOfOneSoundColors = 6
 
 class User {
    
-    var id: Int!
-    var name: String!
-    var color: String!
-    var guest: Bool!
-    var photoURL: String?
-    var songCount: Int!
-    var upvoteCount: Int!
-    var hotnessPercent: Int!
-    var followers: Int!
-    var following: Int!
+    private(set) var id: Int!
+    private(set) var name: String!
+    private(set) var color: String!
+    private(set) var guest: Bool!
+    private(set) var photoURL: String?
+    private(set) var songCount: Int!
+    private(set) var upvoteCount: Int!
+    private(set) var hotnessPercent: Int!
+    private(set) var followers: Int!
+    private(set) var following: Int!
     
     var colorToUIColor: UIColor {
         if let userColor = UserColors(rawValue: color) {

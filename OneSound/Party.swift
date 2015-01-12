@@ -9,13 +9,13 @@
 import UIKit
 
 class Party {
-    var partyID: Int!
-    var isPrivate: Bool!
-    var hostUserID: Int?
-    var name: String!
-    var strictness: Int!
-    var memberCount: Int?
-    var hostName: String?
+    private(set) var partyID: Int!
+    private(set) var isPrivate: Bool!
+    private(set) var hostUserID: Int?
+    private(set) var name: String!
+    private(set) var strictness: Int!
+    private(set) var memberCount: Int?
+    private(set) var hostName: String?
     
     init(json: JSONValue) {
         partyID = json["pid"].integer

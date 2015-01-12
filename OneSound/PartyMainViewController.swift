@@ -104,7 +104,7 @@ class PartyMainViewController: UIViewController {
         // Make sure view knows the user is setup so it won't keep displaying 'Not signed into account' when there is no  internet connection when app launches and then the network comes back and UserManager is setup
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "refreshIfVisible", name: UserManagerInformationDidChangeNotification, object: nil)
         // Should update when a party song is added
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "refreshAfterAddingSong", name: PartySongWasAddedNotification, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "refresh", name: PartySongWasAddedNotification, object: nil)
         // Refreshes after party state changes
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "refresh", name: PartyManagerStateChangeNotification, object: nil)
         // Refreshes after the song changes
@@ -148,18 +148,31 @@ class PartyMainViewController: UIViewController {
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         let party = PartyManager.sharedParty
+        
+        // Also update the nav bar title and right bar button before the networking call in refresh 
+        // Otherwise will lag when changing tabs
         if party.state != .None {
-            parentViewController!.navigationItem.title = party.name
+            self.parentViewController!.navigationItem.title = party.name
         }
         else {
-            parentViewController!.navigationItem.title = "Party"
+            self.parentViewController!.navigationItem.title = "Now Playing"
         }
-        
         setRightBarButtonWhenSelected()
-        refresh()
+        
+        party.refresh(completion: {
+            if party.state != .None {
+                self.parentViewController!.navigationItem.title = party.name
+            }
+            else {
+                self.parentViewController!.navigationItem.title = "Now Playing"
+            }
+            
+            self.setRightBarButtonWhenSelected()
+            self.refresh()
+        })
     }
     
-    func setPartyMainVCRightBarButton(# create: Bool, leave: Bool, settings: Bool) {
+    func updateRightBarButton(# create: Bool, leave: Bool, settings: Bool) {
         if create { rightBarButton = createPartyButton }
         else if leave { rightBarButton = leavePartyButton }
         else if settings { rightBarButton = partySettingsButton }
@@ -169,9 +182,7 @@ class PartyMainViewController: UIViewController {
     
     // When this is the selected tab of the tab bar controller, set the right nav button to rightBarButton
     func setRightBarButtonWhenSelected() {
-        if let ptbc = getPartyTabBarController() {
-            ptbc.updateRightBarButtonForMainParty()
-        }
+        getPartyTabBarController()?.updateRightBarButtonForMainParty()
     }
 }
 
@@ -181,58 +192,69 @@ extension PartyMainViewController {
     func refresh() {
         if AFNetworkReachabilityManager.sharedManager().reachable {
             if UserManager.sharedUser.setup == true {
-                let partyState = PartyManager.sharedParty.state
-                
-                if partyState != .None {
-                    hideMessages()
-                    setPartyInfoHidden(false)
-                }
-                
-                switch partyState {
-                case .Member:
-                    setPartyMainVCRightBarButton(create: false, leave: true, settings: false)
-                    updateCurrentSongAndUserInfo()
-                    
-                case .Host:
-                    setPartyMainVCRightBarButton(create: false, leave: false, settings: true)
-                    
-                    let audioManagerState = PartyManager.sharedParty.audioManager.state
-                    switch audioManagerState {
-                    case .Inactive:
-                        clearAllCurrentSongAndUserInfo()
-                        hideAudioPlayerButtonsForNoSongPlaying()
-                        
-                    case .Empty:
-                        clearAllCurrentSongAndUserInfo()
-                        hideAudioPlayerButtonsForNoSongPlaying()
-                        
-                    case .Paused:
-                        updateCurrentSongAndUserInfo()
-                        setAudioPlayerButtonsForPlaying(false)
-                        
-                    case .Playing:
-                        updateCurrentSongAndUserInfo()
-                        setAudioPlayerButtonsForPlaying(true)
-                    }
-                    
-                case .HostStreamable:
-                    setPartyMainVCRightBarButton(create: false, leave: false, settings: true)
-                    updateCurrentSongAndUserInfo()
-                    
-                case .None:
-                    showMessages("Not member of a party", detailLine: "Become a party member by joining or creating a party")
-                    setPartyMainVCRightBarButton(create: true, leave: false, settings: false)
-                    setPartyInfoHidden(true)
-                }
+                refreshForValidUserAndReachableNetwork()
             } else {
                 showMessages("Not signed into an account", detailLine: "Please connect to the internet and restart OneSound")
-                setPartyMainVCRightBarButton(create: false, leave: false, settings: false)
+                updateRightBarButton(create: false, leave: false, settings: false)
                 setPartyInfoHidden(true)
             }
         } else {
             showMessages("Not connected to the internet", detailLine: "Please connect to the internet to use OneSound")
-            setPartyMainVCRightBarButton(create: false, leave: false, settings: false)
+            updateRightBarButton(create: false, leave: false, settings: false)
             setPartyInfoHidden(true)
+        }
+    }
+    
+    private func refreshForValidUserAndReachableNetwork() {
+        let partyState = PartyManager.sharedParty.state
+        
+        if partyState != .None { hideMessages(); setPartyInfoHidden(false) }
+        if partyState != .HostStreamable { hideAudioPlayerButtons() }
+        
+        switch partyState {
+        case .Member:
+            updateRightBarButton(create: false, leave: true, settings: false)
+            showAddSongButtonIfNoCurrentSong()
+            updateCurrentSongAndUserInfo()
+            
+        case .Host:
+            updateRightBarButton(create: false, leave: false, settings: true)
+            showAddSongButtonIfNoCurrentSong()
+            updateCurrentSongAndUserInfo()
+            
+        case .HostStreamable:
+            updateRightBarButton(create: false, leave: false, settings: true)
+            refreshForHostStreamableFromAudioManagerState()
+            
+        case .None:
+            showMessages("Not member of a party", detailLine: "Become a party member by joining or creating a party")
+            updateRightBarButton(create: true, leave: false, settings: false)
+            setPartyInfoHidden(true) // Also hides the audio buttons and add song button
+        }
+    }
+    
+    private func refreshForHostStreamableFromAudioManagerState() {
+        let audioManagerState = PartyManager.sharedParty.audioManager.state
+        switch audioManagerState {
+        case .Inactive:
+            setAddSongButtonHidden(false)
+            clearAllCurrentSongAndUserInfo()
+            hideAudioPlayerButtons()
+            
+        case .Empty:
+            setAddSongButtonHidden(false)
+            clearAllCurrentSongAndUserInfo()
+            hideAudioPlayerButtons()
+            
+        case .Paused:
+            setAddSongButtonHidden(true)
+            updateCurrentSongAndUserInfo()
+            setAudioPlayerButtonsForPlaying(false)
+            
+        case .Playing:
+            setAddSongButtonHidden(true)
+            updateCurrentSongAndUserInfo()
+            setAudioPlayerButtonsForPlaying(true)
         }
     }
     
@@ -240,11 +262,6 @@ extension PartyMainViewController {
         if isViewLoaded() && view.window != nil {
             refresh()
         }
-    }
-    
-    func refreshAfterAddingSong() {
-        addSongButton.hidden = true
-        refresh()
     }
 }
 
@@ -258,7 +275,7 @@ extension PartyMainViewController {
     
     func updateCurrentSongAndUserInfo() {
         let party = PartyManager.sharedParty
-        if party.currentSong != nil && party.currentUser != nil {
+        if party.hasCurrentSongAndUser {
             let currentSong = party.currentSong!
             let currentUser = party.currentUser!
             
@@ -391,6 +408,15 @@ extension PartyMainViewController {
         songArtistLabel!.hidden = false
         songTimeLabel!.hidden = false
         songProgress!.hidden = false
+    }
+    
+    // Hides the add song button if there's a song and user, else shows it
+    func showAddSongButtonIfNoCurrentSong() {
+        addSongButton.hidden = PartyManager.sharedParty.hasCurrentSongAndUser
+    }
+    
+    func setAddSongButtonHidden(hidden: Bool) {
+        addSongButton.hidden = hidden
     }
 }
 
@@ -550,7 +576,7 @@ extension PartyMainViewController {
         }
     }
     
-    func hideAudioPlayerButtonsForNoSongPlaying() {
+    func hideAudioPlayerButtons() {
         pauseButton!.hidden = true
         playButton!.hidden = true
     }

@@ -65,7 +65,7 @@ class PartyManager: NSObject {
     private(set) var currentUser: User?
     private(set) var queueSong: Song?
     private(set) var queueUser: User?
-    var hasCurrentSong: Bool { return currentSong != nil && currentUser != nil }
+    var hasCurrentSongAndUser: Bool { return currentSong != nil && currentUser != nil }
     
     private(set) var state: PartyManagerState = .None
     private var stateTime: Double = 0.0
@@ -110,9 +110,14 @@ class PartyManager: NSObject {
         case .Member:
             somethingToDoOtherThanPrintln = true
         case .Host:
-            somethingToDoOtherThanPrintln = true
+            if oldState == .HostStreamable {
+                let alert = UIAlertView(title: "Lost Music Control", message: "Another device with your account has taken the music control. You still have the same Host control, but the music will play through the other device. To get music control back, go to the Party Settings", delegate: nil, cancelButtonTitle: "Ok")
+                alert.show()
+            } else {
+                let alert = UIAlertView(title: "No Music Control", message: "Another device with your account has the music control. You still have the same Host control, but the music will play through the other device. To get music control back, go to the Party Settings", delegate: nil, cancelButtonTitle: "Ok")
+                alert.show()
+            }
         case .HostStreamable:
-            // state not handled, yet
             somethingToDoOtherThanPrintln = true
         }
         
@@ -122,6 +127,11 @@ class PartyManager: NSObject {
     func serviceState() {
         stateTime += stateServicePeriod
         timeSinceLastGetCurrentParty += stateServicePeriod
+        
+        // Make sure to check this first, or else failing getCurrentParty calls will be made
+        if !AFNetworkReachabilityManager.sharedManager().reachable && !UserManager.sharedUser.setup {
+            if state != .None { setState(.None) }
+        }
         
         if timeSinceLastGetCurrentParty > getCurrentPartyRefreshPeriod {
             refresh()
@@ -136,7 +146,6 @@ class PartyManager: NSObject {
         case .Host:
             somethingToDoOtherThanPrintln = true
         case .HostStreamable:
-            // state not handled, yet
             somethingToDoOtherThanPrintln = true
         }
     }
@@ -152,11 +161,7 @@ class PartyManager: NSObject {
         if AFNetworkReachabilityManager.sharedManager().reachable && UserManager.sharedUser.setup {
             getCurrentParty(
                 completion: {
-                    if self.userIsHost == true {
-                        if self.state != .Host { self.setState(.Host) }
-                    } else {
-                        if self.state != .Member { self.setState(.Member) }
-                    }
+                    self.decideStateOfValidParty()
                     if completion != nil { completion!() }
                 },
                 noCurrentParty: {
@@ -173,7 +178,19 @@ class PartyManager: NSObject {
         }
     }
     
-    func postPartySongDidChangeNotificationBasedOnState() {
+    // Only use this when you know the user is in a valid party
+    // (completion block of getCurrentParty or the completion block of joining a party)
+    private func decideStateOfValidParty() {
+        if userHasMusicControl == true {
+            if state != .HostStreamable { setState(.HostStreamable) }
+        } else if self.userIsHost == true {
+            if state != .Host { setState(.Host) }
+        } else {
+            if state != .Member { setState(.Member) }
+        }
+    }
+    
+    private func postPartySongDidChangeNotificationBasedOnState() {
         if state != .Host {
             NSNotificationCenter.defaultCenter().postNotificationName(PartyCurrentSongDidChangeNotification, object: nil)
         }
@@ -181,6 +198,7 @@ class PartyManager: NSObject {
     
     // Only to be used for hosts
     func getNextSong() {
+        audioManager.resetEmptyStateTimeSinceLastGetNextSong()
         getNextSong(partyID,
             completion: { song, user in
                 self.currentSong = song
@@ -231,12 +249,15 @@ class PartyManager: NSObject {
                 let currentSongImageCache = getAppDelegate().currentSongImageCache
                 currentSongImageCache.queryDiskCacheForKey(largerArtworkURL,
                     done: { image, imageCacheType in
-                        if image != nil && self.currentSong != nil {
-                            let artwork = MPMediaItemArtwork(image: image)
-                            MPNowPlayingInfoCenter.defaultCenter().nowPlayingInfo = [MPMediaItemPropertyArtist : self.currentSong!.artistName,  MPMediaItemPropertyTitle : self.currentSong!.name, MPMediaItemPropertyArtwork : artwork, MPMediaItemPropertyPlaybackDuration : self.currentSong!.duration, MPNowPlayingInfoPropertyElapsedPlaybackTime : elapsedTime]
-                        } else {
-                            MPNowPlayingInfoCenter.defaultCenter().nowPlayingInfo = [MPMediaItemPropertyArtist : self.currentSong!.artistName,  MPMediaItemPropertyTitle : self.currentSong!.name, MPMediaItemPropertyPlaybackDuration : self.currentSong!.duration, MPNowPlayingInfoPropertyElapsedPlaybackTime : elapsedTime]
-                            
+                        // If the current song is still non-nil after the query
+                        if self.currentSong != nil {
+                            if image != nil {
+                                let artwork = MPMediaItemArtwork(image: image)
+                                MPNowPlayingInfoCenter.defaultCenter().nowPlayingInfo = [MPMediaItemPropertyArtist : self.currentSong!.artistName,  MPMediaItemPropertyTitle : self.currentSong!.name, MPMediaItemPropertyArtwork : artwork, MPMediaItemPropertyPlaybackDuration : self.currentSong!.duration, MPNowPlayingInfoPropertyElapsedPlaybackTime : elapsedTime]
+                            } else {
+                                MPNowPlayingInfoCenter.defaultCenter().nowPlayingInfo = [MPMediaItemPropertyArtist : self.currentSong!.artistName,  MPMediaItemPropertyTitle : self.currentSong!.name, MPMediaItemPropertyPlaybackDuration : self.currentSong!.duration, MPNowPlayingInfoPropertyElapsedPlaybackTime : elapsedTime]
+                                
+                            }
                         }
                     }
                 )
@@ -258,7 +279,7 @@ class PartyManager: NSObject {
         MPNowPlayingInfoCenter.defaultCenter().nowPlayingInfo = ["" : ""]
     }
     
-    func resetAllPartyInfo() {
+    private func resetAllPartyInfo() {
         clearSongInfo()
         
         partyID = 0
@@ -315,7 +336,7 @@ extension PartyManager {
     
     func getNextSong(pid: Int, completion: ((song: Song, user: User) -> ())? = nil, noCurrentSong: completionClosure? = nil, failureAddOn: completionClosure? = nil) {
         
-        if state != .None {
+        if state == .HostStreamable {
             OSAPI.sharedClient.GETNextSong(pid,
                 success: { data, responseObject in
                     let responseJSON = JSONValue(responseObject)
@@ -351,7 +372,7 @@ extension PartyManager {
     
     func joinParty(pid: Int, JSONUpdateCompletion: completionClosure? = nil, failureAddOn: completionClosure? = nil) {
         // Makes it so none of the old info stays when joining a party from an old one
-        resetAllPartyInfo()
+        setState(.None)
         
         if pid != 0 {
             let user = UserManager.sharedUser
@@ -359,8 +380,9 @@ extension PartyManager {
                 success: { data, responseObject in
                     let responseJSON = JSONValue(responseObject)
                     //println(responseJSON)
-                    
                     self.updateMainPartyInfoFromJSON(responseJSON, JSONUpdateCompletion)
+                    //self.refresh()
+                    self.decideStateOfValidParty()
                 }, failure: { task, error in
                     if failureAddOn != nil {
                         failureAddOn!()
@@ -436,7 +458,7 @@ extension PartyManager {
             }, failure: defaultAFHTTPFailureBlock)
     }
     
-    func updateMainPartyInfoFromJSON(json: JSONValue, completion: completionClosure? = nil) {
+    private func updateMainPartyInfoFromJSON(json: JSONValue, completion: completionClosure? = nil) {
         println(json)
         
         partyID = json["pid"].integer

@@ -282,16 +282,19 @@ func formatFirstThreeDigitsOfIntFromBaseWithPostfix(numberToFormat num: Int, bas
 
 func intFormattedToShortStringForDisplay(num: Int) -> String {
     let posNum = abs(num)
+    var string = ""
     switch posNum {
     case 0...999:
-        return String(posNum)
+        string = String(posNum)
     case 1000...999999:
-        return formatFirstThreeDigitsOfIntFromBaseWithPostfix(numberToFormat: posNum, baseOfNumber: 100, "k")
+        string = formatFirstThreeDigitsOfIntFromBaseWithPostfix(numberToFormat: posNum, baseOfNumber: 100, "k")
     case 1000000...999999999:
-        return formatFirstThreeDigitsOfIntFromBaseWithPostfix(numberToFormat: posNum, baseOfNumber: 100, "M")
+        string = formatFirstThreeDigitsOfIntFromBaseWithPostfix(numberToFormat: posNum, baseOfNumber: 100, "M")
     default:
-        return "MAX"
+        string = "MAX"
     }
+    
+    return (num < 0) ? "-\(string)" : string
 }
 
 func timeInSecondsToFormattedMinSecondTimeLabelString(durationInSeconds: Int!) -> String {
