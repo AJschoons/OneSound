@@ -48,7 +48,7 @@ class AddSongViewController: OSModalViewController {
                 
                 if songsArray != nil {
                     for result in songsArray! {
-                        //println(result)
+                        println(result)
                         let source = "sc"
                         let id = result["id"].integer
                         let name = result["title"].string
@@ -57,7 +57,9 @@ class AddSongViewController: OSModalViewController {
                         let artworkURL = result["artwork_url"].string
                         let playbacks = result["playback_count"].integer
                         
-                        if duration != nil {
+                        let streamable = result["streamable"].bool
+                        
+                        if duration != nil && streamable == true {
                             // Soundcloud duration is returned in milliseconds; convert to seconds
                             duration! /= 1000
                             if duration < SongDurationMaxInSeconds {
@@ -188,10 +190,15 @@ extension AddSongViewController: UITableViewDelegate {
         let source = "sc"
         
         if UserManager.sharedUser.setup == true {
-            if PartyManager.sharedParty.state != .None {
+            let partyManager = PartyManager.sharedParty
+            if partyManager.state != .None {
 
                 OSAPI.sharedClient.POSTSong(PartyManager.sharedParty.partyID, externalID: selectedSong.externalID, source: source, title: selectedSong.name, artist: selectedSong.artistName, duration: selectedSong.duration, artworkURL: selectedSong.artworkURL,
                     success: { data, responseObject in
+                        // If no song playing when song added, bring them to the Now Playing tab
+                        if !partyManager.hasCurrentSongAndUser && partyManager.state == .HostStreamable {
+                            getPartyTabBarController()?.selectedIndex = 1
+                        }
                         self.dismissViewControllerAnimated(true, completion: nil)
                         NSNotificationCenter.defaultCenter().postNotificationName(PartySongWasAddedNotification, object: nil)
                     }, failure: { task, error in

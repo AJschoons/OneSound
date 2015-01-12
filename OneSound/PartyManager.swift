@@ -16,6 +16,7 @@ let PartyCurrentSongDidChangeNotification = "PartyCurrentSongDidChange"
 protocol PartyManagerDelegate {
     func updateCurrentSongProgress(progress: Float)
     func setAudioPlayerButtonsForPlaying(audioPlayerIsPlaying: Bool)
+    func refresh()
 }
 
 enum PartyStrictnessOption: Int {
