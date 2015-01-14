@@ -456,7 +456,26 @@ extension PartyManager {
                     // Server didn't accept request for new party with supplied information
                     respondToChangeAttempt(false)
                 }
-            }, failure: defaultAFHTTPFailureBlock)
+            }, failure: defaultAFHTTPFailureBlock
+        )
+    }
+    
+    func getMusicStreamControl(# respondToChangeAttempt: (Bool) -> ()) {
+        OSAPI.sharedClient.PUTPartyPermissions(partyID, musicControl: true,
+            success: { data, responseObject in
+                let responseJSON = JSONValue(responseObject)
+                //println(responseJSON)
+                let status = responseJSON["status"].string
+                
+                if status == "success" {
+                    self.refresh()
+                    respondToChangeAttempt(true)
+                } else {
+                    // Server didn't accept request for new party with supplied information
+                    respondToChangeAttempt(false)
+                }
+            }, failure: defaultAFHTTPFailureBlock
+        )
     }
     
     private func updateMainPartyInfoFromJSON(json: JSONValue, completion: completionClosure? = nil) {

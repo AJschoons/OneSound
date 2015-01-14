@@ -473,6 +473,25 @@ extension OSAPI {
         
         GET(urlString, parameters: params, success: success, failure: failureWithExtraAttempt)
     }
+    
+    // Update the permissions for a party. Used to reclaim music streaming control for a host
+    func PUTPartyPermissions(pid: Int, musicControl: Bool, success: AFHTTPSuccessBlock, failure: AFHTTPFailureBlock, extraAttempts: Int = defaultEA) {
+        let urlString = "\(baseURLString)party/\(pid)/permissions"
+        
+        // Create parameters to pass
+        var params = Dictionary<String, AnyObject>()
+        params.updateValue(musicControl, forKey: "music_control")
+        
+        let failureWithExtraAttempt: AFHTTPFailureBlock = { task, error in
+            if errorShouldBeHandledWithRepeatedRequest(task, error, attemptsLeft: extraAttempts) {
+                self.PUTPartyPermissions(pid, musicControl: musicControl, success: success, failure: failure, extraAttempts: (extraAttempts - 1))
+            } else {
+                failure!(task: task, error: error)
+            }
+        }
+        
+        PUT(urlString, parameters: params, success: success, failure: failureWithExtraAttempt)
+    }
 }
 
 extension OSAPI {

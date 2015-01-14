@@ -18,7 +18,7 @@ protocol CreatePartyViewControllerDelegate {
 class CreatePartyViewController: UITableViewController {
         
     let validCharacters = "abcdefghijklmnopqrstuvwxyz1234567890 "
-    let footerViewHeight = 60
+    var footerViewHeight = 125
     
     @IBOutlet weak var nameCell: UITableViewCell!
     @IBOutlet weak var nameCellTextField: UITextField!
@@ -27,6 +27,23 @@ class CreatePartyViewController: UITableViewController {
     var privacyCellSwitch: UISwitch!
     @IBOutlet weak var strictnessCell: UITableViewCell!
     @IBOutlet weak var strictnessCellStrictnessLabel: UILabel!
+    
+    var streamControlButton: UIButton?
+    let scButtonTitleEnabled = "Control Music Stream"
+    let scButtonTitleDisabled = "Controlling Music Stream"
+    let scButtonTextColorEnabled = UIColor.white()
+    let scButtonTextColorDisabled = UIColor.grayLight()
+    let scButtonBGColorEnabled = UIColor.blue()
+    let scButtonBGColorDisabled = UIColor.grayMid()
+    
+    var skipSongButton: UIButton?
+    let skipButtonTitle = "Skip Playing Song"
+    let skipButtonTextColorEnabled = UIColor.white()
+    let skipButtonTextColorDisabled = UIColor.grayLight()
+    let skipButtonBGColorEnabled = UIColor.red()
+    let skipButtonBGColorDisabled = UIColor.grayMid()
+    
+    var leavePartyButton: UIButton?
     
     var strictness: PartyStrictnessOption = .Default
     var partyAlreadyExists = false
@@ -93,6 +110,9 @@ class CreatePartyViewController: UITableViewController {
         let tap = UITapGestureRecognizer(target: self, action: "tap")
         tap.cancelsTouchesInView = false
         tableView.addGestureRecognizer(tap)
+        
+        // Dismiss when the party state changes
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "onSuccessfulPartyCreateOrUpdateOrLeave", name: PartyManagerStateChangeNotification, object: nil)
     }
     
     func cancel() {
@@ -149,8 +169,26 @@ class CreatePartyViewController: UITableViewController {
     }
     
     func skipSong() {
-        // TODO: get this to work
         PartyManager.sharedParty.audioManager.onSongSkip()
+        onSuccessfulPartyCreateOrUpdateOrLeave()
+    }
+    
+    func controlMusicStream() {
+        PartyManager.sharedParty.getMusicStreamControl(respondToChangeAttempt: { success in
+            if success {
+                // Now that there is streaming control, update the buttons
+                self.streamControlButton?.backgroundColor = self.scButtonBGColorDisabled
+                self.streamControlButton?.enabled = false
+                self.skipSongButton?.backgroundColor = self.skipButtonBGColorEnabled
+                self.skipSongButton?.enabled = true
+                delayOnMainQueueFor(numberOfSeconds: 0.5, action: {
+                    self.onSuccessfulPartyCreateOrUpdateOrLeave()
+                })
+            } else {
+                let alert = UIAlertView(title: "Music Control Failure", message: "Failed to get the music stream control. Please reload the party settings and try again", delegate: self, cancelButtonTitle: "Okay")
+                alert.show()
+            }
+        })
     }
     
     func textFieldDidChange() {
@@ -209,49 +247,80 @@ class CreatePartyViewController: UITableViewController {
     }
     
     // footerViewHeight = 95
-    /*
     func setupButtonsInTableFooterView() {
         let footerView = UIView(frame: CGRectMake(0, 0, tableView.frame.width, CGFloat(footerViewHeight)))
         footerView.backgroundColor = UIColor.clearColor()
         tableView.tableFooterView = footerView
         
+        let partyManger = PartyManager.sharedParty
+        let userIsHostStreamable = (partyManger.state == .HostStreamable)
+        let userIsHost = (partyManger.state == .Host)
+        
+        let streamControlButton = UIButton.buttonWithType(UIButtonType.System) as UIButton
+        self.streamControlButton = streamControlButton
+        let streamControlButtonEnabled = userIsHost
+        streamControlButton.setTitle(scButtonTitleEnabled, forState: UIControlState.Normal)
+        streamControlButton.setTitle(scButtonTitleDisabled, forState: UIControlState.Disabled)
+        streamControlButton.setTitleColor(scButtonTextColorEnabled, forState: UIControlState.Normal)
+        streamControlButton.setTitleColor(scButtonTextColorDisabled, forState: UIControlState.Disabled)
+        let scButtonBGColor = (streamControlButtonEnabled) ? scButtonBGColorEnabled : scButtonBGColorDisabled
+        streamControlButton.backgroundColor = scButtonBGColor
+        streamControlButton.addTarget(self, action: "controlMusicStream", forControlEvents: UIControlEvents.TouchUpInside)
+        streamControlButton.titleLabel!.textAlignment = NSTextAlignment.Center
+        streamControlButton.titleLabel!.font = UIFont.systemFontOfSize(15)
+        streamControlButton.layer.cornerRadius = 3.0
+        streamControlButton.enabled = streamControlButtonEnabled
+        streamControlButton.setTranslatesAutoresizingMaskIntoConstraints(false)
+        
         let skipSongButton = UIButton.buttonWithType(UIButtonType.System) as UIButton
-        skipSongButton.setTitle("Skip Song", forState: UIControlState.Normal)
-        skipSongButton.setTitleColor(UIColor.white(), forState: UIControlState.Normal)
+        self.skipSongButton = skipSongButton
+        let skipSongButtonEnabled = userIsHostStreamable
+        skipSongButton.setTitle(skipButtonTitle, forState: UIControlState.Normal)
+        skipSongButton.setTitle(skipButtonTitle, forState: UIControlState.Disabled)
+        skipSongButton.setTitleColor(skipButtonTextColorEnabled, forState: UIControlState.Normal)
+        skipSongButton.setTitleColor(skipButtonTextColorDisabled, forState: UIControlState.Disabled)
+        let skipButtonBGColor = (skipSongButtonEnabled) ? skipButtonBGColorEnabled : skipButtonBGColorDisabled
+        skipSongButton.backgroundColor = skipButtonBGColor
         skipSongButton.addTarget(self, action: "skipSong", forControlEvents: UIControlEvents.TouchUpInside)
-        skipSongButton.titleLabel!.textColor = UIColor.white()
         skipSongButton.titleLabel!.textAlignment = NSTextAlignment.Center
         skipSongButton.titleLabel!.font = UIFont.systemFontOfSize(15)
-        skipSongButton.backgroundColor = UIColor.red()
         skipSongButton.layer.cornerRadius = 3.0
+        skipSongButton.enabled = skipSongButtonEnabled
         skipSongButton.setTranslatesAutoresizingMaskIntoConstraints(false)
         
         let leavePartyButton = UIButton.buttonWithType(UIButtonType.System) as UIButton
+        self.leavePartyButton = leavePartyButton
         leavePartyButton.setTitle("Leave Party", forState: UIControlState.Normal)
         leavePartyButton.setTitleColor(UIColor.white(), forState: UIControlState.Normal)
         leavePartyButton.addTarget(self, action: "leaveParty", forControlEvents: UIControlEvents.TouchUpInside)
-        leavePartyButton.titleLabel!.textColor = UIColor.white()
+        leavePartyButton.backgroundColor = UIColor.red()
+        //leavePartyButton.titleLabel!.textColor = UIColor.white()
         leavePartyButton.titleLabel!.textAlignment = NSTextAlignment.Center
         leavePartyButton.titleLabel!.font = UIFont.systemFontOfSize(15)
-        leavePartyButton.backgroundColor = UIColor.red()
         leavePartyButton.layer.cornerRadius = 3.0
         leavePartyButton.setTranslatesAutoresizingMaskIntoConstraints(false)
         
+        footerView.addSubview(streamControlButton)
         footerView.addSubview(skipSongButton)
         footerView.addSubview(leavePartyButton)
         
-        skipSongButton.addConstraint(NSLayoutConstraint(item: skipSongButton, attribute: NSLayoutAttribute.Width, relatedBy: NSLayoutRelation.Equal, toItem: nil, attribute: NSLayoutAttribute.NotAnAttribute, multiplier: 1, constant: 110))
-        skipSongButton.addConstraint(NSLayoutConstraint(item: skipSongButton, attribute: NSLayoutAttribute.Height, relatedBy: NSLayoutRelation.Equal, toItem: nil, attribute: NSLayoutAttribute.NotAnAttribute, multiplier: 1, constant: 30))
-        footerView.addConstraint(NSLayoutConstraint(item: skipSongButton, attribute: NSLayoutAttribute.Bottom, relatedBy: NSLayoutRelation.Equal, toItem: leavePartyButton, attribute: NSLayoutAttribute.Top, multiplier: 1, constant: -10))
-        footerView.addConstraint(NSLayoutConstraint(item: skipSongButton, attribute: NSLayoutAttribute.CenterX, relatedBy: NSLayoutRelation.Equal, toItem: footerView, attribute: NSLayoutAttribute.CenterX, multiplier: 1, constant: 0))
+        streamControlButton.addConstraint(NSLayoutConstraint(item: streamControlButton, attribute: NSLayoutAttribute.Height, relatedBy: NSLayoutRelation.Equal, toItem: nil, attribute: NSLayoutAttribute.NotAnAttribute, multiplier: 1, constant: 30))
+        footerView.addConstraint(NSLayoutConstraint(item: streamControlButton, attribute: NSLayoutAttribute.Left, relatedBy: NSLayoutRelation.Equal, toItem: footerView, attribute: NSLayoutAttribute.Left, multiplier: 1, constant: 15))
+        footerView.addConstraint(NSLayoutConstraint(item: streamControlButton, attribute: NSLayoutAttribute.Right, relatedBy: NSLayoutRelation.Equal, toItem: footerView, attribute: NSLayoutAttribute.Right, multiplier: 1, constant: -15))
+        footerView.addConstraint(NSLayoutConstraint(item: streamControlButton, attribute: NSLayoutAttribute.Bottom, relatedBy: NSLayoutRelation.Equal, toItem: skipSongButton, attribute: NSLayoutAttribute.Top, multiplier: 1, constant: -10))
         
-        leavePartyButton.addConstraint(NSLayoutConstraint(item: leavePartyButton, attribute: NSLayoutAttribute.Width, relatedBy: NSLayoutRelation.Equal, toItem: nil, attribute: NSLayoutAttribute.NotAnAttribute, multiplier: 1, constant: 110))
+        skipSongButton.addConstraint(NSLayoutConstraint(item: skipSongButton, attribute: NSLayoutAttribute.Height, relatedBy: NSLayoutRelation.Equal, toItem: nil, attribute: NSLayoutAttribute.NotAnAttribute, multiplier: 1, constant: 30))
+        footerView.addConstraint(NSLayoutConstraint(item: skipSongButton, attribute: NSLayoutAttribute.Left, relatedBy: NSLayoutRelation.Equal, toItem: footerView, attribute: NSLayoutAttribute.Left, multiplier: 1, constant: 15))
+        footerView.addConstraint(NSLayoutConstraint(item: skipSongButton, attribute: NSLayoutAttribute.Right, relatedBy: NSLayoutRelation.Equal, toItem: footerView, attribute: NSLayoutAttribute.Right, multiplier: 1, constant: -15))
+        footerView.addConstraint(NSLayoutConstraint(item: skipSongButton, attribute: NSLayoutAttribute.Bottom, relatedBy: NSLayoutRelation.Equal, toItem: leavePartyButton, attribute: NSLayoutAttribute.Top, multiplier: 1, constant: -10))
+        
         leavePartyButton.addConstraint(NSLayoutConstraint(item: leavePartyButton, attribute: NSLayoutAttribute.Height, relatedBy: NSLayoutRelation.Equal, toItem: nil, attribute: NSLayoutAttribute.NotAnAttribute, multiplier: 1, constant: 30))
+        footerView.addConstraint(NSLayoutConstraint(item: leavePartyButton, attribute: NSLayoutAttribute.Left, relatedBy: NSLayoutRelation.Equal, toItem: footerView, attribute: NSLayoutAttribute.Left, multiplier: 1, constant: 15))
+        footerView.addConstraint(NSLayoutConstraint(item: leavePartyButton, attribute: NSLayoutAttribute.Right, relatedBy: NSLayoutRelation.Equal, toItem: footerView, attribute: NSLayoutAttribute.Right, multiplier: 1, constant: -15))
         footerView.addConstraint(NSLayoutConstraint(item: leavePartyButton, attribute: NSLayoutAttribute.Bottom, relatedBy: NSLayoutRelation.Equal, toItem: footerView, attribute: NSLayoutAttribute.Bottom, multiplier: 1, constant: 0))
-        footerView.addConstraint(NSLayoutConstraint(item: leavePartyButton, attribute: NSLayoutAttribute.CenterX, relatedBy: NSLayoutRelation.Equal, toItem: footerView, attribute: NSLayoutAttribute.CenterX, multiplier: 1, constant: 0))
     }
-    */
     
+    /*
     // Before adding other buttons
     // footerViewHeight = 60 back then, btw
     func setupButtonsInTableFooterView() {
@@ -272,11 +341,11 @@ class CreatePartyViewController: UITableViewController {
         
         footerView.addSubview(button)
         
-        button.addConstraint(NSLayoutConstraint(item: button, attribute: NSLayoutAttribute.Width, relatedBy: NSLayoutRelation.Equal, toItem: nil, attribute: NSLayoutAttribute.NotAnAttribute, multiplier: 1, constant: 110))
         button.addConstraint(NSLayoutConstraint(item: button, attribute: NSLayoutAttribute.Height, relatedBy: NSLayoutRelation.Equal, toItem: nil, attribute: NSLayoutAttribute.NotAnAttribute, multiplier: 1, constant: 30))
+        footerView.addConstraint(NSLayoutConstraint(item: button, attribute: NSLayoutAttribute.Left, relatedBy: NSLayoutRelation.Equal, toItem: footerView, attribute: NSLayoutAttribute.Left, multiplier: 1, constant: 15))
+        footerView.addConstraint(NSLayoutConstraint(item: button, attribute: NSLayoutAttribute.Right, relatedBy: NSLayoutRelation.Equal, toItem: footerView, attribute: NSLayoutAttribute.Right, multiplier: 1, constant: -15))
         footerView.addConstraint(NSLayoutConstraint(item: button, attribute: NSLayoutAttribute.Bottom, relatedBy: NSLayoutRelation.Equal, toItem: footerView, attribute: NSLayoutAttribute.Bottom, multiplier: 1, constant: 0))
-        footerView.addConstraint(NSLayoutConstraint(item: button, attribute: NSLayoutAttribute.CenterX, relatedBy: NSLayoutRelation.Equal, toItem: footerView, attribute: NSLayoutAttribute.CenterX, multiplier: 1, constant: 0))
-    }
+    }*/
 }
 
 extension CreatePartyViewController: UITableViewDataSource {

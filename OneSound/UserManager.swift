@@ -198,7 +198,15 @@ extension UserManager {
                 
                 printlnC(self.pL, pG, "Signing in with GUEST information... userID:\(guestUID)   userAccessToken:\(guestAccessToken)")
                 
-                self.updateUserInformationAfterSignIn(userID: guestUID!, accessToken: guestAccessToken!)
+                if guestAccessToken != nil && guestUID != nil {
+                    self.updateUserInformationAfterSignIn(userID: guestUID!, accessToken: guestAccessToken!)
+                } else {
+                    // Those will be nil when the server is down
+                    // TODO: add trying to sign in
+                    NSNotificationCenter.defaultCenter().postNotificationName(FinishedLoginFlowNotification, object: nil)
+                    let alert = UIAlertView(title: "OneSound Service Down", message: "OneSound is currently down for maintenance, we will be back up shortly. Please restart the app and try again", delegate: nil, cancelButtonTitle: "Okay")
+                    alert.show()
+                }
             },
             failure: defaultAFHTTPFailureBlockForSigningIn
         )
@@ -255,6 +263,8 @@ extension UserManager {
                                 self.setupGuestAccount()
                             }
                         )
+                    } else if response.statusCode == 500 {
+                        NSNotificationCenter.defaultCenter().postNotificationName(FinishedLoginFlowNotification, object: nil)
                     } else {
                         self.setupGuestAccount()
                     }

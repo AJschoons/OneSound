@@ -57,21 +57,24 @@ class LoggingInSpashViewController: UIViewController {
     }
     
     func finishedLoginFlow() {
-        let navC = navigationController as OSFrontNavigationController
+        var navC = navigationController as? OSFrontNavigationController
+        while navC == nil {
+            navC = navigationController as? OSFrontNavigationController
+        }
         
         // Setup transition for going to nav controller and execute it by popping this view controller
         let transtion = CATransition()
         transtion.duration = 0.3
         transtion.type = kCATransitionFade
-        navC.view.layer.addAnimation(transtion, forKey: kCATransition)
-        navC.setNavigationBarHidden(false, animated: false)
-        navC.popViewControllerAnimated(false)
+        navC!.view.layer.addAnimation(transtion, forKey: kCATransition)
+        navC!.setNavigationBarHidden(false, animated: false)
+        navC!.popViewControllerAnimated(false)
         
         if PartyManager.sharedParty.state != .None {
             getAppDelegate().sideMenuViewController.programaticallySelectRow(1)
         }
         
-        navC.setupOverlay()
+        navC!.setupOverlay()
         
         let alert = UIAlertView(title: "Welcome to the party", message: "You're one of the lucky first 1000 people to use OneSound, the app where everyone is the DJ. If you haven't already, sign in with Facebook on the Profile page. To use parties go to the 'Party Search' tab, and create or search for a party there. This pre-release version expires in 30 days. Hope it treats you well! -OneSound Team", delegate: nil, cancelButtonTitle: "Gotcha, now let's party!")
         alert.show()
