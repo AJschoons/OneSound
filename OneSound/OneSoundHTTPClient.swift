@@ -528,6 +528,21 @@ extension OSAPI {
         POST(urlString, parameters: params, success: success, failure: failure)
     }
     
+    // Delete a song from the playlist. Only works if it is the user's song
+    func DELETESong(sid: Int, success: AFHTTPSuccessBlock, failure: AFHTTPFailureBlock, extraAttempts: Int = defaultEA) {
+        let urlString = "\(baseURLString)song/\(sid)"
+        
+        let failureWithExtraAttempt: AFHTTPFailureBlock = { task, error in
+            if errorShouldBeHandledWithRepeatedRequest(task, error, attemptsLeft: extraAttempts) {
+                self.DELETESong(sid, success: success, failure: failure, extraAttempts: (extraAttempts - 1))
+            } else {
+                failure!(task: task, error: error)
+            }
+        }
+        
+        DELETE(urlString, parameters: nil, success: success, failure: failureWithExtraAttempt)
+    }
+    
     // Get the party's current song
     func GETCurrentSong(pid: Int, success: AFHTTPSuccessBlock, failure: AFHTTPFailureBlock, extraAttempts: Int = defaultEA) {
         let urlString = "\(baseURLString)party/\(pid)/currentsong"

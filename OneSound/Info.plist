@@ -7,7 +7,7 @@
 	<key>CFBundleExecutable</key>
 	<string>${EXECUTABLE_NAME}</string>
 	<key>CFBundleIdentifier</key>
-	<string>com.adamschoonmaker.$(PRODUCT_NAME:rfc1034identifier)</string>
+	<string>com.adamschoonmaker.OneSound</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
@@ -28,7 +28,7 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>1</string>
+	<string>5</string>
 	<key>FacebookAppID</key>
 	<string>247720662097001</string>
 	<key>FacebookDisplayName</key>

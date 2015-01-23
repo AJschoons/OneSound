@@ -64,6 +64,18 @@ class PartyPlaylistManager {
         updating = false
     }
     
+    func deleteSong(sid: Int, atIndex i: Int, completion: completionClosure? = nil) {
+        if sid == songs[i].songID {
+            OSAPI.sharedClient.DELETESong(sid,
+                success: { data, responseObject in
+                    self.songs.removeAtIndex(i)
+                    if completion != nil { completion!() }
+                },
+                failure: defaultAFHTTPFailureBlock
+            )
+        }
+    }
+    
     private func updatePlaylistFromJSON(json: JSONValue, completion: completionClosure? = nil) {
         
         totalSongs = json["paging"]["total_count"].integer!

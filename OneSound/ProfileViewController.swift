@@ -346,6 +346,8 @@ extension ProfileViewController: UIAlertViewDelegate {
             if buttonIndex == 1 {
                 // If guest wants to sign out, delete all info and get new guest account, then refresh
                 UserManager.sharedUser.deleteAllSavedUserInformation()
+                //let alert = UIAlertView(title: "Setup Guest Acct", message: "#5", delegate: nil, cancelButtonTitle: "Okay")
+                //alert.show()
                 UserManager.sharedUser.setupGuestAccount()
                 refresh()
             }

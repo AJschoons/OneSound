@@ -22,6 +22,7 @@ class PartySongCell: UITableViewCell {
     @IBOutlet weak private var voteCountLabel: UILabel!
     
     var songID: Int!
+    var userID: Int!
     
     @IBAction func onThumbsDown(sender: AnyObject) {
         handleThumbsDown(sender)

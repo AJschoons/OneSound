@@ -148,6 +148,8 @@ extension AppDelegate {
             if userID == nil || userAPIToken == nil || userGuestBool == nil {
                 // If no user, then request a guest user to be created, set it up, save in keychain, save to UserManager
                 println("user NOT found in keychain")
+                //let alert = UIAlertView(title: "Setup Guest Acct", message: "#1", delegate: nil, cancelButtonTitle: "Okay")
+                //alert.show()
                 UserManager.sharedUser.setupGuestAccount()
             } else {
                 // Got user from keychain
@@ -304,6 +306,8 @@ extension AppDelegate {
                 }
             } else {
                 println("UserID and userAPIToken NOT found from keychain, setup guest user")
+                //let alert = UIAlertView(title: "Setup Guest Acct", message: "#2", delegate: nil, cancelButtonTitle: "Okay")
+                //alert.show()
                 UserManager.sharedUser.setupGuestAccount()
             }
         } else if (state == FBSessionState.Closed) || (state == FBSessionState.ClosedLoginFailed) {
@@ -315,6 +319,8 @@ extension AppDelegate {
                 println("User was NOT a guest; delete all their saved info & clear facebook token, setup new guest account")
                 UserManager.sharedUser.deleteAllSavedUserInformation(
                     completion: {
+                        //let alert = UIAlertView(title: "Setup Guest Acct", message: "#3", delegate: nil, cancelButtonTitle: "Okay")
+                        //alert.show()
                         UserManager.sharedUser.setupGuestAccount()
                     }
                 )

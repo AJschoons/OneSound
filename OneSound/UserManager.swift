@@ -162,6 +162,8 @@ extension UserManager {
                     failure: { task, error in
                         println("ERROR: Couldn't sign into account, creating new one")
                         println(error.localizedDescription)
+                        //let alert = UIAlertView(title: "Setup Guest Acct", message: "#6", delegate: nil, cancelButtonTitle: "Okay")
+                        //alert.show()
                         self.setupGuestAccount()
                     }
                 )
@@ -175,6 +177,8 @@ extension UserManager {
                 
                 self.deleteAllSavedUserInformation(
                     completion: {
+                        //let alert = UIAlertView(title: "Setup Guest Acct", message: "#7", delegate: nil, cancelButtonTitle: "Okay")
+                        //alert.show()
                         self.setupGuestAccount()
                     }
                 )
@@ -260,15 +264,21 @@ extension UserManager {
                         // Unauthorized token, so just delete everything
                         self.deleteAllSavedUserInformation(
                             completion: {
+                                //let alert = UIAlertView(title: "Setup Guest Acct", message: "#8", delegate: nil, cancelButtonTitle: "Okay")
+                                //alert.show()
                                 self.setupGuestAccount()
                             }
                         )
                     } else if response.statusCode == 500 {
                         NSNotificationCenter.defaultCenter().postNotificationName(FinishedLoginFlowNotification, object: nil)
                     } else {
+                        //let alert = UIAlertView(title: "Setup Guest Acct", message: "#9", delegate: nil, cancelButtonTitle: "Okay")
+                        //alert.show()
                         self.setupGuestAccount()
                     }
                 } else {
+                    //let alert = UIAlertView(title: "Setup Guest Acct", message: "#10", delegate: nil, cancelButtonTitle: "Okay")
+                    //alert.show()
                     self.setupGuestAccount()
                 }
             }
@@ -309,13 +319,19 @@ extension UserManager {
                         // Unauthorized token, so just delete everything
                         self.deleteAllSavedUserInformation(
                             completion: {
+                                //let alert = UIAlertView(title: "Setup Guest Acct", message: "#11", delegate: nil, cancelButtonTitle: "Okay")
+                                //alert.show()
                                 self.setupGuestAccount()
                             }
                         )
                     } else {
+                        //let alert = UIAlertView(title: "Setup Guest Acct", message: "#12", delegate: nil, cancelButtonTitle: "Okay")
+                        //alert.show()
                         self.setupGuestAccount()
                     }
                 } else {
+                    //let alert = UIAlertView(title: "Setup Guest Acct", message: "#13", delegate: nil, cancelButtonTitle: "Okay")
+                    //alert.show()
                     self.setupGuestAccount()
                 }
             }

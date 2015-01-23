@@ -171,6 +171,39 @@ extension PartySongsViewController: UITableViewDataSource {
         }
     }
     
+    // Should a cell be able to be deleted?
+    func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
+        // If there are songs to delete, and if the cell isn't the loading cell...
+        if playlistManager.songs.count > 0 && indexPath.row < playlistManager.songs.count {
+            if let songCell = tableView.cellForRowAtIndexPath(indexPath) as? PartySongCell {
+                // If this is the user's song, they can choose to delete it
+                if songCell.userID == UserManager.sharedUser.id {
+                    return true
+                }
+            }
+        }
+        return false
+    }
+    
+    // Delete the cell
+    func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
+        
+        // If deleting the cell
+        if editingStyle == UITableViewCellEditingStyle.Delete {
+            // If there are songs to delete, and if the cell isn't the loading cell...
+            if playlistManager.songs.count > 0 && indexPath.row < playlistManager.songs.count {
+                if let songCell = tableView.cellForRowAtIndexPath(indexPath) as? PartySongCell {
+                    // Delete this cell's song
+                    playlistManager.deleteSong(songCell.songID, atIndex: indexPath.row,
+                        completion: {
+                            tableView.reloadData()
+                        }
+                    )
+                }
+            }
+        }
+    }
+    
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         if indexPath.row < playlistManager.songs.count {
             return songCellForRowAtIndexPath(indexPath, fromTableView: tableView)
@@ -202,6 +235,7 @@ extension PartySongsViewController: UITableViewDataSource {
         var song = playlistManager.songs[indexPath.row]
         
         songCell.songID = song.songID
+        songCell.userID = song.userID
         songCell.songImage.image = songCellImagePlaceholder
         if song.name != nil { songCell.songName.text = song.name! }
         if song.artistName != nil { songCell.songArtist.text = song.artistName! }
