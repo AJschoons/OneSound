@@ -198,9 +198,9 @@ class PartyManager: NSObject {
     }
     
     // Only to be used for hosts
-    func getNextSong() {
+    func getNextSong(skipped: Bool) {
         audioManager.resetEmptyStateTimeSinceLastGetNextSong()
-        getNextSong(partyID,
+        getNextSong(partyID, skipped: skipped,
             completion: { song, user in
                 self.currentSong = song
                 self.currentUser = user
@@ -213,8 +213,8 @@ class PartyManager: NSObject {
     }
     
     // Only to be used for hosts
-    func queueNextSong(completion: completionClosure? = nil) {
-        getNextSong(partyID,
+    func queueNextSong(skipped: Bool, completion: completionClosure? = nil) {
+        getNextSong(partyID, skipped: skipped,
             completion: { song, user in
                 self.queueSong = song
                 self.queueUser = user
@@ -335,10 +335,10 @@ extension PartyManager {
         )
     }
     
-    func getNextSong(pid: Int, completion: ((song: Song, user: User) -> ())? = nil, noCurrentSong: completionClosure? = nil, failureAddOn: completionClosure? = nil) {
+    func getNextSong(pid: Int, skipped: Bool, completion: ((song: Song, user: User) -> ())? = nil, noCurrentSong: completionClosure? = nil, failureAddOn: completionClosure? = nil) {
         
         if state == .HostStreamable {
-            OSAPI.sharedClient.GETNextSong(pid,
+            OSAPI.sharedClient.GETNextSong(pid, skipped: skipped,
                 success: { data, responseObject in
                     let responseJSON = JSONValue(responseObject)
                     println(responseJSON)

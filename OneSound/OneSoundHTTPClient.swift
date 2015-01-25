@@ -570,9 +570,13 @@ extension OSAPI {
         GET(urlString, parameters: nil, success: success, failure: failureWithExtraAttempt)
     }
     
-    func GETNextSong(pid: Int, success: AFHTTPSuccessBlock, failure: AFHTTPFailureBlock, extraAttempts: Int = defaultEA) {
+    func GETNextSong(pid: Int, skipped: Bool, success: AFHTTPSuccessBlock, failure: AFHTTPFailureBlock, extraAttempts: Int = defaultEA) {
         
         let urlString = "party/\(pid)/nextsong"
+        
+        // Create parameters to pass
+        var params = Dictionary<String, AnyObject>()
+        params.updateValue(skipped, forKey: "skipped")
         
         let failureWithExtraAttempt: AFHTTPFailureBlock = { task, error in
             var shouldConsiderRepeatedRequest = true
@@ -587,7 +591,7 @@ extension OSAPI {
             
             if shouldConsiderRepeatedRequest {
                 if errorShouldBeHandledWithRepeatedRequest(task, error, attemptsLeft: extraAttempts) {
-                    self.GETNextSong(pid, success: success, failure: failure, extraAttempts: (extraAttempts - 1))
+                    self.GETNextSong(pid, skipped: skipped, success: success, failure: failure, extraAttempts: (extraAttempts - 1))
                 } else {
                     failure!(task: task, error: error)
                 }

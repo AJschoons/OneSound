@@ -43,6 +43,8 @@ class PartyAudioManager: NSObject {
     private var userHasPressedPlay = false
     private var attemptedToQueueSongForCurrentSong = false
     
+    private var songWasSkipped = false
+    
     private var audioPlayer: STKAudioPlayer?
     private var audioSession: AVAudioSession!
     
@@ -79,7 +81,7 @@ class PartyAudioManager: NSObject {
             attemptedToQueueSongForCurrentSong = false
             UIApplication.sharedApplication().beginReceivingRemoteControlEvents()
             partyManager.clearSongInfo()
-            partyManager.getNextSong()
+            getNextSong()
         case .Paused:
             audioPlayer!.pause()
             partyManager.delegate.setAudioPlayerButtonsForPlaying(false)
@@ -124,7 +126,7 @@ class PartyAudioManager: NSObject {
                 }
             } else if emptyStateTimeSinceLastGetNextSong > emptyStateGetNextSongRefreshPeriod {
                 emptyStateTimeSinceLastGetNextSong = 0.0
-                partyManager.getNextSong()
+                getNextSong()
             }
             
         case .Paused:
@@ -153,14 +155,7 @@ class PartyAudioManager: NSObject {
                 let timeRemaining = duration - progress
                 if timeRemaining < songTimeRemainingToQueueNextSong && !attemptedToQueueSongForCurrentSong {
                     attemptedToQueueSongForCurrentSong = true
-                    
-                    partyManager.queueNextSong(completion: {
-                        let queueSongID = partyManager.queueSong?.getExternalIDForPlaying()
-                        if queueSongID != nil {
-                            let songToQueue = SCClient.sharedClient.getSongURLString(queueSongID!)
-                            self.audioPlayer!.queue(songToQueue)
-                        }
-                    })
+                    queueNextSong()
                 }
                 
                 // Refresh the MPNowPlayingInfo
@@ -185,6 +180,7 @@ class PartyAudioManager: NSObject {
     
     func onSongSkip() {
         if hasAudio {
+            songWasSkipped = true
             
             let progress = audioPlayer!.progress // Number of seconds into the song
             let duration = audioPlayer!.duration // Song length in seconds
@@ -269,6 +265,22 @@ class PartyAudioManager: NSObject {
     
     func resetEmptyStateTimeSinceLastGetNextSong() {
         emptyStateTimeSinceLastGetNextSong = 0.0
+    }
+    
+    private func getNextSong() {
+        PartyManager.sharedParty.getNextSong(songWasSkipped)
+        songWasSkipped = false
+    }
+    
+    private func queueNextSong() {
+        PartyManager.sharedParty.queueNextSong(songWasSkipped, completion: {
+            let queueSongID = PartyManager.sharedParty.queueSong?.getExternalIDForPlaying()
+            if queueSongID != nil {
+                let songToQueue = SCClient.sharedClient.getSongURLString(queueSongID!)
+                self.audioPlayer!.queue(songToQueue)
+            }
+        })
+        songWasSkipped = false
     }
     
     private func initializeAudioSessionForPlaying() -> Bool {
