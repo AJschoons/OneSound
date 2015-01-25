@@ -73,7 +73,7 @@ class PartyManager: NSObject {
     private let stateServicePeriod = 0.1 // Period in seconds of how often to update state
     
     private var timeSinceLastGetCurrentParty = 0.0
-    private let getCurrentPartyRefreshPeriod = 10.0
+    let getCurrentPartyRefreshPeriod = 10.0
     
     class var sharedParty: PartyManager {
         struct Static {

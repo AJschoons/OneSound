@@ -21,6 +21,8 @@ enum PartyAudioManagerState {
 
 class PartyAudioManager: NSObject {
     
+    private var currentSong: Song?
+    
     private var hasAudio: Bool {
         return state == .Paused || state == .Playing
     }
@@ -68,6 +70,7 @@ class PartyAudioManager: NSObject {
         
         switch newState {
         case .Inactive:
+            currentSong = nil
             if audioPlayer != nil { audioPlayer!.stop() }
             audioPlayer = nil
             audioSession.setCategory(AVAudioSessionCategoryAmbient, error: nil)
@@ -77,6 +80,7 @@ class PartyAudioManager: NSObject {
             UIApplication.sharedApplication().endReceivingRemoteControlEvents()
         case .Empty:
             emptyStateTimeSinceLastGetNextSong = 0.0
+            currentSong = nil
             movingFromInactiveToEmpty = false
             attemptedToQueueSongForCurrentSong = false
             UIApplication.sharedApplication().beginReceivingRemoteControlEvents()
@@ -111,9 +115,17 @@ class PartyAudioManager: NSObject {
             if partyManager.state != .HostStreamable { onUserNoLongerHostStreamable(); return }
             if !AFNetworkReachabilityManager.sharedManager().reachable { onNetworkNotReachable(); return }
             
+            // If audioPlayer is buffering/paused/playing when it should be paused
+            if audioPlayer!.state == STKAudioPlayerStateRunning {
+                audioPlayer!.stop()
+                setState(.Empty)
+                return
+            }
+            
             // Got next song
             if partyManager.hasCurrentSongAndUser {
-                let songToPlay = SCClient.sharedClient.getSongURLString(partyManager.currentSong!.getExternalIDForPlaying())
+                currentSong = partyManager.currentSong
+                let songToPlay = SCClient.sharedClient.getSongURLString(currentSong!.getExternalIDForPlaying())
                 audioPlayer!.play(songToPlay)
                 postPartyCurrentSongChangeUpdates()
                 
@@ -133,6 +145,7 @@ class PartyAudioManager: NSObject {
             if partyManager.state != .HostStreamable { onUserNoLongerHostStreamable(); return }
             if !partyManager.hasCurrentSongAndUser { onPartyNoLongerHasCurrentSong(); return }
             if !AFNetworkReachabilityManager.sharedManager().reachable { onNetworkNotReachable(); return }
+            if currentSongIsMismatched() { onCurrentSongMismatch(); return }
             
         case .Playing:
             playingStateTimeSinceLastMPNowPlayingRefresh += stateServicePeriod
@@ -140,6 +153,7 @@ class PartyAudioManager: NSObject {
             if partyManager.state != .HostStreamable { onUserNoLongerHostStreamable(); return }
             if !partyManager.hasCurrentSongAndUser { onPartyNoLongerHasCurrentSong(); return }
             if !AFNetworkReachabilityManager.sharedManager().reachable { onNetworkNotReachable(); return }
+            if currentSongIsMismatched() { onCurrentSongMismatch(); return }
 
             let progress = audioPlayer!.progress // Number of seconds into the song
             let duration = audioPlayer!.duration // Song length in seconds
@@ -200,7 +214,9 @@ class PartyAudioManager: NSObject {
         if state != .Inactive { setState(.Empty) }
     }
     
+    // Only call this after PartyManager's currentSong is changed to its queuedSong
     private func onSongFinishedWithQueuedSong() {
+        currentSong = PartyManager.sharedParty.currentSong
         postPartyCurrentSongChangeUpdates()
     }
     
@@ -214,6 +230,12 @@ class PartyAudioManager: NSObject {
     
     private func onGotNextSongPlayNotAlreadyPressed() {
         if state != .Inactive { setState(.Paused) }
+    }
+    
+    // The audio manager's current song doesn't match the party manager's current song
+    private func onCurrentSongMismatch() {
+        audioPlayer!.stop()
+        setState(.Empty)
     }
     
     private func onUserBecameHostStreamable() {
@@ -281,6 +303,14 @@ class PartyAudioManager: NSObject {
             }
         })
         songWasSkipped = false
+    }
+    
+    private func currentSongIsMismatched() -> Bool {
+        // Make sure the party has had proper time to refresh the info
+        if audioPlayer!.progress > PartyManager.sharedParty.getCurrentPartyRefreshPeriod + 2 {
+            if currentSong != PartyManager.sharedParty.currentSong { return true }
+        }
+        return false
     }
     
     private func initializeAudioSessionForPlaying() -> Bool {
@@ -360,8 +390,8 @@ extension PartyAudioManager: STKAudioPlayerDelegate {
         // Song was most likely unstreamable if finished playing with such small amt of time
         if progress < 0.1 {
             var songInfo = ""
-            if let currentSongName = partyManager.currentSong?.name {
-                if let currentSongArtist = partyManager.currentSong?.artistName {
+            if let currentSongName = currentSong?.name {
+                if let currentSongArtist = currentSong?.artistName {
                     songInfo = "'\(currentSongName)' uploaded by '\(currentSongArtist)' "
                 } else {
                     songInfo = "'\(currentSongName)' "
