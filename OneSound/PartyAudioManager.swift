@@ -30,6 +30,7 @@ class PartyAudioManager: NSObject {
     private(set) var state: PartyAudioManagerState = .Inactive
     private var stateTime: Double = 0.0
     private let stateServicePeriod = 0.1 // Period in seconds of how often to update state
+    private let stateTimeGracePeriod = 1.0 // Period in seconds before a state is considered to be "in error" from audio player state
     
     private var movingFromInactiveToEmpty = false
     
@@ -37,7 +38,7 @@ class PartyAudioManager: NSObject {
     private let emptyStateGetNextSongRefreshPeriod = 10.0
     private var emptyStatePreparingToPlayAudio = false
     
-    private let songTimeRemainingToQueueNextSong = 3.0
+    private let songTimeRemainingToQueueNextSong = 2.0
     
     private var playingStateTimeSinceLastMPNowPlayingRefresh = 0.0
     private let playingStateMPNowPlayingRefreshPeriod = 1.0
@@ -47,6 +48,9 @@ class PartyAudioManager: NSObject {
     
     private var songWasSkipped = false
     
+    private var timeSinceLastSongAdded = 0.0
+    private let timeSinceLastSongAddedGracePeriod = 1.0
+    
     private var audioPlayer: STKAudioPlayer?
     private var audioSession: AVAudioSession!
     
@@ -55,6 +59,7 @@ class PartyAudioManager: NSObject {
         
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "handleAudioSessionInterruption:", name: AVAudioSessionInterruptionNotification, object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "handleMediaServicesReset", name: AVAudioSessionMediaServicesWereResetNotification, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "handleAVAudioSessionRouteChangeNotification:", name: AVAudioSessionRouteChangeNotification, object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "handleSongWasAddedNotification", name: PartySongWasAddedNotification, object: nil)
         
         audioSession = AVAudioSession.sharedInstance()
@@ -100,6 +105,7 @@ class PartyAudioManager: NSObject {
     
     func serviceState() {
         stateTime += stateServicePeriod
+        timeSinceLastSongAdded += stateServicePeriod
         let partyManager = PartyManager.sharedParty
         
         switch state {
@@ -115,8 +121,7 @@ class PartyAudioManager: NSObject {
             if partyManager.state != .HostStreamable { onUserNoLongerHostStreamable(); return }
             if !AFNetworkReachabilityManager.sharedManager().reachable { onNetworkNotReachable(); return }
             
-            // If audioPlayer is buffering/paused/playing when it should be paused
-            if audioPlayer!.state == STKAudioPlayerStateRunning {
+            if audioPlayerStateIsPlayingAndShouldCallEvent() {
                 audioPlayer!.stop()
                 setState(.Empty)
                 return
@@ -125,6 +130,7 @@ class PartyAudioManager: NSObject {
             // Got next song
             if partyManager.hasCurrentSongAndUser {
                 currentSong = partyManager.currentSong
+                timeSinceLastSongAdded = 0.0
                 let songToPlay = SCClient.sharedClient.getSongURLString(currentSong!.getExternalIDForPlaying())
                 audioPlayer!.play(songToPlay)
                 postPartyCurrentSongChangeUpdates()
@@ -146,6 +152,7 @@ class PartyAudioManager: NSObject {
             if !partyManager.hasCurrentSongAndUser { onPartyNoLongerHasCurrentSong(); return }
             if !AFNetworkReachabilityManager.sharedManager().reachable { onNetworkNotReachable(); return }
             if currentSongIsMismatched() { onCurrentSongMismatch(); return }
+            if audioPlayerStateIsNotRunningAndShouldCallEvent() { onAudioPlayerNoLongerRunning(); return }
             
         case .Playing:
             playingStateTimeSinceLastMPNowPlayingRefresh += stateServicePeriod
@@ -154,6 +161,7 @@ class PartyAudioManager: NSObject {
             if !partyManager.hasCurrentSongAndUser { onPartyNoLongerHasCurrentSong(); return }
             if !AFNetworkReachabilityManager.sharedManager().reachable { onNetworkNotReachable(); return }
             if currentSongIsMismatched() { onCurrentSongMismatch(); return }
+            if audioPlayerStateIsNotRunningAndShouldCallEvent() { onAudioPlayerNoLongerRunning(); return }
 
             let progress = audioPlayer!.progress // Number of seconds into the song
             let duration = audioPlayer!.duration // Song length in seconds
@@ -181,6 +189,17 @@ class PartyAudioManager: NSObject {
         }
     }
     
+    // Returns true when audioPlayer is playing and the grace periods have been passed
+    func audioPlayerStateIsPlayingAndShouldCallEvent() -> Bool {
+        return audioPlayerStateIsPlaying() && stateTime > stateTimeGracePeriod && timeSinceLastSongAdded > timeSinceLastSongAddedGracePeriod
+    }
+    
+    // Returns true when audioPlayer is not running, the grace periods have been passed, and the time remaining for the current song (if it exists) isn't within the time span where the next song could be queued
+    func audioPlayerStateIsNotRunningAndShouldCallEvent() -> Bool {
+        return audioPlayerStateIsNotRunning() && (stateTime > stateTimeGracePeriod) &&
+            (timeSinceLastSongAdded > timeSinceLastSongAddedGracePeriod) && !currentSongTimeRemainingWithinQueueTimeSpan()
+    }
+    
     func onPlayButton() {
         if state != .Inactive {
             userHasPressedPlay = true
@@ -196,17 +215,55 @@ class PartyAudioManager: NSObject {
         if hasAudio {
             songWasSkipped = true
             
-            let progress = audioPlayer!.progress // Number of seconds into the song
-            let duration = audioPlayer!.duration // Song length in seconds
-            let timeRemaining = duration - progress
+            // Only seek if the song isn't already within the queueing time span from the end
+            if !currentSongTimeRemainingWithinQueueTimeSpan() {
+                
+                let progress = audioPlayer!.progress // Number of seconds into the song
+                let duration = audioPlayer!.duration // Song length in seconds
+                let timeRemaining = duration - progress
+                
+                // Give serviceState() enough time to try queueing the next song
+                audioPlayer!.seekToTime(duration - stateServicePeriod * 3)
+            }
             
-            // Give serviceState() enough time to try queueing the next song
-            audioPlayer!.seekToTime(duration - stateServicePeriod * 3)
+            // Play out the rest
             if state == .Paused {
+                // If it's paused, make it play
                 setState(.Playing)
+            }
+            // If it's playing it will continue to play out the song
+            
+            // Skipping the song will then either take < the queueTimeSpan, or stateServicePeriod * 3 seconds
+        }
+    }
+    
+    /*
+    func onSongSkip() {
+        if hasAudio {
+            // Only skip if the song isn't already playing AND (close enough to the end to queue the next one OR close enough to the start that this is the song that could've been queued)
+            if !(state == .Playing && currentSongTimeRemainingWithinQueueTimeSpan() || currentSongProgressWithinQueueTimeSpan()) {
+                
+                // If the actual progress bar's progress is within the queue time
+                if partyCurrentSongProgressBarTimeRemainingWithinQueueTime() {
+                    // If it's paused, then just play it out
+                    if state == .Paused {
+                        setState(.Playing)
+                    }
+                    // If it's playing then do nothing, let it continue to play out
+                } else {
+                    songWasSkipped = true
+                    
+                    let progress = audioPlayer!.progress // Number of seconds into the song
+                    let duration = audioPlayer!.duration // Song length in seconds
+                    let timeRemaining = duration - progress
+                    
+                    // Give serviceState() enough time to try queueing the next song
+                    audioPlayer!.seekToTime(duration - stateServicePeriod * 3)
+                }
             }
         }
     }
+    */
     
     private func onSongFinishedWithNoQueuedSong() {
         // Must check if inactive, because this will get called when playing a song and losing HostStreamable,
@@ -217,6 +274,7 @@ class PartyAudioManager: NSObject {
     // Only call this after PartyManager's currentSong is changed to its queuedSong
     private func onSongFinishedWithQueuedSong() {
         currentSong = PartyManager.sharedParty.currentSong
+        timeSinceLastSongAdded = 0.0
         postPartyCurrentSongChangeUpdates()
     }
     
@@ -235,6 +293,11 @@ class PartyAudioManager: NSObject {
     // The audio manager's current song doesn't match the party manager's current song
     private func onCurrentSongMismatch() {
         audioPlayer!.stop()
+        setState(.Empty)
+    }
+    
+    // Audio player isn't in Running state when it should be playing or paused
+    private func onAudioPlayerNoLongerRunning() {
         setState(.Empty)
     }
     
@@ -264,6 +327,10 @@ class PartyAudioManager: NSObject {
     
     private func onAudioInterruptionEndedShouldResume() {
         if state != .Inactive { setState(.Playing) }
+    }
+    
+    private func onAudioOutputChange() {
+        if state == .Playing { setState(.Paused) }
     }
     
     private func onMediaServicesReset() {
@@ -307,10 +374,39 @@ class PartyAudioManager: NSObject {
     
     private func currentSongIsMismatched() -> Bool {
         // Make sure the party has had proper time to refresh the info
-        if audioPlayer!.progress > PartyManager.sharedParty.getCurrentPartyRefreshPeriod + 2 {
-            if currentSong != PartyManager.sharedParty.currentSong { return true }
+        if audioPlayer!.progress > (PartyManager.sharedParty.getCurrentPartyRefreshPeriod + 2) {
+            // Song can be mismatched when queueing the next one, make sure it's not for that reason
+            if (audioPlayer!.duration - audioPlayer!.progress) > (songTimeRemainingToQueueNextSong + 2) {
+                if currentSong != PartyManager.sharedParty.currentSong { return true }
+            }
         }
         return false
+    }
+    
+    // Returns true if audioPlayer exists and its state is Playing
+    private func audioPlayerStateIsPlaying() -> Bool {
+        return audioPlayer != nil && audioPlayer!.state == STKAudioPlayerStatePlaying
+    }
+    
+    // Returns true if audioPlayer exists and its state is not Running
+    private func audioPlayerStateIsNotRunning() -> Bool {
+        if audioPlayer != nil {
+            // Bitwise AND the state with Running. If the result is 0, then the audio player is not Running
+            // See the STKAudioPlayerState declaration to understand
+            if (audioPlayer!.state.value & STKAudioPlayerStateRunning.value) == 0 {
+                return true
+            }
+        }
+        return false
+    }
+    
+    // Returns true if current song time remaining is within timespan of where the next song could have been queued
+    private func currentSongTimeRemainingWithinQueueTimeSpan() -> Bool {
+        let progress = audioPlayer!.progress // Number of seconds into the song
+        let duration = audioPlayer!.duration // Song length in seconds
+        let timeRemaining = duration - progress
+        let queueTimeSpan = songTimeRemainingToQueueNextSong + 1
+        return currentSong != nil && timeRemaining < queueTimeSpan || duration < queueTimeSpan
     }
     
     private func initializeAudioSessionForPlaying() -> Bool {
@@ -388,7 +484,7 @@ extension PartyAudioManager: STKAudioPlayerDelegate {
         let partyManager = PartyManager.sharedParty
         
         // Song was most likely unstreamable if finished playing with such small amt of time
-        if progress < 0.1 {
+        if progress < 0.1 && currentSong != nil {
             var songInfo = ""
             if let currentSongName = currentSong?.name {
                 if let currentSongArtist = currentSong?.artistName {
@@ -405,6 +501,7 @@ extension PartyAudioManager: STKAudioPlayerDelegate {
             alert.show()
             initializeAudioSessionForPlaying()
             initializeAudioPlayerForPlaying() // Fix for randomly not working?
+            setState(.Empty)
             return
         }
         
@@ -426,6 +523,7 @@ extension PartyAudioManager: STKAudioPlayerDelegate {
 
 extension PartyAudioManager {
     // MARK: handling AVAudioSession notifications
+    
     func handleAudioSessionInterruption(n: NSNotification) {
         if n.name != AVAudioSessionInterruptionNotification || n.userInfo == nil
             || PartyManager.sharedParty.state != .HostStreamable { return }
@@ -453,6 +551,22 @@ extension PartyAudioManager {
                     // Here you should continue playback
                     onAudioInterruptionEndedShouldResume()
                 }
+            }
+        }
+    }
+    
+    // Used to pause audio when output cord unplugged
+    func handleAVAudioSessionRouteChangeNotification(n: NSNotification) {
+        if n.name != AVAudioSessionRouteChangeNotification || n.userInfo == nil
+            || PartyManager.sharedParty.state != .HostStreamable { return }
+        
+        println("AVAudioSessionRouteChangeNotification")
+        var info = n.userInfo!
+        var routeChangeTypeValue: UInt = 0
+        (info[AVAudioSessionRouteChangeReasonKey] as NSValue).getValue(&routeChangeTypeValue)
+        if let routeChangeReason = AVAudioSessionRouteChangeReason(rawValue: routeChangeTypeValue) {
+            if routeChangeReason == AVAudioSessionRouteChangeReason.OldDeviceUnavailable {
+                onAudioOutputChange()
             }
         }
     }

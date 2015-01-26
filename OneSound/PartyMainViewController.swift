@@ -820,7 +820,11 @@ extension PartyMainViewController {
 
 extension PartyMainViewController: PartyManagerDelegate {
     // MARK: PartyManagerDelegate
+    // Other delegate methods fit better in different extensions
     
+    func getCurrentSongProgress() -> Float {
+        return songProgress!.progress
+    }
 }
 
 extension PartyMainViewController: CreatePartyViewControllerDelegate {
