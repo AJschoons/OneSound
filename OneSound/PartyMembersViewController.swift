@@ -56,7 +56,7 @@ class PartyMembersViewController: UIViewController {
         parentViewController!.navigationItem.title = "Members"
         
         // Allows cells to flow under nav bar and tab bar, but not stop scrolling behind them when content stops
-        membersTable.contentInset = UIEdgeInsetsMake(64, 0, 49, 0)
+        membersTable.contentInset = UIEdgeInsetsMake(65, 0, 49, 0)
         
         refresh()
     }

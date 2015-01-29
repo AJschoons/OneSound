@@ -293,6 +293,7 @@ class PartyAudioManager: NSObject {
     // The audio manager's current song doesn't match the party manager's current song
     private func onCurrentSongMismatch() {
         audioPlayer!.stop()
+        PartyManager.sharedParty.clearSongInfo()
         setState(.Empty)
     }
     
@@ -484,7 +485,7 @@ extension PartyAudioManager: STKAudioPlayerDelegate {
         let partyManager = PartyManager.sharedParty
         
         // Song was most likely unstreamable if finished playing with such small amt of time
-        if progress < 0.1 && currentSong != nil {
+        if partyManager.state == .HostStreamable && progress < 0.1 && currentSong != nil {
             var songInfo = ""
             if let currentSongName = currentSong?.name {
                 if let currentSongArtist = currentSong?.artistName {

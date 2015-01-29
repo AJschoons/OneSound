@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="6254" systemVersion="14C81f" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="6254" systemVersion="14B25" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
     <dependencies>
+        <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6247"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
@@ -15,23 +16,23 @@
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Name Of Party" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="rNg-nN-Lh5">
-                        <rect key="frame" x="16" y="10" width="288" height="17"/>
+                        <rect key="frame" x="16" y="10" width="288" height="18"/>
                         <constraints>
-                            <constraint firstAttribute="height" constant="17" id="phj-dR-Se4"/>
+                            <constraint firstAttribute="height" constant="18" id="phj-dR-Se4"/>
                         </constraints>
-                        <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
+                        <fontDescription key="fontDescription" type="boldSystem" pointSize="16"/>
                         <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                         <nil key="highlightedColor"/>
                     </label>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Created by SomeUserName" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="jxH-7U-l5b">
-                        <rect key="frame" x="16" y="28" width="288" height="12"/>
-                        <fontDescription key="fontDescription" type="system" pointSize="10"/>
+                        <rect key="frame" x="16" y="29" width="288" height="13.5"/>
+                        <fontDescription key="fontDescription" type="system" pointSize="11"/>
                         <color key="textColor" red="0.51700145009999998" green="0.51698595290000005" blue="0.51699477429999996" alpha="1" colorSpace="calibratedRGB"/>
                         <nil key="highlightedColor"/>
                     </label>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="123456789 members" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gl7-Pq-Bbi">
-                        <rect key="frame" x="16" y="41" width="288" height="12"/>
-                        <fontDescription key="fontDescription" type="system" pointSize="10"/>
+                        <rect key="frame" x="16" y="42" width="288" height="13.5"/>
+                        <fontDescription key="fontDescription" type="system" pointSize="11"/>
                         <color key="textColor" red="0.51700145009999998" green="0.51698595290000005" blue="0.51699477429999996" alpha="1" colorSpace="calibratedRGB"/>
                         <nil key="highlightedColor"/>
                     </label>
@@ -40,7 +41,7 @@
                     <constraint firstItem="rNg-nN-Lh5" firstAttribute="top" secondItem="UDY-97-Ila" secondAttribute="topMargin" constant="2" id="10X-Ex-OvU"/>
                     <constraint firstItem="rNg-nN-Lh5" firstAttribute="width" secondItem="jxH-7U-l5b" secondAttribute="width" id="7WW-O8-fVf"/>
                     <constraint firstItem="gl7-Pq-Bbi" firstAttribute="leading" secondItem="UDY-97-Ila" secondAttribute="leadingMargin" constant="8" id="GmO-Th-zSp"/>
-                    <constraint firstAttribute="bottomMargin" secondItem="gl7-Pq-Bbi" secondAttribute="bottom" constant="2.5" id="MtS-jP-k0e"/>
+                    <constraint firstAttribute="bottomMargin" secondItem="gl7-Pq-Bbi" secondAttribute="bottom" id="MtS-jP-k0e"/>
                     <constraint firstItem="rNg-nN-Lh5" firstAttribute="leading" secondItem="UDY-97-Ila" secondAttribute="leadingMargin" constant="8" id="Rta-ZM-hEv"/>
                     <constraint firstItem="jxH-7U-l5b" firstAttribute="leading" secondItem="UDY-97-Ila" secondAttribute="leadingMargin" constant="8" id="UCo-cV-MHx"/>
                     <constraint firstAttribute="trailingMargin" secondItem="rNg-nN-Lh5" secondAttribute="trailing" constant="8" id="VWU-nN-UqY"/>

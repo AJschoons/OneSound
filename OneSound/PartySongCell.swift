@@ -17,6 +17,8 @@ class PartySongCell: UITableViewCell {
     @IBOutlet weak var songImage: UIImageView!
     @IBOutlet weak var thumbsDownButton: UIButton!
     @IBOutlet weak var thumbsUpButton: UIButton!
+    @IBOutlet weak var thumbsDownImage: UIImageView!
+    @IBOutlet weak var thumbsUpImage: UIImageView!
     
     @IBOutlet weak private var triangleView: OSTriangleView!
     @IBOutlet weak private var voteCountLabel: UILabel!
@@ -112,22 +114,22 @@ class PartySongCell: UITableViewCell {
     }
     
     func setThumbsUpSelected() {
-        thumbsUpButton.setImage(thumbsUpSelectedMainParty, forState: UIControlState.Normal)
+        thumbsUpImage.image = thumbsUpSelectedMainParty
         thumbsUpButton.selected = true
     }
     
     func setThumbsUpUnselected() {
-        thumbsUpButton.setImage(thumbsUpUnselectedMainParty, forState: UIControlState.Normal)
+        thumbsUpImage.image = thumbsUpUnselectedMainParty
         thumbsUpButton.selected = false
     }
     
     func setThumbsDownSelected() {
-        thumbsDownButton.setImage(thumbsDownSelectedMainParty, forState: UIControlState.Normal)
+        thumbsDownImage.image = thumbsDownSelectedMainParty
         thumbsDownButton.selected = true
     }
     
     func setThumbsDownUnselected() {
-        thumbsDownButton.setImage(thumbsDownUnselectedMainParty, forState: UIControlState.Normal)
+        thumbsDownImage.image = thumbsDownUnselectedMainParty
         thumbsDownButton.selected = false
     }
 }

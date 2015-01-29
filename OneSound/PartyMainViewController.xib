@@ -102,28 +102,28 @@
                     <color key="progressTintColor" red="0.17838662860000001" green="0.73694926500000002" blue="0.94469857219999998" alpha="1" colorSpace="calibratedRGB"/>
                     <color key="trackTintColor" red="0.83041405680000002" green="0.83038914200000002" blue="0.83040332790000004" alpha="1" colorSpace="calibratedRGB"/>
                 </progressView>
-                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Song Name" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="none" minimumScaleFactor="0.75000000000000022" translatesAutoresizingMaskIntoConstraints="NO" id="oBv-JJ-MLy" customClass="OSLabel" customModule="OneSound" customModuleProvider="target">
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Song Name" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="none" minimumScaleFactor="0.80000000000000027" translatesAutoresizingMaskIntoConstraints="NO" id="oBv-JJ-MLy" customClass="OSLabel" customModule="OneSound" customModuleProvider="target">
                     <rect key="frame" x="10" y="333" width="537" height="24"/>
                     <fontDescription key="fontDescription" type="boldSystem" pointSize="20"/>
                     <color key="textColor" red="1" green="0.99997437000274658" blue="0.99999129772186279" alpha="1" colorSpace="calibratedRGB"/>
                     <nil key="highlightedColor"/>
                 </label>
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Artist Name" lineBreakMode="tailTruncation" baselineAdjustment="none" minimumFontSize="10" translatesAutoresizingMaskIntoConstraints="NO" id="dAA-if-muq" customClass="OSLabel" customModule="OneSound" customModuleProvider="target">
-                    <rect key="frame" x="10" y="360" width="537" height="14"/>
+                    <rect key="frame" x="10" y="359" width="537" height="15"/>
                     <constraints>
-                        <constraint firstAttribute="height" constant="14" id="NH3-Nk-en1"/>
+                        <constraint firstAttribute="height" constant="15" id="NH3-Nk-en1"/>
                     </constraints>
-                    <fontDescription key="fontDescription" type="boldSystem" pointSize="12"/>
+                    <fontDescription key="fontDescription" type="boldSystem" pointSize="13"/>
                     <color key="textColor" red="1" green="0.99997437000274658" blue="0.99999129772186279" alpha="1" colorSpace="calibratedRGB"/>
                     <nil key="highlightedColor"/>
                 </label>
                 <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="00:00" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="none" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Flu-ww-wQ5" customClass="OSLabel" customModule="OneSound" customModuleProvider="target">
-                    <rect key="frame" x="555" y="360" width="35" height="14"/>
+                    <rect key="frame" x="555" y="359" width="35" height="15"/>
                     <constraints>
-                        <constraint firstAttribute="height" constant="14" id="1MF-MA-QO3"/>
+                        <constraint firstAttribute="height" constant="15" id="1MF-MA-QO3"/>
                         <constraint firstAttribute="width" constant="35" id="bUD-Nf-wT8"/>
                     </constraints>
-                    <fontDescription key="fontDescription" type="boldSystem" pointSize="12"/>
+                    <fontDescription key="fontDescription" type="boldSystem" pointSize="13"/>
                     <color key="textColor" red="1" green="0.99997437000274658" blue="0.99999129772186279" alpha="1" colorSpace="calibratedRGB"/>
                     <nil key="highlightedColor"/>
                 </label>

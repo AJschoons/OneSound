@@ -72,7 +72,7 @@ class PartySongsViewController: UIViewController {
         parentViewController!.navigationItem.title = "Playlist"
         
         // Allows cells to flow under nav bar and tab bar, but not stop scrolling behind them when content stops
-        songsTable.contentInset = UIEdgeInsetsMake(64, 0, 49, 0)
+        songsTable.contentInset = UIEdgeInsetsMake(65, 0, 49, 0)
         
         refresh()
     }

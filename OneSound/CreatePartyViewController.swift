@@ -18,7 +18,7 @@ protocol CreatePartyViewControllerDelegate {
 class CreatePartyViewController: UITableViewController {
         
     let validCharacters = "abcdefghijklmnopqrstuvwxyz1234567890 "
-    var footerViewHeight = 125
+    var footerViewHeight = 140
     
     @IBOutlet weak var nameCell: UITableViewCell!
     @IBOutlet weak var nameCellTextField: UITextField!
@@ -317,7 +317,7 @@ class CreatePartyViewController: UITableViewController {
         leavePartyButton.addConstraint(NSLayoutConstraint(item: leavePartyButton, attribute: NSLayoutAttribute.Height, relatedBy: NSLayoutRelation.Equal, toItem: nil, attribute: NSLayoutAttribute.NotAnAttribute, multiplier: 1, constant: 30))
         footerView.addConstraint(NSLayoutConstraint(item: leavePartyButton, attribute: NSLayoutAttribute.Left, relatedBy: NSLayoutRelation.Equal, toItem: footerView, attribute: NSLayoutAttribute.Left, multiplier: 1, constant: 15))
         footerView.addConstraint(NSLayoutConstraint(item: leavePartyButton, attribute: NSLayoutAttribute.Right, relatedBy: NSLayoutRelation.Equal, toItem: footerView, attribute: NSLayoutAttribute.Right, multiplier: 1, constant: -15))
-        footerView.addConstraint(NSLayoutConstraint(item: leavePartyButton, attribute: NSLayoutAttribute.Bottom, relatedBy: NSLayoutRelation.Equal, toItem: footerView, attribute: NSLayoutAttribute.Bottom, multiplier: 1, constant: 0))
+        footerView.addConstraint(NSLayoutConstraint(item: leavePartyButton, attribute: NSLayoutAttribute.Bottom, relatedBy: NSLayoutRelation.Equal, toItem: footerView, attribute: NSLayoutAttribute.Bottom, multiplier: 1, constant: -15))
     }
     
     /*

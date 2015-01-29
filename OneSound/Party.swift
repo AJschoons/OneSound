@@ -11,7 +11,7 @@ import UIKit
 class Party {
     private(set) var partyID: Int!
     private(set) var isPrivate: Bool!
-    private(set) var hostUserID: Int?
+    private(set) var isHost: Bool!
     private(set) var name: String!
     private(set) var strictness: Int!
     private(set) var memberCount: Int?
@@ -20,7 +20,7 @@ class Party {
     init(json: JSONValue) {
         partyID = json["pid"].integer
         isPrivate = json["privacy"].bool
-        hostUserID = json["host"].integer
+        isHost = json["bool"].bool
         name = json["name"].string
         strictness = json["strictness"].integer
         memberCount = json["member_count"].integer
