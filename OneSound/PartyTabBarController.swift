@@ -56,6 +56,15 @@ class PartyTabBarController: OSTabBarController {
         default:
             println("ERROR: selectedIndex for PartyTabBarController was out of range 0-2")
         }
+        
+        let partyManager = PartyManager.sharedParty
+        if partyManager.lostMusicControlAlertShouldBeShown {
+            partyManager.lostMusicControlAlertShouldBeShown = false
+            partyManager.createLostMusicControlAlert().show()
+        } else if partyManager.noMusicControlAlertShouldBeShown {
+            partyManager.noMusicControlAlertShouldBeShown = false
+            partyManager.createNoMusicControlAlert().show()
+        }
     }
     
     // If the PartyMainViewController is the selected tab, change the right bar button to its rightBarButton

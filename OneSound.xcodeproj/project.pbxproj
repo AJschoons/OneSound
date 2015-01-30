@@ -55,6 +55,7 @@
 		816DFB951982B85B007DA885 /* StoryTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 816DFB931982B85B007DA885 /* StoryTableViewCell.xib */; };
 		816FD445196F22B0003CCB1C /* SideNavigationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 816FD444196F22B0003CCB1C /* SideNavigationViewController.swift */; };
 		816FD447196F22DB003CCB1C /* FrontNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 816FD446196F22DB003CCB1C /* FrontNavigationController.swift */; };
+		81742A671A7A716900FC2AFD /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81742A661A7A716900FC2AFD /* Constants.swift */; };
 		81751FF5196DEB0F00B9F9A9 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 81751FF4196DEB0F00B9F9A9 /* Foundation.framework */; };
 		81751FF7196DEB1D00B9F9A9 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 81751FF6196DEB1D00B9F9A9 /* UIKit.framework */; };
 		8176451A197EA192001BF7A7 /* StoriesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81764518197EA192001BF7A7 /* StoriesViewController.swift */; };
@@ -154,6 +155,7 @@
 		816DFB931982B85B007DA885 /* StoryTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = StoryTableViewCell.xib; sourceTree = "<group>"; };
 		816FD444196F22B0003CCB1C /* SideNavigationViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SideNavigationViewController.swift; sourceTree = "<group>"; };
 		816FD446196F22DB003CCB1C /* FrontNavigationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FrontNavigationController.swift; sourceTree = "<group>"; };
+		81742A661A7A716900FC2AFD /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		81751FF4196DEB0F00B9F9A9 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		81751FF6196DEB1D00B9F9A9 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		81764518197EA192001BF7A7 /* StoriesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StoriesViewController.swift; sourceTree = "<group>"; };
@@ -310,6 +312,7 @@
 				8100A960196F078400EB1156 /* Models */,
 				818750541A50C5C8000CC353 /* Managers */,
 				8100A962196F07EB00EB1156 /* UI */,
+				81742A651A7A70E400FC2AFD /* Constants */,
 			);
 			path = OneSound;
 			sourceTree = "<group>";
@@ -440,6 +443,14 @@
 				8103D66A19805E9000AE5A27 /* LoggingInSpashViewController.xib */,
 			);
 			name = Other;
+			sourceTree = "<group>";
+		};
+		81742A651A7A70E400FC2AFD /* Constants */ = {
+			isa = PBXGroup;
+			children = (
+				81742A661A7A716900FC2AFD /* Constants.swift */,
+			);
+			name = Constants;
 			sourceTree = "<group>";
 		};
 		8179444B1A5751C000A9C636 /* ENSideMenu Library */ = {
@@ -741,6 +752,7 @@
 				813FCE081977583C00419097 /* LoginColorViewController.swift in Sources */,
 				81EAC5F91998132000F02894 /* SongStore.swift in Sources */,
 				81BC27BD199DC0E2006233AE /* PartySongCell.swift in Sources */,
+				81742A671A7A716900FC2AFD /* Constants.swift in Sources */,
 				81631F3419994BB000C55A6F /* PartyMemberCell.swift in Sources */,
 				816DFB941982B85B007DA885 /* StoryTableViewCell.swift in Sources */,
 			);

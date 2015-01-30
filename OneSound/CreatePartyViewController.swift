@@ -164,7 +164,7 @@ class CreatePartyViewController: UITableViewController {
     func leaveParty() {
         // "Leave" handled in the UIAlertViewDelegate extension
         let alert = UIAlertView(title: "Leaving Party as Host", message: "Leaving a party you're hosting will stop the party from playing music for everyone else. You can always join back, but don't leave if you want it to keep going", delegate: self, cancelButtonTitle: "Cancel", otherButtonTitles: "Leave")
-        alert.tag = 103
+        alert.tag = AlertTag.LeavingPartyAsHost.rawValue
         alert.show()
     }
     
@@ -434,7 +434,7 @@ extension CreatePartyViewController: CreatePartyStrictnessViewControllerDelegate
 
 extension CreatePartyViewController: UIAlertViewDelegate {
     func alertView(alertView: UIAlertView!, clickedButtonAtIndex buttonIndex: Int) {
-        if alertView.tag == 103 {
+        if alertView.tag == AlertTag.LeavingPartyAsHost.rawValue {
             if buttonIndex == 1 {
                 // If host is leaving the party
                 PartyManager.sharedParty.leaveParty(

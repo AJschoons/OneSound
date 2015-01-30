@@ -67,11 +67,11 @@ class ProfileViewController: UIViewController {
             if UserManager.sharedUser.guest == true {
                 // Let the guest know that signing out a guest account doesn't really do anything
                 let alert = UIAlertView(title: "Signing Out Guest", message: "Signing out of guest account deletes current guest account and signs into a new guest account. To sign into a full account, login with Facebook, and your guest account is automatically upgraded.", delegate: self, cancelButtonTitle: "Cancel", otherButtonTitles: "Ok")
-                alert.tag = 101
+                alert.tag = AlertTag.SigningOutGuest.rawValue
                 alert.show()
             } else {
                 let alert = UIAlertView(title: "Signing Out", message: "Continue signing out to sign in with a different Facebook account, or to downgrade to a guest account. Guests can only join and use parties, and can't create them", delegate: self, cancelButtonTitle: "Cancel", otherButtonTitles: "Ok")
-                alert.tag = 102
+                alert.tag = AlertTag.SigningOut.rawValue
                 alert.show()
             }
         }
@@ -341,7 +341,7 @@ class ProfileViewController: UIViewController {
 
 extension ProfileViewController: UIAlertViewDelegate {
     func alertView(alertView: UIAlertView!, clickedButtonAtIndex buttonIndex: Int) {
-        if alertView.tag == 101 {
+        if alertView.tag == AlertTag.SigningOutGuest.rawValue {
             // If guest is trying to log out
             if buttonIndex == 1 {
                 // If guest wants to sign out, delete all info and get new guest account, then refresh
@@ -351,7 +351,7 @@ extension ProfileViewController: UIAlertViewDelegate {
                 UserManager.sharedUser.setupGuestAccount()
                 refresh()
             }
-        } else if alertView.tag == 102 {
+        } else if alertView.tag == AlertTag.SigningOut.rawValue {
             // If full user is trying to sign out, let the FB session state change handle sign out and updating to new guest account
             if buttonIndex == 1 {
                 FBSession.activeSession().closeAndClearTokenInformation()

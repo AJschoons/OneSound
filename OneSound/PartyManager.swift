@@ -76,6 +76,12 @@ class PartyManager: NSObject {
     private var timeSinceLastGetCurrentParty = 0.0
     let getCurrentPartyRefreshPeriod = 10.0
     
+    // These are used to show the alerts after the loggingInSpashViewController / login flow is finished
+    var lostMusicControlAlertShouldBeShown = false
+    var noMusicControlAlertShouldBeShown = false
+    
+    private let alertCancelButtonTitle = "Ok"
+    
     class var sharedParty: PartyManager {
         struct Static {
             static let partyManager = PartyManager()
@@ -94,6 +100,11 @@ class PartyManager: NSObject {
         // Make sure to call setupAudioManager after init
     }
     
+    // Things that must be done after the shared singleton instance os intantiated
+    func prepareAfterInit() {
+        setupAudioManager()
+    }
+    
     // MUST be used; called after the PartyManager shared instance is instantiated in AppDelegate
     func setupAudioManager() {
         audioManager = PartyAudioManager()
@@ -104,6 +115,9 @@ class PartyManager: NSObject {
         state = newState
         stateTime = 0.0
         
+        lostMusicControlAlertShouldBeShown = false
+        noMusicControlAlertShouldBeShown = false
+        
         var somethingToDoOtherThanPrintln = true
         switch newState {
         case .None:
@@ -113,11 +127,21 @@ class PartyManager: NSObject {
             somethingToDoOtherThanPrintln = true
         case .Host:
             if oldState == .HostStreamable {
-                let alert = UIAlertView(title: "Lost Music Control", message: "Another device with your account has taken the music control. You still have the same Host control, but the music will play through the other device. To get music control back, go to the Party Settings", delegate: nil, cancelButtonTitle: "Ok")
-                alert.show()
+                if loggingInSpashViewControllerIsShowing {
+                    // Wait until done logging in, let PartyMainViewController handle when to show it
+                    lostMusicControlAlertShouldBeShown = true
+                } else {
+                    // Show the alert right now
+                    createLostMusicControlAlert().show()
+                }
             } else {
-                let alert = UIAlertView(title: "No Music Control", message: "Another device with your account has the music control. You still have the same Host control, but the music will play through the other device. To get music control back, go to the Party Settings", delegate: nil, cancelButtonTitle: "Ok")
-                alert.show()
+                if loggingInSpashViewControllerIsShowing {
+                    // Wait until done logging in, let PartyMainViewController handle when to show it
+                    noMusicControlAlertShouldBeShown = true
+                } else {
+                    // Show the alert right now
+                    createNoMusicControlAlert().show()
+                }
             }
         case .HostStreamable:
             somethingToDoOtherThanPrintln = true
@@ -542,5 +566,21 @@ extension PartyManager {
     func songClearVote(sid: Int) {
         let user = UserManager.sharedUser
         OSAPI.sharedClient.DELETESongVote(sid, success: nil, failure: defaultAFHTTPFailureBlock)
+    }
+}
+
+extension PartyManager {
+    // MARK: UIAlertView related code
+    
+    func createLostMusicControlAlert() -> UIAlertView {
+        let alert = UIAlertView(title: "Lost Music Control", message: "Another device with your account has taken the music control. You still have the same Host control, but the music will play through the other device. To get music control back, go to the Party Settings", delegate: self, cancelButtonTitle: "Ok")
+        alert.tag = AlertTag.LostMusicControl.rawValue
+        return alert
+    }
+    
+    func createNoMusicControlAlert() -> UIAlertView {
+        let alert = UIAlertView(title: "No Music Control", message: "Another device with your account has the music control. You still have the same Host control, but the music will play through the other device. To get music control back, go to the Party Settings", delegate: self, cancelButtonTitle: "Ok")
+        alert.tag = AlertTag.NoMusicControl.rawValue
+        return alert
     }
 }

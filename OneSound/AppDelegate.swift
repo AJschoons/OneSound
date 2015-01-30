@@ -70,7 +70,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         // Create the party manager
         PartyManager.sharedParty
-        PartyManager.sharedParty.setupAudioManager()
+        PartyManager.sharedParty.prepareAfterInit()
         
         // Login flow is handled by AFNetworkingReachability manager and FBLogin status change
         

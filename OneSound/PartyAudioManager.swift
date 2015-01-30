@@ -293,7 +293,6 @@ class PartyAudioManager: NSObject {
     // The audio manager's current song doesn't match the party manager's current song
     private func onCurrentSongMismatch() {
         audioPlayer!.stop()
-        PartyManager.sharedParty.clearSongInfo()
         setState(.Empty)
     }
     
