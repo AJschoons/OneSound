@@ -79,9 +79,6 @@ class LoggingInSpashViewController: UIViewController {
         }
         
         navC!.setupOverlay()
-        
-        let alert = UIAlertView(title: "Welcome to the party", message: "You're one of the lucky first 1000 people to use OneSound, the app where everyone is the DJ. If you haven't already, sign in with Facebook on the Profile page. To use parties go to the 'Party Search' tab, and create or search for a party there. This pre-release version expires in 30 days. Hope it treats you well! -OneSound Team", delegate: nil, cancelButtonTitle: "Gotcha, now let's party!")
-        alert.show()
     }
     
     override func prefersStatusBarHidden() -> Bool {
