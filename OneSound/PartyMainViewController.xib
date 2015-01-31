@@ -103,7 +103,7 @@
                     <color key="trackTintColor" red="0.83041405680000002" green="0.83038914200000002" blue="0.83040332790000004" alpha="1" colorSpace="calibratedRGB"/>
                 </progressView>
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Song Name" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="none" minimumScaleFactor="0.80000000000000027" translatesAutoresizingMaskIntoConstraints="NO" id="oBv-JJ-MLy" customClass="OSLabel" customModule="OneSound" customModuleProvider="target">
-                    <rect key="frame" x="10" y="333" width="537" height="24"/>
+                    <rect key="frame" x="10" y="331" width="537" height="24"/>
                     <fontDescription key="fontDescription" type="boldSystem" pointSize="20"/>
                     <color key="textColor" red="1" green="0.99997437000274658" blue="0.99999129772186279" alpha="1" colorSpace="calibratedRGB"/>
                     <nil key="highlightedColor"/>
@@ -647,7 +647,6 @@
                 <constraint firstItem="dg1-oM-G78" firstAttribute="leading" secondItem="ggx-wY-78Y" secondAttribute="leading" constant="20" id="RZR-Ec-2YG"/>
                 <constraint firstItem="UYc-8M-RBr" firstAttribute="leading" secondItem="ggx-wY-78Y" secondAttribute="leading" constant="20" id="S9b-L7-ieo"/>
                 <constraint firstItem="NMo-td-Wl0" firstAttribute="leading" secondItem="dAA-if-muq" secondAttribute="leading" constant="-10" id="SgL-Dx-Q4j"/>
-                <constraint firstItem="dAA-if-muq" firstAttribute="bottom" secondItem="oBv-JJ-MLy" secondAttribute="bottom" constant="17" id="U2n-nl-nDz"/>
                 <constraint firstAttribute="bottom" secondItem="qdb-42-GJA" secondAttribute="bottom" id="W2k-66-0dD"/>
                 <constraint firstItem="dy3-EB-EWF" firstAttribute="trailing" secondItem="NMo-td-Wl0" secondAttribute="trailing" id="XlG-WO-H2D"/>
                 <constraint firstItem="5if-AM-htS" firstAttribute="leading" secondItem="NMo-td-Wl0" secondAttribute="leading" constant="15" id="bkL-wp-HIj">
@@ -671,6 +670,7 @@
                 <constraint firstItem="NMo-td-Wl0" firstAttribute="bottom" secondItem="HIU-WJ-aqj" secondAttribute="bottom" id="soT-IG-2FZ">
                     <variation key="widthClass=compact" constant="20"/>
                 </constraint>
+                <constraint firstItem="dAA-if-muq" firstAttribute="top" secondItem="oBv-JJ-MLy" secondAttribute="bottom" constant="4" id="tun-bg-MW9"/>
                 <constraint firstItem="qdb-42-GJA" firstAttribute="leading" secondItem="ggx-wY-78Y" secondAttribute="leading" id="uJw-4H-CRK"/>
                 <constraint firstItem="Flu-ww-wQ5" firstAttribute="leading" secondItem="oBv-JJ-MLy" secondAttribute="trailing" constant="8" id="vJ7-sf-g5S"/>
                 <constraint firstItem="NMo-td-Wl0" firstAttribute="top" secondItem="HIU-WJ-aqj" secondAttribute="top" id="weL-IA-agR"/>

@@ -310,6 +310,7 @@ extension PartyMainViewController {
     
     func setCurrentSongUserInfo(user: User?, thumbsUp: Bool, thumbsDown: Bool) {
         showCurrentSongUserInfo()
+        setThumbsUpDownButtons(thumbsUp, thumbsDown: thumbsDown)
         
         if shorterIphoneScreen {
             if user != nil {
@@ -584,6 +585,18 @@ extension PartyMainViewController {
 
 extension PartyMainViewController {
     // MARK: Thumbs up/down button handling
+    
+    func setThumbsUpDownButtons(thumbsUp: Bool, thumbsDown: Bool) {
+        if thumbsUp {
+            setThumbsUpSelected()
+            setThumbsDownUnselected()
+        } else if thumbsDown {
+            setThumbsDownSelected()
+            setThumbsUpUnselected()
+        } else {
+            resetThumbsUpDownButtons()
+        }
+    }
     
     func handleThumbsUpPress(button: AnyObject) {
         if let thumbsUpButton = button as? UIButton {

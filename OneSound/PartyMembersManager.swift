@@ -29,7 +29,6 @@ class PartyMembersManager
     
     private var updating = false
     
-    
     // Increments the current page and adds the new data to updatedSongs
     func update(completion: completionClosure? = nil) {
         ++currentPage

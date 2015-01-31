@@ -214,6 +214,8 @@ class PartyManager: NSObject {
         } else {
             if state != .Member { setState(.Member) }
         }
+        
+        delegate.refresh()
     }
     
     private func postPartySongDidChangeNotificationBasedOnState() {
@@ -305,6 +307,11 @@ class PartyManager: NSObject {
         MPNowPlayingInfoCenter.defaultCenter().nowPlayingInfo = ["" : ""]
     }
     
+    private func resetManagers() {
+        playlistManager.reset()
+        membersManager.reset()
+    }
+    
     private func resetAllPartyInfo() {
         clearSongInfo()
         
@@ -313,8 +320,6 @@ class PartyManager: NSObject {
         name = ""
         strictness = 0
         
-        playlistManager.reset()
-        membersManager.reset()
         currentSong = nil
         currentUser = nil
         queueSong = nil
@@ -409,6 +414,7 @@ extension PartyManager {
                     self.updateMainPartyInfoFromJSON(responseJSON, JSONUpdateCompletion)
                     //self.refresh()
                     self.decideStateOfValidParty()
+                    self.resetManagers()
                 }, failure: { task, error in
                     if failureAddOn != nil {
                         failureAddOn!()
@@ -433,6 +439,7 @@ extension PartyManager {
                 if status == "success" {
                     // Update new party information
                     self.refresh()
+                    self.resetManagers()
                     respondToChangeAttempt(true)
                 } else {
                     // Server didn't accept request for new party with supplied information
@@ -476,6 +483,7 @@ extension PartyManager {
                 
                 if status == "success" {
                     self.setState(.None)
+                    self.resetManagers()
                     respondToChangeAttempt(true)
                 } else {
                     // Server didn't accept request for new party with supplied information
