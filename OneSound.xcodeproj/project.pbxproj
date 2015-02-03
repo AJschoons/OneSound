@@ -17,6 +17,8 @@
 		8108DF94199BBBE70040B8E7 /* CreateParty.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8108DF93199BBBE70040B8E7 /* CreateParty.storyboard */; };
 		8108DF97199BBC900040B8E7 /* CreatePartyViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8108DF96199BBC900040B8E7 /* CreatePartyViewController.swift */; };
 		8108DF9A199BDD150040B8E7 /* CreatePartyStrictnessViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8108DF98199BDD150040B8E7 /* CreatePartyStrictnessViewController.swift */; };
+		810989D31A7D98390076FB9F /* TroubleshootingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 810989D11A7D98390076FB9F /* TroubleshootingViewController.swift */; };
+		810989D41A7D98390076FB9F /* TroubleshootingViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 810989D21A7D98390076FB9F /* TroubleshootingViewController.xib */; };
 		812795091A49F20E0092D880 /* OSLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 812795081A49F20E0092D880 /* OSLabel.swift */; };
 		8130D7D21986B8BD00DD4B47 /* Party.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8130D7D11986B8BD00DD4B47 /* Party.swift */; };
 		8130D7D41986B8EB00DD4B47 /* PartyManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8130D7D31986B8EB00DD4B47 /* PartyManager.swift */; };
@@ -64,6 +66,7 @@
 		8179444F1A5751C000A9C636 /* ENSideMenuNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8179444D1A5751C000A9C636 /* ENSideMenuNavigationController.swift */; };
 		817944511A5752DE00A9C636 /* OSFrontNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 817944501A5752DE00A9C636 /* OSFrontNavigationController.swift */; };
 		818750561A50C624000CC353 /* PartyPlaylistManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 818750551A50C624000CC353 /* PartyPlaylistManager.swift */; };
+		8187B08B1A809A8F0071B9BC /* LoginFlowManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8187B08A1A809A8F0071B9BC /* LoginFlowManager.swift */; };
 		81929C88196C2C2C006F336B /* OneSoundHTTPClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81929C87196C2C2C006F336B /* OneSoundHTTPClient.swift */; };
 		81936FC8196C656F005E42F4 /* FrontViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81936FC6196C656F005E42F4 /* FrontViewController.swift */; };
 		81936FC9196C656F005E42F4 /* FrontViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 81936FC7196C656F005E42F4 /* FrontViewController.xib */; };
@@ -102,6 +105,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		01416F21672EEFB515CDCA1E /* Pods-OneSound.distribution.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-OneSound.distribution.xcconfig"; path = "Pods/Target Support Files/Pods-OneSound/Pods-OneSound.distribution.xcconfig"; sourceTree = "<group>"; };
 		52F652D4E9264838BE2D4D5C /* libPods-OneSound.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-OneSound.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		8103D66919805E9000AE5A27 /* LoggingInSpashViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoggingInSpashViewController.swift; sourceTree = "<group>"; };
 		8103D66A19805E9000AE5A27 /* LoggingInSpashViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LoggingInSpashViewController.xib; sourceTree = "<group>"; };
@@ -116,6 +120,8 @@
 		8108DF93199BBBE70040B8E7 /* CreateParty.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = CreateParty.storyboard; sourceTree = "<group>"; };
 		8108DF96199BBC900040B8E7 /* CreatePartyViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CreatePartyViewController.swift; sourceTree = "<group>"; };
 		8108DF98199BDD150040B8E7 /* CreatePartyStrictnessViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CreatePartyStrictnessViewController.swift; sourceTree = "<group>"; };
+		810989D11A7D98390076FB9F /* TroubleshootingViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TroubleshootingViewController.swift; sourceTree = "<group>"; };
+		810989D21A7D98390076FB9F /* TroubleshootingViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TroubleshootingViewController.xib; sourceTree = "<group>"; };
 		812795081A49F20E0092D880 /* OSLabel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OSLabel.swift; sourceTree = "<group>"; };
 		8130D7D11986B8BD00DD4B47 /* Party.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Party.swift; sourceTree = "<group>"; };
 		8130D7D31986B8EB00DD4B47 /* PartyManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PartyManager.swift; sourceTree = "<group>"; };
@@ -164,6 +170,7 @@
 		8179444D1A5751C000A9C636 /* ENSideMenuNavigationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ENSideMenuNavigationController.swift; sourceTree = "<group>"; };
 		817944501A5752DE00A9C636 /* OSFrontNavigationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OSFrontNavigationController.swift; sourceTree = "<group>"; };
 		818750551A50C624000CC353 /* PartyPlaylistManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PartyPlaylistManager.swift; sourceTree = "<group>"; };
+		8187B08A1A809A8F0071B9BC /* LoginFlowManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginFlowManager.swift; sourceTree = "<group>"; };
 		81929C81196B71F3006F336B /* OneSound-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "OneSound-Bridging-Header.h"; sourceTree = "<group>"; };
 		81929C87196C2C2C006F336B /* OneSoundHTTPClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OneSoundHTTPClient.swift; sourceTree = "<group>"; };
 		81936FC6196C656F005E42F4 /* FrontViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FrontViewController.swift; sourceTree = "<group>"; };
@@ -437,6 +444,8 @@
 			isa = PBXGroup;
 			children = (
 				81062FC1196B6DAA0057D230 /* TestViewController.swift */,
+				810989D11A7D98390076FB9F /* TroubleshootingViewController.swift */,
+				810989D21A7D98390076FB9F /* TroubleshootingViewController.xib */,
 				81936FC6196C656F005E42F4 /* FrontViewController.swift */,
 				81936FC7196C656F005E42F4 /* FrontViewController.xib */,
 				8103D66919805E9000AE5A27 /* LoggingInSpashViewController.swift */,
@@ -470,6 +479,7 @@
 				818750551A50C624000CC353 /* PartyPlaylistManager.swift */,
 				81ACB3E71A5273AD0039529E /* PartyMembersManager.swift */,
 				8195347F197857E6000B97A3 /* UserManager.swift */,
+				8187B08A1A809A8F0071B9BC /* LoginFlowManager.swift */,
 			);
 			name = Managers;
 			sourceTree = "<group>";
@@ -524,6 +534,7 @@
 			children = (
 				A676421E6983DD5A8B82753E /* Pods-OneSound.debug.xcconfig */,
 				A1BC9E433771B4BEBA03DCD4 /* Pods-OneSound.release.xcconfig */,
+				01416F21672EEFB515CDCA1E /* Pods-OneSound.distribution.xcconfig */,
 			);
 			name = Pods;
 			sourceTree = "<group>";
@@ -629,6 +640,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				81B17D90196F2A680062943C /* SideNavigationMenuCell.xib in Resources */,
+				810989D41A7D98390076FB9F /* TroubleshootingViewController.xib in Resources */,
 				8195347C19775FCE000B97A3 /* LoginColorCell.xib in Resources */,
 				8176451B197EA192001BF7A7 /* StoriesViewController.xib in Resources */,
 				8158314319748F730011D3CE /* PartyMembersViewController.xib in Resources */,
@@ -724,6 +736,7 @@
 				8158311F197477990011D3CE /* HistoryViewController.swift in Sources */,
 				81953480197857E6000B97A3 /* UserManager.swift in Sources */,
 				81C92CF01A3CCFE900BE63D1 /* PartySearchResultCell.swift in Sources */,
+				8187B08B1A809A8F0071B9BC /* LoginFlowManager.swift in Sources */,
 				815831271974786C0011D3CE /* FollowingViewController.swift in Sources */,
 				81414DCE197DD1F800081132 /* EnumHackExtensions.swift in Sources */,
 				8195E6861A5B398500FD0CC8 /* OSTabBarController.swift in Sources */,
@@ -735,6 +748,7 @@
 				8108DF97199BBC900040B8E7 /* CreatePartyViewController.swift in Sources */,
 				8195E6881A5B431A00FD0CC8 /* OSModalViewController.swift in Sources */,
 				8130D7D21986B8BD00DD4B47 /* Party.swift in Sources */,
+				810989D31A7D98390076FB9F /* TroubleshootingViewController.swift in Sources */,
 				8176451A197EA192001BF7A7 /* StoriesViewController.swift in Sources */,
 				8179444F1A5751C000A9C636 /* ENSideMenuNavigationController.swift in Sources */,
 				8130D7D41986B8EB00DD4B47 /* PartyManager.swift in Sources */,
@@ -838,8 +852,8 @@
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer: Adam Schoonmaker (RNKT643CPZ)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Adam Schoonmaker (RNKT643CPZ)";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: Adam Schoonmaker (8YP7AK358X)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Adam Schoonmaker (8YP7AK358X)";
 				COPY_PHASE_STRIP = YES;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -890,8 +904,8 @@
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_X86_VECTOR_INSTRUCTIONS = default;
 				CODE_SIGN_ENTITLEMENTS = OneSound/OneSound.entitlements;
-				CODE_SIGN_IDENTITY = "iPhone Developer: Adam Schoonmaker (RNKT643CPZ)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Adam Schoonmaker (RNKT643CPZ)";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: Adam Schoonmaker (8YP7AK358X)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Adam Schoonmaker (8YP7AK358X)";
 				GCC_PRECOMPILE_PREFIX_HEADER = NO;
 				GCC_SHORT_ENUMS = YES;
 				INFOPLIST_FILE = OneSound/Info.plist;
@@ -954,8 +968,8 @@
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer: Adam Schoonmaker (RNKT643CPZ)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Adam Schoonmaker (RNKT643CPZ)";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: Adam Schoonmaker (8YP7AK358X)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Adam Schoonmaker (8YP7AK358X)";
 				COPY_PHASE_STRIP = YES;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -976,15 +990,15 @@
 		};
 		813C6DBB1A6743F500CBA8B0 /* Distribution */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = A1BC9E433771B4BEBA03DCD4 /* Pods-OneSound.release.xcconfig */;
+			baseConfigurationReference = 01416F21672EEFB515CDCA1E /* Pods-OneSound.distribution.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_X86_VECTOR_INSTRUCTIONS = default;
 				CODE_SIGN_ENTITLEMENTS = OneSound/OneSound.entitlements;
-				CODE_SIGN_IDENTITY = "iPhone Developer: Adam Schoonmaker (RNKT643CPZ)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Adam Schoonmaker (RNKT643CPZ)";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: Adam Schoonmaker (8YP7AK358X)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Adam Schoonmaker (8YP7AK358X)";
 				GCC_PRECOMPILE_PREFIX_HEADER = NO;
 				GCC_SHORT_ENUMS = YES;
 				INFOPLIST_FILE = OneSound/Info.plist;

@@ -118,13 +118,9 @@ class PartyManager: NSObject {
         lostMusicControlAlertShouldBeShown = false
         noMusicControlAlertShouldBeShown = false
         
-        var somethingToDoOtherThanPrintln = true
         switch newState {
         case .None:
-            somethingToDoOtherThanPrintln = true
             resetAllPartyInfo()
-        case .Member:
-            somethingToDoOtherThanPrintln = true
         case .Host:
             if oldState == .HostStreamable {
                 if loggingInSpashViewControllerIsShowing {
@@ -143,8 +139,8 @@ class PartyManager: NSObject {
                     createNoMusicControlAlert().show()
                 }
             }
-        case .HostStreamable:
-            somethingToDoOtherThanPrintln = true
+        default:
+            break
         }
         
         NSNotificationCenter.defaultCenter().postNotificationName(PartyManagerStateChangeNotification, object: nil)
@@ -336,6 +332,7 @@ extension PartyManager {
     
     // Used to get the user's party and refresh all the info
     func getCurrentParty(completion: completionClosure? = nil, noCurrentParty: completionClosure? = nil, failureAddOn: completionClosure? = nil) {
+        
         OSAPI.sharedClient.GETPartyCurrent(
             success: { data, responseObject in
                 let responseJSON = JSONValue(responseObject)
@@ -438,9 +435,14 @@ extension PartyManager {
                 
                 if status == "success" {
                     // Update new party information
-                    self.refresh()
-                    self.resetManagers()
-                    respondToChangeAttempt(true)
+                    self.updateMainPartyInfoFromJSON(responseJSON, completion: {
+                        self.decideStateOfValidParty()
+                        self.resetManagers()
+                        respondToChangeAttempt(true)
+                    })
+                    //self.refresh()
+                    //self.resetManagers()
+                    //respondToChangeAttempt(true)
                 } else {
                     // Server didn't accept request for new party with supplied information
                     respondToChangeAttempt(false)
@@ -486,7 +488,7 @@ extension PartyManager {
                     self.resetManagers()
                     respondToChangeAttempt(true)
                 } else {
-                    // Server didn't accept request for new party with supplied information
+                    // Server didn't accept request to leave party
                     respondToChangeAttempt(false)
                 }
             }, failure: defaultAFHTTPFailureBlock
@@ -497,11 +499,14 @@ extension PartyManager {
         OSAPI.sharedClient.PUTPartyPermissions(partyID, musicControl: true,
             success: { data, responseObject in
                 let responseJSON = JSONValue(responseObject)
-                //println(responseJSON)
+                println(responseJSON)
                 let status = responseJSON["status"].string
                 
                 if status == "success" {
-                    self.refresh()
+                    //self.refresh()
+                    self.userHasMusicControl = true
+                    // TODO: what should the bool for userCanSkipSong be after getting music stream control?
+                    self.setState(.HostStreamable)
                     respondToChangeAttempt(true)
                 } else {
                     // Server didn't accept request for new party with supplied information

@@ -43,19 +43,18 @@ class ProfileViewController: UIViewController {
 
     @IBAction func signIntoFacebook(sender: AnyObject) {
         let fbSession = FBSession.activeSession()
-        // Only sign in if not already signed in
-        
-        if UserManager.sharedUser.guest == true {
-            // Make sure if a guest is clicking the button, they can try signing in
+
+        if (fbSession.state == FBSessionState.Open) || (fbSession.state == FBSessionState.OpenTokenExtended) || UserManager.sharedUser.guest == true  {
+            
+            let alert = UIAlertView(title: "Close and Clear Facebook", message: "#3", delegate: nil, cancelButtonTitle: "Okay")
+            alert.show()
             fbSession.closeAndClearTokenInformation()
         }
         
         if (fbSession.state != FBSessionState.Open) && (fbSession.state != FBSessionState.OpenTokenExtended) {
-            // was using FBSessionStateOpen and FBSessionStateOpenTokenExtended before using forked Facebook SDK version for Swift
+            
             FBSession.openActiveSessionWithReadPermissions(facebookSessionPermissions, allowLoginUI: true, completionHandler: { session, state, error in
-                let delegate = UIApplication.sharedApplication().delegate as AppDelegate
-                // Call the app delegate's sessionStateChanged:state:error method to handle session state changes
-                delegate.sessionStateChanged(session, state: state, error: error)
+                    LoginFlowManager.sharedManager.facebookSessionStateChanged(session, state: state, error: error)
                 }
             )
         }
@@ -346,8 +345,8 @@ extension ProfileViewController: UIAlertViewDelegate {
             if buttonIndex == 1 {
                 // If guest wants to sign out, delete all info and get new guest account, then refresh
                 UserManager.sharedUser.deleteAllSavedUserInformation()
-                //let alert = UIAlertView(title: "Setup Guest Acct", message: "#5", delegate: nil, cancelButtonTitle: "Okay")
-                //alert.show()
+                let alert = UIAlertView(title: "Setup Guest Acct", message: "#5", delegate: nil, cancelButtonTitle: "Okay")
+                alert.show()
                 UserManager.sharedUser.setupGuestAccount()
                 refresh()
             }
@@ -355,6 +354,9 @@ extension ProfileViewController: UIAlertViewDelegate {
             // If full user is trying to sign out, let the FB session state change handle sign out and updating to new guest account
             if buttonIndex == 1 {
                 FBSession.activeSession().closeAndClearTokenInformation()
+                UserManager.sharedUser.setupGuestAccount()
+                let alert = UIAlertView(title: "Close and Clear Facebook", message: "#4", delegate: nil, cancelButtonTitle: "Okay")
+                alert.show()
             }
         }
     }

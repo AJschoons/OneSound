@@ -319,33 +319,6 @@ class CreatePartyViewController: UITableViewController {
         footerView.addConstraint(NSLayoutConstraint(item: leavePartyButton, attribute: NSLayoutAttribute.Right, relatedBy: NSLayoutRelation.Equal, toItem: footerView, attribute: NSLayoutAttribute.Right, multiplier: 1, constant: -15))
         footerView.addConstraint(NSLayoutConstraint(item: leavePartyButton, attribute: NSLayoutAttribute.Bottom, relatedBy: NSLayoutRelation.Equal, toItem: footerView, attribute: NSLayoutAttribute.Bottom, multiplier: 1, constant: -15))
     }
-    
-    /*
-    // Before adding other buttons
-    // footerViewHeight = 60 back then, btw
-    func setupButtonsInTableFooterView() {
-        let footerView = UIView(frame: CGRectMake(0, 0, tableView.frame.width, CGFloat(footerViewHeight)))
-        footerView.backgroundColor = UIColor.clearColor()
-        tableView.tableFooterView = footerView
-        
-        let button = UIButton.buttonWithType(UIButtonType.System) as UIButton
-        button.setTitle("Leave Party", forState: UIControlState.Normal)
-        button.setTitleColor(UIColor.white(), forState: UIControlState.Normal)
-        button.addTarget(self, action: "leaveParty", forControlEvents: UIControlEvents.TouchUpInside)
-        button.titleLabel!.textColor = UIColor.white()
-        button.titleLabel!.textAlignment = NSTextAlignment.Center
-        button.titleLabel!.font = UIFont.systemFontOfSize(15)
-        button.backgroundColor = UIColor.red()
-        button.layer.cornerRadius = 3.0
-        button.setTranslatesAutoresizingMaskIntoConstraints(false)
-        
-        footerView.addSubview(button)
-        
-        button.addConstraint(NSLayoutConstraint(item: button, attribute: NSLayoutAttribute.Height, relatedBy: NSLayoutRelation.Equal, toItem: nil, attribute: NSLayoutAttribute.NotAnAttribute, multiplier: 1, constant: 30))
-        footerView.addConstraint(NSLayoutConstraint(item: button, attribute: NSLayoutAttribute.Left, relatedBy: NSLayoutRelation.Equal, toItem: footerView, attribute: NSLayoutAttribute.Left, multiplier: 1, constant: 15))
-        footerView.addConstraint(NSLayoutConstraint(item: button, attribute: NSLayoutAttribute.Right, relatedBy: NSLayoutRelation.Equal, toItem: footerView, attribute: NSLayoutAttribute.Right, multiplier: 1, constant: -15))
-        footerView.addConstraint(NSLayoutConstraint(item: button, attribute: NSLayoutAttribute.Bottom, relatedBy: NSLayoutRelation.Equal, toItem: footerView, attribute: NSLayoutAttribute.Bottom, multiplier: 1, constant: 0))
-    }*/
 }
 
 extension CreatePartyViewController: UITableViewDataSource {

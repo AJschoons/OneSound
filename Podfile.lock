@@ -24,7 +24,7 @@ PODS:
     - AFNetworking/NSURLConnection
     - AFNetworking/NSURLSession
   - Bolts (1.1.3)
-  - Facebook-iOS-SDK (3.21.1):
+  - Facebook-iOS-SDK (3.22.0):
     - Bolts (~> 1.0)
   - SDWebImage (3.7.1):
     - SDWebImage/Core (= 3.7.1)
@@ -46,7 +46,7 @@ SPEC CHECKSUMS:
   AFNetworkActivityLogger: d6a2d2755fada3a1fbf1f490ec0dd92224e092a4
   AFNetworking: 0f54cb5d16ce38c1b76948faffb8d5fb705021c7
   Bolts: 3db0a875235e0c9042b013af13af0f00f79b102c
-  Facebook-iOS-SDK: 18c26e86ab25c17854a2ee2a8f60562099c6600f
+  Facebook-iOS-SDK: 0eda8ff7120aada0a9c5f98552f7625da6c3440a
   SDWebImage: 116e88633b5b416ea0ca4b334a4ac59cf72dd38d
   SSKeychain: cc48bd3ad24fcd9125adb9e0d23dd50b8bbd08b9
   StreamingKit: 5b36623e7246cccddb8db3aee79c43bb180a51be

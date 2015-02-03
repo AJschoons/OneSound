@@ -16,3 +16,5 @@ enum AlertTag: Int {
     case LostMusicControl = 104
     case NoMusicControl = 105
 }
+
+let defaultAlertCancelButtonText = "Okay"

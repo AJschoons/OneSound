@@ -146,6 +146,9 @@ extension UserManager {
     func signIntoGuestAccount(id: Int, userAccessToken: String) {
         printlnC(pL, pG, "Signing in with GUEST information... userID:\(id)   userAccessToken:\(userAccessToken)")
         
+        // Make sure there aren't any saved tokens when signing into guest account
+        FBSession.activeSession().closeAndClearTokenInformation()
+        
         // Set the saved access token in the header
         OSAPI.sharedClient.requestSerializer.setValue(userAccessToken, forHTTPHeaderField: accessTokenHeaderKey)
         
@@ -162,8 +165,8 @@ extension UserManager {
                     failure: { task, error in
                         println("ERROR: Couldn't sign into account, creating new one")
                         println(error.localizedDescription)
-                        //let alert = UIAlertView(title: "Setup Guest Acct", message: "#6", delegate: nil, cancelButtonTitle: "Okay")
-                        //alert.show()
+                        let alert = UIAlertView(title: "Setup Guest Acct", message: "#6", delegate: nil, cancelButtonTitle: "Okay")
+                        alert.show()
                         self.setupGuestAccount()
                     }
                 )
@@ -177,8 +180,8 @@ extension UserManager {
                 
                 self.deleteAllSavedUserInformation(
                     completion: {
-                        //let alert = UIAlertView(title: "Setup Guest Acct", message: "#7", delegate: nil, cancelButtonTitle: "Okay")
-                        //alert.show()
+                        let alert = UIAlertView(title: "Setup Guest Acct", message: "#7", delegate: nil, cancelButtonTitle: "Okay")
+                        alert.show()
                         self.setupGuestAccount()
                     }
                 )
@@ -189,6 +192,9 @@ extension UserManager {
     // For use in the login flow of creating a guest user
     func setupGuestAccount() {
         printlnC(pL, pG, "Setup guest user")
+        
+        // Make sure there aren't any saved tokens when setting up guest account
+        FBSession.activeSession().closeAndClearTokenInformation()
         
         // Get the guest user creation info from the server
         OSAPI.sharedClient.GETGuestUser(
@@ -264,21 +270,21 @@ extension UserManager {
                         // Unauthorized token, so just delete everything
                         self.deleteAllSavedUserInformation(
                             completion: {
-                                //let alert = UIAlertView(title: "Setup Guest Acct", message: "#8", delegate: nil, cancelButtonTitle: "Okay")
-                                //alert.show()
+                                let alert = UIAlertView(title: "Setup Guest Acct", message: "#8", delegate: nil, cancelButtonTitle: "Okay")
+                                alert.show()
                                 self.setupGuestAccount()
                             }
                         )
                     } else if response.statusCode == 500 {
                         NSNotificationCenter.defaultCenter().postNotificationName(FinishedLoginFlowNotification, object: nil)
                     } else {
-                        //let alert = UIAlertView(title: "Setup Guest Acct", message: "#9", delegate: nil, cancelButtonTitle: "Okay")
-                        //alert.show()
+                        let alert = UIAlertView(title: "Setup Guest Acct", message: "#9", delegate: nil, cancelButtonTitle: "Okay")
+                        alert.show()
                         self.setupGuestAccount()
                     }
                 } else {
-                    //let alert = UIAlertView(title: "Setup Guest Acct", message: "#10", delegate: nil, cancelButtonTitle: "Okay")
-                    //alert.show()
+                    let alert = UIAlertView(title: "Setup Guest Acct", message: "#10", delegate: nil, cancelButtonTitle: "Okay")
+                    alert.show()
                     self.setupGuestAccount()
                 }
             }
@@ -319,19 +325,19 @@ extension UserManager {
                         // Unauthorized token, so just delete everything
                         self.deleteAllSavedUserInformation(
                             completion: {
-                                //let alert = UIAlertView(title: "Setup Guest Acct", message: "#11", delegate: nil, cancelButtonTitle: "Okay")
-                                //alert.show()
+                                let alert = UIAlertView(title: "Setup Guest Acct", message: "#11", delegate: nil, cancelButtonTitle: "Okay")
+                                alert.show()
                                 self.setupGuestAccount()
                             }
                         )
                     } else {
-                        //let alert = UIAlertView(title: "Setup Guest Acct", message: "#12", delegate: nil, cancelButtonTitle: "Okay")
-                        //alert.show()
+                        let alert = UIAlertView(title: "Setup Guest Acct", message: "#12", delegate: nil, cancelButtonTitle: "Okay")
+                        alert.show()
                         self.setupGuestAccount()
                     }
                 } else {
-                    //let alert = UIAlertView(title: "Setup Guest Acct", message: "#13", delegate: nil, cancelButtonTitle: "Okay")
-                    //alert.show()
+                    let alert = UIAlertView(title: "Setup Guest Acct", message: "#13", delegate: nil, cancelButtonTitle: "Okay")
+                    alert.show()
                     self.setupGuestAccount()
                 }
             }
@@ -389,7 +395,8 @@ extension UserManager {
                 } else {
                     respondToChangeAttempt(false)
                 }
-            }, failure: defaultAFHTTPFailureBlock)
+            }, failure: defaultAFHTTPFailureBlock
+        )
     }
     
     func updateUserFromJSON(json: JSONValue, accessToken: String, completion: completionClosure? = nil, forcePhotoUpdate: Bool = false) {
@@ -506,6 +513,8 @@ extension UserManager {
         defaults.removeObjectForKey(userSongCountKey)
         defaults.removeObjectForKey(userHotnessPercentKey)
         
+        //let alert = UIAlertView(title: "Close and Clear Facebook", message: "#7", delegate: nil, cancelButtonTitle: "Okay")
+        //alert.show()
         FBSession.activeSession().closeAndClearTokenInformation()
         
         if completion != nil {

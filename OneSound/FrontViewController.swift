@@ -26,7 +26,15 @@ class FrontViewController: UIViewController {
     }
     
     @IBAction func modal(sender: AnyObject) {
-        presentViewController(LoggingInSpashViewController(nibName: LoggingInSpashViewControllerNibName, bundle: nil), animated: true, completion: nil)
+        PartyManager.sharedParty.getMusicStreamControl(respondToChangeAttempt: { success in
+            if success {
+                let alert = UIAlertView(title: "Got Music Control!", message: "Woo hoo!", delegate: self, cancelButtonTitle: "Okay")
+                alert.show()
+            } else {
+                let alert = UIAlertView(title: "Music Control Failure", message: "Failed to get the music stream control. Please reload the party settings and try again", delegate: self, cancelButtonTitle: "Okay")
+                alert.show()
+            }
+        })
     }
     
     

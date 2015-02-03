@@ -24,7 +24,8 @@ class SideNavigationViewController: UITableViewController {
     var menuViewControllers: [UIViewController?] = [nil, PartyTabBarController(nibName: PartyTabBarControllerNibName, bundle: nil), HistoryViewController(nibName: HistoryViewControllerNibName, bundle: nil),
         SearchViewController(nibName: SearchViewControllerNibName, bundle: nil), FollowingViewController(nibName: FollowingViewControllerNibName, bundle: nil), FrontViewController(nibName: FrontViewControllerNibName, bundle: nil),
         ProfileViewController(nibName: ProfileViewControllerNibName, bundle: nil)] */
-    var menuViewControllers: [UIViewController?] = [nil, PartyTabBarController(nibName: PartyTabBarControllerNibName, bundle: nil), SearchViewController(nibName: SearchViewControllerNibName, bundle: nil), ProfileViewController(nibName: ProfileViewControllerNibName, bundle: nil)]
+    var menuViewControllers: [UIViewController?] = [nil, PartyTabBarController(nibName: PartyTabBarControllerNibName, bundle: nil), SearchViewController(nibName: SearchViewControllerNibName, bundle: nil), ProfileViewController(nibName: ProfileViewControllerNibName, bundle: nil), TroubleshootingViewController(nibName: TroubleshootingViewControllerNibName, bundle: nil), FrontViewController(nibName: FrontViewControllerNibName, bundle: nil)]
+    
     
     // TODO: have this be saved when app closes
     var initiallySelectedRow = 3
@@ -59,12 +60,12 @@ class SideNavigationViewController: UITableViewController {
         
         // First items are nil so index match table table row
         if shouldUseGrayIcons {
-            sideMenuIcons = [nil, UIImage(named: "sideMenuPartyIconGray"), UIImage(named: "sideMenuSearchIconGray"), UIImage(named: "sideMenuProfileIconGray")]
+            sideMenuIcons = [nil, UIImage(named: "sideMenuPartyIconGray"), UIImage(named: "sideMenuSearchIconGray"), UIImage(named: "sideMenuProfileIconGray"), UIImage(), UIImage()]
         } else {
-            sideMenuIcons = [nil, UIImage(named: "sideMenuPartyIconBlack"), UIImage(named: "sideMenuSearchIconBlack"), UIImage(named: "sideMenuProfileIconBlack")]
+            sideMenuIcons = [nil, UIImage(named: "sideMenuPartyIconBlack"), UIImage(named: "sideMenuSearchIconBlack"), UIImage(named: "sideMenuProfileIconBlack"), UIImage(), UIImage()]
         }
 
-        sideMenuItemLabels = [nil, "Party", "Party Search", "Profile"]
+        sideMenuItemLabels = [nil, "Party", "Party Search", "Profile", "Tests...", "Resets..."]
         
         // Register the cells
         var nib = UINib(nibName: "SideNavigationMenuCell", bundle: nil)
@@ -105,7 +106,7 @@ class SideNavigationViewController: UITableViewController {
 extension SideNavigationViewController: UITableViewDataSource {
     
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 4
+        return menuViewControllers.count
     }
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {

@@ -40,6 +40,8 @@ var shorterIphoneScreen = false;
 
 var errorAlertIsShowing = false
 
+var troubleshootingStr = ""
+
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
                             
@@ -122,59 +124,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 extension AppDelegate {
     // MARK: App launching related code
-    
-    func setupAppUserManagerBySigningInWithLoginFlow() {
-        // Whenever a person opens the app, check for a cached session
-        if FBSession.activeSession().state == FBSessionState.CreatedTokenLoaded {
-            // If there IS one, just open the session silently, w/o showing the user the login UI
-            println("Cached facebook token found")
-            
-            FBSession.openActiveSessionWithReadPermissions(facebookSessionPermissions, allowLoginUI: false,
-                completionHandler: { session, state, error in
-                    // Handler for session state changes
-                    // This method will be called EACH time the session state changes,
-                    // also for intermediate states and NOT just when the session open
-                    self.sessionStateChanged(session, state: state, error: error)
-                }
-            )
-        } else {
-            // If no facebook token, check keychain info for user
-            println("Cached facebook token unavailable, check keychain for user")
-            
-            var userID: Int? = SSKeychain.passwordForService(service, account: userIDKeychainKey) != nil ? SSKeychain.passwordForService(service, account: userIDKeychainKey).toInt() : nil
-            var userAPIToken: String? = SSKeychain.passwordForService(service, account: userAccessTokenKeychainKey)
-            var userGuestBool: String? = SSKeychain.passwordForService(service, account: userGuestBoolKeychainKey)
-            
-            if userID == nil || userAPIToken == nil || userGuestBool == nil {
-                // If no user, then request a guest user to be created, set it up, save in keychain, save to UserManager
-                println("user NOT found in keychain")
-                //let alert = UIAlertView(title: "Setup Guest Acct", message: "#1", delegate: nil, cancelButtonTitle: "Okay")
-                //alert.show()
-                UserManager.sharedUser.setupGuestAccount()
-            } else {
-                // Got user from keychain
-                println("user WAS found in keychain")
-                if userGuestBool == userGuestBoolKeychainValueIsGuest {
-                    // Sign them into the guest account
-                    println("keychain user is guest")
-                    UserManager.sharedUser.signIntoGuestAccount(userID!, userAccessToken: userAPIToken!)
-                } else if userGuestBool == userGuestBoolKeychainValueIsNotGuest {
-                    // Show them the Facebook login UI and give them chance to sign in
-                    println("keychain user is NOT guest")
-                    FBSession.openActiveSessionWithReadPermissions(facebookSessionPermissions, allowLoginUI: true,
-                        completionHandler: { session, state, error in
-                            // Handler for session state changes
-                            // This method will be called EACH time the session state changes,
-                            // also for intermediate states and NOT just when the session open
-                            self.sessionStateChanged(session, state: state, error: error)
-                        }
-                    )
-                } else {
-                    println("ERROR: invalid guest bool keychain value")
-                }
-            }
-        }
-    }
 
     // Setup side menu and general navigation hierarchy
     func setupAppWindowAndViewHierarchy() {
@@ -202,18 +151,20 @@ extension AppDelegate {
         
         AFNetworkReachabilityManager.sharedManager().setReachabilityStatusChangeBlock({ reachability in
             if reachability == AFNetworkReachabilityStatus.NotReachable {
+                
                 println("Network has changed to UNreachable")
                 // Make sure splash screen would get closed at this point in the Login Flow
                 NSNotificationCenter.defaultCenter().postNotificationName(FinishedLoginFlowNotification, object: nil)
                 
                 let alertView = UIAlertView(title: "No Internet Connection", message: "Please connect to the internet to use OneSound", delegate: nil, cancelButtonTitle: "Ok")
                 alertView.show()
+                
             } else if (reachability == AFNetworkReachabilityStatus.ReachableViaWiFi) || (reachability == AFNetworkReachabilityStatus.ReachableViaWWAN) {
                 println("Network has changed to reachable")
                 
+                // Try setting up the user if network reachable but still not setup
                 if UserManager.sharedUser.setup == false {
-                    // Try setting up the user if network reachable but still not setup
-                    self.setupAppUserManagerBySigningInWithLoginFlow()
+                    LoginFlowManager.sharedManager.startLoginFlow()
                 }
             }
         })
@@ -259,127 +210,16 @@ extension AppDelegate {
 extension AppDelegate {
     // MARK: Facebook SDK related code
     
-    func sessionStateChanged(session: FBSession, state: FBSessionState, error: NSError!) {
-        // Handles ALL the session state changes in the app
-        
-        // Handle the session state
-        // Usually the only interesting states are opened session, closed session, and failed login
-        if error == nil && state == FBSessionState.Open { //FBSessionStateOpen {
-            println("Facebook session state change: Open")
-            
-            let accessTokenData = session.accessTokenData
-            let userFBAccessToken = accessTokenData.accessToken
-            println("Facebook session access token:\(userFBAccessToken)")
-            
-            var userID: Int? = SSKeychain.passwordForService(service, account: userIDKeychainKey) != nil ? SSKeychain.passwordForService(service, account: userIDKeychainKey).toInt() : nil
-            var userAPIToken: String? = SSKeychain.passwordForService(service, account: userAccessTokenKeychainKey)
-            
-            if userID != nil && userAPIToken != nil {
-                println("Found userID and userAPIToken from keychain, sign in with Facebook account")
-                
-                println("userID from keychain:\(userID)")
-                println("userAPIToken from keychain:\(userAPIToken)")
-                println("userfbAuthToken:\(userFBAccessToken)")
-                
-                if userFBAccessToken != nil {
-                    UserManager.sharedUser.signIntoFullAccount(userID!, userAccessToken: userAPIToken!, fbAuthToken: userFBAccessToken)
-                } else {
-                    // Reset all data and let user know to sign back into facebook
-                    // The Facebook SDK session state will change to closed / login failed, and will be handled accordingly
-                    /*
-                    UserManager.sharedUser.deleteAllSavedUserInformation(
-                        completion: {
-                            let alert = UIAlertView(title: "Facebook Information Expired", message: "The Facebook login information has expired. Please restart the app and sign in again. The temporary new guest account that has been provided does not have any information from the Facebook verified account", delegate: nil, cancelButtonTitle: "Ok")
-                            alert.show()
-                        }
-                    )*/
-                    
-                    // Try to have them sign back into Facebook
-                    FBSession.openActiveSessionWithReadPermissions(facebookSessionPermissions, allowLoginUI: true,
-                        completionHandler: { session, state, error in
-                            // Handler for session state changes
-                            // This method will be called EACH time the session state changes,
-                            // also for intermediate states and NOT just when the session open
-                            self.sessionStateChanged(session, state: state, error: error)
-                        }
-                    )
-                }
-            } else {
-                println("UserID and userAPIToken NOT found from keychain, setup guest user")
-                //let alert = UIAlertView(title: "Setup Guest Acct", message: "#2", delegate: nil, cancelButtonTitle: "Okay")
-                //alert.show()
-                UserManager.sharedUser.setupGuestAccount()
-            }
-        } else if (state == FBSessionState.Closed) || (state == FBSessionState.ClosedLoginFailed) {
-            // was using FBSessionStateClosed and FBSessionStateClosedLoginFailed until using forked facebook iOS SDK
-            // If the session is closed, delete all old info and setup a guest account if the user had a full account
-            println("Facebook session state change: Closed/Login Failed")
-            
-            if UserManager.sharedUser.guest != nil && UserManager.sharedUser.guest == false {
-                println("User was NOT a guest; delete all their saved info & clear facebook token, setup new guest account")
-                UserManager.sharedUser.deleteAllSavedUserInformation(
-                    completion: {
-                        //let alert = UIAlertView(title: "Setup Guest Acct", message: "#3", delegate: nil, cancelButtonTitle: "Okay")
-                        //alert.show()
-                        UserManager.sharedUser.setupGuestAccount()
-                    }
-                )
-            } else {
-                // If user was a guest (could only occur during sign in...?) then just delete the facebook info
-                println("User WAS a guest; clear facebook token")
-                FBSession.activeSession().closeAndClearTokenInformation()
-                // Make sure splash screen would get closed at this point in the Login Flow
-                NSNotificationCenter.defaultCenter().postNotificationName(FinishedLoginFlowNotification, object: nil)
-            }
-        } else if (error != nil) {
-            println("Facebook session state change: Error")
-            // Make sure splash screen would get closed at this point in the Login Flow
-            NSNotificationCenter.defaultCenter().postNotificationName(FinishedLoginFlowNotification, object: nil)
-            
-            var alertText: String?
-            var alertTitle: String?
-            // If the error requires people using an app to make an action outside of the app in order to recover
-            if FBErrorUtility.shouldNotifyUserForError(error) == true {
-                alertTitle = "Session Error"
-                alertText = FBErrorUtility.userMessageForError(error)
-                let alert = UIAlertView(title: alertTitle, message: alertText, delegate: nil, cancelButtonTitle: "Ok")
-                alert.show()
-            } else {
-                // If the user cancelled login, do nothing
-                if FBErrorUtility.errorCategoryForError(error) == FBErrorCategory.UserCancelled {
-                    println("User cancelled login")
-                } else if FBErrorUtility.errorCategoryForError(error) == FBErrorCategory.AuthenticationReopenSession {
-                    // If session closure outside of the app happened
-                    alertTitle = "Session Error"
-                    alertText = "Your Facebook current session is no longer valid. Please log in again."
-                    let alert = UIAlertView(title: alertTitle, message: alertText, delegate: nil, cancelButtonTitle: "Ok")
-                    alert.show()
-                } else {
-                    // All other errors handled with generic message
-                    // Get more info from the error
-                    // TODO: figure out a way around this issue
-                    /*
-                    let errorMessageObject: AnyObject? = error.userInfo["com.facebook.sdk:ParsedJSONResponseKey"]?["body"]?["error"]?["message"]
-                    
-                    if let errorMessage = errorMessageObject as? String {
-                        alertTitle = "Something went wrong"
-                        alertText = "Please retry. If the problem persists contact us and mention this error code: \(errorMessage)"
-                        let alert = UIAlertView(title: alertTitle, message: alertText, delegate: nil, cancelButtonTitle: "Ok")
-                        alert.show()
-
-                    }
-                    */
-                }
-            }
-            // Clear the token for all errors
-            FBSession.activeSession().closeAndClearTokenInformation()
-            // Show the user the logged out UI
-        }
-        NSNotificationCenter.defaultCenter().postNotificationName(FacebookSessionChangeNotification, object: nil)
-    }
-    
     // Manages results of all the actions taken outside the app (successful login/auth or cancellation)
     func application(application: UIApplication!, openURL url: NSURL!, sourceApplication: String!, annotation: AnyObject!) -> Bool {
+        
+        // Set the state change handler before handleOpenURL just in case it was lost when app backgrounded
+        FBSession.activeSession().setStateChangeHandler(
+            { session, state, error in
+                LoginFlowManager.sharedManager.facebookSessionStateChanged(session, state: state, error: error)
+            }
+        )
+        
         return FBAppCall.handleOpenURL(url, sourceApplication: sourceApplication)
     }
 }
