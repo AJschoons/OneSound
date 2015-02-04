@@ -149,7 +149,7 @@ class LoginFlowManager {
                 FBSession.activeSession().closeAndClearTokenInformation()
                 troubleshootingStr += " tryOpeningSessionAgain||"
                 FBSession.openActiveSessionWithReadPermissions(facebookInitialSessionPermissions, allowLoginUI: true, completionHandler: { session, state, error in
-                    self.facebookSessionStateChanged(session, state: state, error: error)
+                        self.facebookSessionStateChanged(session, state: state, error: error)
                     }
                 )
             }
@@ -176,10 +176,18 @@ class LoginFlowManager {
             // If session gets closed on a non-guest, delete all info and setup a new guest account
             if !userIsGuest {
                 troubleshootingStr += " userNotGuest||"
+                
+                UserManager.sharedUser.deleteAllSavedUserInformation(completion: nil)
+                troubleshootingStr += " ^^setupGuestAccount #3^^"
+                UserManager.sharedUser.setupGuestAccount()
+                
+                // NEVER EVER USE THIS CODE BELOW
+                // Somehow this snippet below caused itself to be called when changing state to host streamable
+                /*
                 UserManager.sharedUser.deleteAllSavedUserInformation(completion: {
                     troubleshootingStr += " ^^setupGuestAccount #3^^"
                     UserManager.sharedUser.setupGuestAccount()
-                })
+                })*/
                 
             // User was a guest
             } else {
