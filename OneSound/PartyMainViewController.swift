@@ -844,6 +844,6 @@ extension PartyMainViewController: CreatePartyViewControllerDelegate {
     // MARK: CreatePartyViewControllerDelegate
     
     func CreatePartyViewControllerDone() {
-        viewWillAppear(true)
+        //viewWillAppear(true)
     }
 }

@@ -89,9 +89,9 @@ class LoginViewController: UITableViewController {
     
     func cancel() {
         if !accountAlreadyExists {
-            let alert = UIAlertView(title: "Setup Guest Acct", message: "#4", delegate: nil, cancelButtonTitle: "Okay")
-            alert.show()
+            troubleshootingStr += " ^^closeAndClearToken #6^^"
             FBSession.activeSession().closeAndClearTokenInformation()
+            troubleshootingStr += " ^^setupGuestAccount #5^^"
             UserManager.sharedUser.setupGuestAccount()
         }
         

@@ -111,6 +111,9 @@ class PartyManager: NSObject {
     }
     
     func setState(newState: PartyManagerState) {
+        
+        troubleshootingStr += "**setPartyState**"
+        
         let oldState = state
         state = newState
         stateTime = 0.0
@@ -496,6 +499,9 @@ extension PartyManager {
     }
     
     func getMusicStreamControl(# respondToChangeAttempt: (Bool) -> ()) {
+        
+        troubleshootingStr += "**getMusicStreamControl**"
+        
         OSAPI.sharedClient.PUTPartyPermissions(partyID, musicControl: true,
             success: { data, responseObject in
                 let responseJSON = JSONValue(responseObject)
@@ -503,6 +509,9 @@ extension PartyManager {
                 let status = responseJSON["status"].string
                 
                 if status == "success" {
+                    
+                    troubleshootingStr += " gotMusicStreamSuccess ||"
+                    
                     //self.refresh()
                     self.userHasMusicControl = true
                     // TODO: what should the bool for userCanSkipSong be after getting music stream control?

@@ -69,6 +69,9 @@ class PartyAudioManager: NSObject {
     }
     
     private func setState(newState: PartyAudioManagerState) {
+        
+        troubleshootingStr += "**setPartyAudioState**"
+        
         state = newState
         stateTime = 0.0
         let partyManager = PartyManager.sharedParty
@@ -111,6 +114,7 @@ class PartyAudioManager: NSObject {
         switch state {
         case .Inactive:
             if partyManager.state == .HostStreamable && !movingFromInactiveToEmpty {
+                troubleshootingStr += " becameHostStreamableFromInactive ||"
                 onUserBecameHostStreamable()
                 return
             }
