@@ -19,7 +19,7 @@ class AlertManager {
         return Static.alertManager
     }
     
-    func showUIAlertView(UIAlertView) {
+    func showUIAlertView(UIAlertView alert) {
         
     }
     
