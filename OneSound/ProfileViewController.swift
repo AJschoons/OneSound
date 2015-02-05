@@ -45,8 +45,7 @@ class ProfileViewController: UIViewController {
         let fbSession = FBSession.activeSession()
 
         if (fbSession.state == FBSessionState.Open) || (fbSession.state == FBSessionState.OpenTokenExtended) || UserManager.sharedUser.guest == true  {
-            
-            troubleshootingStr += " ^^closeAndClearToken #7^^"
+        
             fbSession.closeAndClearTokenInformation()
         }
         
@@ -344,16 +343,13 @@ extension ProfileViewController: UIAlertViewDelegate {
             if buttonIndex == 1 {
                 // If guest wants to sign out, delete all info and get new guest account, then refresh
                 UserManager.sharedUser.deleteAllSavedUserInformation()
-                troubleshootingStr += " ^^setupGuestAccount #6^^"
                 UserManager.sharedUser.setupGuestAccount()
                 refresh()
             }
         } else if alertView.tag == AlertTag.SigningOut.rawValue {
             // If full user is trying to sign out, let the FB session state change handle sign out and updating to new guest account
             if buttonIndex == 1 {
-                troubleshootingStr += " ^^closeAndClearToken #8^^"
                 FBSession.activeSession().closeAndClearTokenInformation()
-                troubleshootingStr += " ^^setupGuestAccount #7^^"
                 UserManager.sharedUser.setupGuestAccount()
             }
         }

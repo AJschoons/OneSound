@@ -147,7 +147,6 @@ extension UserManager {
         printlnC(pL, pG, "Signing in with GUEST information... userID:\(id)   userAccessToken:\(userAccessToken)")
         
         // Make sure there aren't any saved tokens when signing into guest account
-        troubleshootingStr += " ^^closeAndClearToken #9^^"
         FBSession.activeSession().closeAndClearTokenInformation()
         
         // Set the saved access token in the header
@@ -166,7 +165,6 @@ extension UserManager {
                     failure: { task, error in
                         println("ERROR: Couldn't sign into account, creating new one")
                         println(error.localizedDescription)
-                        troubleshootingStr += " ^^setupGuestAccount #8^^"
                         self.setupGuestAccount()
                     }
                 )
@@ -180,7 +178,6 @@ extension UserManager {
                 
                 self.deleteAllSavedUserInformation(
                     completion: {
-                        troubleshootingStr += " ^^setupGuestAccount #9^^"
                         self.setupGuestAccount()
                     }
                 )
@@ -192,10 +189,7 @@ extension UserManager {
     func setupGuestAccount() {
         printlnC(pL, pG, "Setup guest user")
         
-        troubleshootingStr += "**setupGuestAccount**"
-        
         // Make sure there aren't any saved tokens when setting up guest account
-        troubleshootingStr += " ^^closeAndClearToken #10^^"
         FBSession.activeSession().closeAndClearTokenInformation()
         
         // Get the guest user creation info from the server
@@ -272,18 +266,15 @@ extension UserManager {
                         // Unauthorized token, so just delete everything
                         self.deleteAllSavedUserInformation(
                             completion: {
-                                troubleshootingStr += " ^^setupGuestAccount #10^^"
                                 self.setupGuestAccount()
                             }
                         )
                     } else if response.statusCode == 500 {
                         NSNotificationCenter.defaultCenter().postNotificationName(FinishedLoginFlowNotification, object: nil)
                     } else {
-                        troubleshootingStr += " ^^setupGuestAccount #11^^"
                         self.setupGuestAccount()
                     }
                 } else {
-                    troubleshootingStr += " ^^setupGuestAccount #12^^"
                     self.setupGuestAccount()
                 }
             }
@@ -324,16 +315,13 @@ extension UserManager {
                         // Unauthorized token, so just delete everything
                         self.deleteAllSavedUserInformation(
                             completion: {
-                                troubleshootingStr += " ^^setupGuestAccount #13^^"
                                 self.setupGuestAccount()
                             }
                         )
                     } else {
-                        troubleshootingStr += " ^^setupGuestAccount #14^^"
                         self.setupGuestAccount()
                     }
                 } else {
-                    troubleshootingStr += " ^^setupGuestAccount #15^^"
                     self.setupGuestAccount()
                 }
             }
@@ -509,7 +497,6 @@ extension UserManager {
         defaults.removeObjectForKey(userSongCountKey)
         defaults.removeObjectForKey(userHotnessPercentKey)
         
-        troubleshootingStr += " ^^closeAndClearToken #11^^"
         FBSession.activeSession().closeAndClearTokenInformation()
         
         if completion != nil {

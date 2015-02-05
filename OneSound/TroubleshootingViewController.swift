@@ -21,7 +21,7 @@ class TroubleshootingViewController: UIViewController {
     }
     
     override func viewWillAppear(animated: Bool) {
-        textVew.text = troubleshootingStr
+        textVew.text = ""
     }
 
     override func didReceiveMemoryWarning() {

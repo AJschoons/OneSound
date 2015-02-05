@@ -23,8 +23,6 @@ class LoginFlowManager {
     // Use on app launch
     func startLoginFlow() {
         
-        troubleshootingStr += "**startLoginFlow**"
-        
         // Get saved info from the keychain
         let userID: Int? = SSKeychain.passwordForService(service, account: userIDKeychainKey) != nil ? SSKeychain.passwordForService(service, account: userIDKeychainKey).toInt() : nil
         let userAccessToken: String? = SSKeychain.passwordForService(service, account: userAccessTokenKeychainKey)
@@ -35,8 +33,6 @@ class LoginFlowManager {
         var userIsGuest = true
         if userFoundInKeychain && userGuestBool == userGuestBoolKeychainValueIsNotGuest { userIsGuest = false }
         
-        troubleshootingStr += " userID:\(userID) || userAToken:\(userAccessToken) || uInKeychain:\(userFoundInKeychain) || isGuest:\(userIsGuest) ||"
-        
         // If a user is found, sign them in
         if userFoundInKeychain {
             
@@ -45,7 +41,7 @@ class LoginFlowManager {
                 
                 // If there's a cached token, just open the session silently, without showing the user the login UI
                 if FBSession.activeSession().state == FBSessionState.CreatedTokenLoaded {
-                    troubleshootingStr += " tokenLoaded:true ||"
+
                     FBSession.openActiveSessionWithReadPermissions(facebookInitialSessionPermissions, allowLoginUI: false, completionHandler: { session, state, error in
                             // Handles what to do next based on the state
                             self.facebookSessionStateChanged(session, state: state, error: error)
@@ -54,7 +50,7 @@ class LoginFlowManager {
                 
                 // No cached token, so sign them in and show the login UI
                 } else {
-                    troubleshootingStr += " tokenLoaded:false ||"
+
                     FBSession.openActiveSessionWithReadPermissions(facebookInitialSessionPermissions, allowLoginUI: true, completionHandler: { session, state, error in
                             // Handles what to do next based on the state
                             self.facebookSessionStateChanged(session, state: state, error: error)
@@ -64,18 +60,13 @@ class LoginFlowManager {
                 
             // User was a guest, so make sure all tokens cleared and then sign in guest account
             } else {
-                troubleshootingStr += " ^^closeAndClearToken #1^^"
                 FBSession.activeSession().closeAndClearTokenInformation()
-                troubleshootingStr += " signIntoGuestAccount ||"
                 UserManager.sharedUser.signIntoGuestAccount(userID!, userAccessToken: userAccessToken!)
             }
             
         // User wasn't found in keychain, so make sure all tokens cleared and then setup guest account
         } else {
-            troubleshootingStr += " ^^closeAndClearToken #2^^"
             FBSession.activeSession().closeAndClearTokenInformation()
-            troubleshootingStr += " setupIntoGuestAccount ||"
-            troubleshootingStr += " ^^setupGuest #1^^"
             UserManager.sharedUser.setupGuestAccount()
         }
         
@@ -85,8 +76,6 @@ class LoginFlowManager {
     // This method will be called EACH time the session state changes,
     // also for intermediate states and NOT just when the session open
     func facebookSessionStateChanged(session: FBSession, state: FBSessionState, error: NSError!) {
-        
-        troubleshootingStr += "**facebookSessionStateChanged**"
         
         // Get saved info from the keychain
         let userID: Int? = SSKeychain.passwordForService(service, account: userIDKeychainKey) != nil ? SSKeychain.passwordForService(service, account: userIDKeychainKey).toInt() : nil
@@ -101,7 +90,8 @@ class LoginFlowManager {
         userIsGuest = userIsGuest || (UserManager.sharedUser.guest != nil && UserManager.sharedUser.guest == false)
         var keychainUserAlreadySignedIn = userFoundInKeychain && UserManager.sharedUser.setup && userID == UserManager.sharedUser.id
         
-        troubleshootingStr += " userID:\(userID) || userAToken:\(userAccessToken) || uInKeychain:\(userFoundInKeychain) || isGuest:\(userIsGuest) || keychainUserIsSignedIn:\(keychainUserAlreadySignedIn) ||"
+        
+        
         
         // Handle the session state change...
         
@@ -113,8 +103,6 @@ class LoginFlowManager {
         
         // If the session is closed
         if state == .Closed || state == .ClosedLoginFailed {
-            let stateStr = state == .Closed ? "closed" : "closedLoginFailed"
-            troubleshootingStr += " state:\(stateStr)||"
             handleFacebookClosedSession(session, userID: userID, userAccessToken: userAccessToken, userFoundInKeychain: userFoundInKeychain, userIsGuest: userIsGuest, keychainUserAlreadySignedIn: keychainUserAlreadySignedIn)
         }
         
@@ -129,8 +117,6 @@ class LoginFlowManager {
     
     private func handleFacebookOpenSession(session: FBSession, userID: Int?, userAccessToken: String?, userFoundInKeychain: Bool) {
         
-        troubleshootingStr += " state:open||"
-        
         let accessTokenData = session.accessTokenData
         let userFBAccessToken = accessTokenData.accessToken
         
@@ -140,14 +126,11 @@ class LoginFlowManager {
             // If there's an available access token, sign both guests and non-guests in with it
             // (guests "signing into a full account" happens when setting up a new account... I think)
             if FBSession.activeSession().isOpen && userFBAccessToken != nil {
-                troubleshootingStr += " signIntoFullAccount||"
                 UserManager.sharedUser.signIntoFullAccount(userID!, userAccessToken: userAccessToken!, fbAuthToken: userFBAccessToken)
                 
             // No available access token, so close and reopen session (not sure when this would ever happen)
             } else {
-                troubleshootingStr += " ^^closeAndClearToken #3^^"
                 FBSession.activeSession().closeAndClearTokenInformation()
-                troubleshootingStr += " tryOpeningSessionAgain||"
                 FBSession.openActiveSessionWithReadPermissions(facebookInitialSessionPermissions, allowLoginUI: true, completionHandler: { session, state, error in
                         self.facebookSessionStateChanged(session, state: state, error: error)
                     }
@@ -156,10 +139,7 @@ class LoginFlowManager {
             
         // User wasn't found in keychain, so make sure all tokens cleared and then setup guest account
         } else {
-            troubleshootingStr += " ^^closeAndClearToken #4^^"
             FBSession.activeSession().closeAndClearTokenInformation()
-            troubleshootingStr += " setupGuestAccount||"
-            troubleshootingStr += " ^^setupGuestAccount #2^^"
             UserManager.sharedUser.setupGuestAccount()
         }
     }
@@ -167,7 +147,6 @@ class LoginFlowManager {
     private func handleFacebookClosedSession(session: FBSession, userID: Int?, userAccessToken: String?, userFoundInKeychain: Bool, userIsGuest: Bool, keychainUserAlreadySignedIn: Bool) {
         
         // Make sure the session is closed and cleared
-        troubleshootingStr += " ^^closeAndClearToken #5^^"
         FBSession.activeSession().closeAndClearTokenInformation()
         
         // If a guest or full user is found in the keychain
@@ -175,28 +154,22 @@ class LoginFlowManager {
             
             // If session gets closed on a non-guest, delete all info and setup a new guest account
             if !userIsGuest {
-                troubleshootingStr += " userNotGuest||"
                 
                 UserManager.sharedUser.deleteAllSavedUserInformation(completion: nil)
-                troubleshootingStr += " ^^setupGuestAccount #3^^"
                 UserManager.sharedUser.setupGuestAccount()
                 
                 // NEVER EVER USE THIS CODE BELOW
                 // Somehow this snippet below caused itself to be called when changing state to host streamable
                 /*
                 UserManager.sharedUser.deleteAllSavedUserInformation(completion: {
-                    troubleshootingStr += " ^^setupGuestAccount #3^^"
                     UserManager.sharedUser.setupGuestAccount()
                 })*/
                 
             // User was a guest
             } else {
                 
-                troubleshootingStr += " userISGuest||"
-                
                 // Guest isn't signed in, so sign them in
                 if !keychainUserAlreadySignedIn {
-                    troubleshootingStr += " signIntoGuestAccount||"
                     UserManager.sharedUser.signIntoGuestAccount(userID!, userAccessToken: userAccessToken!)
                     
                 // Guest user is already signed in
@@ -208,17 +181,12 @@ class LoginFlowManager {
             
         // No guest or full user found in the keychain, so setup a guest account
         } else {
-            troubleshootingStr += " userNOTFoundInKeychain||"
-            troubleshootingStr += " ^^setupGuestAccount #4^^"
             UserManager.sharedUser.setupGuestAccount()
         }
         
     }
     
     private func handleFacebookErrors(error: NSError) {
-        
-        troubleshootingStr += " facebookError||"
-        
         println("Facebook error")
         // If the error requires people using an app to make an action outside of the app in order to recover
         if FBErrorUtility.shouldNotifyUserForError(error) {
@@ -259,7 +227,6 @@ class LoginFlowManager {
         }
         
         // Error, so clear this token
-        troubleshootingStr += " ^^closeAndClearToken #5^^"
         FBSession.activeSession().closeAndClearTokenInformation()
     }
     

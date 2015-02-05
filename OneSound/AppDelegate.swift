@@ -40,8 +40,6 @@ var shorterIphoneScreen = false;
 
 var errorAlertIsShowing = false
 
-var troubleshootingStr = ""
-
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
                             

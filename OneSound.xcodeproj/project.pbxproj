@@ -29,6 +29,7 @@
 		81414DCE197DD1F800081132 /* EnumHackExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81414DCD197DD1F800081132 /* EnumHackExtensions.swift */; };
 		81414DD1197DF9CF00081132 /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81414DCF197DF9CF00081132 /* ProfileViewController.swift */; };
 		81414DD2197DF9CF00081132 /* ProfileViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 81414DD0197DF9CF00081132 /* ProfileViewController.xib */; };
+		814AF0BD1A82F360003ECEED /* AlertManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 814AF0BC1A82F360003ECEED /* AlertManager.swift */; };
 		81527128196C5A8E00464068 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81527127196C5A8E00464068 /* User.swift */; };
 		815831111974308E0011D3CE /* OneSound Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 815831101974308E0011D3CE /* OneSound Colors.swift */; };
 		81583116197443940011D3CE /* SideNavigationUserCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81583114197443940011D3CE /* SideNavigationUserCell.swift */; };
@@ -133,6 +134,7 @@
 		81414DCD197DD1F800081132 /* EnumHackExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EnumHackExtensions.swift; sourceTree = "<group>"; };
 		81414DCF197DF9CF00081132 /* ProfileViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
 		81414DD0197DF9CF00081132 /* ProfileViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ProfileViewController.xib; sourceTree = "<group>"; };
+		814AF0BC1A82F360003ECEED /* AlertManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AlertManager.swift; sourceTree = "<group>"; };
 		81527127196C5A8E00464068 /* User.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		815831101974308E0011D3CE /* OneSound Colors.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "OneSound Colors.swift"; sourceTree = "<group>"; };
 		81583114197443940011D3CE /* SideNavigationUserCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SideNavigationUserCell.swift; sourceTree = "<group>"; };
@@ -480,6 +482,7 @@
 				81ACB3E71A5273AD0039529E /* PartyMembersManager.swift */,
 				8195347F197857E6000B97A3 /* UserManager.swift */,
 				8187B08A1A809A8F0071B9BC /* LoginFlowManager.swift */,
+				814AF0BC1A82F360003ECEED /* AlertManager.swift */,
 			);
 			name = Managers;
 			sourceTree = "<group>";
@@ -754,6 +757,7 @@
 				8130D7D41986B8EB00DD4B47 /* PartyManager.swift in Sources */,
 				8158314C1976D54F0011D3CE /* LoginViewController.swift in Sources */,
 				81ACB3E81A5273AD0039529E /* PartyMembersManager.swift in Sources */,
+				814AF0BD1A82F360003ECEED /* AlertManager.swift in Sources */,
 				8158311A197471ED0011D3CE /* PartyMainViewController.swift in Sources */,
 				81583116197443940011D3CE /* SideNavigationUserCell.swift in Sources */,
 				813897991A5465B0008BBC77 /* OSTriangleView.swift in Sources */,

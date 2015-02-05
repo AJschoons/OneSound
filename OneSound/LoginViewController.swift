@@ -89,9 +89,7 @@ class LoginViewController: UITableViewController {
     
     func cancel() {
         if !accountAlreadyExists {
-            troubleshootingStr += " ^^closeAndClearToken #6^^"
             FBSession.activeSession().closeAndClearTokenInformation()
-            troubleshootingStr += " ^^setupGuestAccount #5^^"
             UserManager.sharedUser.setupGuestAccount()
         }
         
