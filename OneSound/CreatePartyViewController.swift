@@ -128,7 +128,7 @@ class CreatePartyViewController: UITableViewController {
                     if partyWasCreated {
                         self.onSuccessfulPartyCreateOrUpdateOrLeave()
                     } else {
-                        let alert = UIAlertView(title: "Could not create party", message: "Please try a new name, changing the settings, or restarting the app", delegate: nil, cancelButtonTitle: "Ok")
+                        let alert = UIAlertView(title: "Could not create party", message: "Please try a new name, changing the settings, or restarting the app", delegate: nil, cancelButtonTitle: defaultAlertCancelButtonText)
                         alert.show()
                     }
                 }
@@ -140,7 +140,7 @@ class CreatePartyViewController: UITableViewController {
                     if partyWasUpdated {
                         self.onSuccessfulPartyCreateOrUpdateOrLeave()
                     } else {
-                        let alert = UIAlertView(title: "Could not update party", message: "Please try a new name, changing the settings, or restarting the app", delegate: nil, cancelButtonTitle: "Ok")
+                        let alert = UIAlertView(title: "Could not update party", message: "Please try a new name, changing the settings, or restarting the app", delegate: nil, cancelButtonTitle: defaultAlertCancelButtonText)
                         alert.show()
                     }
                 }
@@ -185,7 +185,7 @@ class CreatePartyViewController: UITableViewController {
                     self.onSuccessfulPartyCreateOrUpdateOrLeave()
                 })
             } else {
-                let alert = UIAlertView(title: "Music Control Failure", message: "Failed to get the music stream control. Please reload the party settings and try again", delegate: self, cancelButtonTitle: "Okay")
+                let alert = UIAlertView(title: "Music Control Failure", message: "Failed to get the music stream control. Please reload the party settings and try again", delegate: self, cancelButtonTitle: defaultAlertCancelButtonText)
                 alert.show()
             }
         })
@@ -415,7 +415,7 @@ extension CreatePartyViewController: UIAlertViewDelegate {
                         if partyWasLeft {
                             self.onSuccessfulPartyCreateOrUpdateOrLeave()
                         } else {
-                            let alert = UIAlertView(title: "Could not leave party", message: "Please try again, or just create a new one", delegate: nil, cancelButtonTitle: "Ok")
+                            let alert = UIAlertView(title: "Could not leave party", message: "Please try again, or just create a new one", delegate: nil, cancelButtonTitle: defaultAlertCancelButtonText)
                             alert.show()
                         }
                     }

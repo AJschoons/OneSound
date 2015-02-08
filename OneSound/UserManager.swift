@@ -210,7 +210,7 @@ extension UserManager {
                     // Those will be nil when the server is down
                     // TODO: add trying to sign in
                     NSNotificationCenter.defaultCenter().postNotificationName(FinishedLoginFlowNotification, object: nil)
-                    let alert = UIAlertView(title: "OneSound Service Down", message: "OneSound is currently down for maintenance, we will be back up shortly. Please restart the app and try again", delegate: nil, cancelButtonTitle: "Okay")
+                    let alert = UIAlertView(title: "\(appName) Service Down", message: "\(appName) is currently down for maintenance, we will be back up shortly. Please restart the app and try again", delegate: nil, cancelButtonTitle: defaultAlertCancelButtonText)
                     alert.show()
                 }
             },

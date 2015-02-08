@@ -794,7 +794,7 @@ extension PartyMainViewController {
                 fnc.presentViewController(navC, animated: true, completion: nil)
             }
         } else {
-            let alert = UIAlertView(title: "Guests cannot create parties", message: "Please become a full account by logging in with Facebook, then try again", delegate: nil, cancelButtonTitle: "Ok")
+            let alert = UIAlertView(title: "Guests cannot create parties", message: "Please become a full account by logging in with Facebook, then try again", delegate: nil, cancelButtonTitle: defaultAlertCancelButtonText)
             alert.show()
         }
     }
@@ -806,7 +806,7 @@ extension PartyMainViewController {
                     self.parentViewController!.navigationItem.title = "Party"
                     self.refresh()
                 } else {
-                    let alert = UIAlertView(title: "Could not leave party", message: "Please try again, or just create a new one", delegate: nil, cancelButtonTitle: "Ok")
+                    let alert = UIAlertView(title: "Could not leave party", message: "Please try again, or just create a new one", delegate: nil, cancelButtonTitle: defaultAlertCancelButtonText)
                     alert.show()
                 }
             }
@@ -825,7 +825,7 @@ extension PartyMainViewController {
                 fnc.presentViewController(navC, animated: true, completion: nil)
             }
         } else {
-            let alert = UIAlertView(title: "Only hosts edit party settings", message: "Please become the host before editing party settings, or make sure you still are the host", delegate: nil, cancelButtonTitle: "Ok")
+            let alert = UIAlertView(title: "Only hosts edit party settings", message: "Please become the host before editing party settings, or make sure you still are the host", delegate: nil, cancelButtonTitle: defaultAlertCancelButtonText)
             alert.show()
         }
     }

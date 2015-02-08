@@ -38,8 +38,6 @@ let validCharacters = "abcdefghijklmnopqrstuvwxyz1234567890"
 let shorterPhoneLength = 480;
 var shorterIphoneScreen = false;
 
-var errorAlertIsShowing = false
-
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
                             
@@ -154,8 +152,9 @@ extension AppDelegate {
                 // Make sure splash screen would get closed at this point in the Login Flow
                 NSNotificationCenter.defaultCenter().postNotificationName(FinishedLoginFlowNotification, object: nil)
                 
-                let alertView = UIAlertView(title: "No Internet Connection", message: "Please connect to the internet to use OneSound", delegate: nil, cancelButtonTitle: "Ok")
-                alertView.show()
+                let alert = UIAlertView(title: "No Internet Connection", message: "Please connect to the internet to use \(appName)", delegate: nil, cancelButtonTitle: defaultAlertCancelButtonText)
+                alert.tag = AlertTag.NoInternetConnection.rawValue
+                AlertManager.sharedManager.showAlert(alert)
                 
             } else if (reachability == AFNetworkReachabilityStatus.ReachableViaWiFi) || (reachability == AFNetworkReachabilityStatus.ReachableViaWWAN) {
                 println("Network has changed to reachable")

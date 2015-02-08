@@ -18,59 +18,70 @@ typealias AFHTTPFailureBlock = ((task: NSURLSessionDataTask!, error: NSError!) -
 typealias repeatBlock = () -> ()
 
 let defaultAFHTTPFailureBlock: AFHTTPFailureBlock = { task, error in
-    if task != nil && errorAlertIsShowing == false {
+    if task != nil {
         var haveHTTPCodeErrorMessage = false
         
         if let response = task.response as? NSHTTPURLResponse {
             let code = response.statusCode
             if code == 400 || code == 401 || code == 404 || code == 500 || code == 503 {
                 haveHTTPCodeErrorMessage = true
-                errorAlertIsShowing = true
-                var alertView: UIAlertView
+                var alert: UIAlertView
                 
                 switch code {
                 case 400:
-                    alertView = UIAlertView(title: "Bad Request", message: "Sent invalided JSON request to the server", delegate: OSAPI.sharedClient, cancelButtonTitle: "Ok")
+                    alert = UIAlertView(title: "Bad Request", message: "Sent invalided JSON request to the server", delegate: nil, cancelButtonTitle: defaultAlertCancelButtonText)
+                    alert.tag = AlertTag.HTTP400.rawValue
                 case 401:
-                    alertView = UIAlertView(title: "Unauthorized", message: "Authentication is required and has failed or has not yet been provided", delegate: OSAPI.sharedClient, cancelButtonTitle: "Ok")
+                    alert = UIAlertView(title: "Unauthorized", message: "Authentication is required and has failed or has not yet been provided", delegate: nil, cancelButtonTitle: defaultAlertCancelButtonText)
+                    alert.tag = AlertTag.HTTP401.rawValue
                 case 404:
-                    alertView = UIAlertView(title: "Not Found", message: "The requested resource could not be found but may be available again in the future", delegate: OSAPI.sharedClient, cancelButtonTitle: "Ok")
+                    alert = UIAlertView(title: "Not Found", message: "The requested resource could not be found but may be available again in the future", delegate: nil, cancelButtonTitle: defaultAlertCancelButtonText)
+                    alert.tag = AlertTag.HTTP404.rawValue
                 case 500:
-                    alertView = UIAlertView(title: "Internal Server Error", message: "Sorry, we're having problems on our end. Please try again", delegate: OSAPI.sharedClient, cancelButtonTitle: "Ok")
+                    alert = UIAlertView(title: "Internal Server Error", message: "Sorry, we're having problems on our end. Please try again", delegate: OSAPI.sharedClient, cancelButtonTitle: defaultAlertCancelButtonText)
+                    alert.tag = AlertTag.HTTP500.rawValue
                 case 503:
-                    alertView = UIAlertView(title: "Service Unavailable", message: "Either OneSound, SoundCloud, or one of our other providers is currently unavailble. Please try again", delegate: OSAPI.sharedClient, cancelButtonTitle: "Ok")
+                    alert = UIAlertView(title: "Service Unavailable", message: "Either \(appName), SoundCloud, or one of our other providers is currently unavailble. Please try again", delegate: nil, cancelButtonTitle: defaultAlertCancelButtonText)
+                    alert.tag = AlertTag.HTTP503.rawValue
                 default:
-                    alertView = UIAlertView(title: "Down For Maintenance", message: "OneSound is currently down for maintenance, we will have it back up shortly. Please try again", delegate: OSAPI.sharedClient, cancelButtonTitle: "Ok")
+                    alert = UIAlertView(title: "Down For Maintenance", message: "\(appName) is currently down for maintenance, we will have it back up shortly. Please try again", delegate: nil, cancelButtonTitle: defaultAlertCancelButtonText)
+                    alert.tag = AlertTag.HTTPDefault.rawValue
                 }
-                alertView.show()
+                AlertManager.sharedManager.showAlert(alert)
             }
             
         }
         
         if error != nil && !haveHTTPCodeErrorMessage {
-            errorAlertIsShowing = true
-            var alertView: UIAlertView
+            var alert: UIAlertView
             let code = error.code
             println("ERROR: has the following code... \(code)")
             println(error.localizedDescription)
             switch code {
             case -1001:
-                alertView = UIAlertView(title: "Connection Timed Out", message: "Couldn't connect to the server in time, please try again with a better internet connection", delegate: OSAPI.sharedClient, cancelButtonTitle: "Ok")
+                alert = UIAlertView(title: "Connection Timed Out", message: "Couldn't connect to the server in time, please try again with a better internet connection", delegate: nil, cancelButtonTitle: defaultAlertCancelButtonText)
+                alert.tag = AlertTag.URLError1001.rawValue
             case -1003:
-              alertView = UIAlertView(title: "Cannot Find Host", message: "Couldn't find host to connect to, please try again with a better internet connection", delegate: OSAPI.sharedClient, cancelButtonTitle: "Ok")
+              alert = UIAlertView(title: "Cannot Find Host", message: "Couldn't find host to connect to, please try again with a better internet connection", delegate: nil, cancelButtonTitle: defaultAlertCancelButtonText)
+                alert.tag = AlertTag.URLError1003.rawValue
             case -1004:
-                alertView = UIAlertView(title: "Cannot Connect To Host", message: "Couldn't find host to connect to, please try again with a better internet connection", delegate: OSAPI.sharedClient, cancelButtonTitle: "Ok")
+                alert = UIAlertView(title: "Cannot Connect To Host", message: "Couldn't find host to connect to, please try again with a better internet connection", delegate: nil, cancelButtonTitle: defaultAlertCancelButtonText)
+                alert.tag = AlertTag.URLError1004.rawValue
             case -1005:
-                alertView = UIAlertView(title: "Network Connection Lost", message: "Internet connection was lost, please try again with a better connection", delegate: OSAPI.sharedClient, cancelButtonTitle: "Ok")
+                alert = UIAlertView(title: "Network Connection Lost", message: "Internet connection was lost, please try again with a better connection", delegate: nil, cancelButtonTitle: defaultAlertCancelButtonText)
+                alert.tag = AlertTag.URLError1005.rawValue
             case -1009:
-                alertView = UIAlertView(title: "Not Connected To Internet", message: "Internet connection was lost, please try again after reconnecting", delegate: OSAPI.sharedClient, cancelButtonTitle: "Ok")
+                alert = UIAlertView(title: "Not Connected To Internet", message: "Internet connection was lost, please try again after reconnecting", delegate: nil, cancelButtonTitle: defaultAlertCancelButtonText)
+                alert.tag = AlertTag.URLError1009.rawValue
             case -1011:
                 // Should be getting this when the server sends a 500 response code
-                alertView = UIAlertView(title: "Down For Maintenance", message: "OneSound is currently down for maintenance, we will have it back up shortly. Please try again", delegate: OSAPI.sharedClient, cancelButtonTitle: "Ok")
+                alert = UIAlertView(title: "Down For Maintenance", message: "OneSound is currently down for maintenance, we will have it back up shortly. Please try again", delegate: nil, cancelButtonTitle: defaultAlertCancelButtonText)
+                alert.tag = AlertTag.URLError1011.rawValue
             default:
-                alertView = UIAlertView(title: error.localizedDescription, message: error.localizedRecoverySuggestion, delegate: OSAPI.sharedClient, cancelButtonTitle: "Ok")
+                alert = UIAlertView(title: error.localizedDescription, message: error.localizedRecoverySuggestion, delegate: OSAPI.sharedClient, cancelButtonTitle: defaultAlertCancelButtonText)
+                alert.tag = AlertTag.URLErrorDefault.rawValue
             }
-            alertView.show()
+            AlertManager.sharedManager.showAlert(alert)
         }
     }
 }
@@ -644,11 +655,5 @@ extension OSAPI {
         }
         
         DELETE(urlString, parameters: nil, success: success, failure: failure)
-    }
-}
-
-extension OSAPI: UIAlertViewDelegate {
-    func alertView(alertView: UIAlertView, clickedButtonAtIndex buttonIndex: Int) {
-        errorAlertIsShowing = false
     }
 }

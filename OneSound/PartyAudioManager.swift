@@ -497,8 +497,10 @@ extension PartyAudioManager: STKAudioPlayerDelegate {
             partyManager.delegate.refresh() // Make this happen later?
             
             let alertMessage = "The SoundCloud song \(songInfo)being played could not be streamed. To play this song, try searching for a different version of it, or getting it from a different uploader"
-            let alert = UIAlertView(title: "Unstreamable Song Skipped", message: alertMessage, delegate: nil, cancelButtonTitle: "Okay")
-            alert.show()
+            let alert = UIAlertView(title: "Unstreamable Song Skipped", message: alertMessage, delegate: nil, cancelButtonTitle: defaultAlertCancelButtonText)
+            alert.tag = AlertTag.UnstreamableSongSkipped.rawValue
+            AlertManager.sharedManager.showAlert(alert)
+            
             initializeAudioSessionForPlaying()
             initializeAudioPlayerForPlaying() // Fix for randomly not working?
             setState(.Empty)

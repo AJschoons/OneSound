@@ -67,7 +67,7 @@ class ProfileViewController: UIViewController {
                 alert.tag = AlertTag.SigningOutGuest.rawValue
                 alert.show()
             } else {
-                let alert = UIAlertView(title: "Signing Out", message: "Continue signing out to sign in with a different Facebook account, or to downgrade to a guest account. Guests can only join and use parties, and can't create them", delegate: self, cancelButtonTitle: "Cancel", otherButtonTitles: "Ok")
+                let alert = UIAlertView(title: "Signing Out", message: "Continue signing out to sign in with a different Facebook account, or to downgrade to a guest account. Guests can only join and use parties, and can't create them", delegate: self, cancelButtonTitle: "Cancel", otherButtonTitles: "Okay")
                 alert.tag = AlertTag.SigningOut.rawValue
                 alert.show()
             }

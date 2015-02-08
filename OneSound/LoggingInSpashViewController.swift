@@ -54,6 +54,7 @@ class LoggingInSpashViewController: UIViewController {
     override func viewDidDisappear(animated: Bool) {
         super.viewDidDisappear(animated)
         loggingInSpashViewControllerIsShowing = false
+        AlertManager.sharedManager.onLoggingInSpashViewControllerDidDisappear()
     }
     
     func removeSplashAfterDelay() {

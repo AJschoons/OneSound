@@ -77,7 +77,7 @@ class SearchViewController: UIViewController {
             
             getFrontNavigationController()?.presentViewController(navC, animated: true, completion: nil)
         } else {
-            let alert = UIAlertView(title: "Guests cannot create parties", message: "Please become a full account by logging in with Facebook, then try again", delegate: nil, cancelButtonTitle: "Ok")
+            let alert = UIAlertView(title: "Guests cannot create parties", message: "Please become a full account by logging in with Facebook, then try again", delegate: nil, cancelButtonTitle: defaultAlertCancelButtonText)
             alert.show()
         }
     }
@@ -268,7 +268,7 @@ extension SearchViewController: UITableViewDelegate {
                             // Navigate to the party
                             getAppDelegate()!.sideMenuViewController.programaticallySelectRow(1)
                         } else {
-                            let alert = UIAlertView(title: "Problem Joining Party", message: "Unable to join party at this time, please try again", delegate: nil, cancelButtonTitle: "Ok")
+                            let alert = UIAlertView(title: "Problem Joining Party", message: "Unable to join party at this time, please try again", delegate: nil, cancelButtonTitle: defaultAlertCancelButtonText)
                             alert.show()
                         }
                         
@@ -283,12 +283,12 @@ extension SearchViewController: UITableViewDelegate {
                     PartyManager.sharedParty.refresh()
                     self.searchResultsArray = [] // Remove the results so they have to search again
                     tableView.reloadData()
-                    let alert = UIAlertView(title: "Problem Joining Party", message: "Unable to join party at this time, please try again", delegate: nil, cancelButtonTitle: "Ok")
+                    let alert = UIAlertView(title: "Problem Joining Party", message: "Unable to join party at this time, please try again", delegate: nil, cancelButtonTitle: defaultAlertCancelButtonText)
                     alert.show()
                 }
             )
         } else {
-            let alert = UIAlertView(title: "Not Signed In", message: "Please sign into an account before joining a party", delegate: nil, cancelButtonTitle: "Ok")
+            let alert = UIAlertView(title: "Not Signed In", message: "Please sign into an account before joining a party", delegate: nil, cancelButtonTitle: defaultAlertCancelButtonText)
             alert.show()
         }
         

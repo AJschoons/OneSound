@@ -569,6 +569,15 @@ func getAppDelegate() -> AppDelegate! {
     return nil
 }
 
+func getRootViewController() -> UIViewController? {
+    if let window = getAppDelegate().window {
+        if let rvc = window.rootViewController {
+            return rvc
+        }
+    }
+    return nil
+}
+
 func getFrontNavigationController() -> OSFrontNavigationController? {
     if let appDelegate = getAppDelegate() {
         if let fnc = appDelegate.frontNavigationController {

@@ -16,3 +16,4 @@
 //#import "FXLabel.h" // Using OSLabel
 #import "UIImage+ImageEffects.h"
 //#import "FXBlurView.h"
+#import "MSAlertController.h"

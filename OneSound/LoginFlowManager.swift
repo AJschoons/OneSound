@@ -191,8 +191,10 @@ class LoginFlowManager {
         // If the error requires people using an app to make an action outside of the app in order to recover
         if FBErrorUtility.shouldNotifyUserForError(error) {
             let alertTitle = "Something went wrong"
-            let alertText = FBErrorUtility.userMessageForError(error)
-            showMessage(alertText, withTitle: alertTitle)
+            let alertMessage = FBErrorUtility.userMessageForError(error)
+            let alert = UIAlertView(title: alertTitle, message: alertMessage, delegate: nil, cancelButtonTitle: defaultAlertCancelButtonText)
+            alert.tag = AlertTag.FacebookNotifyUserForError.rawValue
+            AlertManager.sharedManager.showAlert(alert)
             
         // Error doesn't need to be handled outside of the app
         } else {
@@ -204,8 +206,11 @@ class LoginFlowManager {
             // Handle session closures that happen outside of the app
             } else if FBErrorUtility.errorCategoryForError(error) == .AuthenticationReopenSession {
                 let alertTitle = "Facebook Session Error"
-                let alertText = "Your current session is no longer valid. Please log in again."
-                showMessage(alertText, withTitle: alertTitle, withLoginButtons: true)
+                let alertMessage = "Your current session is no longer valid. Please log in again."
+                // TODO: support the login buttons when need to reauthenticate
+                let alert = UIAlertView(title: alertTitle, message: alertMessage, delegate: nil, cancelButtonTitle: defaultAlertCancelButtonText)
+                alert.tag = AlertTag.FacebookSessionError.rawValue
+                AlertManager.sharedManager.showAlert(alert)
                 
             // Handle all other errors with a generic error message (total pain to get it)
             } else {
@@ -216,7 +221,8 @@ class LoginFlowManager {
                                 if let errorMessage = error["message"] as? String {
                                     let alertTitle = "Something went wrong"
                                     let alertMessage = "Facebook problem. Please try again. If the problem persists contact us and mention this error code: \(errorMessage)"
-                                    showMessage(alertMessage, withTitle: alertTitle)
+                                    let alert = UIAlertView(title: alertTitle, message: alertMessage, delegate: nil, cancelButtonTitle: defaultAlertCancelButtonText)
+                                    AlertManager.sharedManager.showAlert(alert)
                                 }
                             }
                         }
@@ -228,13 +234,6 @@ class LoginFlowManager {
         
         // Error, so clear this token
         FBSession.activeSession().closeAndClearTokenInformation()
-    }
-    
-    private func showMessage(message: String, withTitle title: String, withLoginButtons showLoginButtons: Bool = false) {
-        // TODO: have a delegate manage these alerts
-        // TODO: support the login buttons when need to reauthenticate
-        let alert = UIAlertView(title: title, message: message, delegate: nil, cancelButtonTitle: "Okay")
-        alert.show()
     }
 }
 

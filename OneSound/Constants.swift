@@ -8,13 +8,40 @@
 
 import Foundation
 
+let appName = "OneSound"
+
+let defaultAlertCancelButtonText = "Okay"
+
 // UIAlertView tags
 enum AlertTag: Int {
+    
     case SigningOutGuest = 101
     case SigningOut = 102
     case LeavingPartyAsHost = 103
-    case LostMusicControl = 104
-    case NoMusicControl = 105
+    
+    case LostMusicControl = 200
+    case NoMusicControl = 201
+    
+    case NoInternetConnection = 300
+    
+    case FacebookNotifyUserForError = 400
+    case FacebookSessionError = 401
+    case FacebookOtherErrors = 402
+    
+    case HTTP400 = 500
+    case HTTP401 = 501
+    case HTTP404 = 502
+    case HTTP500 = 503
+    case HTTP503 = 504
+    case HTTPDefault = 505
+    
+    case URLError1001 = 600
+    case URLError1003 = 601
+    case URLError1004 = 602
+    case URLError1005 = 603
+    case URLError1009 = 604
+    case URLError1011 = 605
+    case URLErrorDefault = 606
+    
+    case UnstreamableSongSkipped = 700
 }
-
-let defaultAlertCancelButtonText = "Okay"

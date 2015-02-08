@@ -128,7 +128,7 @@ class PartyManager: NSObject {
                     lostMusicControlAlertShouldBeShown = true
                 } else {
                     // Show the alert right now
-                    createLostMusicControlAlert().show()
+                    AlertManager.sharedManager.showAlert(createLostMusicControlAlert())
                 }
             } else {
                 if loggingInSpashViewControllerIsShowing {
@@ -136,7 +136,7 @@ class PartyManager: NSObject {
                     noMusicControlAlertShouldBeShown = true
                 } else {
                     // Show the alert right now
-                    createNoMusicControlAlert().show()
+                    AlertManager.sharedManager.showAlert(createNoMusicControlAlert())
                 }
             }
         default:
@@ -587,13 +587,13 @@ extension PartyManager {
     // MARK: UIAlertView related code
     
     func createLostMusicControlAlert() -> UIAlertView {
-        let alert = UIAlertView(title: "Lost Music Control", message: "Another device with your account has taken the music control. You still have the same Host control, but the music will play through the other device. To get music control back, go to the Party Settings", delegate: self, cancelButtonTitle: "Ok")
+        let alert = UIAlertView(title: "Lost Music Control", message: "Another device with your account has taken the music control. You still have the same Host control, but the music will play through the other device. To get music control back, go to the Party Settings", delegate: self, cancelButtonTitle: defaultAlertCancelButtonText)
         alert.tag = AlertTag.LostMusicControl.rawValue
         return alert
     }
     
     func createNoMusicControlAlert() -> UIAlertView {
-        let alert = UIAlertView(title: "No Music Control", message: "Another device with your account has the music control. You still have the same Host control, but the music will play through the other device. To get music control back, go to the Party Settings", delegate: self, cancelButtonTitle: "Ok")
+        let alert = UIAlertView(title: "No Music Control", message: "Another device with your account has the music control. You still have the same Host control, but the music will play through the other device. To get music control back, go to the Party Settings", delegate: self, cancelButtonTitle: defaultAlertCancelButtonText)
         alert.tag = AlertTag.NoMusicControl.rawValue
         return alert
     }
