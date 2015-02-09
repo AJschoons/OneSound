@@ -206,9 +206,8 @@ class LoginFlowManager {
             // Handle session closures that happen outside of the app
             } else if FBErrorUtility.errorCategoryForError(error) == .AuthenticationReopenSession {
                 let alertTitle = "Facebook Session Error"
-                let alertMessage = "Your current session is no longer valid. Please log in again."
-                // TODO: support the login buttons when need to reauthenticate
-                let alert = UIAlertView(title: alertTitle, message: alertMessage, delegate: nil, cancelButtonTitle: defaultAlertCancelButtonText)
+                let alertMessage = "Your current session is no longer valid. Please sign in with Facebook again, or have a temporary guest account setup instead"
+                let alert = UIAlertView(title: alertTitle, message: alertMessage, delegate: nil, cancelButtonTitle: "Setup Guest", otherButtonTitles: "Sign In")
                 alert.tag = AlertTag.FacebookSessionError.rawValue
                 AlertManager.sharedManager.showAlert(alert)
                 
@@ -234,6 +233,23 @@ class LoginFlowManager {
         
         // Error, so clear this token
         FBSession.activeSession().closeAndClearTokenInformation()
+    }
+    
+    // Handle needing to reauthenticate a session
+    func onFacebookSessionErrorAlertWithButtonIndex(buttonIndex: Int) {
+        // "Setup Guest": should setup guest account
+        if buttonIndex == 0 {
+            FBSession.activeSession().closeAndClearTokenInformation()
+            UserManager.sharedUser.setupGuestAccount()
+            
+        // "Sign In": should sign back in
+        } else if buttonIndex == 1 {
+            FBSession.openActiveSessionWithReadPermissions(facebookInitialSessionPermissions, allowLoginUI: false, completionHandler: { session, state, error in
+                // Handles what to do next based on the state
+                self.facebookSessionStateChanged(session, state: state, error: error)
+                }
+            )
+        }
     }
 }
 

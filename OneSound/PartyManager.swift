@@ -80,8 +80,6 @@ class PartyManager: NSObject {
     var lostMusicControlAlertShouldBeShown = false
     var noMusicControlAlertShouldBeShown = false
     
-    private let alertCancelButtonTitle = "Ok"
-    
     class var sharedParty: PartyManager {
         struct Static {
             static let partyManager = PartyManager()
@@ -157,18 +155,6 @@ class PartyManager: NSObject {
         
         if timeSinceLastGetCurrentParty > getCurrentPartyRefreshPeriod {
             refresh()
-        }
-        
-        var somethingToDoOtherThanPrintln = true
-        switch state {
-        case .None:
-            somethingToDoOtherThanPrintln = true
-        case .Member:
-            somethingToDoOtherThanPrintln = true
-        case .Host:
-            somethingToDoOtherThanPrintln = true
-        case .HostStreamable:
-            somethingToDoOtherThanPrintln = true
         }
     }
     

@@ -98,8 +98,13 @@ class AlertManager: NSObject {
 extension AlertManager: UIAlertViewDelegate {
     func alertView(alertView: UIAlertView, didDismissWithButtonIndex buttonIndex: Int) {
         
-        // do anything else to a specific alert here...
+        // Do anything else for specific alerts here...
         
+        if alertView.tag == AlertTag.FacebookSessionError.rawValue {
+            LoginFlowManager.sharedManager.onFacebookSessionErrorAlertWithButtonIndex(buttonIndex)
+        }
+        
+        // Make sure this gets called last; get the next alert to show after dismiss and button press handled
         alertDidDismiss()
     }
 }
