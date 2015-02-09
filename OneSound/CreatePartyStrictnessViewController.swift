@@ -63,11 +63,11 @@ extension CreatePartyStrictnessViewController: UITableViewDataSource {
         case 0:
             return "Songs will not be skipped"
         case 1:
-            return "Small groups of people. Skipping a song takes 4/5 of its votes being down, or 2/3 of party members down voting it"
+            return "Small groups of people"
         case 2:
-            return "Average-sized groups of people. Skipping a song takes 2/3 of its votes being down, or 2/5 of party members down voting it"
+            return "Average-sized groups of people"
         case 3:
-            return "Large groups of people. Skipping a song takes 1/2 of its votes being down, or 1/4 of party members down voting it"
+            return "Large groups of people"
         default:
             return ""
         }

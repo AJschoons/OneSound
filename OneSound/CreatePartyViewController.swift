@@ -18,7 +18,8 @@ protocol CreatePartyViewControllerDelegate {
 class CreatePartyViewController: UITableViewController {
         
     let validCharacters = "abcdefghijklmnopqrstuvwxyz1234567890 "
-    var footerViewHeight = 140
+    let minimumFooterViewHeight: CGFloat = 140
+    let numberOfSections = 2
     
     @IBOutlet weak var nameCell: UITableViewCell!
     @IBOutlet weak var nameCellTextField: UITextField!
@@ -27,6 +28,7 @@ class CreatePartyViewController: UITableViewController {
     var privacyCellSwitch: UISwitch!
     @IBOutlet weak var strictnessCell: UITableViewCell!
     @IBOutlet weak var strictnessCellStrictnessLabel: UILabel!
+    @IBOutlet weak var footerView: UIView!
     
     var streamControlButton: UIButton?
     let scButtonTitleEnabled = "Control Music Stream"
@@ -248,6 +250,10 @@ class CreatePartyViewController: UITableViewController {
     
     // footerViewHeight = 95
     func setupButtonsInTableFooterView() {
+        tableView.layoutIfNeeded() // Calculates the content size
+        var footerViewHeight = UIScreen.mainScreen().bounds.height - NavigationBarHeight - tableView.contentSize.height
+        if (footerViewHeight < minimumFooterViewHeight) { footerViewHeight = minimumFooterViewHeight }
+        
         let footerView = UIView(frame: CGRectMake(0, 0, tableView.frame.width, CGFloat(footerViewHeight)))
         footerView.backgroundColor = UIColor.clearColor()
         tableView.tableFooterView = footerView
@@ -317,7 +323,7 @@ class CreatePartyViewController: UITableViewController {
         leavePartyButton.addConstraint(NSLayoutConstraint(item: leavePartyButton, attribute: NSLayoutAttribute.Height, relatedBy: NSLayoutRelation.Equal, toItem: nil, attribute: NSLayoutAttribute.NotAnAttribute, multiplier: 1, constant: 30))
         footerView.addConstraint(NSLayoutConstraint(item: leavePartyButton, attribute: NSLayoutAttribute.Left, relatedBy: NSLayoutRelation.Equal, toItem: footerView, attribute: NSLayoutAttribute.Left, multiplier: 1, constant: 15))
         footerView.addConstraint(NSLayoutConstraint(item: leavePartyButton, attribute: NSLayoutAttribute.Right, relatedBy: NSLayoutRelation.Equal, toItem: footerView, attribute: NSLayoutAttribute.Right, multiplier: 1, constant: -15))
-        footerView.addConstraint(NSLayoutConstraint(item: leavePartyButton, attribute: NSLayoutAttribute.Bottom, relatedBy: NSLayoutRelation.Equal, toItem: footerView, attribute: NSLayoutAttribute.Bottom, multiplier: 1, constant: -15))
+        footerView.addConstraint(NSLayoutConstraint(item: leavePartyButton, attribute: NSLayoutAttribute.Bottom, relatedBy: NSLayoutRelation.Equal, toItem: footerView, attribute: NSLayoutAttribute.Bottom, multiplier: 1, constant: 0))
     }
 }
 
@@ -331,9 +337,9 @@ extension CreatePartyViewController: UITableViewDataSource {
         case 0:
             return nameCell
         case 1:
-            return privacyCell
-        case 2:
             return strictnessCell
+        //case 2:
+        //    return strictnessCell
         default:
             println("Error: LoginViewController cellForRowAtIndexPath couldn't get cell")
             return UITableViewCell()
@@ -341,7 +347,7 @@ extension CreatePartyViewController: UITableViewDataSource {
     }
     
     override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-        return 3
+        return numberOfSections
     }
 }
 
@@ -352,7 +358,7 @@ extension CreatePartyViewController: UITableViewDelegate {
             // Selecting anywhere in the first cell will start editing text field
             // Otherwise would be weird b/c must touch UITextField but design makes it look otherwise
             nameCellTextField.becomeFirstResponder()
-        case 2:
+        case 1:
             let createPartyStrictnessViewController = CreatePartyStrictnessViewController(delegate: self, selectedStrictness: strictness)
             navigationController!.pushViewController(createPartyStrictnessViewController, animated: true)
         default:
@@ -361,8 +367,10 @@ extension CreatePartyViewController: UITableViewDelegate {
     }
     
     override func tableView(tableView: UITableView, shouldHighlightRowAtIndexPath indexPath: NSIndexPath) -> Bool {
-        return indexPath.section == 2 // Only highlight the party strictness cell
+        // Only highlight the party strictness cell
+        return indexPath.section == 1
     }
+    
 }
 
 extension CreatePartyViewController: UITextFieldDelegate {

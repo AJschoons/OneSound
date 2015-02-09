@@ -9,8 +9,12 @@
 import Foundation
 
 let appName = "OneSound"
-
 let defaultAlertCancelButtonText = "Okay"
+
+let NavigationBarHeight: CGFloat = 64
+let StatusBarHeight: CGFloat = 20
+
+let defaultCellRowHeight: CGFloat = 64
 
 // UIAlertView tags
 enum AlertTag: Int {
