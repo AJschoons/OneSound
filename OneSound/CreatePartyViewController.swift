@@ -248,7 +248,6 @@ class CreatePartyViewController: UITableViewController {
         tableView.endEditing(true)
     }
     
-    // footerViewHeight = 95
     func setupButtonsInTableFooterView() {
         tableView.layoutIfNeeded() // Calculates the content size
         var footerViewHeight = UIScreen.mainScreen().bounds.height - NavigationBarHeight - tableView.contentSize.height
