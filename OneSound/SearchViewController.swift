@@ -19,6 +19,7 @@ class SearchViewController: UIViewController {
     @IBOutlet weak var partySearchTextField: UITextField!
     @IBOutlet weak var searchResultsTable: UITableView!
     @IBOutlet weak var animatedOneSoundOne: UIImageView!
+    @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
     
     var createPartyButton: UIBarButtonItem!
     var searchResultsArray = [Party]()
@@ -111,9 +112,10 @@ class SearchViewController: UIViewController {
         view.addGestureRecognizer(tap)
         
         // Setup loading animation
-        animatedOneSoundOne.animationImages = [loadingOSLogo2, loadingOSLogo1, loadingOSLogo0, loadingOSLogo1]
-        animatedOneSoundOne.animationDuration = 1.5
-        animatedOneSoundOne.hidden = true
+        //animatedOneSoundOne.animationImages = [loadingOSLogo2, loadingOSLogo1, loadingOSLogo0, loadingOSLogo1]
+        //animatedOneSoundOne.animationDuration = 1.5
+        //animatedOneSoundOne.hidden = true
+        activityIndicator.hidden = true
         
         // Make view respond to network reachability changes
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "refresh", name: AFNetworkingReachabilityDidChangeNotification, object: nil)
@@ -147,13 +149,17 @@ class SearchViewController: UIViewController {
         view.endEditing(true)
     }
     
-    func loadingAnimationShouldBeAnimating(shouldBeAnimating: Bool) {
-        if shouldBeAnimating {
-            animatedOneSoundOne.hidden = false
-            animatedOneSoundOne.startAnimating()
+    func loadingAnimationShouldBeAnimating(animating: Bool) {
+        if animating {
+            //animatedOneSoundOne.hidden = false
+            //animatedOneSoundOne.startAnimating()
+            activityIndicator.hidden = false
+            activityIndicator.startAnimating()
         } else {
-            animatedOneSoundOne.hidden = true
-            animatedOneSoundOne.stopAnimating()
+            //animatedOneSoundOne.hidden = true
+            //animatedOneSoundOne.stopAnimating()
+            activityIndicator.hidden = true
+            activityIndicator.stopAnimating()
         }
     }
     
@@ -194,7 +200,8 @@ class SearchViewController: UIViewController {
         
         if (hidden)
         {
-            animatedOneSoundOne.hidden = hidden
+            //animatedOneSoundOne.hidden = hidden
+            activityIndicator.hidden = hidden
         }
     }
     

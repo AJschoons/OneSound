@@ -32,7 +32,7 @@
 		814AF0BD1A82F360003ECEED /* AlertManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 814AF0BC1A82F360003ECEED /* AlertManager.swift */; };
 		814AF0BF1A83B226003ECEED /* OSAlertController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 814AF0BE1A83B226003ECEED /* OSAlertController.swift */; };
 		81527128196C5A8E00464068 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81527127196C5A8E00464068 /* User.swift */; };
-		815831111974308E0011D3CE /* OneSound Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 815831101974308E0011D3CE /* OneSound Colors.swift */; };
+		815831111974308E0011D3CE /* OneSoundColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 815831101974308E0011D3CE /* OneSoundColors.swift */; };
 		81583116197443940011D3CE /* SideNavigationUserCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81583114197443940011D3CE /* SideNavigationUserCell.swift */; };
 		81583117197443940011D3CE /* SideNavigationUserCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 81583115197443940011D3CE /* SideNavigationUserCell.xib */; };
 		8158311A197471ED0011D3CE /* PartyMainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81583118197471ED0011D3CE /* PartyMainViewController.swift */; };
@@ -138,7 +138,7 @@
 		814AF0BC1A82F360003ECEED /* AlertManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AlertManager.swift; sourceTree = "<group>"; };
 		814AF0BE1A83B226003ECEED /* OSAlertController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OSAlertController.swift; sourceTree = "<group>"; };
 		81527127196C5A8E00464068 /* User.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
-		815831101974308E0011D3CE /* OneSound Colors.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "OneSound Colors.swift"; sourceTree = "<group>"; };
+		815831101974308E0011D3CE /* OneSoundColors.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OneSoundColors.swift; sourceTree = "<group>"; };
 		81583114197443940011D3CE /* SideNavigationUserCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SideNavigationUserCell.swift; sourceTree = "<group>"; };
 		81583115197443940011D3CE /* SideNavigationUserCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SideNavigationUserCell.xib; sourceTree = "<group>"; };
 		81583118197471ED0011D3CE /* PartyMainViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PartyMainViewController.swift; sourceTree = "<group>"; };
@@ -233,7 +233,7 @@
 			isa = PBXGroup;
 			children = (
 				81929C81196B71F3006F336B /* OneSound-Bridging-Header.h */,
-				815831101974308E0011D3CE /* OneSound Colors.swift */,
+				815831101974308E0011D3CE /* OneSoundColors.swift */,
 				815831441975CD450011D3CE /* SwiftUtilities.swift */,
 				815831461975CD9B0011D3CE /* SwiftyJSON.swift */,
 				813FCE0619774ECF00419097 /* TestingPlayground.playground */,
@@ -608,7 +608,6 @@
 				TargetAttributes = {
 					81062F9C196B6C7E0057D230 = {
 						CreatedOnToolsVersion = 6.0;
-						DevelopmentTeam = 8YP7AK358X;
 						SystemCapabilities = {
 							com.apple.Keychain = {
 								enabled = 1;
@@ -617,6 +616,7 @@
 					};
 					81062FB0196B6C7E0057D230 = {
 						CreatedOnToolsVersion = 6.0;
+						DevelopmentTeam = Z5T8FCEZ73;
 						TestTargetID = 81062F9C196B6C7E0057D230;
 					};
 				};
@@ -747,7 +747,7 @@
 				814AF0BF1A83B226003ECEED /* OSAlertController.swift in Sources */,
 				81414DCE197DD1F800081132 /* EnumHackExtensions.swift in Sources */,
 				8195E6861A5B398500FD0CC8 /* OSTabBarController.swift in Sources */,
-				815831111974308E0011D3CE /* OneSound Colors.swift in Sources */,
+				815831111974308E0011D3CE /* OneSoundColors.swift in Sources */,
 				8158314219748F730011D3CE /* PartyMembersViewController.swift in Sources */,
 				818750561A50C624000CC353 /* PartyPlaylistManager.swift in Sources */,
 				8158313A19747F7B0011D3CE /* PartyTabBarController.swift in Sources */,
@@ -889,14 +889,15 @@
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_X86_VECTOR_INSTRUCTIONS = default;
 				CODE_SIGN_ENTITLEMENTS = OneSound/OneSound.entitlements;
-				CODE_SIGN_IDENTITY = "iPhone Developer: Adam Schoonmaker (RNKT643CPZ)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Adam Schoonmaker (RNKT643CPZ)";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = NO;
 				GCC_SHORT_ENUMS = YES;
 				INFOPLIST_FILE = OneSound/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "OneSound/OneSound-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				TARGETED_DEVICE_FAMILY = 1;
@@ -912,14 +913,15 @@
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_X86_VECTOR_INSTRUCTIONS = default;
 				CODE_SIGN_ENTITLEMENTS = OneSound/OneSound.entitlements;
-				CODE_SIGN_IDENTITY = "iPhone Distribution: Adam Schoonmaker (8YP7AK358X)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Adam Schoonmaker (8YP7AK358X)";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = NO;
 				GCC_SHORT_ENUMS = YES;
 				INFOPLIST_FILE = OneSound/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "OneSound/OneSound-Bridging-Header.h";
 				TARGETED_DEVICE_FAMILY = 1;
 			};
@@ -929,6 +931,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/OneSound.app/OneSound";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SDKROOT)/Developer/Library/Frameworks",
 					"$(inherited)",
@@ -940,6 +944,7 @@
 				INFOPLIST_FILE = OneSoundTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 				TEST_HOST = "$(BUNDLE_LOADER)";
 			};
 			name = Debug;
@@ -948,6 +953,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/OneSound.app/OneSound";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SDKROOT)/Developer/Library/Frameworks",
 					"$(inherited)",
@@ -955,6 +962,7 @@
 				INFOPLIST_FILE = OneSoundTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 				TEST_HOST = "$(BUNDLE_LOADER)";
 			};
 			name = Release;
@@ -1005,14 +1013,15 @@
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_X86_VECTOR_INSTRUCTIONS = default;
 				CODE_SIGN_ENTITLEMENTS = OneSound/OneSound.entitlements;
-				CODE_SIGN_IDENTITY = "iPhone Distribution: Adam Schoonmaker (8YP7AK358X)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Adam Schoonmaker (8YP7AK358X)";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = NO;
 				GCC_SHORT_ENUMS = YES;
 				INFOPLIST_FILE = OneSound/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "OneSound/OneSound-Bridging-Header.h";
 				TARGETED_DEVICE_FAMILY = 1;
 			};
@@ -1022,6 +1031,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/OneSound.app/OneSound";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SDKROOT)/Developer/Library/Frameworks",
 					"$(inherited)",
@@ -1029,6 +1040,7 @@
 				INFOPLIST_FILE = OneSoundTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 				TEST_HOST = "$(BUNDLE_LOADER)";
 			};
 			name = Distribution;

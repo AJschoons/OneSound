@@ -19,6 +19,7 @@ class AddSongViewController: OSModalViewController {
     @IBOutlet weak var songSearchTextField: UITextField!
     @IBOutlet weak var searchResultsTable: UITableView!
     @IBOutlet weak var animatedOneSoundOne: UIImageView!
+    @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
     
     var searchResultsArray = [SongSearchResult]()
     
@@ -113,9 +114,10 @@ class AddSongViewController: OSModalViewController {
         view.addGestureRecognizer(tap)
         
         // Setup loading animation
-        animatedOneSoundOne.animationImages = [loadingOSLogo2, loadingOSLogo1, loadingOSLogo0, loadingOSLogo1]
-        animatedOneSoundOne.animationDuration = 1.5
-        animatedOneSoundOne.hidden = true
+        //animatedOneSoundOne.animationImages = [loadingOSLogo2, loadingOSLogo1, loadingOSLogo0, loadingOSLogo1]
+        //animatedOneSoundOne.animationDuration = 1.5
+        //animatedOneSoundOne.hidden = true
+        activityIndicator.hidden = true
     }
     
     override func viewDidDisappear(animated: Bool) {
@@ -139,13 +141,17 @@ class AddSongViewController: OSModalViewController {
         view.endEditing(true)
     }
     
-    func loadingAnimationShouldBeAnimating(shouldBeAnimating: Bool) {
-        if shouldBeAnimating {
-            animatedOneSoundOne.hidden = false
-            animatedOneSoundOne.startAnimating()
+    func loadingAnimationShouldBeAnimating(animating: Bool) {
+        if animating {
+            //animatedOneSoundOne.hidden = false
+            //animatedOneSoundOne.startAnimating()
+            activityIndicator.hidden = false
+            activityIndicator.startAnimating()
         } else {
-            animatedOneSoundOne.hidden = true
-            animatedOneSoundOne.stopAnimating()
+            //animatedOneSoundOne.hidden = true
+            //animatedOneSoundOne.stopAnimating()
+            activityIndicator.hidden = true
+            activityIndicator.stopAnimating()
         }
     }
 }

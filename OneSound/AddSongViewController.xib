@@ -7,6 +7,7 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="AddSongViewController" customModule="OneSound" customModuleProvider="target">
             <connections>
+                <outlet property="activityIndicator" destination="0Hp-gN-8bF" id="cT2-Gu-847"/>
                 <outlet property="animatedOneSoundOne" destination="QBl-38-kz5" id="9cF-mF-xRj"/>
                 <outlet property="searchDisplayController" destination="gMo-Uc-Zco" id="AAj-1J-VoY"/>
                 <outlet property="searchResultsTable" destination="LRn-oE-J4g" id="LQU-N1-K8I"/>
@@ -53,12 +54,17 @@
                         <constraint firstAttribute="height" constant="40" id="rmy-nq-3DM"/>
                     </constraints>
                 </imageView>
+                <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="0Hp-gN-8bF">
+                    <rect key="frame" x="290" y="322" width="20" height="20"/>
+                </activityIndicatorView>
             </subviews>
             <color key="backgroundColor" red="0.95075207948684692" green="0.95072358846664429" blue="0.95073968172073364" alpha="1" colorSpace="calibratedRGB"/>
             <constraints>
                 <constraint firstItem="LRn-oE-J4g" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="RZJ-6k-xWu"/>
                 <constraint firstItem="sMM-0u-BuF" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" id="SKR-DS-RRU"/>
+                <constraint firstItem="0Hp-gN-8bF" firstAttribute="centerX" secondItem="LRn-oE-J4g" secondAttribute="centerX" id="Vgj-1o-IXy"/>
                 <constraint firstAttribute="bottom" secondItem="LRn-oE-J4g" secondAttribute="bottom" id="bc4-ge-hS6"/>
+                <constraint firstItem="0Hp-gN-8bF" firstAttribute="centerY" secondItem="LRn-oE-J4g" secondAttribute="centerY" id="en9-fX-XTZ"/>
                 <constraint firstAttribute="trailing" secondItem="LRn-oE-J4g" secondAttribute="trailing" id="f9C-lZ-kcI"/>
                 <constraint firstItem="sMM-0u-BuF" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="kou-Rj-vcZ"/>
                 <constraint firstItem="LRn-oE-J4g" firstAttribute="centerY" secondItem="QBl-38-kz5" secondAttribute="centerY" id="oHP-0X-BWn"/>
