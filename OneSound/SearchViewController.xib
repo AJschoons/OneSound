@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="6254" systemVersion="14B25" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="6254" systemVersion="14C109" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
     <dependencies>
+        <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6247"/>
     </dependencies>
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="SearchViewController" customModule="OneSound" customModuleProvider="target">
             <connections>
+                <outlet property="activityIndicator" destination="eTM-Kr-9PE" id="OTJ-n4-UMo"/>
                 <outlet property="animatedOneSoundOne" destination="r7W-Ph-enJ" id="hCb-XW-INI"/>
                 <outlet property="messageLabel1" destination="Nq1-Qx-HSP" id="3sf-xR-6O4"/>
                 <outlet property="messageLabel2" destination="8aD-Hx-ffP" id="1N9-s6-Pi1"/>
@@ -26,7 +28,7 @@
                     <nil key="highlightedColor"/>
                 </label>
                 <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Some text below that further explains first message" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="8aD-Hx-ffP">
-                    <rect key="frame" x="20" y="308" width="560" height="13.5"/>
+                    <rect key="frame" x="20" y="308" width="560" height="14"/>
                     <fontDescription key="fontDescription" type="system" pointSize="11"/>
                     <color key="textColor" red="0.51700145009999998" green="0.51698595290000005" blue="0.51699477429999996" alpha="1" colorSpace="calibratedRGB"/>
                     <nil key="highlightedColor"/>
@@ -65,6 +67,9 @@
                         <constraint firstAttribute="width" constant="40" id="ohg-h6-VmJ"/>
                     </constraints>
                 </imageView>
+                <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="eTM-Kr-9PE">
+                    <rect key="frame" x="290" y="322" width="20" height="20"/>
+                </activityIndicatorView>
             </subviews>
             <color key="backgroundColor" red="0.95075207949999996" green="0.95072358850000005" blue="0.95073968170000001" alpha="1" colorSpace="calibratedRGB"/>
             <constraints>
@@ -72,7 +77,9 @@
                 <constraint firstAttribute="centerX" secondItem="Nq1-Qx-HSP" secondAttribute="centerX" id="EH5-IX-KoE"/>
                 <constraint firstItem="Nq1-Qx-HSP" firstAttribute="leading" secondItem="9tl-7X-D3T" secondAttribute="leading" constant="20" id="ELS-ZG-4ft"/>
                 <constraint firstAttribute="centerY" secondItem="Nq1-Qx-HSP" secondAttribute="centerY" id="FMr-hl-MGa"/>
+                <constraint firstItem="eTM-Kr-9PE" firstAttribute="centerX" secondItem="iKl-m2-DPf" secondAttribute="centerX" id="FaC-b1-UU7"/>
                 <constraint firstItem="iKl-m2-DPf" firstAttribute="leading" secondItem="9tl-7X-D3T" secondAttribute="leading" id="Ln1-3M-nrQ"/>
+                <constraint firstItem="eTM-Kr-9PE" firstAttribute="centerY" secondItem="iKl-m2-DPf" secondAttribute="centerY" id="Uw9-HE-Kvz"/>
                 <constraint firstItem="8aD-Hx-ffP" firstAttribute="leading" secondItem="9tl-7X-D3T" secondAttribute="leading" constant="20" id="b9o-a7-kwp"/>
                 <constraint firstItem="iKl-m2-DPf" firstAttribute="top" secondItem="MUa-TW-bjR" secondAttribute="bottom" id="bMr-ll-8pi"/>
                 <constraint firstItem="MUa-TW-bjR" firstAttribute="leading" secondItem="9tl-7X-D3T" secondAttribute="leading" id="dfO-S1-APn"/>
