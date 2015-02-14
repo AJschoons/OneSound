@@ -15,7 +15,7 @@ class PartyPlaylistManager {
         return currentPage < totalPages
     }
     
-    private(set) var songs = [Song]()
+    final private(set) var songs = [Song]() // Has to stay final to allow elements to be swapped
     // Used while updating so table still has something to show
     private var updatedSongs = [Song]()
     
@@ -39,7 +39,7 @@ class PartyPlaylistManager {
             let pageStartingFromZero = currentPage - 1
             OSAPI.sharedClient.GETPartyPlaylist(PartyManager.sharedParty.partyID, page: currentPage, pageSize: pageSize,
                 success: { data, responseObject in
-                    let responseJSON = JSONValue(responseObject)
+                    let responseJSON = JSON(responseObject)
                     println(responseJSON)
                     
                     self.updatePlaylistFromJSON(responseJSON, completion: completion)
@@ -75,9 +75,50 @@ class PartyPlaylistManager {
         }
     }
     
-    private func updatePlaylistFromJSON(json: JSONValue, completion: completionClosure? = nil) {
+    // Returns the new index
+    func moveSongAtIndex(initialIndex: Int, afterChangingVoteCountBy voteCountChange: Int) -> Int {
+        let song = songs[initialIndex]
+        let newVoteCount = song.voteCount + voteCountChange
+        song.voteCount = newVoteCount
+        var newIndex: Int
         
-        totalSongs = json["paging"]["total_count"].integer!
+        // Song will be moved down in array
+        if voteCountChange < 0 {
+            newIndex = initialIndex
+            // song.voteCount will now be less than the song before it
+            while newIndex < (songs.count - 1) {
+                if songs[newIndex + 1].voteCount > newVoteCount {
+                    swap(&songs[newIndex], &songs[newIndex + 1])
+                    ++newIndex
+                } else {
+                    break
+                }
+            }
+            
+        // Song will be moved up in array
+        } else if voteCountChange > 0 {
+            newIndex = initialIndex
+            // song.voteCount will now be greater than the song before it
+            while newIndex > 0 {
+                if songs[newIndex - 1].voteCount < newVoteCount {
+                    swap(&songs[newIndex - 1], &songs[newIndex])
+                    --newIndex
+                } else {
+                    break
+                }
+            }
+        
+        // Song will stay in same place
+        } else {
+            newIndex = initialIndex
+        }
+        
+        return newIndex
+    }
+    
+    private func updatePlaylistFromJSON(json: JSON, completion: completionClosure? = nil) {
+        
+        totalSongs = json["paging"]["total_count"].int!
         
         var songsArray = json["results"].array
         var songsAdded = 0

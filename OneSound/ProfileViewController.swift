@@ -76,7 +76,7 @@ class ProfileViewController: UIViewController {
     
     @IBAction func changeSettings(sender: AnyObject) {
         let loginStoryboard = UIStoryboard(name: LoginStoryboardName, bundle: nil)
-        let loginViewController = loginStoryboard.instantiateViewControllerWithIdentifier(LoginViewControllerIdentifier) as LoginViewController
+        let loginViewController = loginStoryboard.instantiateViewControllerWithIdentifier(LoginViewControllerIdentifier) as! LoginViewController
         loginViewController.accountAlreadyExists = true
         loginViewController.delegate = self
         let navC = UINavigationController(rootViewController: loginViewController)
@@ -337,7 +337,7 @@ class ProfileViewController: UIViewController {
 }
 
 extension ProfileViewController: UIAlertViewDelegate {
-    func alertView(alertView: UIAlertView!, clickedButtonAtIndex buttonIndex: Int) {
+    func alertView(alertView: UIAlertView, clickedButtonAtIndex buttonIndex: Int) {
         if alertView.tag == AlertTag.SigningOutGuest.rawValue {
             // If guest is trying to log out
             if buttonIndex == 1 {
@@ -375,7 +375,7 @@ extension ProfileViewController: UITableViewDataSource {
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         // TODO: add functionality for stories
-        let cell = storiesTable!.dequeueReusableCellWithIdentifier(storyCellIdentifier, forIndexPath: indexPath) as StoryTableViewCell
+        let cell = storiesTable!.dequeueReusableCellWithIdentifier(storyCellIdentifier, forIndexPath: indexPath) as! StoryTableViewCell
         cell.storyLabel.text = storyTableStories[indexPath.row]
         cell.customSeperator.hidden = true
         cell.backgroundColor = UIColor.clearColor()
@@ -384,7 +384,7 @@ extension ProfileViewController: UITableViewDataSource {
 }
 
 extension ProfileViewController: UITableViewDelegate {
-    func tableView(tableView: UITableView!, heightForRowAtIndexPath indexPath: NSIndexPath!) -> CGFloat {
+    func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
         let tableHeight = storiesTable!.frame.height
         if UIScreen.mainScreen().bounds.height < 500 {
             // For iPhones w/ shorter screen
@@ -395,11 +395,19 @@ extension ProfileViewController: UITableViewDelegate {
         }
     }
     
-    func tableView(tableView: UITableView!, shouldHighlightRowAtIndexPath indexPath: NSIndexPath!) -> Bool {
+    func tableView(tableView: UITableView, shouldHighlightRowAtIndexPath indexPath: NSIndexPath) -> Bool {
         return false
     }
     
-    func tableView(tableView: UITableView!, didSelectRowAtIndexPath indexPath: NSIndexPath!) {
+    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         // TODO: add functionality for stories
+    }
+    
+    func tableView(tableView: UITableView, willDisplayCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath) {
+        
+        // Fixes table having different margins in iOS 8
+        if tableView.respondsToSelector("setLayoutMargins:") {
+            tableView.layoutMargins = UIEdgeInsetsZero
+        }
     }
 }

@@ -39,7 +39,7 @@ class AddSongViewController: OSModalViewController {
         
         SCClient.sharedClient.searchSoundCloudForSongWithString(songSearchTextField.text,
             success: {data, responseObject in
-                let responseJSON = JSONValue(responseObject)
+                let responseJSON = JSON(responseObject)
                 //println(responseJSON)
                 let songsArray = responseJSON.array
                 //println(songsArray!)
@@ -51,12 +51,12 @@ class AddSongViewController: OSModalViewController {
                     for result in songsArray! {
                         println(result)
                         let source = "sc"
-                        let id = result["id"].integer
+                        let id = result["id"].int
                         let name = result["title"].string
                         let artistName = result["user"]["username"].string
-                        var duration = result["duration"].integer
+                        var duration = result["duration"].int
                         let artworkURL = result["artwork_url"].string
-                        let playbacks = result["playback_count"].integer
+                        let playbacks = result["playback_count"].int
                         
                         let streamable = result["streamable"].bool
                         
@@ -129,7 +129,7 @@ class AddSongViewController: OSModalViewController {
     }
     
     func textFieldDidChange() {
-        if countElements(songSearchTextField.text as String) > 0 {
+        if count(songSearchTextField.text as String) > 0 {
             navigationItem.rightBarButtonItem!.enabled = true
         } else {
             navigationItem.rightBarButtonItem!.enabled = false
@@ -173,7 +173,7 @@ extension AddSongViewController: UITableViewDataSource {
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = searchResultsTable.dequeueReusableCellWithIdentifier(SongSearchResultCellIdentifier, forIndexPath: indexPath) as SongSearchResultCell
+        let cell = searchResultsTable.dequeueReusableCellWithIdentifier(SongSearchResultCellIdentifier, forIndexPath: indexPath) as! SongSearchResultCell
         let result = searchResultsArray[indexPath.row]
 
         var nameText: String = (result.name != nil) ? result.name! : ""
@@ -191,7 +191,7 @@ extension AddSongViewController: UITableViewDataSource {
 }
 
 extension AddSongViewController: UITableViewDelegate {
-    func tableView(tableView: UITableView!, didSelectRowAtIndexPath indexPath: NSIndexPath!) {
+    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         let selectedSong = searchResultsArray[indexPath.row]
         let source = "sc"
         
@@ -223,13 +223,21 @@ extension AddSongViewController: UITableViewDelegate {
         }
     }
     
-    func tableView(tableView: UITableView!, heightForRowAtIndexPath indexPath: NSIndexPath!) -> CGFloat {
+    func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
         return heightForRows
+    }
+    
+    func tableView(tableView: UITableView, willDisplayCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath) {
+        
+        // Fixes table having different margins in iOS 8
+        if tableView.respondsToSelector("setLayoutMargins:") {
+            tableView.layoutMargins = UIEdgeInsetsZero
+        }
     }
 }
 
 extension AddSongViewController: UITextFieldDelegate {
-    func textFieldShouldReturn(textField: UITextField!) -> Bool {
+    func textFieldShouldReturn(textField: UITextField) -> Bool {
         // Hide keyboard when user presses "Search", initiate the search
         search()
         return true

@@ -202,13 +202,13 @@ class CreatePartyViewController: UITableViewController {
         if partyAlreadyExists {
             // Only allow Done to be pressed if party information has changed from what is already is
             // TODO: add in a check for privacy info change
-            if countElements(nameCellTextField.text as String) > 2 && partyInfoHasChanged() {
+            if count(nameCellTextField.text as String) > 2 && partyInfoHasChanged() {
                 navigationItem.rightBarButtonItem!.enabled = true
             } else {
                 navigationItem.rightBarButtonItem!.enabled = false
             }
         } else {
-            if countElements(nameCellTextField.text as String) > 2 {
+            if count(nameCellTextField.text as String) > 2 {
                 navigationItem.rightBarButtonItem!.enabled = true
             } else {
                 navigationItem.rightBarButtonItem!.enabled = false
@@ -223,7 +223,7 @@ class CreatePartyViewController: UITableViewController {
     }
     
     func updateNameCellTextFieldCount() {
-        let numberOfCharacters = countElements(nameCellTextField.text as String)
+        let numberOfCharacters = count(nameCellTextField.text as String)
         
         // Update label
         nameCellTextFieldCount.text = "\(numberOfCharacters)/20"
@@ -261,7 +261,7 @@ class CreatePartyViewController: UITableViewController {
         let userIsHostStreamable = (partyManger.state == .HostStreamable)
         let userIsHost = (partyManger.state == .Host)
         
-        let streamControlButton = UIButton.buttonWithType(UIButtonType.System) as UIButton
+        let streamControlButton = UIButton.buttonWithType(UIButtonType.System) as! UIButton
         self.streamControlButton = streamControlButton
         let streamControlButtonEnabled = userIsHost
         streamControlButton.setTitle(scButtonTitleEnabled, forState: UIControlState.Normal)
@@ -277,7 +277,7 @@ class CreatePartyViewController: UITableViewController {
         streamControlButton.enabled = streamControlButtonEnabled
         streamControlButton.setTranslatesAutoresizingMaskIntoConstraints(false)
         
-        let skipSongButton = UIButton.buttonWithType(UIButtonType.System) as UIButton
+        let skipSongButton = UIButton.buttonWithType(UIButtonType.System) as! UIButton
         self.skipSongButton = skipSongButton
         let skipSongButtonEnabled = userIsHostStreamable
         skipSongButton.setTitle(skipButtonTitle, forState: UIControlState.Normal)
@@ -293,7 +293,7 @@ class CreatePartyViewController: UITableViewController {
         skipSongButton.enabled = skipSongButtonEnabled
         skipSongButton.setTranslatesAutoresizingMaskIntoConstraints(false)
         
-        let leavePartyButton = UIButton.buttonWithType(UIButtonType.System) as UIButton
+        let leavePartyButton = UIButton.buttonWithType(UIButtonType.System) as! UIButton
         self.leavePartyButton = leavePartyButton
         leavePartyButton.setTitle("Leave Party", forState: UIControlState.Normal)
         leavePartyButton.setTitleColor(UIColor.white(), forState: UIControlState.Normal)
@@ -370,10 +370,17 @@ extension CreatePartyViewController: UITableViewDelegate {
         return indexPath.section == 1
     }
     
+    override func tableView(tableView: UITableView, willDisplayCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath) {
+        
+        // Fixes table having different margins in iOS 8
+        if tableView.respondsToSelector("setLayoutMargins:") {
+            tableView.layoutMargins = UIEdgeInsetsZero
+        }
+    }
 }
 
 extension CreatePartyViewController: UITextFieldDelegate {
-    func textField(textField: UITextField!, shouldChangeCharactersInRange range: NSRange, replacementString string: String!) -> Bool {
+    func textField(textField: UITextField, shouldChangeCharactersInRange range: NSRange, replacementString string: String) -> Bool {
         // Returns false if any of the replacementString characters are invalid
         for c in string {
             if !validCharacters.hasSubstringCaseInsensitive(String(c)) {
@@ -386,11 +393,11 @@ extension CreatePartyViewController: UITextFieldDelegate {
         }
         
         // Only allow change if 20 or less characters
-        let newLength = countElements(textField.text as String) + countElements(string as String) - range.length
+        let newLength = count(textField.text as String) + count(string as String) - range.length
         return ((newLength > 20) ? false : true)
     }
     
-    func textFieldShouldReturn(textField: UITextField!) -> Bool {
+    func textFieldShouldReturn(textField: UITextField) -> Bool {
         // Hide keyboard when user presses "Done"
         removeLeadingWhitespaceFromTextField(&nameCellTextField!)
         nameCellTextField.resignFirstResponder()
@@ -413,7 +420,7 @@ extension CreatePartyViewController: CreatePartyStrictnessViewControllerDelegate
 }
 
 extension CreatePartyViewController: UIAlertViewDelegate {
-    func alertView(alertView: UIAlertView!, clickedButtonAtIndex buttonIndex: Int) {
+    func alertView(alertView: UIAlertView, clickedButtonAtIndex buttonIndex: Int) {
         if alertView.tag == AlertTag.LeavingPartyAsHost.rawValue {
             if buttonIndex == 1 {
                 // If host is leaving the party

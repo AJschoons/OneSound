@@ -321,7 +321,7 @@ extension PartyManager {
         
         OSAPI.sharedClient.GETPartyCurrent(
             success: { data, responseObject in
-                let responseJSON = JSONValue(responseObject)
+                let responseJSON = JSON(responseObject)
                 println(responseJSON)
                 
                 self.updateMainPartyInfoFromJSON(responseJSON, completion: completion)
@@ -353,7 +353,7 @@ extension PartyManager {
         if state == .HostStreamable {
             OSAPI.sharedClient.GETNextSong(pid, skipped: skipped,
                 success: { data, responseObject in
-                    let responseJSON = JSONValue(responseObject)
+                    let responseJSON = JSON(responseObject)
                     println(responseJSON)
                     
                     if completion != nil {
@@ -392,9 +392,9 @@ extension PartyManager {
             let user = UserManager.sharedUser
             OSAPI.sharedClient.GETParty(pid,
                 success: { data, responseObject in
-                    let responseJSON = JSONValue(responseObject)
+                    let responseJSON = JSON(responseObject)
                     //println(responseJSON)
-                    self.updateMainPartyInfoFromJSON(responseJSON, JSONUpdateCompletion)
+                    self.updateMainPartyInfoFromJSON(responseJSON, completion: JSONUpdateCompletion)
                     //self.refresh()
                     self.decideStateOfValidParty()
                     self.resetManagers()
@@ -415,7 +415,7 @@ extension PartyManager {
         
         OSAPI.sharedClient.POSTParty(name, privacy: privacy, strictness: strictness,
             success: { data, responseObject in
-                let responseJSON = JSONValue(responseObject)
+                let responseJSON = JSON(responseObject)
                 println(responseJSON)
                 let status = responseJSON["status"].string
                 
@@ -442,7 +442,7 @@ extension PartyManager {
         
         OSAPI.sharedClient.PUTParty(partyID, name: name, privacy: privacy, strictness: strictness,
             success: { data, responseObject in
-                let responseJSON = JSONValue(responseObject)
+                let responseJSON = JSON(responseObject)
                 println(responseJSON)
                 let status = responseJSON["status"].string
                 
@@ -465,7 +465,7 @@ extension PartyManager {
         let user = UserManager.sharedUser
         OSAPI.sharedClient.DELETEUserParty(user.id,
             success: { data, responseObject in
-                let responseJSON = JSONValue(responseObject)
+                let responseJSON = JSON(responseObject)
                 println(responseJSON)
                 let status = responseJSON["status"].string
                 
@@ -485,7 +485,7 @@ extension PartyManager {
         
         OSAPI.sharedClient.PUTPartyPermissions(partyID, musicControl: true,
             success: { data, responseObject in
-                let responseJSON = JSONValue(responseObject)
+                let responseJSON = JSON(responseObject)
                 println(responseJSON)
                 let status = responseJSON["status"].string
                 
@@ -503,13 +503,13 @@ extension PartyManager {
         )
     }
     
-    private func updateMainPartyInfoFromJSON(json: JSONValue, completion: completionClosure? = nil) {
+    private func updateMainPartyInfoFromJSON(json: JSON, completion: completionClosure? = nil) {
         println(json)
         
-        partyID = json["pid"].integer
+        partyID = json["pid"].int
         isPrivate = json["privacy"].bool
         name = json["name"].string
-        strictness = json["strictness"].integer
+        strictness = json["strictness"].int
         userIsHost = json["host"].bool
         
         if userIsHost != nil && userIsHost == true {
@@ -520,7 +520,7 @@ extension PartyManager {
             userCanSkipSong = false
         }
         
-        if json["current_song"]["user"].object != nil {
+        if json["current_song"]["user"] != nil {
             // Got a song for the party
             let oldCurrentSong = currentSong
             currentSong = Song(json: json["current_song"])

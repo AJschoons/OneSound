@@ -154,12 +154,12 @@ extension UserManager {
         
         OSAPI.sharedClient.GETUserLoginGuest(
             success: { data, responseObject in
-                let responseJSON = JSONValue(responseObject)
+                let responseJSON = JSON(responseObject)
                 println(responseJSON)
                 
                 // Get the guest's new access token
                 let newGuestAccessToken = responseJSON["access_token"].string
-                let guestUserID = responseJSON["uid"].integer
+                let guestUserID = responseJSON["uid"].int
                 
                 self.updateUserInformationAfterSignIn(userID: guestUserID!, accessToken: newGuestAccessToken!,
                     failure: { task, error in
@@ -195,12 +195,12 @@ extension UserManager {
         // Get the guest user creation info from the server
         OSAPI.sharedClient.GETGuestUser(
             success: { data, responseObject in
-                let responseJSON = JSONValue(responseObject)
+                let responseJSON = JSON(responseObject)
                 println(responseJSON)
                 
                 // Get the guest response info
                 let guestAccessToken = responseJSON["access_token"].string
-                let guestUID = responseJSON["uid"].integer
+                let guestUID = responseJSON["uid"].int
                 
                 printlnC(self.pL, pG, "Signing in with GUEST information... userID:\(guestUID)   userAccessToken:\(guestAccessToken)")
                 
@@ -225,7 +225,7 @@ extension UserManager {
         
         OSAPI.sharedClient.GETUserLoginProvider(fbAuthToken,
             success: { data, responseObject in
-                let responseJSON = JSONValue(responseObject)
+                let responseJSON = JSON(responseObject)
                 println(responseJSON)
                 let activeAccount = responseJSON["active"].bool
                 if activeAccount == false {
@@ -233,7 +233,7 @@ extension UserManager {
                     println("Account is inactive; create account")
                     
                     let loginStoryboard = UIStoryboard(name: LoginStoryboardName, bundle: nil)
-                    let loginViewController = loginStoryboard.instantiateViewControllerWithIdentifier(LoginViewControllerIdentifier) as LoginViewController
+                    let loginViewController = loginStoryboard.instantiateViewControllerWithIdentifier(LoginViewControllerIdentifier) as! LoginViewController
                     let navC = UINavigationController(rootViewController: loginViewController)
                     
                     getFrontNavigationController()!.presentViewController(navC, animated: true,
@@ -248,7 +248,7 @@ extension UserManager {
                     println("Account is active; update information and sign in")
                     
                     let userAccessToken = responseJSON["access_token"].string
-                    let userID = responseJSON["uid"].integer
+                    let userID = responseJSON["uid"].int
                     
                     self.updateUserInformationAfterSignIn(userID: userID!, accessToken: userAccessToken!)
                 }
@@ -288,7 +288,7 @@ extension UserManager {
         
         OSAPI.sharedClient.POSTUserProvider(userName, userColor: userColor, providerToken: providerToken,
             success: { data, responseObject in
-                let responseJSON = JSONValue(responseObject)
+                let responseJSON = JSON(responseObject)
                 println(responseJSON)
                 let status = responseJSON["status"].string
                 
@@ -339,7 +339,7 @@ extension UserManager {
         // Get the user's info from the server
         OSAPI.sharedClient.GETUser(id,
             success: { data, responseObject in
-                let responseJSON = JSONValue(responseObject)
+                let responseJSON = JSON(responseObject)
                 println(responseJSON)
                 
                 // Update shared User's information, UserDefaults, and Keychain info
@@ -368,7 +368,7 @@ extension UserManager {
     func updateServerWithNewNameAndColor(name: String?, color: String?, respondToChangeAttempt: (Bool) -> () ) {
         OSAPI.sharedClient.PUTUser(id, newName: name, newColor: color,
             success: { data, responseObject in
-                let responseJSON = JSONValue(responseObject)
+                let responseJSON = JSON(responseObject)
                 println(responseJSON)
                 let status = responseJSON["status"].string
                 
@@ -383,22 +383,22 @@ extension UserManager {
         )
     }
     
-    func updateUserFromJSON(json: JSONValue, accessToken: String, completion: completionClosure? = nil, forcePhotoUpdate: Bool = false) {
+    func updateUserFromJSON(json: JSON, accessToken: String, completion: completionClosure? = nil, forcePhotoUpdate: Bool = false) {
         println("Updating UserManager from JSON")
         
         setup = true
         
         self.accessToken = accessToken
         
-        id = json["uid"].integer
+        id = json["uid"].int
         name = json["name"].string
         color = json["color"].string
         guest = json["guest"].bool
-        songCount = json["song_count"].integer
-        upvoteCount = json["vote_count"].integer
-        hotnessPercent = json["hotness"].integer
-        followers = json["followers"].integer
-        following = json["following"].integer
+        songCount = json["song_count"].int
+        upvoteCount = json["vote_count"].int
+        hotnessPercent = json["hotness"].int
+        followers = json["followers"].int
+        following = json["following"].int
         
         let photoStr = "photo"
         println("guest:\(guest) json[photo]:\(json[photoStr].string != nil) force:\(forcePhotoUpdate) photoUrl:\(photoURL) photoUrlChanged:\(photoURL != json[photoStr].string)")
@@ -442,7 +442,7 @@ extension UserManager {
         
         OSAPI.sharedClient.GETUser(id,
             success: { data, responseObject in
-                let responseJSON = JSONValue(responseObject)
+                let responseJSON = JSON(responseObject)
                 println(responseJSON)
                 
                 self.updateUserFromJSON(responseJSON, accessToken: self.accessToken)

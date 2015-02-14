@@ -113,7 +113,7 @@ class LoginViewController: UITableViewController {
                 respondToChangeAttempt: { nameIsValid in
                     if nameIsValid {
                         self.tableView.endEditing(true)
-                        self.dismissViewControllerAnimated(true, nil)
+                        self.dismissViewControllerAnimated(true, completion: nil)
                     } else {
                         self.notifyThatUserNameIsTaken()
                     }
@@ -132,7 +132,7 @@ class LoginViewController: UITableViewController {
                 { nameIsValid in
                     if nameIsValid {
                         self.tableView.endEditing(true)
-                        self.dismissViewControllerAnimated(true, nil)
+                        self.dismissViewControllerAnimated(true, completion: nil)
                     } else {
                         self.notifyThatUserNameIsTaken()
                     }
@@ -149,13 +149,13 @@ class LoginViewController: UITableViewController {
     func setDoneButtonState() {
         if accountAlreadyExists {
             // Only allow Done to be pressed if user information has changed from what is already is
-            if countElements(nameCellTextField.text as String) > 2 && userInfoHasChanged() {
+            if count(nameCellTextField.text as String) > 2 && userInfoHasChanged() {
                 navigationItem.rightBarButtonItem!.enabled = true
             } else {
                 navigationItem.rightBarButtonItem!.enabled = false
             }
         } else {
-            if countElements(nameCellTextField.text as String) > 2 {
+            if count(nameCellTextField.text as String) > 2 {
                 navigationItem.rightBarButtonItem!.enabled = true
             } else {
                 navigationItem.rightBarButtonItem!.enabled = false
@@ -169,7 +169,7 @@ class LoginViewController: UITableViewController {
     }
     
     func updateNameCellTextFieldCount() {
-        let numberOfCharacters = countElements(nameCellTextField.text as String)
+        let numberOfCharacters = count(nameCellTextField.text as String)
         
         // Update label
         nameCellTextFieldCount.text = "\(numberOfCharacters)/15"
@@ -249,10 +249,18 @@ extension LoginViewController: UITableViewDelegate {
             return
         }
     }
+    
+    override func tableView(tableView: UITableView, willDisplayCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath) {
+        
+        // Fixes table having different margins in iOS 8
+        if tableView.respondsToSelector("setLayoutMargins:") {
+            tableView.layoutMargins = UIEdgeInsetsZero
+        }
+    }
 }
 
 extension LoginViewController: UITextFieldDelegate {
-    func textField(textField: UITextField!, shouldChangeCharactersInRange range: NSRange, replacementString string: String!) -> Bool {
+    func textField(textField: UITextField, shouldChangeCharactersInRange range: NSRange, replacementString string: String) -> Bool {
         // Returns false if any of the replacementString characters are invalid
         for c in string {
             if !validCharacters.hasSubstringCaseInsensitive(String(c)) {
@@ -265,11 +273,11 @@ extension LoginViewController: UITextFieldDelegate {
         }
     
         // Only allow change if 15 or less characters
-        let newLength = countElements(textField.text as String) + countElements(string as String) - range.length
+        let newLength = count(textField.text as String) + count(string as String) - range.length
         return ((newLength > 15) ? false : true)
     }
     
-    func textFieldShouldReturn(textField: UITextField!) -> Bool {
+    func textFieldShouldReturn(textField: UITextField) -> Bool {
         // Hide keyboard when user presses "Done"
         removeLeadingWhitespaceFromTextField(&nameCellTextField!)
         nameCellTextField.resignFirstResponder()

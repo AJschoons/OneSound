@@ -25,7 +25,7 @@ class LoginColorViewController: UITableViewController {
     init(delegate initDelegate: LoginColorViewControllerDelegate, selectedColor color: OneSoundColorOption) {
         delegate = initDelegate
         selectedColor = color
-        super.init(nibName: nil, bundle: nil)
+        super.init(style: .Grouped)
     }
     
     required init(coder aDecoder: NSCoder) {
@@ -58,7 +58,7 @@ extension LoginColorViewController: UITableViewDataSource {
     }
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier(colorCellReuseIdentifier, forIndexPath: indexPath) as LoginColorCell
+        let cell = tableView.dequeueReusableCellWithIdentifier(colorCellReuseIdentifier, forIndexPath: indexPath) as! LoginColorCell
         cell.colorLabel.text = colorNames[indexPath.row].rawValue
         cell.colorView.backgroundColor = colorViewColors[indexPath.row]
         
@@ -93,5 +93,13 @@ extension LoginColorViewController: UITableViewDelegate {
         // Update the selectedColor, return that color to the delegate
         selectedColor = colorNames[indexPath.row]
         delegate!.loginColorViewController(self, didSelectColor: selectedColor)
+    }
+    
+    override func tableView(tableView: UITableView, willDisplayCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath) {
+        
+        // Fixes table having different margins in iOS 8
+        if tableView.respondsToSelector("setLayoutMargins:") {
+            tableView.layoutMargins = UIEdgeInsetsZero
+        }
     }
 }

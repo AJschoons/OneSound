@@ -24,7 +24,7 @@ class CreatePartyStrictnessViewController: UITableViewController {
     init(delegate initDelegate: CreatePartyStrictnessViewControllerDelegate, selectedStrictness strictness: PartyStrictnessOption) {
         delegate = initDelegate
         selectedStrictness = strictness
-        super.init(nibName: nil, bundle: nil)
+        super.init(style: UITableViewStyle.Grouped)
     }
     
     required init(coder aDecoder: NSCoder) {
@@ -78,7 +78,7 @@ extension CreatePartyStrictnessViewController: UITableViewDataSource {
     }
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier(defaultCellReuseIdentifier, forIndexPath: indexPath) as UITableViewCell
+        let cell = tableView.dequeueReusableCellWithIdentifier(defaultCellReuseIdentifier, forIndexPath: indexPath) as! UITableViewCell
         
         cell.textLabel!.text = strictnessOptions[indexPath.section].PartyStrictnessOptionToString()
         cell.textLabel!.font = UIFont.systemFontOfSize(CGFloat(cellLabelFontSize))
@@ -114,5 +114,13 @@ extension CreatePartyStrictnessViewController: UITableViewDelegate {
         // Update the selectedStrictness, return that strictness to the delegate
         selectedStrictness = strictnessOptions[indexPath.section]
         delegate!.createPartyStrictnessViewController(self, didSelectStrictness: selectedStrictness)
+    }
+    
+    override func tableView(tableView: UITableView, willDisplayCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath) {
+        
+        // Fixes table having different margins in iOS 8
+        if tableView.respondsToSelector("setLayoutMargins:") {
+            tableView.layoutMargins = UIEdgeInsetsZero
+        }
     }
 }

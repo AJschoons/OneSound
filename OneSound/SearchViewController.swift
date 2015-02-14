@@ -38,7 +38,7 @@ class SearchViewController: UIViewController {
         
         OSAPI.sharedClient.GETPartySearch(searchStr,
             success: {data, responseObject in
-                let responseJSON = JSONValue(responseObject)
+                let responseJSON = JSON(responseObject)
                 println(responseJSON)
                 let partiesArray = responseJSON.array
                 println(partiesArray!)
@@ -70,7 +70,7 @@ class SearchViewController: UIViewController {
     func createParty() {
         if UserManager.sharedUser.guest == false {
             let createPartyStoryboard = UIStoryboard(name: CreatePartyStoryboardName, bundle: nil)
-            let createPartyViewController = createPartyStoryboard.instantiateViewControllerWithIdentifier(CreatePartyViewControllerIdentifier) as CreatePartyViewController
+            let createPartyViewController = createPartyStoryboard.instantiateViewControllerWithIdentifier(CreatePartyViewControllerIdentifier) as! CreatePartyViewController
             createPartyViewController.partyAlreadyExists = false
             // TODO: create the delegate methods and see what they mean
             //createPartyViewController.delegate = self
@@ -141,7 +141,7 @@ class SearchViewController: UIViewController {
     func textFieldDidChange() {
         // Make changes based on the number of characters in the text field
         // TODO: Only allow searching with 3+ characters (not a huge deal)
-        // if countElements(partySearchTextField.text as String) > 2 {
+        // if count(partySearchTextField.text as String) > 2 {
     }
     
     func tap() {
@@ -246,7 +246,7 @@ extension SearchViewController: UITableViewDataSource {
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
 
-        let cell = searchResultsTable.dequeueReusableCellWithIdentifier(PartySearchResultCellIdentifier, forIndexPath: indexPath) as PartySearchResultCell
+        let cell = searchResultsTable.dequeueReusableCellWithIdentifier(PartySearchResultCellIdentifier, forIndexPath: indexPath) as! PartySearchResultCell
         
         let result = searchResultsArray[indexPath.row]
         
@@ -263,7 +263,7 @@ extension SearchViewController: UITableViewDataSource {
 }
 
 extension SearchViewController: UITableViewDelegate {
-    func tableView(tableView: UITableView!, didSelectRowAtIndexPath indexPath: NSIndexPath!) {
+    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         
         let selectedParty = searchResultsArray[indexPath.row]
         
@@ -303,13 +303,21 @@ extension SearchViewController: UITableViewDelegate {
         tableView.deselectRowAtIndexPath(indexPath, animated: true)
     }
     
-    func tableView(tableView: UITableView!, heightForRowAtIndexPath indexPath: NSIndexPath!) -> CGFloat {
+    func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
         return heightForRows
+    }
+    
+    func tableView(tableView: UITableView, willDisplayCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath) {
+        
+        // Fixes table having different margins in iOS 8
+        if tableView.respondsToSelector("setLayoutMargins:") {
+            tableView.layoutMargins = UIEdgeInsetsZero
+        }
     }
 }
 
 extension SearchViewController: UITextFieldDelegate {
-    func textField(textField: UITextField!, shouldChangeCharactersInRange range: NSRange, replacementString string: String!) -> Bool {
+    func textField(textField: UITextField, shouldChangeCharactersInRange range: NSRange, replacementString string: String) -> Bool {
         // Returns false if any of the replacementString characters are invalid
         for c in string {
             if c != " " && !validCharacters.hasSubstringCaseInsensitive(String(c)) {
@@ -322,11 +330,11 @@ extension SearchViewController: UITextFieldDelegate {
         }
         
         // Only allow change if 25 or less characters
-        let newLength = countElements(textField.text as String) + countElements(string as String) - range.length
+        let newLength = count(textField.text as String) + count(string as String) - range.length
         return ((newLength > 25) ? false : true)
     }
     
-    func textFieldShouldReturn(textField: UITextField!) -> Bool {
+    func textFieldShouldReturn(textField: UITextField) -> Bool {
         // Hide keyboard when user presses "Search", initiate the search
         removeLeadingWhitespaceFromTextField(&partySearchTextField!)
         partySearchTextField.resignFirstResponder()

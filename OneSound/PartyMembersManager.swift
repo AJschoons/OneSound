@@ -39,7 +39,7 @@ class PartyMembersManager
             let pageStartingFromZero = currentPage - 1
             OSAPI.sharedClient.GETPartyMembers(PartyManager.sharedParty.partyID, page: currentPage, pageSize: pageSize,
                 success: { data, responseObject in
-                    let responseJSON = JSONValue(responseObject)
+                    let responseJSON = JSON(responseObject)
                     //println(responseJSON)
                     
                     self.updateMembersFromJSON(responseJSON, completion: completion)
@@ -63,8 +63,8 @@ class PartyMembersManager
         updating = false
     }
     
-    private func updateMembersFromJSON(json: JSONValue, completion: completionClosure? = nil) {
-        totalUsers = json["paging"]["total_count"].integer!
+    private func updateMembersFromJSON(json: JSON, completion: completionClosure? = nil) {
+        totalUsers = json["paging"]["total_count"].int!
         
         var usersArray = json["results"].array
         var usersAdded = 0

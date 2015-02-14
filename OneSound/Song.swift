@@ -36,19 +36,19 @@ class Song {
         return externalID
     }
     
-    init(json: JSONValue) {
-        songID = json["sid"].integer
+    init(json: JSON) {
+        songID = json["sid"].int
         source = json["source"].string
-        externalID = json["external_id"].integer
-        userID = json["user_uid"].integer
+        externalID = json["external_id"].int
+        userID = json["user_uid"].int
         
         name = json["title"].string
         artistName = json["artist"].string
-        duration = json["length"].integer
+        duration = json["length"].int
         artworkURL = json["album"].string
-        voteCount = json["vote_count"].integer
+        voteCount = json["vote_count"].int
         
-        if let vote = json["user_vote"].integer {
+        if let vote = json["user_vote"].int {
             userVote = SongVote(rawValue: vote)
         }
     }
@@ -57,5 +57,9 @@ class Song {
 extension Song: Equatable { }
 // MARK: Equatable
 func == (lhs: Song, rhs: Song) -> Bool {
-    return lhs.externalID == rhs.externalID && lhs.userID == rhs.userID
+    if lhs.externalID != nil && rhs.externalID != nil && lhs.userID != nil && rhs.externalID != nil {
+        return lhs.externalID == rhs.externalID && lhs.userID == rhs.userID
+    } else {
+        return false
+    }
 }

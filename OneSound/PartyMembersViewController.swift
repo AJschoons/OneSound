@@ -13,7 +13,7 @@ let PartyMemberCellIdentifier = "PartyMemberCell"
 
 class PartyMembersViewController: UIViewController {
     
-    let userThumbnailImageCache = (UIApplication.sharedApplication().delegate as AppDelegate).userThumbnailImageCache
+    let userThumbnailImageCache = (UIApplication.sharedApplication().delegate as! AppDelegate).userThumbnailImageCache
     let membersManager = PartyManager.sharedParty.membersManager
     
     @IBOutlet weak var messageLabel1: UILabel?
@@ -176,7 +176,7 @@ extension PartyMembersViewController: UITableViewDataSource {
     }
     
     func memberCellForRowAtIndexPath(indexPath: NSIndexPath, fromTableView tableView: UITableView) -> PartyMemberCell {
-        var membersCell = membersTable.dequeueReusableCellWithIdentifier(PartyMemberCellIdentifier, forIndexPath: indexPath) as PartyMemberCell
+        var membersCell = membersTable.dequeueReusableCellWithIdentifier(PartyMemberCellIdentifier, forIndexPath: indexPath) as! PartyMemberCell
         
         let user = membersManager.users[indexPath.row]
         
@@ -245,7 +245,7 @@ extension PartyMembersViewController: UITableViewDataSource {
     
     func loadImagesForOnScreenRows() {
         if membersManager.users.count > 0 {
-            let visiblePaths = membersTable.indexPathsForVisibleRows() as [NSIndexPath]
+            let visiblePaths = membersTable.indexPathsForVisibleRows() as! [NSIndexPath]
             
             for path in visiblePaths {
                 let user = membersManager.users[path.row]
@@ -280,7 +280,7 @@ extension PartyMembersViewController: UITableViewDataSource {
 }
 
 extension PartyMembersViewController: UITableViewDelegate {
-    func tableView(tableView: UITableView!, heightForRowAtIndexPath indexPath: NSIndexPath!) -> CGFloat {
+    func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
         return heightForRows
     }
     
@@ -294,6 +294,11 @@ extension PartyMembersViewController: UITableViewDelegate {
                 }
             )
         }
+        
+        // Fixes table having different margins in iOS 8
+        if tableView.respondsToSelector("setLayoutMargins:") {
+            tableView.layoutMargins = UIEdgeInsetsZero
+        }
     }
 }
 
@@ -301,7 +306,7 @@ extension PartyMembersViewController: UIScrollViewDelegate {
     // Load the images for all onscreen rows when scrolling is finished
     
     // Called on finger up if the user dragged. Decelerate is true if it will continue moving afterwards
-    func scrollViewDidEndDragging(scrollView: UIScrollView!, willDecelerate decelerate: Bool) {
+    func scrollViewDidEndDragging(scrollView: UIScrollView, willDecelerate decelerate: Bool) {
         // Load the images for the cells if it won't be moving afterwards
         if !decelerate {
             loadImagesForOnScreenRows()
@@ -309,7 +314,7 @@ extension PartyMembersViewController: UIScrollViewDelegate {
     }
     
     // Called when the scroll view grinds to a halt
-    func scrollViewDidEndDecelerating(scrollView: UIScrollView!) {
+    func scrollViewDidEndDecelerating(scrollView: UIScrollView) {
         loadImagesForOnScreenRows()
     }
 }

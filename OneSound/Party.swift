@@ -17,13 +17,13 @@ class Party {
     private(set) var memberCount: Int?
     private(set) var hostName: String?
     
-    init(json: JSONValue) {
-        partyID = json["pid"].integer
+    init(json: JSON) {
+        partyID = json["pid"].int
         isPrivate = json["privacy"].bool
         isHost = json["bool"].bool
         name = json["name"].string
-        strictness = json["strictness"].integer
-        memberCount = json["member_count"].integer
+        strictness = json["strictness"].int
+        memberCount = json["member_count"].int
         hostName = json["host_name"].string
     }
 }

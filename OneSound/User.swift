@@ -43,16 +43,16 @@ class User {
         return UIColor.brownColor()
     }
     
-    init(json: JSONValue) {
-        id = json["uid"].integer
+    init(json: JSON) {
+        id = json["uid"].int
         name = json["name"].string
         color = json["color"].string
         guest = json["guest"].bool
-        songCount = json["song_count"].integer
-        upvoteCount = json["vote_count"].integer
-        hotnessPercent = json["hotness"].integer
-        followers = json["followers"].integer
-        following = json["following"].integer
+        songCount = json["song_count"].int
+        upvoteCount = json["vote_count"].int
+        hotnessPercent = json["hotness"].int
+        followers = json["followers"].int
+        following = json["following"].int
         
         if guest == false && json["photo"].string != nil {
             // If not a guest and a non-empty photoURL gets sent that's different from what it was

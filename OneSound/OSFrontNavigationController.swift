@@ -89,7 +89,7 @@ extension OSFrontNavigationController: ENSideMenuDelegate {
 }
 
 extension FrontNavigationController: UIBarPositioningDelegate {
-    func positionForBar(bar: UIBarPositioning!) -> UIBarPosition {
+    func positionForBar(bar: UIBarPositioning) -> UIBarPosition {
         return UIBarPosition.TopAttached
     }
 }

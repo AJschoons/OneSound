@@ -45,13 +45,13 @@ class PartyTabBarController: OSTabBarController {
         // navigated from the side menu
         switch selectedIndex {
         case 0:
-            let partyMembersViewController = viewControllers![0] as PartyMembersViewController
+            let partyMembersViewController = viewControllers![0] as! PartyMembersViewController
             partyMembersViewController.viewWillAppear(animated)
         case 1:
-            let partyMainViewController = viewControllers![1] as PartyMainViewController
+            let partyMainViewController = viewControllers![1] as! PartyMainViewController
             partyMainViewController.viewWillAppear(animated)
         case 2:
-            let partySongsViewController = viewControllers![2] as PartySongsViewController
+            let partySongsViewController = viewControllers![2] as! PartySongsViewController
             partySongsViewController.viewWillAppear(animated)
         default:
             println("ERROR: selectedIndex for PartyTabBarController was out of range 0-2")
@@ -80,7 +80,7 @@ class PartyTabBarController: OSTabBarController {
 }
 
 extension PartyTabBarController: UITabBarControllerDelegate {
-    func tabBarController(tabBarController: UITabBarController!, didSelectViewController viewController: UIViewController!) {
+    func tabBarController(tabBarController: UITabBarController, didSelectViewController viewController: UIViewController) {
         if let ptbc = tabBarController as? PartyTabBarController {
             if let pMembVC = viewController as? PartyMembersViewController {
                 ptbc.navigationItem.rightBarButtonItem = nil

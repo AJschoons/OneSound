@@ -67,7 +67,7 @@ class SongStore: NSObject {
                 
                 SCClient.sharedClient.getSoundCloudSongByID(key,
                     success: {data, responseObject in
-                        let responseJSON = JSONValue(responseObject)
+                        let responseJSON = JSON(responseObject)
                         //println(responseJSON)
                         let SCSongName = responseJSON["title"].string
                         let SCUserName = responseJSON["user"]["username"].string

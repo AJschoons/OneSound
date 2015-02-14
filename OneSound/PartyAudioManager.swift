@@ -533,7 +533,7 @@ extension PartyAudioManager {
         println("AVAudioSessionInterruptionNotification")
         var info = n.userInfo!
         var interruptionTypeValue: UInt = 0
-        (info[AVAudioSessionInterruptionTypeKey] as NSValue).getValue(&interruptionTypeValue)
+        (info[AVAudioSessionInterruptionTypeKey] as! NSValue).getValue(&interruptionTypeValue)
         if let type = AVAudioSessionInterruptionType(rawValue: interruptionTypeValue) {
             switch type {
             case .Began:
@@ -546,7 +546,7 @@ extension PartyAudioManager {
                 // Update user interface
                 println("ended")
                 var interruptionOptionValue: UInt = 0
-                (info[AVAudioSessionInterruptionOptionKey] as NSValue).getValue(&interruptionOptionValue)
+                (info[AVAudioSessionInterruptionOptionKey] as! NSValue).getValue(&interruptionOptionValue)
                 let option = AVAudioSessionInterruptionOptions(rawValue: interruptionOptionValue)
                 if option == AVAudioSessionInterruptionOptions.OptionShouldResume {
                     // AVAudioSessionInterruptionOptionShouldResume option
@@ -565,7 +565,7 @@ extension PartyAudioManager {
         println("AVAudioSessionRouteChangeNotification")
         var info = n.userInfo!
         var routeChangeTypeValue: UInt = 0
-        (info[AVAudioSessionRouteChangeReasonKey] as NSValue).getValue(&routeChangeTypeValue)
+        (info[AVAudioSessionRouteChangeReasonKey] as! NSValue).getValue(&routeChangeTypeValue)
         if let routeChangeReason = AVAudioSessionRouteChangeReason(rawValue: routeChangeTypeValue) {
             if routeChangeReason == AVAudioSessionRouteChangeReason.OldDeviceUnavailable {
                 onAudioOutputChange()

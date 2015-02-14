@@ -98,9 +98,9 @@ public class ENSideMenu : NSObject {
     private var gravMag: CGFloat = 2
     
     public init(sourceView: UIView, menuPosition: ENSideMenuPosition) {
-        super.init()
         self.sourceView = sourceView
-        self.menuPosition = menuPosition
+        //self.menuPosition = menuPosition
+        super.init()
     
         animator = UIDynamicAnimator(referenceView:sourceView)
         

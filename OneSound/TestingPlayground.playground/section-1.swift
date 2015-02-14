@@ -4,8 +4,8 @@ import UIKit
 
 extension String {
     func hasSubstringCaseSensitive(substring: String) -> Bool {
-        let substringLength: Int = countElements(substring)
-        let stringLength: Int = countElements(self)
+        let substringLength: Int = count(substring)
+        let stringLength: Int = count(self)
         if (substringLength <= stringLength) && (substring != "") {
             for var i = 0; (i + substringLength) <= stringLength; ++i {
                 let indexToStartAt = advance(self.startIndex, i)
@@ -25,8 +25,8 @@ extension String {
     func hasSubstringCaseInsensitive(substring: String) -> Bool {
         let substringLowercase = substring.lowercaseString
         let stringLowercase = self.lowercaseString
-        let substringLength = countElements(substringLowercase)
-        let stringLength = countElements(stringLowercase)
+        let substringLength = count(substringLowercase)
+        let stringLength = count(stringLowercase)
         if (substringLength <= stringLength) && (substring != "") {
             for var i = 0; (i + substringLength) <= stringLength; ++i {
                 let indexToStartAt = advance(stringLowercase.startIndex, i)
@@ -171,8 +171,8 @@ let SCstr = "https://i1.sndcdn.com/artworks-000075859755-jcijgn-large.jpg?e76cf7
 
 extension String {
     func replaceSubstringWithString(oldSubstring: String, newSubstring: String) -> String {
-        let oldSubstrL: Int = countElements(oldSubstring)
-        let stringL: Int = countElements(self)
+        let oldSubstrL: Int = count(oldSubstring)
+        let stringL: Int = count(self)
         if (oldSubstrL <= stringL) && (oldSubstring != "") {
             for var i = 0; (i + oldSubstrL) <= stringL; ++i {
                 let indexToStartAt = advance(self.startIndex, i)
