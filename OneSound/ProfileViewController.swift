@@ -402,12 +402,4 @@ extension ProfileViewController: UITableViewDelegate {
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         // TODO: add functionality for stories
     }
-    
-    func tableView(tableView: UITableView, willDisplayCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath) {
-        
-        // Fixes table having different margins in iOS 8
-        if tableView.respondsToSelector("setLayoutMargins:") {
-            tableView.layoutMargins = UIEdgeInsetsZero
-        }
-    }
 }

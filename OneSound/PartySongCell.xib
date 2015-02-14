@@ -15,17 +15,17 @@
                 <rect key="frame" x="0.0" y="0.0" width="320" height="43"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="11v-XB-g2n">
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="11v-XB-g2n" userLabel="nameAndArtistEnclosingView">
                         <rect key="frame" x="61" y="18" width="178" height="28"/>
                         <subviews>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="The Name Of The Song" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" minimumScaleFactor="0.84999999999999987" translatesAutoresizingMaskIntoConstraints="NO" id="G1e-Xo-VN3">
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="The Name Of The Song" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" minimumScaleFactor="0.84999999999999987" preferredMaxLayoutWidth="0.0" translatesAutoresizingMaskIntoConstraints="NO" id="G1e-Xo-VN3">
                                 <rect key="frame" x="0.0" y="0.0" width="178" height="15"/>
                                 <fontDescription key="fontDescription" type="boldSystem" pointSize="12"/>
                                 <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="The Name Of The Artist" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="10" translatesAutoresizingMaskIntoConstraints="NO" id="U75-J6-gKG">
-                                <rect key="frame" x="0.0" y="15" width="178" height="12"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="The Name Of The Artist" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="10" preferredMaxLayoutWidth="0.0" translatesAutoresizingMaskIntoConstraints="NO" id="U75-J6-gKG">
+                                <rect key="frame" x="0.0" y="16" width="178" height="12"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="12" id="ULJ-db-VTf"/>
                                 </constraints>
@@ -53,7 +53,7 @@
                             <constraint firstAttribute="height" constant="45" id="u7o-4m-MPf"/>
                         </constraints>
                     </imageView>
-                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" reversesTitleShadowWhenHighlighted="YES" adjustsImageWhenHighlighted="NO" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="f2I-hB-V3z">
+                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" reversesTitleShadowWhenHighlighted="YES" adjustsImageWhenHighlighted="NO" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="f2I-hB-V3z" userLabel="thumbsUpButton">
                         <rect key="frame" x="284" y="12" width="36" height="40"/>
                         <constraints>
                             <constraint firstAttribute="height" constant="40" id="OFz-D2-yDW"/>
@@ -65,7 +65,7 @@
                             <action selector="onThumbsUp:" destination="KGk-i7-Jjw" eventType="touchUpInside" id="YiC-fX-gHi"/>
                         </connections>
                     </button>
-                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" adjustsImageWhenHighlighted="NO" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Umf-ea-nPj">
+                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" adjustsImageWhenHighlighted="NO" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Umf-ea-nPj" userLabel="thumbsDownButton">
                         <rect key="frame" x="239" y="12" width="32" height="40"/>
                         <constraints>
                             <constraint firstAttribute="height" constant="40" id="Lkd-gk-qhn"/>
@@ -85,7 +85,7 @@
                             <constraint firstAttribute="height" constant="22" id="HWx-hd-qVI"/>
                         </constraints>
                     </view>
-                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="00" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="b78-26-EE1">
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="00" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" preferredMaxLayoutWidth="0.0" translatesAutoresizingMaskIntoConstraints="NO" id="b78-26-EE1" userLabel="voteCount">
                         <rect key="frame" x="306" y="0.0" width="12" height="12"/>
                         <constraints>
                             <constraint firstAttribute="height" constant="12" id="GIB-iN-L9l"/>
@@ -109,6 +109,13 @@
                             <constraint firstAttribute="height" constant="24" id="Aa5-hK-LNk"/>
                         </constraints>
                     </imageView>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="a2m-Ao-QsE" userLabel="seperator">
+                        <rect key="frame" x="23" y="62" width="297" height="1"/>
+                        <color key="backgroundColor" red="0.8304140567779541" green="0.83038914203643799" blue="0.83040332794189453" alpha="1" colorSpace="calibratedRGB"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="1" id="0kQ-Qe-izj"/>
+                        </constraints>
+                    </view>
                 </subviews>
                 <color key="backgroundColor" red="0.95075207948684692" green="0.95072358846664429" blue="0.95073968172073364" alpha="1" colorSpace="calibratedRGB"/>
                 <constraints>
@@ -116,7 +123,9 @@
                     <constraint firstAttribute="centerY" secondItem="iHF-mJ-W5v" secondAttribute="centerY" id="5G1-ae-DIQ"/>
                     <constraint firstItem="vgW-Yc-wPX" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="topMargin" constant="-8" id="5uk-Pj-JF3"/>
                     <constraint firstItem="b78-26-EE1" firstAttribute="trailing" secondItem="vgW-Yc-wPX" secondAttribute="trailing" constant="-2" id="GR5-nn-9CE"/>
+                    <constraint firstAttribute="bottomMargin" secondItem="a2m-Ao-QsE" secondAttribute="bottom" constant="-8" id="IS5-cy-Xvc"/>
                     <constraint firstItem="Umf-ea-nPj" firstAttribute="centerY" secondItem="f2I-hB-V3z" secondAttribute="centerY" id="NHI-Mh-28d"/>
+                    <constraint firstItem="a2m-Ao-QsE" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leadingMargin" constant="15" id="O56-R3-TEi"/>
                     <constraint firstItem="f2I-hB-V3z" firstAttribute="trailing" secondItem="H2p-sc-9uM" secondAttribute="trailingMargin" constant="8" id="OgO-6B-c8S"/>
                     <constraint firstAttribute="trailingMargin" secondItem="HBH-uo-6cs" secondAttribute="trailing" constant="2" id="OvH-Pr-A8r"/>
                     <constraint firstItem="11v-XB-g2n" firstAttribute="bottom" relation="lessThanOrEqual" secondItem="iHF-mJ-W5v" secondAttribute="bottom" constant="3" id="RIR-dq-OTS"/>
@@ -130,6 +139,7 @@
                     <constraint firstItem="f2I-hB-V3z" firstAttribute="leading" secondItem="HBH-uo-6cs" secondAttribute="leading" constant="-2" id="jMp-DY-rmi"/>
                     <constraint firstItem="Umf-ea-nPj" firstAttribute="leading" secondItem="11v-XB-g2n" secondAttribute="trailing" id="ndV-wD-kle"/>
                     <constraint firstItem="HBH-uo-6cs" firstAttribute="centerY" secondItem="EDT-bZ-EPS" secondAttribute="centerY" constant="-1" id="pgk-kg-p4z"/>
+                    <constraint firstAttribute="trailingMargin" secondItem="a2m-Ao-QsE" secondAttribute="trailing" constant="-8" id="rV5-Id-UA0"/>
                     <constraint firstItem="EDT-bZ-EPS" firstAttribute="leading" secondItem="11v-XB-g2n" secondAttribute="trailing" constant="8" id="uX0-xz-voA"/>
                     <constraint firstItem="b78-26-EE1" firstAttribute="top" secondItem="vgW-Yc-wPX" secondAttribute="top" id="ubQ-KB-qwL"/>
                     <constraint firstItem="EDT-bZ-EPS" firstAttribute="trailing" secondItem="Umf-ea-nPj" secondAttribute="trailing" id="yps-rt-EOE"/>

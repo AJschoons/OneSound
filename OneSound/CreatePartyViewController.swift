@@ -369,14 +369,6 @@ extension CreatePartyViewController: UITableViewDelegate {
         // Only highlight the party strictness cell
         return indexPath.section == 1
     }
-    
-    override func tableView(tableView: UITableView, willDisplayCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath) {
-        
-        // Fixes table having different margins in iOS 8
-        if tableView.respondsToSelector("setLayoutMargins:") {
-            tableView.layoutMargins = UIEdgeInsetsZero
-        }
-    }
 }
 
 extension CreatePartyViewController: UITextFieldDelegate {

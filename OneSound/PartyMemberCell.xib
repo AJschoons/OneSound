@@ -23,7 +23,7 @@
                             <constraint firstAttribute="height" constant="22" id="sjx-y9-49T"/>
                         </constraints>
                     </view>
-                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Lng-Z6-1PC">
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Lng-Z6-1PC" userLabel="seperator">
                         <rect key="frame" x="15" y="62" width="305" height="1"/>
                         <color key="backgroundColor" red="0.8304140567779541" green="0.83038914203643799" blue="0.83040332794189453" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
@@ -51,7 +51,7 @@
                             <constraint firstAttribute="height" constant="17" id="Zug-oY-sdO"/>
                         </constraints>
                     </imageView>
-                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="000" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="KRu-D0-5iQ">
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="000" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="KRu-D0-5iQ" userLabel="upvoteLabel">
                         <rect key="frame" x="70" y="48" width="26" height="11"/>
                         <constraints>
                             <constraint firstAttribute="width" constant="26" id="LYN-bW-yj8"/>
@@ -68,7 +68,7 @@
                             <constraint firstAttribute="height" constant="17" id="hQ6-3O-DQw"/>
                         </constraints>
                     </imageView>
-                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="XX%" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="JoS-rS-Ddg">
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="XX%" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="JoS-rS-Ddg" userLabel="hotnessLabel">
                         <rect key="frame" x="286" y="48" width="30" height="11"/>
                         <constraints>
                             <constraint firstAttribute="width" constant="30" id="5rF-Ko-gKJ"/>
@@ -85,7 +85,7 @@
                             <constraint firstAttribute="width" constant="17" id="b9Z-22-deI"/>
                         </constraints>
                     </imageView>
-                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="000" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="col-Rj-q6i">
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="000" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="col-Rj-q6i" userLabel="songLabel">
                         <rect key="frame" x="179" y="48" width="26" height="11"/>
                         <constraints>
                             <constraint firstAttribute="height" constant="11" id="fAD-9x-Q3K"/>
@@ -95,7 +95,7 @@
                         <color key="textColor" red="0.5170014500617981" green="0.51698595285415649" blue="0.51699477434158325" alpha="1" colorSpace="calibratedRGB"/>
                         <nil key="highlightedColor"/>
                     </label>
-                    <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="hmk-br-ycE">
+                    <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="hmk-br-ycE" userLabel="leftSpacerView">
                         <rect key="frame" x="92" y="29" width="92" height="16"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
@@ -103,7 +103,7 @@
                             <constraint firstAttribute="width" relation="lessThanOrEqual" constant="93.5" id="gsZ-VS-ZYs"/>
                         </constraints>
                     </view>
-                    <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="wKB-p0-mLB">
+                    <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="wKB-p0-mLB" userLabel="rightSpacerView">
                         <rect key="frame" x="201" y="29" width="91.5" height="16"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>

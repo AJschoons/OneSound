@@ -17,5 +17,5 @@ class LoginColorCell: UITableViewCell {
         // Initialization code
         
         colorView.layer.cornerRadius = 3
-    }    
+    }
 }

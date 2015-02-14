@@ -83,6 +83,7 @@
 		81ACB3E81A5273AD0039529E /* PartyMembersManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81ACB3E71A5273AD0039529E /* PartyMembersManager.swift */; };
 		81B17D8F196F2A680062943C /* SideNavigationMenuCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81B17D8D196F2A680062943C /* SideNavigationMenuCell.swift */; };
 		81B17D90196F2A680062943C /* SideNavigationMenuCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 81B17D8E196F2A680062943C /* SideNavigationMenuCell.xib */; };
+		81B8B2211A9002F100B6DC75 /* UITableViewCellExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81B8B2201A9002F100B6DC75 /* UITableViewCellExtensions.swift */; };
 		81BC27BD199DC0E2006233AE /* PartySongCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81BC27BB199DC0E2006233AE /* PartySongCell.swift */; };
 		81BC27BE199DC0E2006233AE /* PartySongCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 81BC27BC199DC0E2006233AE /* PartySongCell.xib */; };
 		81BCC2B7199D2EA900A3500F /* AddSongViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81BCC2B5199D2EA900A3500F /* AddSongViewController.swift */; };
@@ -192,6 +193,7 @@
 		81ACB3E71A5273AD0039529E /* PartyMembersManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PartyMembersManager.swift; sourceTree = "<group>"; };
 		81B17D8D196F2A680062943C /* SideNavigationMenuCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SideNavigationMenuCell.swift; sourceTree = "<group>"; };
 		81B17D8E196F2A680062943C /* SideNavigationMenuCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SideNavigationMenuCell.xib; sourceTree = "<group>"; };
+		81B8B2201A9002F100B6DC75 /* UITableViewCellExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UITableViewCellExtensions.swift; sourceTree = "<group>"; };
 		81BC27BB199DC0E2006233AE /* PartySongCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PartySongCell.swift; sourceTree = "<group>"; };
 		81BC27BC199DC0E2006233AE /* PartySongCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PartySongCell.xib; sourceTree = "<group>"; };
 		81BCC2B5199D2EA900A3500F /* AddSongViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddSongViewController.swift; sourceTree = "<group>"; };
@@ -233,14 +235,9 @@
 			isa = PBXGroup;
 			children = (
 				81929C81196B71F3006F336B /* OneSound-Bridging-Header.h */,
-				815831101974308E0011D3CE /* OneSoundColors.swift */,
 				815831441975CD450011D3CE /* SwiftUtilities.swift */,
 				815831461975CD9B0011D3CE /* SwiftyJSON.swift */,
 				813FCE0619774ECF00419097 /* TestingPlayground.playground */,
-				81414DCD197DD1F800081132 /* EnumHackExtensions.swift */,
-				812795081A49F20E0092D880 /* OSLabel.swift */,
-				813897981A5465B0008BBC77 /* OSTriangleView.swift */,
-				814AF0BE1A83B226003ECEED /* OSAlertController.swift */,
 			);
 			name = "Utility + Bridging Header";
 			sourceTree = "<group>";
@@ -319,12 +316,13 @@
 				81062FA2196B6C7E0057D230 /* AppDelegate.swift */,
 				81062FAB196B6C7E0057D230 /* Images.xcassets */,
 				81062FA0196B6C7E0057D230 /* Supporting Files */,
+				81742A651A7A70E400FC2AFD /* Constants/Enums */,
+				81B8B21F1A9001BF00B6DC75 /* Subclasses/Extensions */,
 				8100A95F196F075300EB1156 /* Utility + Bridging Header */,
 				8100A961196F07A100EB1156 /* Networking */,
 				8100A960196F078400EB1156 /* Models */,
 				818750541A50C5C8000CC353 /* Managers */,
 				8100A962196F07EB00EB1156 /* UI */,
-				81742A651A7A70E400FC2AFD /* Constants */,
 			);
 			path = OneSound;
 			sourceTree = "<group>";
@@ -459,12 +457,13 @@
 			name = Other;
 			sourceTree = "<group>";
 		};
-		81742A651A7A70E400FC2AFD /* Constants */ = {
+		81742A651A7A70E400FC2AFD /* Constants/Enums */ = {
 			isa = PBXGroup;
 			children = (
 				81742A661A7A716900FC2AFD /* Constants.swift */,
+				815831101974308E0011D3CE /* OneSoundColors.swift */,
 			);
-			name = Constants;
+			name = Constants/Enums;
 			sourceTree = "<group>";
 		};
 		8179444B1A5751C000A9C636 /* ENSideMenu Library */ = {
@@ -524,6 +523,18 @@
 			name = "Base Classes";
 			sourceTree = "<group>";
 		};
+		81B8B21F1A9001BF00B6DC75 /* Subclasses/Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				81414DCD197DD1F800081132 /* EnumHackExtensions.swift */,
+				812795081A49F20E0092D880 /* OSLabel.swift */,
+				813897981A5465B0008BBC77 /* OSTriangleView.swift */,
+				814AF0BE1A83B226003ECEED /* OSAlertController.swift */,
+				81B8B2201A9002F100B6DC75 /* UITableViewCellExtensions.swift */,
+			);
+			name = Subclasses/Extensions;
+			sourceTree = "<group>";
+		};
 		81BCC2B9199D332F00A3500F /* Add Song */ = {
 			isa = PBXGroup;
 			children = (
@@ -569,6 +580,7 @@
 				81062F9A196B6C7E0057D230 /* Frameworks */,
 				81062F9B196B6C7E0057D230 /* Resources */,
 				FBAECF98FB8E476DADF83FAD /* Copy Pods Resources */,
+				81914FA01A900DBD00C033E9 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -698,6 +710,19 @@
 			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
+		81914FA01A900DBD00C033E9 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "SCRIPT=`/usr/bin/find \"${SRCROOT}\" -name newrelic_postbuild.sh | head -n 1`\n\n/bin/sh \"${SCRIPT}\" \"AAe6bc980a2d996add7c26db97bf6da4eef6a1a622\"";
+		};
 		FBAECF98FB8E476DADF83FAD /* Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -737,6 +762,7 @@
 				817944511A5752DE00A9C636 /* OSFrontNavigationController.swift in Sources */,
 				8195E68C1A5CB76D00FD0CC8 /* PartyAudioManager.swift in Sources */,
 				812795091A49F20E0092D880 /* OSLabel.swift in Sources */,
+				81B8B2211A9002F100B6DC75 /* UITableViewCellExtensions.swift in Sources */,
 				816FD445196F22B0003CCB1C /* SideNavigationViewController.swift in Sources */,
 				81BCC2B7199D2EA900A3500F /* AddSongViewController.swift in Sources */,
 				8158311F197477990011D3CE /* HistoryViewController.swift in Sources */,

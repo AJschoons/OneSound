@@ -115,12 +115,4 @@ extension CreatePartyStrictnessViewController: UITableViewDelegate {
         selectedStrictness = strictnessOptions[indexPath.section]
         delegate!.createPartyStrictnessViewController(self, didSelectStrictness: selectedStrictness)
     }
-    
-    override func tableView(tableView: UITableView, willDisplayCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath) {
-        
-        // Fixes table having different margins in iOS 8
-        if tableView.respondsToSelector("setLayoutMargins:") {
-            tableView.layoutMargins = UIEdgeInsetsZero
-        }
-    }
 }

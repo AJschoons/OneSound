@@ -56,6 +56,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject : AnyObject]?) -> Bool {
         window = UIWindow(frame: UIScreen.mainScreen().bounds)
         
+        NewRelicAgent.startWithApplicationToken("AAe6bc980a2d996add7c26db97bf6da4eef6a1a622")
+        
         // Override point for customization after application launch.
         setupAppWindowAndViewHierarchy()
         

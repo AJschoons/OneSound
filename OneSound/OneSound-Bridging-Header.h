@@ -17,3 +17,4 @@
 #import "UIImage+ImageEffects.h"
 //#import "FXBlurView.h"
 #import "MSAlertController.h"
+#import <NewRelicAgent/NewRelic.h>

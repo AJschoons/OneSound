@@ -74,6 +74,11 @@ class PartySongsViewController: UIViewController {
         // Allows cells to flow under nav bar and tab bar, but not stop scrolling behind them when content stops
         songsTable.contentInset = UIEdgeInsetsMake(65, 0, 49, 0)
         
+        // Fixes table having different margins in iOS 8
+        if songsTable.respondsToSelector("setLayoutMargins:") {
+            songsTable.layoutMargins = UIEdgeInsetsZero
+        }
+        
         refresh()
     }
     
@@ -207,11 +212,19 @@ extension PartySongsViewController: UITableViewDataSource {
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+        var cell: UITableViewCell
+        
         if indexPath.row < playlistManager.songs.count {
-            return songCellForRowAtIndexPath(indexPath, fromTableView: tableView)
+            cell = songCellForRowAtIndexPath(indexPath, fromTableView: tableView)
         } else {
-            return loadingCell()
+            cell = loadingCell()
         }
+        
+        if cell.respondsToSelector("preservesSuperviewLayoutMargins:") {
+            cell.preservesSuperviewLayoutMargins = false
+        }
+        
+        return cell
     }
     
     func loadingCell() -> UITableViewCell {
@@ -369,6 +382,7 @@ extension PartySongsViewController: UITableViewDelegate {
     }
     
     func tableView(tableView: UITableView, willDisplayCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath) {
+        
         if cell.tag == LoadingCellTag {
             playlistManager.update(
                 completion: {
@@ -377,11 +391,6 @@ extension PartySongsViewController: UITableViewDelegate {
                     self.tableViewController.refreshControl!.endRefreshing()
                 }
             )
-        }
-        
-        // Fixes table having different margins in iOS 8
-        if tableView.respondsToSelector("setLayoutMargins:") {
-            tableView.layoutMargins = UIEdgeInsetsZero
         }
     }
 }

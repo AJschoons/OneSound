@@ -294,11 +294,6 @@ extension PartyMembersViewController: UITableViewDelegate {
                 }
             )
         }
-        
-        // Fixes table having different margins in iOS 8
-        if tableView.respondsToSelector("setLayoutMargins:") {
-            tableView.layoutMargins = UIEdgeInsetsZero
-        }
     }
 }
 
