@@ -10,6 +10,10 @@ import UIKit
 
 let PartySongCellNibName = "PartySongCell"
 
+protocol PartySongCellDelegate: class {
+    func didVoteOnSongCellAtIndex(index: Int, withVote vote: SongVote, andVoteCountChange voteCountChange: Int)
+}
+
 class PartySongCell: UITableViewCell {
 
     @IBOutlet private(set) weak var songName: UILabel!
@@ -25,6 +29,12 @@ class PartySongCell: UITableViewCell {
     
     var songID: Int!
     var userID: Int!
+    
+    // Used for tracking where cell is for votes (need a way to "talk" to the tableViewController)
+    weak var delegate: PartySongCellDelegate?
+    var index: Int?
+    
+    private var voteCountIsNegative = false
     
     @IBAction func onThumbsDown(sender: AnyObject) {
         handleThumbsDown(sender)
@@ -52,58 +62,106 @@ class PartySongCell: UITableViewCell {
     
     // Sets the vote count label and triangle color
     func setVoteCount(count: Int) {
+        voteCountIsNegative = false // Initialize it to non-negative
+        
         var triangleColor: UIColor
         if count > 0 { triangleColor = UIColor.green() }
         else if count == 0 { triangleColor = UIColor.orange() }
-        else { triangleColor = UIColor.red() }
+        else { triangleColor = UIColor.red(); voteCountIsNegative = true }
         triangleView.color = triangleColor
         triangleView.setNeedsDisplay() // Force it to redraw
 
         voteCountLabel.text = intFormattedToShortStringForDisplay(abs(count))
     }
     
+    private func changeSongVoteCountLabelCountBy(changeBy: Int) {
+        if var voteCount = voteCountLabel.text!.toInt() {
+            if voteCountIsNegative { voteCount = -voteCount }
+            let newVoteCount = voteCount + changeBy
+            setVoteCount(newVoteCount)
+        }
+    }
+}
+
+extension PartySongCell {
+    // MARK: Thumbs up/down button handling
+    
+    func setThumbsUpDownButtons(thumbsUp: Bool, thumbsDown: Bool) {
+        if thumbsUp {
+            setThumbsUpSelected()
+            setThumbsDownUnselected()
+        } else if thumbsDown {
+            setThumbsDownSelected()
+            setThumbsUpUnselected()
+        } else {
+            resetThumbsUpDownButtons()
+        }
+    }
+    
     func handleThumbsUp(button: AnyObject) {
         if let thumbsUpButton = button as? UIButton {
+            var vote: SongVote
+            var voteCountChange: Int
+            
+            // If the button is selected before it is pressed, make it unselected
             if thumbsUpButton.selected {
-                // If the button is selected before it is pressed, make it unselected
+                vote = .Clear // Clear song vote on the server
+                voteCountChange = -1
                 setThumbsUpUnselected()
-                
-                // Clear song vote on the server
-                PartyManager.sharedParty.songClearVote(songID)
+            
+            // If the button is unselected before it is pressed
             } else {
-                // If the button is unselected before it is pressed
+                vote = .Up // Upvote song on the server
                 setThumbsUpSelected()
-                
-                // Upvote song on the server
-                PartyManager.sharedParty.songUpvote(songID)
                 
                 // If the thumbs down button is already selected when thumbs up gets selected, unselect it
                 if thumbsDownButton.selected {
+                    voteCountChange = 2
                     setThumbsDownUnselected()
+                // Thumbs down button wasn't already selected when thumbs up gets selected
+                } else {
+                    voteCountChange = 1
                 }
+            }
+            
+            // Update the vote count on the label, playlistManager, and server
+            changeSongVoteCountLabelCountBy(voteCountChange)
+            if index != nil {
+                delegate?.didVoteOnSongCellAtIndex(index!, withVote: vote, andVoteCountChange: voteCountChange)
             }
         }
     }
     
     func handleThumbsDown(button: AnyObject) {
         if let thumbsDownButton = button as? UIButton {
+            var vote: SongVote
+            var voteCountChange: Int
+            
+            // If the button is selected before it is pressed, make it unselected
             if thumbsDownButton.selected {
-                // If the button is selected before it is pressed, make it unselected
+                vote = .Clear // Clear song vote on the server
+                voteCountChange = 1
                 setThumbsDownUnselected()
                 
-                // Clear song vote on the server
-                PartyManager.sharedParty.songClearVote(songID)
+            // If the button is unselected before it is pressed
             } else {
-                // If the button is unselected before it is pressed
+                vote = .Down
                 setThumbsDownSelected()
-                
-                // Downvote song on the server
-                PartyManager.sharedParty.songDownvote(songID)
                 
                 // If the thumbs up button is already selected when thumbs down gets selected, unselect it
                 if thumbsUpButton.selected {
                     setThumbsUpUnselected()
+                    voteCountChange = -2
+                // Thumbs up button wasn't already selected when thumbs down gets selected
+                } else {
+                    voteCountChange = -1
                 }
+            }
+            
+            // Update the vote count on the label, PlaylistManager, and server
+            changeSongVoteCountLabelCountBy(voteCountChange)
+            if index != nil {
+                delegate?.didVoteOnSongCellAtIndex(index!, withVote: vote, andVoteCountChange: voteCountChange)
             }
         }
     }
@@ -118,7 +176,7 @@ class PartySongCell: UITableViewCell {
         thumbsUpButton.selected = true
     }
     
-    func setThumbsUpUnselected() {
+    private func setThumbsUpUnselected() {
         thumbsUpImage.image = thumbsUpUnselectedMainParty
         thumbsUpButton.selected = false
     }
@@ -128,7 +186,7 @@ class PartySongCell: UITableViewCell {
         thumbsDownButton.selected = true
     }
     
-    func setThumbsDownUnselected() {
+    private func setThumbsDownUnselected() {
         thumbsDownImage.image = thumbsDownUnselectedMainParty
         thumbsDownButton.selected = false
     }

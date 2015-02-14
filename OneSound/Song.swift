@@ -8,9 +8,9 @@
 
 import UIKit
 
-enum UserSongVote: Int {
+enum SongVote: Int {
     case Down = -1
-    case None = 0
+    case Clear = 0
     case Up = 1
 }
 
@@ -26,11 +26,10 @@ class Song {
     private(set) var artistName: String!
     private(set) var duration: Int! // Song duration in seconds
     private(set) var artworkURL: String?
-    private(set) var userVote: UserSongVote?
-    private(set) var voteCount: Int!
+    private(set) var userVote: SongVote?
+    var voteCount: Int!
     
     private var playAttempts = 0
-    
     
     func getExternalIDForPlaying() -> Int! {
         ++playAttempts
@@ -50,7 +49,7 @@ class Song {
         voteCount = json["vote_count"].integer
         
         if let vote = json["user_vote"].integer {
-            userVote = UserSongVote(rawValue: vote)
+            userVote = SongVote(rawValue: vote)
         }
     }
 }

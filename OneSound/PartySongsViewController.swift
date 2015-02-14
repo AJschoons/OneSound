@@ -154,6 +154,8 @@ class PartySongsViewController: UIViewController {
 }
 
 extension PartySongsViewController: UITableViewDataSource {
+    // MARK: UITableViewDataSource
+    
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         let songCount = playlistManager.songs.count
@@ -231,6 +233,10 @@ extension PartySongsViewController: UITableViewDataSource {
     
     func songCellForRowAtIndexPath(indexPath: NSIndexPath, fromTableView tableView: UITableView) -> PartySongCell {
         var songCell = songsTable.dequeueReusableCellWithIdentifier(PartySongCellIndentifier, forIndexPath: indexPath) as PartySongCell
+        
+        // "Connect" the cell to the table to receive song votes
+        songCell.index = indexPath.row
+        songCell.delegate = self
         
         var song = playlistManager.songs[indexPath.row]
         
@@ -356,6 +362,8 @@ extension PartySongsViewController: UITableViewDataSource {
 }
 
 extension PartySongsViewController: UITableViewDelegate {
+    // MARK: UITableViewDelegate
+    
     func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
         return heightForRows
     }
@@ -374,6 +382,7 @@ extension PartySongsViewController: UITableViewDelegate {
 }
 
 extension PartySongsViewController: UIScrollViewDelegate {
+    // MARK: UIScrollViewDelegate
     // Load the images for all onscreen rows when scrolling is finished
     
     // Called on finger up if the user dragged. Decelerate is true if it will continue moving afterwards
@@ -387,5 +396,27 @@ extension PartySongsViewController: UIScrollViewDelegate {
     // Called when the scroll view grinds to a halt
     func scrollViewDidEndDecelerating(scrollView: UIScrollView) {
         loadImagesForOnScreenRows()
+    }
+}
+
+extension PartySongsViewController: PartySongCellDelegate {
+    // MARK: PartySongCellDelegate
+    
+    // Handle votes on songs
+    func didVoteOnSongCellAtIndex(index: Int, withVote vote: SongVote, andVoteCountChange voteCountChange: Int) {
+        let song = playlistManager.songs[index]
+        
+        if let songID = song.songID {
+            switch vote {
+            case .Up:
+                PartyManager.sharedParty.songUpvote(songID)
+            case .Down:
+                PartyManager.sharedParty.songDownvote(songID)
+            case .Clear:
+                PartyManager.sharedParty.songClearVote(songID)
+            }
+            
+            song.voteCount = song.voteCount + voteCountChange
+        }
     }
 }
