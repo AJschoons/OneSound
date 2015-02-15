@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import QuartzCore
 
 let AddSongViewControllerNibName = "AddSongViewController"
 let SongSearchResultCellIdentifier = "SongSearchResultCell"
@@ -16,7 +17,7 @@ let SongDurationMaxInSeconds = 600 // 10 minute max
 
 class AddSongViewController: OSModalViewController {
 
-    @IBOutlet weak var songSearchTextField: UITextField!
+    @IBOutlet weak var songSearchBar: UISearchBar!
     @IBOutlet weak var searchResultsTable: UITableView!
     @IBOutlet weak var animatedOneSoundOne: UIImageView!
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
@@ -24,12 +25,13 @@ class AddSongViewController: OSModalViewController {
     var searchResultsArray = [SongSearchResult]()
     
     let heightForRows: CGFloat = 64.0
+    let songSearchBarPlaceholderText = "Enter a song name"
     
     var noSearchResults = false
     
     func search() {
         // Hide the keyboard
-        songSearchTextField.resignFirstResponder()
+        songSearchBar.resignFirstResponder()
         
         // Empty the table, reload to show its empty, start the animation
         noSearchResults = false
@@ -37,7 +39,7 @@ class AddSongViewController: OSModalViewController {
         searchResultsTable.reloadData()
         loadingAnimationShouldBeAnimating(true)
         
-        SCClient.sharedClient.searchSoundCloudForSongWithString(songSearchTextField.text,
+        SCClient.sharedClient.searchSoundCloudForSongWithString(songSearchBar.text,
             success: {data, responseObject in
                 let responseJSON = JSON(responseObject)
                 //println(responseJSON)
@@ -94,8 +96,6 @@ class AddSongViewController: OSModalViewController {
         // Setup nav bar
         navigationItem.title = "Add Song"
         navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Cancel, target: self, action: "cancel")
-        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Search", style: UIBarButtonItemStyle.Plain, target: self, action: "search")
-        navigationItem.rightBarButtonItem!.enabled = false
         
         // Stop view from being covered by the nav bar / laid out from top of screen
         edgesForExtendedLayout = UIRectEdge.None
@@ -105,9 +105,11 @@ class AddSongViewController: OSModalViewController {
         // Creating an (empty) footer stops table from showing empty cells
         searchResultsTable.tableFooterView = UIView(frame: CGRectZero)
         
-        songSearchTextField.delegate = self
-        songSearchTextField.enablesReturnKeyAutomatically = true
-        songSearchTextField.addTarget(self, action: "textFieldDidChange", forControlEvents: UIControlEvents.EditingChanged)
+        // Setup the search bar
+        songSearchBar.delegate = self
+        songSearchBar.enablesReturnKeyAutomatically = true
+        songSearchBar.layer.borderWidth = 1
+        songSearchBar.layer.borderColor = UIColor.grayLight().CGColor
         
         let tap = UITapGestureRecognizer(target: self, action: "tap")
         tap.cancelsTouchesInView = false
@@ -126,14 +128,6 @@ class AddSongViewController: OSModalViewController {
         searchResultsArray = []
         searchResultsTable.reloadData()
         noSearchResults = false
-    }
-    
-    func textFieldDidChange() {
-        if count(songSearchTextField.text as String) > 0 {
-            navigationItem.rightBarButtonItem!.enabled = true
-        } else {
-            navigationItem.rightBarButtonItem!.enabled = false
-        }
     }
     
     func tap() {
@@ -157,6 +151,8 @@ class AddSongViewController: OSModalViewController {
 }
 
 extension AddSongViewController: UITableViewDataSource {
+    // MARK: UITableViewDataSource
+    
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return searchResultsArray.count
     }
@@ -191,6 +187,8 @@ extension AddSongViewController: UITableViewDataSource {
 }
 
 extension AddSongViewController: UITableViewDelegate {
+    // MARK: UITableViewDelegate
+    
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         let selectedSong = searchResultsArray[indexPath.row]
         let source = "sc"
@@ -228,11 +226,30 @@ extension AddSongViewController: UITableViewDelegate {
     }
 }
 
-extension AddSongViewController: UITextFieldDelegate {
-    func textFieldShouldReturn(textField: UITextField) -> Bool {
-        // Hide keyboard when user presses "Search", initiate the search
+extension AddSongViewController: UIScrollViewDelegate {
+    func scrollViewWillBeginDragging(scrollView: UIScrollView) {
+        songSearchBar.resignFirstResponder()
+    }
+}
+
+extension AddSongViewController: UISearchBarDelegate {
+    // MARK: UISearchBarDelegate
+    
+    func searchBar(searchBar: UISearchBar, textDidChange searchText: String) {
+        // TODO: search while typing
+    }
+    
+    func searchBarTextDidBeginEditing(searchBar: UISearchBar) {
+        searchBar.placeholder = nil
+    }
+    
+    func searchBarTextDidEndEditing(searchBar: UISearchBar) {
+        searchBar.placeholder = songSearchBarPlaceholderText
+    }
+    
+    // Hide keyboard when user presses "Search", initiate the search
+    func searchBarSearchButtonClicked(searchBar: UISearchBar) {
         search()
-        return true
     }
 }
 

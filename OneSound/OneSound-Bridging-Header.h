@@ -4,10 +4,10 @@
 
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
+#import <NewRelicAgent/NewRelic.h>
 #import "AFNetworking.h"
 #import "AFNetworkActivityIndicatorManager.h"
 #import "AFNetworkActivityLogger.h"
-//#import "SWRevealViewController.h"
 #import "SSKeychain.h"
 #import "FacebookSDK.h"
 //#import "THLabel.h" // Using OSLabel
@@ -15,6 +15,3 @@
 #import "STKAudioPlayer.h"
 //#import "FXLabel.h" // Using OSLabel
 #import "UIImage+ImageEffects.h"
-//#import "FXBlurView.h"
-#import "MSAlertController.h"
-#import <NewRelicAgent/NewRelic.h>
