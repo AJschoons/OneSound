@@ -109,8 +109,7 @@ class PartySongsViewController: UIViewController {
                     playlistManager.update(
                         completion: {
                             dispatchAsyncToMainQueue(action: {
-                                self.songsTable.reloadData()
-                                self.loadImagesForOnScreenRows()
+                                self.reloadDataAndImagesForOnScreenRows()
                                 self.tableViewController.refreshControl!.endRefreshing()
                             })
                         }
@@ -156,6 +155,11 @@ class PartySongsViewController: UIViewController {
         messageLabel2!.alpha = 0
         messageLabel2!.text = ""
     }
+    
+    func reloadDataAndImagesForOnScreenRows() {
+        songsTable.reloadData()
+        loadImagesForOnScreenRows()
+    }
 }
 
 extension PartySongsViewController: UITableViewDataSource {
@@ -182,11 +186,9 @@ extension PartySongsViewController: UITableViewDataSource {
     func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
         // If there are songs to delete, and if the cell isn't the loading cell...
         if playlistManager.songs.count > 0 && indexPath.row < playlistManager.songs.count {
-            if let songCell = tableView.cellForRowAtIndexPath(indexPath) as? PartySongCell {
-                // If this is the user's song, they can choose to delete it
-                if songCell.userID == UserManager.sharedUser.id {
-                    return true
-                }
+            // If this is the user's song, they can choose to delete it
+            if playlistManager.songs[indexPath.row].userID == UserManager.sharedUser.id {
+                return true
             }
         }
         return false
@@ -199,14 +201,14 @@ extension PartySongsViewController: UITableViewDataSource {
         if editingStyle == UITableViewCellEditingStyle.Delete {
             // If there are songs to delete, and if the cell isn't the loading cell...
             if playlistManager.songs.count > 0 && indexPath.row < playlistManager.songs.count {
-                if let songCell = tableView.cellForRowAtIndexPath(indexPath) as? PartySongCell {
-                    // Delete this cell's song
-                    playlistManager.deleteSong(songCell.songID, atIndex: indexPath.row,
-                        completion: {
-                            tableView.reloadData()
-                        }
-                    )
-                }
+                // Delete this cell's song
+                playlistManager.deleteSongAtIndex(indexPath.row,
+                    completion: {
+                        tableView.beginUpdates()
+                        tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: UITableViewRowAnimation.Automatic)
+                        tableView.endUpdates()
+                    }
+                )
             }
         }
     }
@@ -253,8 +255,6 @@ extension PartySongsViewController: UITableViewDataSource {
         
         var song = playlistManager.songs[indexPath.row]
         
-        songCell.songID = song.songID
-        songCell.userID = song.userID
         songCell.songImage.image = songCellImagePlaceholder
         if song.name != nil { songCell.songName.text = song.name! }
         if song.artistName != nil { songCell.songArtist.text = song.artistName! }
@@ -386,8 +386,7 @@ extension PartySongsViewController: UITableViewDelegate {
         if cell.tag == LoadingCellTag {
             playlistManager.update(
                 completion: {
-                    self.songsTable.reloadData()
-                    self.loadImagesForOnScreenRows()
+                    self.reloadDataAndImagesForOnScreenRows()
                     self.tableViewController.refreshControl!.endRefreshing()
                 }
             )
@@ -430,7 +429,20 @@ extension PartySongsViewController: PartySongCellDelegate {
                 PartyManager.sharedParty.songClearVote(songID)
             }
             
-            playlistManager.moveSongAtIndex(index, afterChangingVoteCountBy: voteCountChange)
+            // Reorder the song based on the vote
+            let newIndex = playlistManager.moveSongAtIndex(index, afterChangingVoteCountBy: voteCountChange, withVote: vote)
+            
+            // The song has changed locations, so update for and animate the change
+            if newIndex != index {
+                songsTable.reloadData()
+                
+                songsTable.beginUpdates()
+                songsTable.deleteRowsAtIndexPaths([NSIndexPath(forRow: index, inSection: 0)], withRowAnimation: UITableViewRowAnimation.Left)
+                songsTable.insertRowsAtIndexPaths([NSIndexPath(forRow: newIndex, inSection: 0)], withRowAnimation: UITableViewRowAnimation.Left)
+                songsTable.endUpdates()
+                
+                loadImagesForOnScreenRows()
+            }
         }
     }
 }

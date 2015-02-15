@@ -26,7 +26,7 @@ class Song {
     private(set) var artistName: String!
     private(set) var duration: Int! // Song duration in seconds
     private(set) var artworkURL: String?
-    private(set) var userVote: SongVote?
+    var userVote: SongVote?
     var voteCount: Int!
     
     private var playAttempts = 0

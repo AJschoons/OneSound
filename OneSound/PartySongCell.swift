@@ -27,9 +27,6 @@ class PartySongCell: UITableViewCell {
     @IBOutlet weak private var triangleView: OSTriangleView!
     @IBOutlet weak private var voteCountLabel: UILabel!
     
-    var songID: Int!
-    var userID: Int!
-    
     // Used for tracking where cell is for votes (need a way to "talk" to the tableViewController)
     weak var delegate: PartySongCellDelegate?
     var index: Int?

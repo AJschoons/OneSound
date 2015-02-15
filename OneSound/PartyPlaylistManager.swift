@@ -40,7 +40,7 @@ class PartyPlaylistManager {
             OSAPI.sharedClient.GETPartyPlaylist(PartyManager.sharedParty.partyID, page: currentPage, pageSize: pageSize,
                 success: { data, responseObject in
                     let responseJSON = JSON(responseObject)
-                    println(responseJSON)
+                    //println(responseJSON)
                     
                     self.updatePlaylistFromJSON(responseJSON, completion: completion)
                 },
@@ -63,23 +63,22 @@ class PartyPlaylistManager {
         updating = false
     }
     
-    func deleteSong(sid: Int, atIndex i: Int, completion: completionClosure? = nil) {
-        if sid == songs[i].songID {
-            OSAPI.sharedClient.DELETESong(sid,
-                success: { data, responseObject in
-                    self.songs.removeAtIndex(i)
-                    if completion != nil { completion!() }
-                },
-                failure: defaultAFHTTPFailureBlock
-            )
-        }
+    func deleteSongAtIndex(index: Int, completion: completionClosure? = nil) {
+        OSAPI.sharedClient.DELETESong(songs[index].songID,
+            success: { data, responseObject in
+                self.songs.removeAtIndex(index)
+                if completion != nil { completion!() }
+            },
+            failure: defaultAFHTTPFailureBlock
+        )
     }
     
     // Returns the new index
-    func moveSongAtIndex(initialIndex: Int, afterChangingVoteCountBy voteCountChange: Int) -> Int {
+    func moveSongAtIndex(initialIndex: Int, afterChangingVoteCountBy voteCountChange: Int, withVote vote: SongVote) -> Int {
         let song = songs[initialIndex]
         let newVoteCount = song.voteCount + voteCountChange
         song.voteCount = newVoteCount
+        song.userVote = vote
         var newIndex: Int
         
         // Song will be moved down in array
