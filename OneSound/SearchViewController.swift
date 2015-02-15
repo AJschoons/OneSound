@@ -16,7 +16,7 @@ class SearchViewController: UIViewController {
     @IBOutlet weak var messageLabel1: UILabel?
     @IBOutlet weak var messageLabel2: UILabel?
     
-    @IBOutlet weak var partySearchTextField: UITextField!
+    @IBOutlet weak var partySearchBar: UISearchBar!
     @IBOutlet weak var searchResultsTable: UITableView!
     @IBOutlet weak var animatedOneSoundOne: UIImageView!
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
@@ -24,6 +24,8 @@ class SearchViewController: UIViewController {
     var createPartyButton: UIBarButtonItem!
     var searchResultsArray = [Party]()
     let heightForRows: CGFloat = 64.0
+    let partySearchBarPlaceholderText = "Enter a party name"
+    let maxSearchLength = 25
     
     var noSearchResults = false
     
@@ -34,7 +36,7 @@ class SearchViewController: UIViewController {
         searchResultsTable.reloadData()
         loadingAnimationShouldBeAnimating(true)
         
-        let searchStr = partySearchTextField.text
+        let searchStr = partySearchBar.text
         
         OSAPI.sharedClient.GETPartySearch(searchStr,
             success: {data, responseObject in
@@ -103,9 +105,11 @@ class SearchViewController: UIViewController {
         // Creating an (empty) footer stops table from showing empty cells
         searchResultsTable.tableFooterView = UIView(frame: CGRectZero)
         
-        partySearchTextField.delegate = self
-        partySearchTextField.enablesReturnKeyAutomatically = true
-        partySearchTextField.addTarget(self, action: "textFieldDidChange", forControlEvents: UIControlEvents.EditingChanged)
+        // Setup the search bar
+        partySearchBar.delegate = self
+        partySearchBar.enablesReturnKeyAutomatically = true
+        partySearchBar.layer.borderWidth = 1
+        partySearchBar.layer.borderColor = UIColor.grayLight().CGColor
         
         let tap = UITapGestureRecognizer(target: self, action: "tap")
         tap.cancelsTouchesInView = false
@@ -195,7 +199,7 @@ class SearchViewController: UIViewController {
     }
     
     func setViewInfoHidden(hidden: Bool) {
-        partySearchTextField.hidden = hidden
+        partySearchBar.hidden = hidden
         searchResultsTable.hidden = hidden
         
         if (hidden)
@@ -229,6 +233,8 @@ class SearchViewController: UIViewController {
 }
 
 extension SearchViewController: UITableViewDataSource {
+    // MARK: UITableViewDataSource
+    
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return searchResultsArray.count
     }
@@ -263,6 +269,8 @@ extension SearchViewController: UITableViewDataSource {
 }
 
 extension SearchViewController: UITableViewDelegate {
+    // MARK: UITableViewDelegate
+    
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         
         let selectedParty = searchResultsArray[indexPath.row]
@@ -308,36 +316,58 @@ extension SearchViewController: UITableViewDelegate {
     }
 }
 
-extension SearchViewController: UITextFieldDelegate {
-    func textField(textField: UITextField, shouldChangeCharactersInRange range: NSRange, replacementString string: String) -> Bool {
+extension SearchViewController: UIScrollViewDelegate {
+    // MARK: UIScrollViewDelegate
+    
+    // Dismisses the keyboard when the user was editing text after searching, then looks at results again
+    func scrollViewWillBeginDragging(scrollView: UIScrollView) {
+        partySearchBar.resignFirstResponder()
+    }
+}
+
+extension SearchViewController: UISearchBarDelegate {
+    // MARK: UISearchBarDelegate
+    
+    func searchBar(searchBar: UISearchBar, textDidChange searchText: String) {
+        // TODO: search while typing
+    }
+    
+    func searchBarTextDidBeginEditing(searchBar: UISearchBar) {
+        searchBar.placeholder = nil
+    }
+    
+    func searchBarTextDidEndEditing(searchBar: UISearchBar) {
+        searchBar.placeholder = partySearchBarPlaceholderText
+    }
+    
+    // Hide keyboard when user presses "Search", initiate the search
+    func searchBarSearchButtonClicked(searchBar: UISearchBar) {
+        removeLeadingWhitespaceFromSearchBar(&partySearchBar!)
+        partySearchBar.resignFirstResponder()
+        search()
+    }
+    
+    func searchBar(searchBar: UISearchBar, shouldChangeTextInRange range: NSRange, replacementText text: String) -> Bool {
         // Returns false if any of the replacementString characters are invalid
-        for c in string {
-            if c != " " && !validCharacters.hasSubstringCaseInsensitive(String(c)) {
+        for c in text {
+            if c != " " && c != "\n" && !validCharacters.hasSubstringCaseInsensitive(String(c)) {
                 return false
             }
         }
         
-        if addingOnlyWhitespaceToTextFieldWithOnlyWhitespaceOrEmpty(textField.text, string) {
+        if addingOnlyWhitespaceToTextFieldWithOnlyWhitespaceOrEmpty(searchBar.text, text) {
             return false
         }
         
         // Only allow change if 25 or less characters
-        let newLength = count(textField.text as String) + count(string as String) - range.length
-        return ((newLength > 25) ? false : true)
-    }
-    
-    func textFieldShouldReturn(textField: UITextField) -> Bool {
-        // Hide keyboard when user presses "Search", initiate the search
-        removeLeadingWhitespaceFromTextField(&partySearchTextField!)
-        partySearchTextField.resignFirstResponder()
-        search()
-        return true
+        let newLength = count(searchBar.text as String) + count(text as String) - range.length
+        return newLength <= maxSearchLength
     }
 }
 
 extension SearchViewController: SideMenuNavigableViewControllerWithKeyboard {
     func hideKeyboard() {
-        partySearchTextField.resignFirstResponder()
+        partySearchBar.resignFirstResponder()
     }
 }
 

@@ -227,6 +227,9 @@ extension AddSongViewController: UITableViewDelegate {
 }
 
 extension AddSongViewController: UIScrollViewDelegate {
+    // MARK: UIScrollViewDelegate
+    
+    // Dismisses the keyboard when the user was editing text after searching, then looks at results again
     func scrollViewWillBeginDragging(scrollView: UIScrollView) {
         songSearchBar.resignFirstResponder()
     }

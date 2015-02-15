@@ -414,6 +414,23 @@ func addingOnlyWhitespaceToTextFieldWithOnlyWhitespaceOrEmpty(textfieldText: Str
     return false
 }
 
+func removeLeadingWhitespaceFromSearchBar(inout searchBar: UISearchBar) {
+    let oldText = searchBar.text as String
+    var newText = ""
+    var hitNonWhitespaceChar = false
+    for c in oldText {
+        if hitNonWhitespaceChar {
+            newText.append(c)
+        }
+        else if c != " " {
+            hitNonWhitespaceChar = true
+            newText.append(c)
+        }
+    }
+    
+    searchBar.text = newText
+}
+
 func removeLeadingWhitespaceFromTextField(inout textField: UITextField) {
     let oldText = textField.text as String
     var newText = ""
