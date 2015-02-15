@@ -240,6 +240,13 @@ extension AddSongViewController: UISearchBarDelegate {
     
     func searchBar(searchBar: UISearchBar, textDidChange searchText: String) {
         // TODO: search while typing
+        
+        // Clear search data (this should happen when user presses the 'x' on the right side)
+        if count(searchText) == 0 {
+            noSearchResults = false
+            searchResultsArray = []
+            searchResultsTable.reloadData()
+        }
     }
     
     func searchBarTextDidBeginEditing(searchBar: UISearchBar) {
