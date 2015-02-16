@@ -144,7 +144,7 @@ extension UserManager {
     
     // For use in the login flow of signing a guest user in
     func signIntoGuestAccount(id: Int, userAccessToken: String) {
-        printlnC(pL, pG, "Signing in with GUEST information... userID:\(id)   userAccessToken:\(userAccessToken)")
+        println("Signing in with GUEST information... userID:\(id)   userAccessToken:\(userAccessToken)")
         
         // Make sure there aren't any saved tokens when signing into guest account
         FBSession.activeSession().closeAndClearTokenInformation()
@@ -187,7 +187,7 @@ extension UserManager {
     
     // For use in the login flow of creating a guest user
     func setupGuestAccount() {
-        printlnC(pL, pG, "Setup guest user")
+        println("Setup guest user")
         
         // Make sure there aren't any saved tokens when setting up guest account
         FBSession.activeSession().closeAndClearTokenInformation()
@@ -202,7 +202,7 @@ extension UserManager {
                 let guestAccessToken = responseJSON["access_token"].string
                 let guestUID = responseJSON["uid"].int
                 
-                printlnC(self.pL, pG, "Signing in with GUEST information... userID:\(guestUID)   userAccessToken:\(guestAccessToken)")
+                println("Signing in with GUEST information... userID:\(guestUID)   userAccessToken:\(guestAccessToken)")
                 
                 if guestAccessToken != nil && guestUID != nil {
                     self.updateUserInformationAfterSignIn(userID: guestUID!, accessToken: guestAccessToken!)
@@ -438,7 +438,7 @@ extension UserManager {
     
     // For updating the local user when NOT in the login flow
     func updateUserInformationFromServer(addToSuccess: completionClosure? = nil) {
-        printlnC(pL, pG, "Updating user information from server (NOT login flow)")
+        println("Updating user information from server (NOT login flow)")
         
         OSAPI.sharedClient.GETUser(id,
             success: { data, responseObject in

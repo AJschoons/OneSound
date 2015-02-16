@@ -63,6 +63,7 @@ class PartyPlaylistManager {
         updating = false
     }
     
+    // Removes song after successful delete from server in O(1)
     func deleteSongAtIndex(index: Int, completion: completionClosure? = nil) {
         OSAPI.sharedClient.DELETESong(songs[index].songID,
             success: { data, responseObject in
@@ -73,43 +74,101 @@ class PartyPlaylistManager {
         )
     }
     
-    // Returns the new index
+    // Moves the song in the array based on the new vote count in O(n), returns the new index
     func moveSongAtIndex(initialIndex: Int, afterChangingVoteCountBy voteCountChange: Int, withVote vote: SongVote) -> Int {
         let song = songs[initialIndex]
         let newVoteCount = song.voteCount + voteCountChange
         song.voteCount = newVoteCount
         song.userVote = vote
-        var newIndex: Int
         
         // Song will be moved down in array
         if voteCountChange < 0 {
-            newIndex = initialIndex
-            // song.voteCount will now be less than the song before it
-            while newIndex < (songs.count - 1) {
-                if songs[newIndex + 1].voteCount > newVoteCount {
-                    swap(&songs[newIndex], &songs[newIndex + 1])
-                    ++newIndex
-                } else {
-                    break
-                }
-            }
+            return moveDownSong(song, atInitialIndex: initialIndex, withNewVoteCount: newVoteCount)
             
         // Song will be moved up in array
         } else if voteCountChange > 0 {
-            newIndex = initialIndex
-            // song.voteCount will now be greater than the song before it
-            while newIndex > 0 {
-                if songs[newIndex - 1].voteCount < newVoteCount {
-                    swap(&songs[newIndex - 1], &songs[newIndex])
-                    --newIndex
+            return moveUpSong(song, atInitialIndex: initialIndex, withNewVoteCount: newVoteCount)
+        
+        // Song will stay in same place since vote count didn't change
+        } else {
+            return initialIndex
+        }
+    }
+    
+    // Moves down the song in the array based on the new vote count in O(n), returns the new index
+    private func moveDownSong(song: Song, atInitialIndex initialIndex: Int, withNewVoteCount newVoteCount: Int) -> Int {
+        var newIndex = initialIndex
+        
+        // song.voteCount will now be less than the song before it
+        while newIndex < (songs.count - 1) {
+            if songs[newIndex + 1].voteCount > newVoteCount {
+                swap(&songs[newIndex], &songs[newIndex + 1])
+                ++newIndex
+            } else {
+                break
+            }
+        }
+        
+        // In correct voteCount order, now place by dateCreatedAt...
+        // Since song is getting moved down, newIndex is the first time the next date is later than this song's date
+        if song.dateCreatedAt != nil {
+            while newIndex < (songs.count - 1) {
+                if let dateToCheck = songs[newIndex + 1].dateCreatedAt {
+                    let songsHaveEqualVotes = songs[newIndex + 1].voteCount == newVoteCount
+                    let nextSongHasEarlierDate = song.dateCreatedAt!.compare(dateToCheck) == NSComparisonResult.OrderedDescending
+                    
+                    if songsHaveEqualVotes && nextSongHasEarlierDate {
+                        swap(&songs[newIndex], &songs[newIndex + 1])
+                        ++newIndex
+                    } else {
+                        break
+                    }
+                    
+                // Couldn't compare against a date, so break
                 } else {
                     break
                 }
             }
+        }
         
-        // Song will stay in same place
-        } else {
-            newIndex = initialIndex
+        return newIndex
+    }
+    
+    // Moves up the song in the array based on the new vote count in O(n), returns the new index
+    private func moveUpSong(song: Song, atInitialIndex initialIndex: Int, withNewVoteCount newVoteCount: Int) -> Int {
+        var newIndex = initialIndex
+        
+        // song.voteCount will now be greater than the song before it
+        while newIndex > 0 {
+            if songs[newIndex - 1].voteCount < newVoteCount {
+                swap(&songs[newIndex - 1], &songs[newIndex])
+                --newIndex
+            } else {
+                // In correct voteCount order, now place by dateCreatedAt...
+                break
+            }
+        }
+        
+        // In correct voteCount order, now place by dateCreatedAt...
+        // Since song is getting moved up, newIndex is the first time the next date is earlier than this song's date
+        if song.dateCreatedAt != nil {
+            while newIndex > 0 {
+                if let dateToCheck = songs[newIndex - 1].dateCreatedAt {
+                    let songsHaveEqualVotes = songs[newIndex - 1].voteCount == newVoteCount
+                    let nextSongHasLaterDate = song.dateCreatedAt!.compare(dateToCheck) == NSComparisonResult.OrderedAscending
+                    
+                    if songsHaveEqualVotes && nextSongHasLaterDate {
+                        swap(&songs[newIndex - 1], &songs[newIndex])
+                        --newIndex
+                    } else {
+                        break
+                    }
+                    
+                // Couldn't compare against a date, so break
+                } else {
+                    break
+                }
+            }
         }
         
         return newIndex

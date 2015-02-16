@@ -20,6 +20,7 @@ class Song {
     private(set) var userID: Int!
     private(set) var partyID: Int!
     private var externalID: Int! // Use getters, and only getExternalIDForPlaying in AudioManager
+    private(set) var dateCreatedAt: NSDate? // Optional because // Songs in the playlist will have this, but not the current song
     
     // Display data
     private(set) var name: String!
@@ -50,6 +51,11 @@ class Song {
         
         if let vote = json["user_vote"].int {
             userVote = SongVote(rawValue: vote)
+        }
+        
+        // Songs in the playlist will have this, but not the current song
+        if let dateCreatedAtString = json["created_at"].string {
+            dateCreatedAt = oneSoundDateFormatter.dateFromString(dateCreatedAtString)
         }
     }
 }

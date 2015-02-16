@@ -367,14 +367,6 @@ func customExponentialEaseOut(xVal: Double) -> Double {
     }
 }
 
-// Convenient conditional printing
-func printlnC(l: Bool, g: Bool, m: String) {
-    if l || g {
-        println(m)
-    }
-}
-
-
 func setUserInfoLabelsText(# upvoteLabel: UILabel!, # numUpvotes: Int, # songLabel: UILabel!, # numSongs: Int, # hotnessLabel: UILabel!, # percentHotness: Int, userNameLabel: UILabel? = nil, userName: String? = nil) {
     upvoteLabel.text = intFormattedToShortStringForDisplay(numUpvotes)
     songLabel.text = intFormattedToShortStringForDisplay(numSongs)

@@ -11,7 +11,6 @@ import QuartzCore
 import AVFoundation
 
 // Set to true to print everything in app to console
-var pG = false
 let FacebookSessionChangeNotification = "FacebookSessionChangeNotification"
 let facebookSessionPermissions = ["public_profile", "email"]
 let FinishedLoginFlowNotification = "FinishedLoginFlowNotification"
@@ -30,6 +29,12 @@ let thousandsFormatter: NSNumberFormatter = {
     let formatter = NSNumberFormatter()
     formatter.numberStyle = NSNumberFormatterStyle.DecimalStyle
     formatter.formatterBehavior = NSNumberFormatterBehavior.BehaviorDefault
+    return formatter
+}()
+
+let oneSoundDateFormatter: NSDateFormatter = {
+    let formatter = NSDateFormatter()
+    formatter.dateFormat = "yyyy-MM-dd HH:mm:ss" // Format that the server sends back
     return formatter
 }()
 
