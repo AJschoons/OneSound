@@ -166,11 +166,6 @@ extension AppDelegate {
             } else if (reachability == AFNetworkReachabilityStatus.ReachableViaWiFi) || (reachability == AFNetworkReachabilityStatus.ReachableViaWWAN) {
                 println("Network has changed to reachable")
                 
-                if UserManager.sharedUser.setup == false {
-                    LoginFlowManager.sharedManager.startLoginFlow()
-                }
-                
-                
                 // Try setting up the user if network reachable but still not setup
                 OSAPI.sharedClient.GETPublicInfo(
                     { data, responseObject in
