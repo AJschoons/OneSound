@@ -506,7 +506,7 @@ extension OSAPI {
 }
 
 extension OSAPI {
-// MARK: Song-related API
+    // MARK: Song-related API
     
     // Add a song to a party playlist
     func POSTSong(pid: Int, externalID: Int, source: String, title: String, artist: String, duration: Int, artworkURL: String?,success: AFHTTPSuccessBlock, failure: AFHTTPFailureBlock, extraAttempts: Int = defaultEA) {
@@ -655,5 +655,24 @@ extension OSAPI {
         }
         
         DELETE(urlString, parameters: nil, success: success, failure: failure)
+    }
+}
+
+extension OSAPI {
+    // MARK: General-related API
+    
+    // Gets the version status of the iOS app, and the total # of parties in the app
+    func GETPublicInfo(success: AFHTTPSuccessBlock, failure: AFHTTPFailureBlock, extraAttempts: Int = 10) {
+        let urlString = "public/info"
+        
+        let failureWithExtraAttempt: AFHTTPFailureBlock = { task, error in
+            if errorShouldBeHandledWithRepeatedRequest(task, error, attemptsLeft: extraAttempts) {
+                self.GETPublicInfo(success, failure: failure, extraAttempts: (extraAttempts - 1))
+            } else {
+                failure!(task: task, error: error)
+            }
+        }
+        
+        GET(urlString, parameters: nil, success: success, failure: failure)
     }
 }

@@ -16,7 +16,7 @@ let StatusBarHeight: CGFloat = 20
 
 let defaultCellRowHeight: CGFloat = 64
 
-// UIAlertView tags
+// MARK: UIAlertView tags
 enum AlertTag: Int {
     
     case SigningOutGuest = 101
@@ -48,4 +48,12 @@ enum AlertTag: Int {
     case URLErrorDefault = 606
     
     case UnstreamableSongSkipped = 700
+}
+
+// MARK: VersionStatus
+// Used to check the version before logging in
+enum VersionStatus: Int {
+    case Good = 0
+    case Deprecated = 1
+    case Block = 2 // Don't load the app, force an update
 }

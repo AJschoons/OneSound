@@ -42,7 +42,7 @@ class LoginFlowManager {
                 // If there's a cached token, just open the session silently, without showing the user the login UI
                 if FBSession.activeSession().state == FBSessionState.CreatedTokenLoaded {
 
-                    FBSession.openActiveSessionWithReadPermissions(facebookInitialSessionPermissions, allowLoginUI: false, completionHandler: { session, state, error in
+                    FBSession.openActiveSessionWithReadPermissions(facebookInitialSessionPermissions, allowLoginUI: false, completionHandler: {[unowned self] session, state, error in
                             // Handles what to do next based on the state
                             self.facebookSessionStateChanged(session, state: state, error: error)
                         }
@@ -51,7 +51,7 @@ class LoginFlowManager {
                 // No cached token, so sign them in and show the login UI
                 } else {
 
-                    FBSession.openActiveSessionWithReadPermissions(facebookInitialSessionPermissions, allowLoginUI: true, completionHandler: { session, state, error in
+                    FBSession.openActiveSessionWithReadPermissions(facebookInitialSessionPermissions, allowLoginUI: true, completionHandler: {[unowned self] session, state, error in
                             // Handles what to do next based on the state
                             self.facebookSessionStateChanged(session, state: state, error: error)
                         }
@@ -131,7 +131,7 @@ class LoginFlowManager {
             // No available access token, so close and reopen session (not sure when this would ever happen)
             } else {
                 FBSession.activeSession().closeAndClearTokenInformation()
-                FBSession.openActiveSessionWithReadPermissions(facebookInitialSessionPermissions, allowLoginUI: true, completionHandler: { session, state, error in
+                FBSession.openActiveSessionWithReadPermissions(facebookInitialSessionPermissions, allowLoginUI: true, completionHandler: {[unowned self] session, state, error in
                         self.facebookSessionStateChanged(session, state: state, error: error)
                     }
                 )
@@ -244,7 +244,7 @@ class LoginFlowManager {
             
         // "Sign In": should sign back in
         } else if buttonIndex == 1 {
-            FBSession.openActiveSessionWithReadPermissions(facebookInitialSessionPermissions, allowLoginUI: false, completionHandler: { session, state, error in
+            FBSession.openActiveSessionWithReadPermissions(facebookInitialSessionPermissions, allowLoginUI: false, completionHandler: {[unowned self] session, state, error in
                 // Handles what to do next based on the state
                 self.facebookSessionStateChanged(session, state: state, error: error)
                 }
@@ -252,18 +252,3 @@ class LoginFlowManager {
         }
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

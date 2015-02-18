@@ -166,10 +166,47 @@ extension AppDelegate {
             } else if (reachability == AFNetworkReachabilityStatus.ReachableViaWiFi) || (reachability == AFNetworkReachabilityStatus.ReachableViaWWAN) {
                 println("Network has changed to reachable")
                 
-                // Try setting up the user if network reachable but still not setup
                 if UserManager.sharedUser.setup == false {
                     LoginFlowManager.sharedManager.startLoginFlow()
                 }
+                
+                
+                // Try setting up the user if network reachable but still not setup
+                OSAPI.sharedClient.GETPublicInfo(
+                    { data, responseObject in
+                        let responseJSON = JSON(responseObject)
+                        println(responseJSON)
+                        
+                        // Check that a supported version is being used
+                        if let versionStatus = VersionStatus(rawValue: responseJSON["version_status"].int!) {
+                            switch versionStatus {
+                            case .Good, .Deprecated:
+                                // Try setting up the user if network reachable but still not setup
+                                if UserManager.sharedUser.setup == false {
+                                    LoginFlowManager.sharedManager.startLoginFlow()
+                                }
+                            case .Block:
+                                // Clear out party and user info, and show user the force updated VC
+                                PartyManager.sharedParty.resetAllPartyInfo()
+                                UserManager.sharedUser.setup = false
+                                
+                                // Make sure splash screen would get closed at this point in the Login Flow
+                                NSNotificationCenter.defaultCenter().postNotificationName(FinishedLoginFlowNotification, object: nil)
+                                
+                                let forceUpdateViewController = ForceUpdateViewController(nibName: ForceUpdateViewControllerNibName, bundle: nil)
+                                self.frontNavigationController.presentViewController(forceUpdateViewController, animated: true, completion: nil)
+                            }
+                        
+                        // Couldn't get a status number to check
+                        } else {
+                            // Try setting up the user if network reachable but still not setup
+                            if UserManager.sharedUser.setup == false {
+                                LoginFlowManager.sharedManager.startLoginFlow()
+                            }
+                        }
+
+                    }, failure: defaultAFHTTPFailureBlock
+                )
             }
         })
         

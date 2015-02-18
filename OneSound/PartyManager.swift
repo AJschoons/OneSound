@@ -294,8 +294,9 @@ class PartyManager: NSObject {
         membersManager.reset()
     }
     
-    private func resetAllPartyInfo() {
+    func resetAllPartyInfo() {
         clearSongInfo()
+        resetManagers()
         
         partyID = 0
         isPrivate = false

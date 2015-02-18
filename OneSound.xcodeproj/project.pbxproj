@@ -68,6 +68,8 @@
 		817944511A5752DE00A9C636 /* OSFrontNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 817944501A5752DE00A9C636 /* OSFrontNavigationController.swift */; };
 		818750561A50C624000CC353 /* PartyPlaylistManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 818750551A50C624000CC353 /* PartyPlaylistManager.swift */; };
 		8187B08B1A809A8F0071B9BC /* LoginFlowManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8187B08A1A809A8F0071B9BC /* LoginFlowManager.swift */; };
+		818B34901A945257008BCD9A /* ForceUpdateViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 818B348E1A945257008BCD9A /* ForceUpdateViewController.swift */; };
+		818B34911A945257008BCD9A /* ForceUpdateViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 818B348F1A945257008BCD9A /* ForceUpdateViewController.xib */; };
 		81929C88196C2C2C006F336B /* OneSoundHTTPClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81929C87196C2C2C006F336B /* OneSoundHTTPClient.swift */; };
 		81936FC8196C656F005E42F4 /* FrontViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81936FC6196C656F005E42F4 /* FrontViewController.swift */; };
 		81936FC9196C656F005E42F4 /* FrontViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 81936FC7196C656F005E42F4 /* FrontViewController.xib */; };
@@ -174,6 +176,8 @@
 		817944501A5752DE00A9C636 /* OSFrontNavigationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OSFrontNavigationController.swift; sourceTree = "<group>"; };
 		818750551A50C624000CC353 /* PartyPlaylistManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PartyPlaylistManager.swift; sourceTree = "<group>"; };
 		8187B08A1A809A8F0071B9BC /* LoginFlowManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginFlowManager.swift; sourceTree = "<group>"; };
+		818B348E1A945257008BCD9A /* ForceUpdateViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ForceUpdateViewController.swift; sourceTree = "<group>"; };
+		818B348F1A945257008BCD9A /* ForceUpdateViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ForceUpdateViewController.xib; sourceTree = "<group>"; };
 		81929C81196B71F3006F336B /* OneSound-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "OneSound-Bridging-Header.h"; sourceTree = "<group>"; };
 		81929C87196C2C2C006F336B /* OneSoundHTTPClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OneSoundHTTPClient.swift; sourceTree = "<group>"; };
 		81936FC6196C656F005E42F4 /* FrontViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FrontViewController.swift; sourceTree = "<group>"; };
@@ -449,8 +453,6 @@
 				810989D21A7D98390076FB9F /* TroubleshootingViewController.xib */,
 				81936FC6196C656F005E42F4 /* FrontViewController.swift */,
 				81936FC7196C656F005E42F4 /* FrontViewController.xib */,
-				8103D66919805E9000AE5A27 /* LoggingInSpashViewController.swift */,
-				8103D66A19805E9000AE5A27 /* LoggingInSpashViewController.xib */,
 			);
 			name = Other;
 			sourceTree = "<group>";
@@ -487,12 +489,32 @@
 			name = Managers;
 			sourceTree = "<group>";
 		};
+		818B348C1A944C74008BCD9A /* Splash */ = {
+			isa = PBXGroup;
+			children = (
+				8103D66919805E9000AE5A27 /* LoggingInSpashViewController.swift */,
+				8103D66A19805E9000AE5A27 /* LoggingInSpashViewController.xib */,
+			);
+			name = Splash;
+			sourceTree = "<group>";
+		};
+		818B348D1A945211008BCD9A /* Force Update */ = {
+			isa = PBXGroup;
+			children = (
+				818B348E1A945257008BCD9A /* ForceUpdateViewController.swift */,
+				818B348F1A945257008BCD9A /* ForceUpdateViewController.xib */,
+			);
+			name = "Force Update";
+			sourceTree = "<group>";
+		};
 		8195347D19777A5C000B97A3 /* Modal */ = {
 			isa = PBXGroup;
 			children = (
 				81BCC2B9199D332F00A3500F /* Add Song */,
 				8108DF95199BBBF90040B8E7 /* Create Party */,
 				8195347E19777A71000B97A3 /* User Login / Settings */,
+				818B348C1A944C74008BCD9A /* Splash */,
+				818B348D1A945211008BCD9A /* Force Update */,
 			);
 			name = Modal;
 			sourceTree = "<group>";
@@ -665,6 +687,7 @@
 				8158313F19748F080011D3CE /* PartySongsViewController.xib in Resources */,
 				8158311B197471ED0011D3CE /* PartyMainViewController.xib in Resources */,
 				815CB6E31976D749000FD4B7 /* Login.storyboard in Resources */,
+				818B34911A945257008BCD9A /* ForceUpdateViewController.xib in Resources */,
 				81062FAC196B6C7E0057D230 /* Images.xcassets in Resources */,
 				815831281974786C0011D3CE /* FollowingViewController.xib in Resources */,
 				8103D66C19805E9000AE5A27 /* LoggingInSpashViewController.xib in Resources */,
@@ -749,6 +772,7 @@
 				815831471975CD9B0011D3CE /* SwiftyJSON.swift in Sources */,
 				8158313E19748F080011D3CE /* PartySongsViewController.swift in Sources */,
 				81062FA3196B6C7E0057D230 /* AppDelegate.swift in Sources */,
+				818B34901A945257008BCD9A /* ForceUpdateViewController.swift in Sources */,
 				81414DD1197DF9CF00081132 /* ProfileViewController.swift in Sources */,
 				8130D7D6198714C900DD4B47 /* SoundCloudClient.swift in Sources */,
 				81936FC8196C656F005E42F4 /* FrontViewController.swift in Sources */,
