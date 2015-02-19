@@ -14,7 +14,6 @@ let SongSearchResultCellIdentifier = "SongSearchResultCell"
 let PartySongWasAddedNotification = "PartySongWasAdded"
 
 let SongDurationMaxInSeconds = 600 // 10 minute max
-let TypingSearchThreshold = 3
 
 class AddSongViewController: OSModalViewController {
 
@@ -27,6 +26,7 @@ class AddSongViewController: OSModalViewController {
     
     let heightForRows: CGFloat = 64.0
     let songSearchBarPlaceholderText = "Enter a song name"
+    let TypingSearchThreshold = 3
     
     var noSearchResults = false
     
@@ -243,7 +243,6 @@ extension AddSongViewController: UISearchBarDelegate {
     // MARK: UISearchBarDelegate
     
     func searchBar(searchBar: UISearchBar, textDidChange searchText: String) {
-        // TODO: search while typing
         if count(searchText) >= TypingSearchThreshold {
             search(searchTextLength:count(searchText), isSearchButtonPressed:false)
         }
