@@ -48,8 +48,7 @@ let defaultAFHTTPFailureBlock: AFHTTPFailureBlock = { task, error in
                     alert.tag = AlertTag.HTTPDefault.rawValue
                 }
                 AlertManager.sharedManager.showAlert(alert)
-            }
-            
+            } 
         }
         
         if error != nil && !haveHTTPCodeErrorMessage {

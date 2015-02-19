@@ -24,7 +24,7 @@ class AddSongViewController: OSModalViewController {
     
     var searchResultsArray = [SongSearchResult]()
     
-    let heightForRows: CGFloat = 64.0
+    let heightForRows: CGFloat = 68.0
     let songSearchBarPlaceholderText = "Enter a song name"
     
     var noSearchResults = false
