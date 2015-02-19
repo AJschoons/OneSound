@@ -26,18 +26,22 @@ class AddSongViewController: OSModalViewController {
     
     let heightForRows: CGFloat = 68.0
     let songSearchBarPlaceholderText = "Enter a song name"
+    let TypingSearchThreshold = 3
     
     var noSearchResults = false
     
-    func search() {
+    func search(searchTextLength: Int = 0, isSearchButtonPressed: Bool) {
         // Hide the keyboard
-        songSearchBar.resignFirstResponder()
+        //songSearchBar.resignFirstResponder()
         
         // Empty the table, reload to show its empty, start the animation
-        noSearchResults = false
-        searchResultsArray = []
-        searchResultsTable.reloadData()
-        loadingAnimationShouldBeAnimating(true)
+        if searchTextLength == TypingSearchThreshold || isSearchButtonPressed {
+            // Empty the table, reload to show its empty, start the animation
+            noSearchResults = false
+            searchResultsArray = []
+            searchResultsTable.reloadData()
+            loadingAnimationShouldBeAnimating(true)
+        }
         
         SCClient.sharedClient.searchSoundCloudForSongWithString(songSearchBar.text,
             success: {data, responseObject in
@@ -239,7 +243,9 @@ extension AddSongViewController: UISearchBarDelegate {
     // MARK: UISearchBarDelegate
     
     func searchBar(searchBar: UISearchBar, textDidChange searchText: String) {
-        // TODO: search while typing
+        if count(searchText) >= TypingSearchThreshold {
+            search(searchTextLength:count(searchText), isSearchButtonPressed:false)
+        }
         
         // Clear search data (this should happen when user presses the 'x' on the right side)
         if count(searchText) == 0 {
@@ -259,7 +265,8 @@ extension AddSongViewController: UISearchBarDelegate {
     
     // Hide keyboard when user presses "Search", initiate the search
     func searchBarSearchButtonClicked(searchBar: UISearchBar) {
-        search()
+        songSearchBar.resignFirstResponder()
+        search(isSearchButtonPressed:true)
     }
 }
 

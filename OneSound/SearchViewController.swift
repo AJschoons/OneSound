@@ -26,15 +26,22 @@ class SearchViewController: UIViewController {
     let heightForRows: CGFloat = 64.0
     let partySearchBarPlaceholderText = "Enter a party name"
     let maxSearchLength = 25
+    let TypingSearchThreshold = 1
     
     var noSearchResults = false
     
-    func search() {
+    func search(searchTextLength: Int = 0, isSearchButtonPressed: Bool) {
+        // Hide the keyboard
+        //songSearchBar.resignFirstResponder()
+        
         // Empty the table, reload to show its empty, start the animation
-        noSearchResults = false
-        searchResultsArray = []
-        searchResultsTable.reloadData()
-        loadingAnimationShouldBeAnimating(true)
+        if searchTextLength == TypingSearchThreshold || isSearchButtonPressed {
+            // Empty the table, reload to show its empty, start the animation
+            noSearchResults = false
+            searchResultsArray = []
+            searchResultsTable.reloadData()
+            loadingAnimationShouldBeAnimating(true)
+        }
         
         let searchStr = partySearchBar.text
         
@@ -329,7 +336,9 @@ extension SearchViewController: UISearchBarDelegate {
     // MARK: UISearchBarDelegate
     
     func searchBar(searchBar: UISearchBar, textDidChange searchText: String) {
-        // TODO: search while typing
+        if count(searchText) >= TypingSearchThreshold {
+            search(searchTextLength:count(searchText), isSearchButtonPressed:false)
+        }
         
         // Clear search data (this should happen when user presses the 'x' on the right side)
         if count(searchText) == 0 {
@@ -351,7 +360,7 @@ extension SearchViewController: UISearchBarDelegate {
     func searchBarSearchButtonClicked(searchBar: UISearchBar) {
         removeLeadingWhitespaceFromSearchBar(&partySearchBar!)
         partySearchBar.resignFirstResponder()
-        search()
+        search(isSearchButtonPressed:true)
     }
     
     func searchBar(searchBar: UISearchBar, shouldChangeTextInRange range: NSRange, replacementText text: String) -> Bool {
