@@ -40,7 +40,7 @@ class User {
                 return UIColor.orange()
             }
         }
-        return UIColor.brownColor()
+        return UIColor.clearColor()
     }
     
     init(json: JSON) {

@@ -6,17 +6,17 @@
     {
       "idiom" : "universal",
       "scale" : "1x",
-      "filename" : "sideMenuProfileIconUnselected@1x.png"
+      "filename" : "sideMenuFollowingIconBlack@1x.png"
     },
     {
       "idiom" : "universal",
       "scale" : "2x",
-      "filename" : "sideMenuProfileIconUnselected@2x.png"
+      "filename" : "sideMenuFollowingIconBlack@2x.png"
     },
     {
       "idiom" : "universal",
       "scale" : "3x",
-      "filename" : "sideMenuProfileIconUnselected@3x.png"
+      "filename" : "sideMenuFollowingIconBlack@3x.png"
     }
   ],
   "info" : {

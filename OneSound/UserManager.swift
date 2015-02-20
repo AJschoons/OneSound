@@ -83,7 +83,7 @@ class UserManager {
             return UIColor.orange()
         }
     }
-    return UIColor.brownColor()
+    return UIColor.clearColor()
     }
     
     class func colorToUIColor(color: String) -> UIColor {
@@ -103,7 +103,7 @@ class UserManager {
                 return UIColor.orange()
             }
         }
-        return UIColor.brownColor()
+        return UIColor.clearColor()
     }
     
     func randomColor() -> UserColors {

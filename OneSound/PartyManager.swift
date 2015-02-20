@@ -294,6 +294,13 @@ class PartyManager: NSObject {
         membersManager.reset()
     }
     
+    private func initializeManagers() {
+        playlistManager.clearForUpdate()
+        membersManager.clearForUpdate()
+        playlistManager.update()
+        membersManager.update()
+    }
+    
     func resetAllPartyInfo() {
         clearSongInfo()
         resetManagers()
@@ -398,7 +405,7 @@ extension PartyManager {
                     self.updateMainPartyInfoFromJSON(responseJSON, completion: JSONUpdateCompletion)
                     //self.refresh()
                     self.decideStateOfValidParty()
-                    self.resetManagers()
+                    self.initializeManagers()
                 }, failure: { task, error in
                     if failureAddOn != nil {
                         failureAddOn!()

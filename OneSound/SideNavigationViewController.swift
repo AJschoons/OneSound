@@ -20,10 +20,6 @@ class SideNavigationViewController: UITableViewController {
     var sideMenuIcons = [UIImage?]()
     var sideMenuItemLabels = [String?]()
     var userCell: SideNavigationUserCell?
-    /*
-    var menuViewControllers: [UIViewController?] = [nil, PartyTabBarController(nibName: PartyTabBarControllerNibName, bundle: nil), HistoryViewController(nibName: HistoryViewControllerNibName, bundle: nil),
-        SearchViewController(nibName: SearchViewControllerNibName, bundle: nil), FollowingViewController(nibName: FollowingViewControllerNibName, bundle: nil), FrontViewController(nibName: FrontViewControllerNibName, bundle: nil),
-        ProfileViewController(nibName: ProfileViewControllerNibName, bundle: nil)] */
     var menuViewControllers: [UIViewController?] = [nil, PartyTabBarController(nibName: PartyTabBarControllerNibName, bundle: nil), SearchViewController(nibName: SearchViewControllerNibName, bundle: nil), ProfileViewController(nibName: ProfileViewControllerNibName, bundle: nil)]
     
     

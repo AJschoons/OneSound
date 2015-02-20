@@ -34,10 +34,6 @@ class ProfileViewController: UIViewController {
     @IBOutlet weak var spacer4: UIView?
     @IBOutlet weak var messageLabel3: UILabel?
     @IBOutlet weak var messageLabel4: UILabel?
-    
-    @IBOutlet weak var storiesTable: UITableView?
-    
-    var storyTableStories: [String] = ["Much text that is here for the first story", "Such text for the second story", "Text for the third story wow", "Even more text for the fourth story"]
 
     var loadedFullUserInfoFromDefaults = false
 
@@ -99,7 +95,6 @@ class ProfileViewController: UIViewController {
         disableButtons()
         hideMessages()
         setUserInfoHidden(true)
-        setStoriesTableToHidden(true)
         
         userImage!.layer.cornerRadius = 5.0
         
@@ -121,10 +116,6 @@ class ProfileViewController: UIViewController {
         // Try getting saved info from UserDefaults for full users
         // Makes it so data shows up right away instead of blank screen
         loadedFullUserInfoFromDefaults = setUserProfileInfoFromUserDefaults()
-        
-        // Register the cell
-        var nib = UINib(nibName: "StoryTableViewCell", bundle: nil)
-        storiesTable!.registerNib(nib, forCellReuseIdentifier: storyCellIdentifier)
         
         signOutButton!.tintColor = UIColor.red()
     }
@@ -162,7 +153,6 @@ class ProfileViewController: UIViewController {
                     addToSuccess: {
                         if UserManager.sharedUser.guest == true {
                             self.setUserInfoHidden(true)
-                            self.setStoriesTableToHidden(true)
                             self.showMessages("Guests can only join and use parties", detailLine: "Please sign in with Facebook to use Profiles", showMessageBelowUserInfo: false)
                             self.facebookSignInButton!.hidden = false
                             self.signOutButton!.enabled = false
@@ -172,7 +162,6 @@ class ProfileViewController: UIViewController {
                             self.facebookSignInButton!.hidden = true
                             self.signOutButton!.enabled = true
                             self.settingsButton!.enabled = true
-                            self.setStoriesTableToHidden(false)
                             self.hideMessages()
                             self.setUserInfoHidden(false)
                         }
@@ -181,11 +170,9 @@ class ProfileViewController: UIViewController {
             } else {
                 if loadedFullUserInfoFromDefaults {
                     setVisibilityOfUserInfoToHidden(false)
-                    setStoriesTableToHidden(true)
                     showMessages("Could not connect to account", detailLine: "Please connect to the internet and restart OneSound", showMessageBelowUserInfo: true)
                 } else {
                     setUserInfoHidden(true)
-                    setStoriesTableToHidden(true)
                     showMessages("Not signed into an account", detailLine: "Please connect to the internet and restart OneSound", showMessageBelowUserInfo: false)
                 }
                 disableButtons()
@@ -193,11 +180,9 @@ class ProfileViewController: UIViewController {
         } else {
             if loadedFullUserInfoFromDefaults {
                 setVisibilityOfUserInfoToHidden(false)
-                setStoriesTableToHidden(true)
                 showMessages("Not connected to the internet", detailLine: "Please connect to the internet to use OneSound", showMessageBelowUserInfo: true)
             } else {
                 setUserInfoHidden(true)
-                setStoriesTableToHidden(true)
                 showMessages("Not connected to the internet", detailLine: "Please connect to the internet to use OneSound", showMessageBelowUserInfo: false)
             }
             
@@ -237,11 +222,6 @@ class ProfileViewController: UIViewController {
         spacer2!.hidden = hidden
         spacer3!.hidden = hidden
         spacer4!.hidden = hidden
-    }
-    
-    func setStoriesTableToHidden(hidden: Bool) {
-        //storiesTable!.hidden = hidden
-        storiesTable!.hidden = true
     }
     
     func setUserProfileInfoFromUserDefaults() -> Bool {
@@ -359,47 +339,5 @@ extension ProfileViewController: UIAlertViewDelegate {
 extension ProfileViewController: LoginViewControllerDelegate {
     func loginViewControllerCancelled() {
         refresh()
-    }
-}
-
-extension ProfileViewController: UITableViewDataSource {
-    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if UIScreen.mainScreen().bounds.height < 500 {
-            // For iPhones w/ shorter screen show 2 cells
-            return 3
-        } else {
-            // For iPhone w/ taller screens show 3 cells
-            return 4
-        }
-    }
-    
-    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        // TODO: add functionality for stories
-        let cell = storiesTable!.dequeueReusableCellWithIdentifier(storyCellIdentifier, forIndexPath: indexPath) as! StoryTableViewCell
-        cell.storyLabel.text = storyTableStories[indexPath.row]
-        cell.customSeperator.hidden = true
-        cell.backgroundColor = UIColor.clearColor()
-        return cell
-    }
-}
-
-extension ProfileViewController: UITableViewDelegate {
-    func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
-        let tableHeight = storiesTable!.frame.height
-        if UIScreen.mainScreen().bounds.height < 500 {
-            // For iPhones w/ shorter screen
-            return tableHeight / 3
-        } else {
-            // For iPhone w/ taller screens
-            return tableHeight / 4
-        }
-    }
-    
-    func tableView(tableView: UITableView, shouldHighlightRowAtIndexPath indexPath: NSIndexPath) -> Bool {
-        return false
-    }
-    
-    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        // TODO: add functionality for stories
     }
 }
