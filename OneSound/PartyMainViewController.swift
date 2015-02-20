@@ -24,8 +24,8 @@ let thumbsDownUnselectedMainParty = UIImage(named: "thumbsDownUnselectedMainPart
 
 class PartyMainViewController: UIViewController {
     
-    let currentSongImageCache = (UIApplication.sharedApplication().delegate as! AppDelegate).currentSongImageCache
-    let userCurrentSongImageCache = (UIApplication.sharedApplication().delegate as! AppDelegate).userCurrentSongImageCache
+    let currentSongImageCache = (UIApplication.sharedApplication().delegate as AppDelegate).currentSongImageCache
+    let userCurrentSongImageCache = (UIApplication.sharedApplication().delegate as AppDelegate).userCurrentSongImageCache
     
     @IBOutlet weak var messageLabel1: UILabel?
     @IBOutlet weak var messageLabel2: UILabel?
@@ -764,7 +764,7 @@ extension PartyMainViewController {
     func createParty() {
         if UserManager.sharedUser.guest == false {
             let createPartyStoryboard = UIStoryboard(name: CreatePartyStoryboardName, bundle: nil)
-            let createPartyViewController = createPartyStoryboard.instantiateViewControllerWithIdentifier(CreatePartyViewControllerIdentifier) as! CreatePartyViewController
+            let createPartyViewController = createPartyStoryboard.instantiateViewControllerWithIdentifier(CreatePartyViewControllerIdentifier) as CreatePartyViewController
             createPartyViewController.partyAlreadyExists = false
             createPartyViewController.delegate = self
             
@@ -795,7 +795,7 @@ extension PartyMainViewController {
     func changePartySettings() {
         if PartyManager.sharedParty.state == .Host || PartyManager.sharedParty.state == .HostStreamable  {
             let createPartyStoryboard = UIStoryboard(name: CreatePartyStoryboardName, bundle: nil)
-            let createPartyViewController = createPartyStoryboard.instantiateViewControllerWithIdentifier(CreatePartyViewControllerIdentifier) as! CreatePartyViewController
+            let createPartyViewController = createPartyStoryboard.instantiateViewControllerWithIdentifier(CreatePartyViewControllerIdentifier) as CreatePartyViewController
             createPartyViewController.partyAlreadyExists = true
             createPartyViewController.delegate = self
             

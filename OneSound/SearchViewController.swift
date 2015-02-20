@@ -79,7 +79,7 @@ class SearchViewController: UIViewController {
     func createParty() {
         if UserManager.sharedUser.guest == false {
             let createPartyStoryboard = UIStoryboard(name: CreatePartyStoryboardName, bundle: nil)
-            let createPartyViewController = createPartyStoryboard.instantiateViewControllerWithIdentifier(CreatePartyViewControllerIdentifier) as! CreatePartyViewController
+            let createPartyViewController = createPartyStoryboard.instantiateViewControllerWithIdentifier(CreatePartyViewControllerIdentifier) as CreatePartyViewController
             createPartyViewController.partyAlreadyExists = false
             // TODO: create the delegate methods and see what they mean
             //createPartyViewController.delegate = self
@@ -152,7 +152,7 @@ class SearchViewController: UIViewController {
     func textFieldDidChange() {
         // Make changes based on the number of characters in the text field
         // TODO: Only allow searching with 3+ characters (not a huge deal)
-        // if count(partySearchTextField.text as String) > 2 {
+        // if countElements(partySearchTextField.text as String) > 2 {
     }
     
     func tap() {
@@ -259,7 +259,7 @@ extension SearchViewController: UITableViewDataSource {
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
 
-        let cell = searchResultsTable.dequeueReusableCellWithIdentifier(PartySearchResultCellIdentifier, forIndexPath: indexPath) as! PartySearchResultCell
+        let cell = searchResultsTable.dequeueReusableCellWithIdentifier(PartySearchResultCellIdentifier, forIndexPath: indexPath) as PartySearchResultCell
         
         let result = searchResultsArray[indexPath.row]
         
@@ -336,12 +336,12 @@ extension SearchViewController: UISearchBarDelegate {
     // MARK: UISearchBarDelegate
     
     func searchBar(searchBar: UISearchBar, textDidChange searchText: String) {
-        if count(searchText) >= TypingSearchThreshold {
-            search(searchTextLength:count(searchText), isSearchButtonPressed:false)
+        if countElements(searchText) >= TypingSearchThreshold {
+            search(searchTextLength:countElements(searchText), isSearchButtonPressed:false)
         }
         
         // Clear search data (this should happen when user presses the 'x' on the right side)
-        if count(searchText) == 0 {
+        if countElements(searchText) == 0 {
             noSearchResults = false
             searchResultsArray = []
             searchResultsTable.reloadData()
@@ -376,7 +376,7 @@ extension SearchViewController: UISearchBarDelegate {
         }
         
         // Only allow change if 25 or less characters
-        let newLength = count(searchBar.text as String) + count(text as String) - range.length
+        let newLength = countElements(searchBar.text as String) + countElements(text as String) - range.length
         return newLength <= maxSearchLength
     }
 }

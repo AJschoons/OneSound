@@ -174,7 +174,7 @@ extension AddSongViewController: UITableViewDataSource {
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = searchResultsTable.dequeueReusableCellWithIdentifier(SongSearchResultCellIdentifier, forIndexPath: indexPath) as! SongSearchResultCell
+        let cell = searchResultsTable.dequeueReusableCellWithIdentifier(SongSearchResultCellIdentifier, forIndexPath: indexPath) as SongSearchResultCell
         let result = searchResultsArray[indexPath.row]
 
         var nameText: String = (result.name != nil) ? result.name! : ""
@@ -244,12 +244,12 @@ extension AddSongViewController: UISearchBarDelegate {
     // MARK: UISearchBarDelegate
     
     func searchBar(searchBar: UISearchBar, textDidChange searchText: String) {
-        if count(searchText) >= TypingSearchThreshold {
-            search(searchTextLength:count(searchText), isSearchButtonPressed:false)
+        if countElements(searchText) >= TypingSearchThreshold {
+            search(searchTextLength:countElements(searchText), isSearchButtonPressed:false)
         }
         
         // Clear search data (this should happen when user presses the 'x' on the right side)
-        if count(searchText) == 0 {
+        if countElements(searchText) == 0 {
             noSearchResults = false
             searchResultsArray = []
             searchResultsTable.reloadData()

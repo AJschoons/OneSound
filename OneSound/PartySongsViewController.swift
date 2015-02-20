@@ -15,7 +15,7 @@ let LoadingCellTag = 1
 class PartySongsViewController: UIViewController {
 
     let songCellImagePlaceholder = UIImage(named: "songCellImagePlaceholder")
-    let songTableViewImageCache = (UIApplication.sharedApplication().delegate as! AppDelegate).songTableViewImageCache
+    let songTableViewImageCache = (UIApplication.sharedApplication().delegate as AppDelegate).songTableViewImageCache
     let playlistManager = PartyManager.sharedParty.playlistManager
     
     @IBOutlet weak var messageLabel1: UILabel?
@@ -247,7 +247,7 @@ extension PartySongsViewController: UITableViewDataSource {
     }
     
     func songCellForRowAtIndexPath(indexPath: NSIndexPath, fromTableView tableView: UITableView) -> PartySongCell {
-        var songCell = songsTable.dequeueReusableCellWithIdentifier(PartySongCellIndentifier, forIndexPath: indexPath) as! PartySongCell
+        var songCell = songsTable.dequeueReusableCellWithIdentifier(PartySongCellIndentifier, forIndexPath: indexPath) as PartySongCell
         
         // "Connect" the cell to the table to receive song votes
         songCell.index = indexPath.row
@@ -334,7 +334,7 @@ extension PartySongsViewController: UITableViewDataSource {
     
     func loadImagesForOnScreenRows() {
         if playlistManager.songs.count > 0 {
-            let visiblePaths = songsTable.indexPathsForVisibleRows() as! [NSIndexPath]
+            let visiblePaths = songsTable.indexPathsForVisibleRows() as [NSIndexPath]
             
             for path in visiblePaths {
                 if path.row < playlistManager.songs.count {
