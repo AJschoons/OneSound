@@ -68,10 +68,10 @@
                             <constraint firstAttribute="height" constant="17" id="hQ6-3O-DQw"/>
                         </constraints>
                     </imageView>
-                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="XX%" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="JoS-rS-Ddg" userLabel="hotnessLabel">
-                        <rect key="frame" x="286" y="49" width="30" height="11"/>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="XXX%" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="JoS-rS-Ddg" userLabel="hotnessLabel">
+                        <rect key="frame" x="284" y="49" width="34" height="11"/>
                         <constraints>
-                            <constraint firstAttribute="width" constant="30" id="5rF-Ko-gKJ"/>
+                            <constraint firstAttribute="width" constant="34" id="5rF-Ko-gKJ"/>
                             <constraint firstAttribute="height" constant="11" id="fvb-WO-Axl"/>
                         </constraints>
                         <fontDescription key="fontDescription" type="system" pointSize="11"/>
