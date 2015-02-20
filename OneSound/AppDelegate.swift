@@ -10,20 +10,11 @@ import UIKit
 import QuartzCore
 import AVFoundation
 
-// Set to true to print everything in app to console
 let FacebookSessionChangeNotification = "FacebookSessionChangeNotification"
 let facebookSessionPermissions = ["public_profile", "email"]
 let FinishedLoginFlowNotification = "FinishedLoginFlowNotification"
 let UserTableCellSmallFormat = "userTableCellSmall"
 let guestUserImageForUserCell = UIImage(named: "guestUserImageForUserCell")
-
-let loadingOSLogo0 = UIImage(named: "loadingOneSoundOne0")!
-let loadingOSLogo1 = UIImage(named: "loadingOneSoundOne1")!
-let loadingOSLogo2 = UIImage(named: "loadingOneSoundOne2")!
-
-let loadingSong0 = UIImage(named: "loadingSong0")!
-let loadingSong1 = UIImage(named: "loadingSong1")!
-let loadingSong2 = UIImage(named: "loadingSong2")!
 
 let thousandsFormatter: NSNumberFormatter = {
     let formatter = NSNumberFormatter()

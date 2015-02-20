@@ -1,22 +1,19 @@
 {
   "images" : [
     {
-      "idiom" : "universal"
-    },
-    {
       "idiom" : "universal",
       "scale" : "1x",
-      "filename" : "splashScreenOneSoundOne2@1x.png"
+      "filename" : "splashScreenOneSoundLogo@1x.png"
     },
     {
       "idiom" : "universal",
       "scale" : "2x",
-      "filename" : "splashScreenOneSoundOne2@2x.png"
+      "filename" : "splashScreenOneSoundLogo@2x.png"
     },
     {
       "idiom" : "universal",
       "scale" : "3x",
-      "filename" : "splashScreenOneSoundOne2@3x.png"
+      "filename" : "splashScreenOneSoundLogo@3x.png"
     }
   ],
   "info" : {

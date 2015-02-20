@@ -19,7 +19,7 @@ class Song {
     private(set) var source: String!
     private(set) var userID: Int!
     private(set) var partyID: Int!
-    private var externalID: Int! // Use getters, and only getExternalIDForPlaying in AudioManager
+    private var externalID: String! // Use getters, and only getExternalIDForPlaying in AudioManager
     private(set) var dateCreatedAt: NSDate? // Optional because // Songs in the playlist will have this, but not the current song
     
     // Display data
@@ -32,7 +32,7 @@ class Song {
     
     private var playAttempts = 0
     
-    func getExternalIDForPlaying() -> Int! {
+    func getExternalIDForPlaying() -> String! {
         ++playAttempts
         return externalID
     }
@@ -40,7 +40,7 @@ class Song {
     init(json: JSON) {
         songID = json["sid"].int
         source = json["source"].string
-        externalID = json["external_id"].int
+        externalID = json["external_id"].string
         userID = json["user_uid"].int
         
         name = json["title"].string
