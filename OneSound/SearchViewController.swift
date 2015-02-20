@@ -44,7 +44,6 @@ class SearchViewController: UIViewController {
         }
         
         let searchStr = partySearchBar.text
-        
         OSAPI.sharedClient.GETPartySearch(searchStr,
             success: {data, responseObject in
                 let responseJSON = JSON(responseObject)

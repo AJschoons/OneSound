@@ -141,11 +141,6 @@ class LoginViewController: UITableViewController {
         }
     }
     
-    func textFieldDidChange() {
-        updateNameCellTextFieldCount()
-        setDoneButtonState()
-    }
-    
     func setDoneButtonState() {
         if accountAlreadyExists {
             // Only allow Done to be pressed if user information has changed from what is already is
@@ -274,6 +269,32 @@ extension LoginViewController: UITextFieldDelegate {
         removeLeadingWhitespaceFromTextField(&nameCellTextField!)
         nameCellTextField.resignFirstResponder()
         return true
+    }
+    
+    func textFieldDidChange() {
+        updateNameCellTextFieldCount()
+        setDoneButtonState()
+        let numberOfCharacters = count(nameCellTextField.text as String)
+        if numberOfCharacters >= 3 {
+            let userName = nameCellTextField.text
+        OSAPI.sharedClient.GETUserNameValidate(userName,
+            success: {data, responseObject in
+                let responseJSON = JSON(responseObject)
+                //println(responseJSON)
+                if let isUserNameValid = responseJSON["valid"].bool {
+                    if !isUserNameValid && (UserManager.sharedUser.name != userName){ //username is taken, display red text
+                        self.nameCellTextField.textColor = UIColor.red()
+                    } else {
+                        self.nameCellTextField.textColor = UIColor.black()
+                    }
+                    
+                }
+            },
+            failure: { task, error in
+                defaultAFHTTPFailureBlock!(task: task, error: error)
+            }
+        )
+        }
     }
 }
 

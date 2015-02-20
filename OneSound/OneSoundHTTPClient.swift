@@ -335,6 +335,26 @@ extension OSAPI {
         
         DELETE(urlString, parameters: nil, success: success, failure: failureWithExtraAttempt)
     }
+    
+    // Checks to see if user's input name is valid (not taken already, etc.)
+    func GETUserNameValidate(name: String, success: AFHTTPSuccessBlock, failure: AFHTTPFailureBlock, extraAttempts: Int = defaultEA) {
+        // Refreshes the guest user's API Token
+        let urlString = "\(baseURLString)user/name/validate"
+        
+        // Create parameters to pass
+        var params = Dictionary<String, AnyObject>()
+        params.updateValue(name, forKey: "name")
+        
+        let failureWithExtraAttempt: AFHTTPFailureBlock = { task, error in
+            if errorShouldBeHandledWithRepeatedRequest(task, error, attemptsLeft: extraAttempts) {
+                self.GETUserNameValidate(name, success: success, failure: failure, extraAttempts: (extraAttempts - 1))
+            } else {
+                failure!(task: task, error: error)
+            }
+        }
+        
+        GET(urlString, parameters: params, success: success, failure: failureWithExtraAttempt)
+    }
 }
 
 extension OSAPI {
