@@ -3,17 +3,17 @@
     {
       "idiom" : "universal",
       "scale" : "1x",
-      "filename" : "loadingSong0@1x.png"
+      "filename" : "splashScreenOneSoundLogo@1x.png"
     },
     {
       "idiom" : "universal",
       "scale" : "2x",
-      "filename" : "loadingSong0@2x.png"
+      "filename" : "splashScreenOneSoundLogo@2x.png"
     },
     {
       "idiom" : "universal",
       "scale" : "3x",
-      "filename" : "loadingSong0@3x.png"
+      "filename" : "splashScreenOneSoundLogo@3x.png"
     }
   ],
   "info" : {

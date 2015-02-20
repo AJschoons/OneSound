@@ -38,7 +38,6 @@ class PartyMainViewController: UIViewController {
     @IBOutlet weak var songNameLabel: OSLabel!
     @IBOutlet weak var songArtistLabel: OSLabel!
     @IBOutlet weak var songTimeLabel: OSLabel!
-    @IBOutlet weak var songImageForLoadingSong: UIImageView!
     @IBOutlet weak var addSongButton: UIButton!
     
     @IBOutlet weak var userView: UIView!
@@ -118,11 +117,6 @@ class PartyMainViewController: UIViewController {
         setupOSLabelToDefaultDesiredLook(songNameLabel!)
         setupOSLabelToDefaultDesiredLook(songArtistLabel!)
         setupOSLabelToDefaultDesiredLook(songTimeLabel!)
-        
-        // Setup loading animation
-        songImageForLoadingSong.animationImages = [loadingSong2, loadingSong1, loadingSong0, loadingSong1]
-        songImageForLoadingSong.animationDuration = 1.5
-        songImageForLoadingSong.hidden = true
         
         // Setup the thumb up/down buttons
         shortThumbsUpButton.setImage(thumbsUpUnselectedMainParty, forState: UIControlState.Disabled)
@@ -302,7 +296,7 @@ extension PartyMainViewController {
     }
     
     func clearAllCurrentSongAndUserInfo() {
-        setCurrentSongImage(songToPlay: false, artworkToShow: false, loadingSong: false, image: nil)
+        setCurrentSongImage(songToPlay: false, artworkToShow: false, image: nil)
         setCurrentSongInfo(name: "", artist: "", time: "")
         setCurrentSongUserInfo(nil, thumbsUp: false, thumbsDown: false)
         resetThumbsUpDownButtons()
@@ -434,15 +428,15 @@ extension PartyMainViewController {
             currentSongImageCache.queryDiskCacheForKey(largerArtworkURL,
                 done: { image, imageCacheType in
                     if image != nil {
-                        self.setCurrentSongImage(songToPlay: true, artworkToShow: true, loadingSong: false, image: image)
+                        self.setCurrentSongImage(songToPlay: true, artworkToShow: true, image: image)
                     } else {
                         SDWebImageManager.sharedManager().downloadImageWithURL(NSURL(string: largerArtworkURL), options: nil, progress: nil,
                             completed: { image, error, cacheType, boolValue, url in
                                 if error == nil && image != nil {
                                     self.currentSongImageCache.storeImage(image, forKey: largerArtworkURL)
-                                    self.setCurrentSongImage(songToPlay: true, artworkToShow: true, loadingSong: false, image: image)
+                                    self.setCurrentSongImage(songToPlay: true, artworkToShow: true, image: image)
                                 } else {
-                                    self.setCurrentSongImage(songToPlay: true, artworkToShow: false, loadingSong: false, image: nil)
+                                    self.setCurrentSongImage(songToPlay: true, artworkToShow: false, image: nil)
                                 }
                             }
                         )
@@ -450,26 +444,13 @@ extension PartyMainViewController {
                 }
             )
         } else {
-            setCurrentSongImage(songToPlay: true, artworkToShow: false, loadingSong: false, image: nil)
+            setCurrentSongImage(songToPlay: true, artworkToShow: false, image: nil)
         }
     }
     
-    func setCurrentSongImage(# songToPlay: Bool, artworkToShow: Bool, loadingSong: Bool, image: UIImage?) {
+    func setCurrentSongImage(# songToPlay: Bool, artworkToShow: Bool, image: UIImage?) {
         addSongButton.hidden = true
-        
-        if loadingSong {
-            songImage!.hidden = true
-            
-            songImageForLoadingSong.hidden = false
-            songImageForLoadingSong.startAnimating()
-            soundcloudLogo!.hidden = false
-            return
-        } else {
-            songImage!.hidden = false
-            
-            songImageForLoadingSong.hidden = true
-            songImageForLoadingSong.stopAnimating()
-        }
+        songImage!.hidden = false
         
         if !songToPlay {
             songImage!.image = songImageForNoSongToPlay
@@ -727,8 +708,6 @@ extension PartyMainViewController {
         // Only set the songImageOverlay to hidden, don't set it to visible with everything else
         // When hiding the party info, reset the song labels to empty and the song progress to 0
         if hidden == true {
-            songImageForLoadingSong.hidden = hidden
-            
             soundcloudLogo!.hidden = hidden
             
             playButton!.hidden = hidden

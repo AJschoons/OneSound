@@ -118,7 +118,7 @@ class SongStore: NSObject {
                 println("song AUDIO is already being downloaded")
             } else {
                 songsWithAudioBeingDownloaded.add(key)
-                SCClient.sharedClient.downloadSoundCloudSongData(key,
+                SCClient.sharedClient.downloadSoundCloudSongData(String(key),
                     completion: { data, response, error in
                         if error == nil {
                             completion(data)

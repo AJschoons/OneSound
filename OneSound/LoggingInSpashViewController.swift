@@ -16,27 +16,19 @@ var loggingInSpashViewControllerIsShowing = false
 
 class LoggingInSpashViewController: UIViewController {
     
-    @IBOutlet weak var animatedOneSoundOne: UIImageView?
+    @IBOutlet weak var splashScreenOneSoundLogo: UIImageView!
+    @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "removeSplashAfterDelay", name: FinishedLoginFlowNotification, object: nil)
-        
-        let OSLogo0 = UIImage(named: "splashScreenOneSoundOne0")
-        let OSLogo1 = UIImage(named: "splashScreenOneSoundOne1")
-        let OSLogo2 = UIImage(named: "splashScreenOneSoundOne2")
-        
-        animatedOneSoundOne!.animationImages = [OSLogo2!, OSLogo1!, OSLogo0!, OSLogo1!]
-        animatedOneSoundOne!.animationDuration = 1.5
-        // This would be set to stop it from looping forever
-        // animatedOneSoundOne!.animationRepeatCount = X
         
         modalTransitionStyle = UIModalTransitionStyle.CrossDissolve
     }
     
     override func viewWillAppear(animated: Bool) {
         navigationController!.setNavigationBarHidden(true, animated: animated)
-        animatedOneSoundOne!.startAnimating()
+        activityIndicator.startAnimating()
         
         // Show the side menu so the frame can get set (would otherwise 'slide down' first time being shown)
         // Then hide it
@@ -48,7 +40,7 @@ class LoggingInSpashViewController: UIViewController {
     }
     
     override func viewWillDisappear(animated: Bool) {
-        animatedOneSoundOne!.stopAnimating()
+        activityIndicator.stopAnimating()
     }
     
     override func viewDidDisappear(animated: Bool) {
