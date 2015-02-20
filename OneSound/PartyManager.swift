@@ -76,10 +76,6 @@ class PartyManager: NSObject {
     private var timeSinceLastGetCurrentParty = 0.0
     let getCurrentPartyRefreshPeriod = 10.0
     
-    // These are used to show the alerts after the loggingInSpashViewController / login flow is finished
-    var lostMusicControlAlertShouldBeShown = false
-    var noMusicControlAlertShouldBeShown = false
-    
     class var sharedParty: PartyManager {
         struct Static {
             static let partyManager = PartyManager()
@@ -113,27 +109,16 @@ class PartyManager: NSObject {
         state = newState
         stateTime = 0.0
         
-        lostMusicControlAlertShouldBeShown = false
-        noMusicControlAlertShouldBeShown = false
-        
         switch newState {
         case .None:
             resetAllPartyInfo()
         case .Host:
             if oldState == .HostStreamable {
                 if loggingInSpashViewControllerIsShowing {
-                    // Wait until done logging in, let PartyMainViewController handle when to show it
-                    lostMusicControlAlertShouldBeShown = true
-                } else {
-                    // Show the alert right now
                     AlertManager.sharedManager.showAlert(createLostMusicControlAlert())
                 }
             } else {
                 if loggingInSpashViewControllerIsShowing {
-                    // Wait until done logging in, let PartyMainViewController handle when to show it
-                    noMusicControlAlertShouldBeShown = true
-                } else {
-                    // Show the alert right now
                     AlertManager.sharedManager.showAlert(createNoMusicControlAlert())
                 }
             }

@@ -37,7 +37,7 @@ class AddSongViewController: OSModalViewController {
         // Empty the table, reload to show its empty, start the animation
         if searchTextLength == TypingSearchThreshold || isSearchButtonPressed {
             // Empty the table, reload to show its empty, start the animation
-            noSearchResults = false
+            noSearchResults = false // Decides if the table will show song rows, or a "no songs found" message
             searchResultsArray = []
             searchResultsTable.reloadData()
             loadingAnimationShouldBeAnimating(true)
@@ -76,7 +76,8 @@ class AddSongViewController: OSModalViewController {
                     }
                 }
                 
-                if newSongSearchResults.count == 0 { self.noSearchResults = true }
+                // This bool decides whether the table will show song rows, or a "no songs found" message
+                self.noSearchResults = (newSongSearchResults.count == 0)
                 
                 self.searchResultsArray = newSongSearchResults
                 self.searchResultsTable.reloadData()

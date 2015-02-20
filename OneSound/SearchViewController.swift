@@ -37,7 +37,7 @@ class SearchViewController: UIViewController {
         // Empty the table, reload to show its empty, start the animation
         if searchTextLength == TypingSearchThreshold || isSearchButtonPressed {
             // Empty the table, reload to show its empty, start the animation
-            noSearchResults = false
+            noSearchResults = false // Decides if the table will show party rows, or a "no parties found" message
             searchResultsArray = []
             searchResultsTable.reloadData()
             loadingAnimationShouldBeAnimating(true)
@@ -61,7 +61,8 @@ class SearchViewController: UIViewController {
                     }
                 }
                 
-                if partiesArray!.count == 0 { self.noSearchResults = true }
+                // This bool decides whether the table will show party rows, or a "no parties found" message
+                self.noSearchResults = (partiesArray!.count == 0)
                 
                 // Update the party results, reload the table to show them, stop animating
                 self.searchResultsArray = newPartySearchResults
