@@ -17,22 +17,15 @@ class CreatePartyStrictnessViewController: UITableViewController {
     let cellLabelFontSize = 16
     let defaultCellReuseIdentifier = "defaultCell"
     let strictnessOptions: [PartyStrictnessOption] = [.Off, .Low, .Default, .Strict]
-    var selectedStrictness: PartyStrictnessOption!
+    var selectedStrictness: PartyStrictnessOption = .Default
     var selectedIndex: Int!
     var delegate: CreatePartyStrictnessViewControllerDelegate?
-    
+    /*
     init(delegate initDelegate: CreatePartyStrictnessViewControllerDelegate, selectedStrictness strictness: PartyStrictnessOption) {
         delegate = initDelegate
         selectedStrictness = strictness
-        super.init(style: UITableViewStyle.Grouped)
-    }
-    
-    required init(coder aDecoder: NSCoder) {
-        // Not actually used for anything
-        delegate = nil
-        selectedStrictness = .Default
-        super.init(coder: aDecoder)
-    }
+        super.init(style: UITableViewStyle.Plain)
+    }*/
     
     override func viewDidLoad() {
         super.viewDidLoad()

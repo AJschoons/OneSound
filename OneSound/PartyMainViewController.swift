@@ -773,7 +773,8 @@ extension PartyMainViewController {
                 fnc.presentViewController(navC, animated: true, completion: nil)
             }
         } else {
-            let alert = UIAlertView(title: "Guests cannot create parties", message: "Please become a full account by logging in with Facebook, then try again", delegate: nil, cancelButtonTitle: defaultAlertCancelButtonText)
+            let alert = UIAlertView(title: "Guests cannot create parties", message: "To create a party go to the Profile and sign in with Facebook, then try again", delegate: self, cancelButtonTitle: "Cancel", otherButtonTitles: "Profile")
+            alert.tag = AlertTag.GuestCreatingParty.rawValue
             alert.show()
         }
     }
@@ -824,5 +825,18 @@ extension PartyMainViewController: CreatePartyViewControllerDelegate {
     
     func CreatePartyViewControllerDone() {
         //viewWillAppear(true)
+    }
+}
+
+extension PartyMainViewController: UIAlertViewDelegate {
+    // MARK: UIAlertViewDelegate
+    
+    func alertView(alertView: UIAlertView, clickedButtonAtIndex buttonIndex: Int) {
+        if alertView.tag == AlertTag.GuestCreatingParty.rawValue {
+            // If guest wants to sign in with Facebook, take them to the profile
+            if buttonIndex == 1 {
+                getAppDelegate()?.sideMenuViewController.programaticallySelectRow(SideMenuRow.Profile.rawValue)
+            }
+        }
     }
 }

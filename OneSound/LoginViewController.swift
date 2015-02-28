@@ -238,7 +238,9 @@ extension LoginViewController: UITableViewDelegate {
             // Otherwise would be weird b/c must touch UITextField but design makes it look otherwise
             nameCellTextField.becomeFirstResponder()
         case 1:
-            let loginColorViewController = LoginColorViewController(delegate: self, selectedColor: color)
+            let loginColorViewController = LoginColorViewController(style: .Plain)
+            loginColorViewController.delegate = self
+            loginColorViewController.selectedColor = color
             navigationController!.pushViewController(loginColorViewController, animated: true)
         default:
             return

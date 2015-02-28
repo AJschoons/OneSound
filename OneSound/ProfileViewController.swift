@@ -40,8 +40,8 @@ class ProfileViewController: UIViewController {
     @IBAction func signIntoFacebook(sender: AnyObject) {
         let fbSession = FBSession.activeSession()
 
+        // Shouldn't be signed into an old session, but if they are then sign them out
         if (fbSession.state == FBSessionState.Open) || (fbSession.state == FBSessionState.OpenTokenExtended) || UserManager.sharedUser.guest == true  {
-        
             fbSession.closeAndClearTokenInformation()
         }
         
@@ -151,9 +151,11 @@ class ProfileViewController: UIViewController {
                 validUser = true
                 UserManager.sharedUser.updateUserInformationFromServer(
                     addToSuccess: {
+                        self.setUserInfoHidden(false)
+                        self.hideMessages()
+                        
                         if UserManager.sharedUser.guest == true {
-                            self.setUserInfoHidden(true)
-                            self.showMessages("Guests can only join and use parties", detailLine: "Please sign in with Facebook to use Profiles", showMessageBelowUserInfo: false)
+                            //self.showMessages("Guests can only join and use parties", detailLine: "Please sign in with Facebook to use Profiles", showMessageBelowUserInfo: false)
                             self.facebookSignInButton!.hidden = false
                             self.signOutButton!.enabled = false
                             self.settingsButton!.enabled = false
@@ -162,8 +164,6 @@ class ProfileViewController: UIViewController {
                             self.facebookSignInButton!.hidden = true
                             self.signOutButton!.enabled = true
                             self.settingsButton!.enabled = true
-                            self.hideMessages()
-                            self.setUserInfoHidden(false)
                         }
                     }
                 )
@@ -201,9 +201,10 @@ class ProfileViewController: UIViewController {
             setUserInfoLabelsText(upvoteLabel: userUpvoteLabel, numUpvotes: user.upvoteCount, songLabel: userSongLabel, numSongs: user.songCount, hotnessLabel: userHotnessLabel, percentHotness: user.hotnessPercent, userNameLabel: userNameLabel, userName: user.name)
 
             
-            if UserManager.sharedUser.photo != nil {
+            if !user.guest && user.photo != nil {
                 userImage!.image = UserManager.sharedUser.photo
             } else {
+                userImage!.image = nil
                 userImage!.backgroundColor = UserManager.sharedUser.colorToUIColor
             }
         }
@@ -248,6 +249,8 @@ class ProfileViewController: UIViewController {
                     if imageData != nil {
                         userImage!.image = UIImage(data: imageData)
                     } else {
+                        userImage!.image = nil
+                        
                         let userSavedColor = defaults.objectForKey(userColorKey) as? String
                         if userSavedColor != nil  {
                             userImage!.backgroundColor = UserManager.colorToUIColor(userSavedColor!)

@@ -481,6 +481,9 @@ extension UserManager {
     }
     
     func deleteAllSavedUserInformation(completion: completionClosure? = nil) {
+        photoURL = nil
+        photo = nil
+        
         // Clear the saved access token in the header
         OSAPI.sharedClient.requestSerializer.setValue("", forHTTPHeaderField: accessTokenHeaderKey)
         

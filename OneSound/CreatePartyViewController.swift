@@ -358,7 +358,9 @@ extension CreatePartyViewController: UITableViewDelegate {
             // Otherwise would be weird b/c must touch UITextField but design makes it look otherwise
             nameCellTextField.becomeFirstResponder()
         case 1:
-            let createPartyStrictnessViewController = CreatePartyStrictnessViewController(delegate: self, selectedStrictness: strictness)
+            let createPartyStrictnessViewController = CreatePartyStrictnessViewController(style: .Plain)
+            createPartyStrictnessViewController.delegate = self
+            createPartyStrictnessViewController.selectedStrictness = strictness
             navigationController!.pushViewController(createPartyStrictnessViewController, animated: true)
         default:
             return

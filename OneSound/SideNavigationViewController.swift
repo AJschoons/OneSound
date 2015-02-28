@@ -8,11 +8,11 @@
 
 import UIKit
 
+enum SideMenuRow: Int {
+    case Party = 1, Search, Profile
+}
+
 class SideNavigationViewController: UITableViewController {
-    
-    //enum SideMenuRow: Int {
-    //    case Party = 1, History, Search, Following, Stories, Profile
-    //}
     
     let menuCellIdentifier = "sideNavigationMenuCell"
     let userCellIdentifier = "sideNavigationUserCell"
@@ -87,7 +87,7 @@ class SideNavigationViewController: UITableViewController {
             let menuCell = tableView.cellForRowAtIndexPath(menuCellIndexPath)
             
             if menuCell != nil {
-                let selected = i == row
+                let selected = (i == row)
                 menuCell!.setSelected(selected, animated: false)
             }
         }

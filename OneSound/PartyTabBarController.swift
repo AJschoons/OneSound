@@ -62,10 +62,6 @@ class PartyTabBarController: OSTabBarController {
     func updateRightBarButtonForMainParty() {
         if let pMainVC = selectedViewController as? PartyMainViewController {
             navigationItem.rightBarButtonItem = pMainVC.rightBarButton
-            if pMainVC.rightBarButton == pMainVC.createPartyButton {
-                // Disabled when guest
-                navigationItem.rightBarButtonItem!.enabled = !UserManager.sharedUser.guest
-            }
         }
     }
 }

@@ -17,6 +17,7 @@ let StatusBarHeight: CGFloat = 20
 let defaultCellRowHeight: CGFloat = 64
 
 // MARK: UIAlertView tags
+// Increment each new group by 100 to keep them separated
 enum AlertTag: Int {
     
     case SigningOutGuest = 101
@@ -48,6 +49,8 @@ enum AlertTag: Int {
     case URLErrorDefault = 606
     
     case UnstreamableSongSkipped = 700
+    
+    case GuestCreatingParty = 800
 }
 
 // MARK: VersionStatus
