@@ -178,7 +178,7 @@ extension PartySongsViewController: UITableViewDataSource {
         } else {
             // Display a message when the table is empty
             setTableBackgroundViewWithMessages(tableView, "No songs are queued in the playlist", "Please pull down to refresh, or add a song")
-            return 0
+            return 1
         }
     }
     
@@ -204,9 +204,11 @@ extension PartySongsViewController: UITableViewDataSource {
                 // Delete this cell's song
                 playlistManager.deleteSongAtIndex(indexPath.row,
                     completion: {
-                        tableView.beginUpdates()
-                        tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: UITableViewRowAnimation.Automatic)
-                        tableView.endUpdates()
+                        dispatchAsyncToMainQueue(action: {
+                            tableView.beginUpdates()
+                            tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: UITableViewRowAnimation.Automatic)
+                            tableView.endUpdates()
+                        })
                     }
                 )
             }
