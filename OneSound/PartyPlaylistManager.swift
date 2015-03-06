@@ -11,9 +11,7 @@ import Foundation
 // A class to manage the party's playlist, with paging
 class PartyPlaylistManager {
     
-    var hasMorePages: Bool {
-        return currentPage < totalPages
-    }
+    func hasMorePages() -> Bool { return currentPage < totalPages() }
     
     final private(set) var songs = [Song]() // Has to stay final to allow elements to be swapped
     // Used while updating so table still has something to show
@@ -21,7 +19,7 @@ class PartyPlaylistManager {
     
     private var currentPage = 0
     
-    private var totalPages: Int {
+    private func totalPages() -> Int {
         return Int(ceil(Double(totalSongs) / Double(pageSize))) - 1
     }
     private var pageSize = 20 // Songs/Page

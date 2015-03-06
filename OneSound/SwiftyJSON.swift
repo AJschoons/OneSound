@@ -439,7 +439,7 @@ extension JSON: RawRepresentable {
         switch self.type {
         case .Array, .Dictionary:
             if let data = self.rawData(options: opt) {
-                return NSString(data: data, encoding: encoding) as? String
+                return NSString(data: data, encoding: encoding)
             } else {
                 return nil
             }

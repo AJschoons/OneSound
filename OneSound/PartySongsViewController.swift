@@ -168,7 +168,7 @@ extension PartySongsViewController: UITableViewDataSource {
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         let songCount = playlistManager.songs.count
-        return playlistManager.hasMorePages ? (songCount + 1) : (songCount)
+        return playlistManager.hasMorePages() ? (songCount + 1) : (songCount)
     }
     
     func numberOfSectionsInTableView(tableView: UITableView) -> Int {

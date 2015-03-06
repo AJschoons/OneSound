@@ -50,7 +50,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var pL = false
     
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject : AnyObject]?) -> Bool {
-        window = UIWindow(frame: UIScreen.mainScreen().bounds)
         
         NewRelicAgent.startWithApplicationToken("AAe6bc980a2d996add7c26db97bf6da4eef6a1a622")
         
@@ -124,6 +123,7 @@ extension AppDelegate {
         // Setup the front nav controller to initially have the splash screen visible with a (determined) view controller as it's rootViewController
         // By default starts at the profile page (for now)
         // TODO: find the last saved row and nav to that
+        window = UIWindow(frame: UIScreen.mainScreen().bounds)
         sideMenuViewController = SideNavigationViewController()
         
         let rowInitiallySelected = sideMenuViewController.initiallySelectedRow
