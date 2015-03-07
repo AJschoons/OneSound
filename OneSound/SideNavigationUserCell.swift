@@ -19,12 +19,13 @@ class SideNavigationUserCell: UITableViewCell {
     @IBOutlet weak var userLabel: UILabel!
     
     var userImageToUse: UIImageView!
+    private let defaultUserImageForProfileImageName = "defaultUserImageForProfile"
     
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
         
-        if (NSClassFromString("UIVisualEffectView") != nil) {
+        if ObjCUtilities.checkIfClassExists("UIVisualEffectView") {
             // iOS 8 has blurred menu
             // Must use the user image that's "behind" the table so the image doesn't get blurred
             // This image isn't a subview of the table
@@ -74,7 +75,7 @@ class SideNavigationUserCell: UITableViewCell {
             } else {
                 // If user guest or doesn't have valid photo
                 println("guest user or invalid photo, use user color")
-                userImageToUse.image = nil
+                userImageToUse.image = UIImage(named: defaultUserImageForProfileImageName)
                 userImageToUse.backgroundColor = UserManager.sharedUser.colorToUIColor
                 
             }
@@ -93,7 +94,7 @@ class SideNavigationUserCell: UITableViewCell {
                 userLabel.text = userSavedName
                 if userSavedIsGuest {
                     println("saved user was guest")
-                    userImageToUse.image = nil
+                    userImageToUse.image = UIImage(named: defaultUserImageForProfileImageName)
                     
                     if userSavedColor != nil {
                         userImageToUse.backgroundColor = UserManager.colorToUIColor(userSavedColor!)
@@ -113,7 +114,7 @@ class SideNavigationUserCell: UITableViewCell {
                             var blurredImage = image!.applyBlurWithRadius(2, tintColor: nil, saturationDeltaFactor: 1.3, maskImage: nil)
                         } else {
                             println("image data valid but was nil, try using their color")
-                            userImageToUse.image = nil
+                            userImageToUse.image = UIImage(named: defaultUserImageForProfileImageName)
                             
                             if userSavedColor != nil  {
                                 userImageToUse.backgroundColor = UserManager.colorToUIColor(userSavedColor!)
@@ -125,7 +126,7 @@ class SideNavigationUserCell: UITableViewCell {
                     } else {
                         // Couldn't get image
                         println("image data invalid, use their color")
-                        userImageToUse.image = nil
+                        userImageToUse.image = UIImage(named: defaultUserImageForProfileImageName)
                         
                         if userSavedColor != nil  {
                             userImageToUse.backgroundColor = UserManager.colorToUIColor(userSavedColor!)
@@ -139,7 +140,7 @@ class SideNavigationUserCell: UITableViewCell {
                 // Can't retrieve any user info
                 println("user isn't setup")
                 userLabel.text = "Not Signed In"
-                userImageToUse.image = nil
+                userImageToUse.image = UIImage(named: defaultUserImageForProfileImageName)
                 userImageToUse.backgroundColor = UIColor.grayDark()
             }
         }

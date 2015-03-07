@@ -45,7 +45,7 @@ class SideNavigationViewController: UITableViewController {
         tableView.contentInset = UIEdgeInsetsMake(64.0, 0, 0, 0)
         
         var shouldUseGrayIcons = false
-        if (NSClassFromString("UIVisualEffectView") != nil) {
+        if ObjCUtilities.checkIfClassExists("UIVisualEffectView") {
             // iOS 8 has blurred menu
             tableView.backgroundColor = UIColor.clearColor()
         } else {

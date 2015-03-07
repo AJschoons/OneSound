@@ -25,7 +25,7 @@ class PartyPlaylistManager {
     private var pageSize = 20 // Songs/Page
     private var totalSongs = 0
     
-    private var updating = false
+    private(set) var updating = false
     
     // Increments the current page and adds the new data to updatedSongs
     func update(completion: completionClosure? = nil) {

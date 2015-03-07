@@ -11,9 +11,7 @@ import Foundation
 // A class to manage the party's members, with paging
 class PartyMembersManager
 {
-    var hasMorePages: Bool {
-        return currentPage < totalPages
-    }
+    func hasMorePages() -> Bool { return currentPage < totalPages() }
     
     private(set) var users = [User]()
     // Used while updating so table still has something to show
@@ -21,13 +19,13 @@ class PartyMembersManager
     
     private var currentPage = 0
     
-    private var totalPages: Int {
+    private func totalPages() -> Int {
         return Int(ceil(Double(totalUsers) / Double(pageSize))) - 1
     }
     private var pageSize = 20 // Songs/Page
-    private var totalUsers = 0
+    private var totalUsers = 0 
     
-    private var updating = false
+    private(set) var updating = false
     
     // Increments the current page and adds the new data to updatedSongs
     func update(completion: completionClosure? = nil) {

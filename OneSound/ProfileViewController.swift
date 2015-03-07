@@ -35,7 +35,8 @@ class ProfileViewController: UIViewController {
     @IBOutlet weak var messageLabel3: UILabel?
     @IBOutlet weak var messageLabel4: UILabel?
 
-    var loadedFullUserInfoFromDefaults = false
+    private var loadedFullUserInfoFromDefaults = false
+    private let defaultUserImageForProfileImageName = "defaultUserImageForProfile"
 
     @IBAction func signIntoFacebook(sender: AnyObject) {
         let fbSession = FBSession.activeSession()
@@ -204,7 +205,7 @@ class ProfileViewController: UIViewController {
             if !user.guest && user.photo != nil {
                 userImage!.image = UserManager.sharedUser.photo
             } else {
-                userImage!.image = nil
+                userImage!.image = UIImage(named: defaultUserImageForProfileImageName)
                 userImage!.backgroundColor = UserManager.sharedUser.colorToUIColor
             }
         }
@@ -249,7 +250,7 @@ class ProfileViewController: UIViewController {
                     if imageData != nil {
                         userImage!.image = UIImage(data: imageData)
                     } else {
-                        userImage!.image = nil
+                        UIImage(named: defaultUserImageForProfileImageName)
                         
                         let userSavedColor = defaults.objectForKey(userColorKey) as? String
                         if userSavedColor != nil  {

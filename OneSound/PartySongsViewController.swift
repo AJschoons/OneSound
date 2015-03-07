@@ -160,6 +160,10 @@ class PartySongsViewController: UIViewController {
         songsTable.reloadData()
         loadImagesForOnScreenRows()
     }
+    
+    func shouldAllowActionsOnSongs() -> Bool {
+        return !playlistManager.updating
+    }
 }
 
 extension PartySongsViewController: UITableViewDataSource {
@@ -174,18 +178,20 @@ extension PartySongsViewController: UITableViewDataSource {
     func numberOfSectionsInTableView(tableView: UITableView) -> Int {
         if playlistManager.songs.count > 0 {
             tableView.backgroundView = nil
-            return 1
         } else {
             // Display a message when the table is empty
             setTableBackgroundViewWithMessages(tableView, "No songs are queued in the playlist", "Please pull down to refresh, or add a song")
-            return 1
         }
+        
+        return 1
     }
     
     // Should a cell be able to be deleted?
     func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
-        // If there are songs to delete, and if the cell isn't the loading cell...
-        if playlistManager.songs.count > 0 && indexPath.row < playlistManager.songs.count {
+        let songsToDelete = playlistManager.songs.count > 0
+        let cellIsLoadingCell = indexPath.row == playlistManager.songs.count // 1 past # of songs will be loading cell
+        
+        if songsToDelete && !cellIsLoadingCell && shouldAllowActionsOnSongs() {
             // If this is the user's song, they can choose to delete it
             if playlistManager.songs[indexPath.row].userID == UserManager.sharedUser.id {
                 return true
@@ -199,8 +205,10 @@ extension PartySongsViewController: UITableViewDataSource {
         
         // If deleting the cell
         if editingStyle == UITableViewCellEditingStyle.Delete {
-            // If there are songs to delete, and if the cell isn't the loading cell...
-            if playlistManager.songs.count > 0 && indexPath.row < playlistManager.songs.count {
+            let songsToDelete = playlistManager.songs.count > 0
+            let cellIsLoadingCell = indexPath.row == playlistManager.songs.count // 1 past # of songs will be loading cell
+            
+            if songsToDelete && !cellIsLoadingCell && shouldAllowActionsOnSongs() {
                 // Delete this cell's song
                 playlistManager.deleteSongAtIndex(indexPath.row,
                     completion: {
@@ -338,8 +346,11 @@ extension PartySongsViewController: UITableViewDataSource {
         if playlistManager.songs.count > 0 {
             let visiblePaths = songsTable.indexPathsForVisibleRows() as [NSIndexPath]
             
+            let numberOfValidRows = playlistManager.songs.count - 1 // "- 1" b/c index of rows start at 0
+            
             for path in visiblePaths {
-                if path.row < playlistManager.songs.count {
+                // Have to check this b/c the last visible row can be the loadingCell, which is an invalid array index
+                if path.row <= numberOfValidRows {
                     let song = playlistManager.songs[path.row]
                     
                     if song.artworkURL != nil {
@@ -384,7 +395,7 @@ extension PartySongsViewController: UITableViewDelegate {
     }
     
     func tableView(tableView: UITableView, willDisplayCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath) {
-        
+        // Loading cell triggers loading the next page of info
         if cell.tag == LoadingCellTag {
             playlistManager.update(
                 completion: {
@@ -421,29 +432,31 @@ extension PartySongsViewController: PartySongCellDelegate {
     func didVoteOnSongCellAtIndex(index: Int, withVote vote: SongVote, andVoteCountChange voteCountChange: Int) {
         let song = playlistManager.songs[index]
         
-        if let songID = song.songID {
-            switch vote {
-            case .Up:
-                PartyManager.sharedParty.songUpvote(songID)
-            case .Down:
-                PartyManager.sharedParty.songDownvote(songID)
-            case .Clear:
-                PartyManager.sharedParty.songClearVote(songID)
-            }
-            
-            // Reorder the song based on the vote
-            let newIndex = playlistManager.moveSongAtIndex(index, afterChangingVoteCountBy: voteCountChange, withVote: vote)
-            
-            // The song has changed locations, so update for and animate the change
-            if newIndex != index {
-                songsTable.reloadData()
+        if shouldAllowActionsOnSongs() {
+            if let songID = song.songID {
+                switch vote {
+                case .Up:
+                    PartyManager.sharedParty.songUpvote(songID)
+                case .Down:
+                    PartyManager.sharedParty.songDownvote(songID)
+                case .Clear:
+                    PartyManager.sharedParty.songClearVote(songID)
+                }
                 
-                songsTable.beginUpdates()
-                songsTable.deleteRowsAtIndexPaths([NSIndexPath(forRow: index, inSection: 0)], withRowAnimation: UITableViewRowAnimation.Left)
-                songsTable.insertRowsAtIndexPaths([NSIndexPath(forRow: newIndex, inSection: 0)], withRowAnimation: UITableViewRowAnimation.Left)
-                songsTable.endUpdates()
+                // Reorder the song based on the vote
+                let newIndex = playlistManager.moveSongAtIndex(index, afterChangingVoteCountBy: voteCountChange, withVote: vote)
                 
-                loadImagesForOnScreenRows()
+                // The song has changed locations, so update for and animate the change
+                if newIndex != index {
+                    songsTable.reloadData()
+                    
+                    songsTable.beginUpdates()
+                    songsTable.deleteRowsAtIndexPaths([NSIndexPath(forRow: index, inSection: 0)], withRowAnimation: UITableViewRowAnimation.Left)
+                    songsTable.insertRowsAtIndexPaths([NSIndexPath(forRow: newIndex, inSection: 0)], withRowAnimation: UITableViewRowAnimation.Left)
+                    songsTable.endUpdates()
+                    
+                    loadImagesForOnScreenRows()
+                }
             }
         }
     }

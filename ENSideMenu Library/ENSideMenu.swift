@@ -163,7 +163,7 @@ public class ENSideMenu : NSObject {
         sourceView.addSubview(sideMenuContainerView)
         
         // iOS 8
-        if (NSClassFromString("UIVisualEffectView") != nil) {
+        if ObjCUtilities.checkIfClassExists("UIVisualEffectView") {
             // Add blur view
             let blurView = UIVisualEffectView(effect: UIBlurEffect(style: UIBlurEffectStyle.Light))
             blurView.frame = sideMenuContainerView.bounds
@@ -193,6 +193,12 @@ public class ENSideMenu : NSObject {
             //blurView.autoresizingMask = .FlexibleHeight | .FlexibleWidth
             sideMenuContainerView.addSubview(blurView)
             */
+            /*
+            let backgroundView = UIView()
+            backgroundView.frame = sideMenuContainerView.bounds
+            backgroundView.autoresizingMask = .FlexibleHeight | .FlexibleWidth
+            backgroundView.backgroundColor = UIColor.grayLight()
+            sideMenuContainerView.addSubview(backgroundView)*/
         }
         
         userImage = UIImageView()

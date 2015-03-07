@@ -136,18 +136,18 @@ class PartyMembersViewController: UIViewController {
 extension PartyMembersViewController: UITableViewDataSource {
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         let userCount = membersManager.users.count
-        return membersManager.hasMorePages ? (userCount + 1) : (userCount)
+        return membersManager.hasMorePages() ? (userCount + 1) : (userCount)
     }
     
     func numberOfSectionsInTableView(tableView: UITableView) -> Int {
         if membersManager.users.count > 0 {
             tableView.backgroundView = nil
-            return 1
         } else {
             // Display a message when the table is empty
             setTableBackgroundViewWithMessages(tableView, "No party members", "Please pull down to refresh, or invite some friends")
-            return 0
         }
+        
+        return 1
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
@@ -247,31 +247,36 @@ extension PartyMembersViewController: UITableViewDataSource {
         if membersManager.users.count > 0 {
             let visiblePaths = membersTable.indexPathsForVisibleRows() as [NSIndexPath]
             
+            let numberOfValidRows = membersManager.users.count - 1 // "- 1" b/c index of rows start at 0
+            
             for path in visiblePaths {
-                let user = membersManager.users[path.row]
-                
-                if user.photoURL != nil {
-                    userThumbnailImageCache.queryDiskCacheForKey(user.photoURL!,
-                        done: { image, imageCacheType in
-                            if image != nil {
-                                let updateCell = self.membersTable.cellForRowAtIndexPath(path) as? PartyMemberCell
-                                
-                                if updateCell != nil {
-                                    // If the cell for that row is still visible and correct
-                                    updateCell!.userImage.image = image
-                                    updateCell!.userImage.setNeedsLayout()
-                                }
-                            } else {
-                                self.startImageDownload(user.photoURL!, forIndexPath: path)
-                            }
-                        }
-                    )
-                } else {
-                    let updateCell = self.membersTable.cellForRowAtIndexPath(path) as? PartyMemberCell
+                // Have to check this b/c the last visible row can be the loadingCell, which is an invalid array index
+                if path.row <= numberOfValidRows {
+                    let user = membersManager.users[path.row]
                     
-                    if updateCell != nil {
-                        // If the cell for that row is still visible and correct
-                        updateCell!.userImage.image = guestUserImageForUserCell
+                    if user.photoURL != nil {
+                        userThumbnailImageCache.queryDiskCacheForKey(user.photoURL!,
+                            done: { image, imageCacheType in
+                                if image != nil {
+                                    let updateCell = self.membersTable.cellForRowAtIndexPath(path) as? PartyMemberCell
+                                    
+                                    if updateCell != nil {
+                                        // If the cell for that row is still visible and correct
+                                        updateCell!.userImage.image = image
+                                        updateCell!.userImage.setNeedsLayout()
+                                    }
+                                } else {
+                                    self.startImageDownload(user.photoURL!, forIndexPath: path)
+                                }
+                            }
+                        )
+                    } else {
+                        let updateCell = self.membersTable.cellForRowAtIndexPath(path) as? PartyMemberCell
+                        
+                        if updateCell != nil {
+                            // If the cell for that row is still visible and correct
+                            updateCell!.userImage.image = guestUserImageForUserCell
+                        }
                     }
                 }
             }
@@ -285,6 +290,7 @@ extension PartyMembersViewController: UITableViewDelegate {
     }
     
     func tableView(tableView: UITableView, willDisplayCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath) {
+        // Loading cell triggers loading the next page of info
         if cell.tag == LoadingCellTag {
             membersManager.update(
                 completion: {

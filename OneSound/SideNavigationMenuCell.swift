@@ -20,7 +20,7 @@ class SideNavigationMenuCell: UITableViewCell {
         // Stop cell color from changing when selected
         selectionStyle = UITableViewCellSelectionStyle.None
         
-        if (NSClassFromString("UIVisualEffectView") != nil) {
+        if ObjCUtilities.checkIfClassExists("UIVisualEffectView") {
             // iOS 8 has blurred menu
             sideMenuItemLabel.textColor = UIColor.black()
         } else {
