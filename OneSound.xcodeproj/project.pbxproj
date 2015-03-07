@@ -71,7 +71,6 @@
 		81ACB3E81A5273AD0039529E /* PartyMembersManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81ACB3E71A5273AD0039529E /* PartyMembersManager.swift */; };
 		81B17D8F196F2A680062943C /* SideNavigationMenuCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81B17D8D196F2A680062943C /* SideNavigationMenuCell.swift */; };
 		81B17D90196F2A680062943C /* SideNavigationMenuCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 81B17D8E196F2A680062943C /* SideNavigationMenuCell.xib */; };
-		81B79F131AAA53FB005D44AC /* ObjCUtilities.m in Sources */ = {isa = PBXBuildFile; fileRef = 81B79F121AAA53FB005D44AC /* ObjCUtilities.m */; };
 		81B8B2211A9002F100B6DC75 /* UITableViewCellExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81B8B2201A9002F100B6DC75 /* UITableViewCellExtensions.swift */; };
 		81BC27BD199DC0E2006233AE /* PartySongCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81BC27BB199DC0E2006233AE /* PartySongCell.swift */; };
 		81BC27BE199DC0E2006233AE /* PartySongCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 81BC27BC199DC0E2006233AE /* PartySongCell.xib */; };
@@ -82,6 +81,7 @@
 		81BCC2BF199D65AC00A3500F /* SongSearchResultCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 81BCC2BD199D65AC00A3500F /* SongSearchResultCell.xib */; };
 		81C92CF01A3CCFE900BE63D1 /* PartySearchResultCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81C92CEE1A3CCFE900BE63D1 /* PartySearchResultCell.swift */; };
 		81C92CF11A3CCFE900BE63D1 /* PartySearchResultCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 81C92CEF1A3CCFE900BE63D1 /* PartySearchResultCell.xib */; };
+		81D3E22E1AAA850C007A60CF /* ObjCUtilities.m in Sources */ = {isa = PBXBuildFile; fileRef = 81D3E22D1AAA850C007A60CF /* ObjCUtilities.m */; };
 		81DA8A67198A9FE00037EAD1 /* Song.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81DA8A66198A9FE00037EAD1 /* Song.swift */; };
 		81EAC5F91998132000F02894 /* SongStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81EAC5F81998132000F02894 /* SongStore.swift */; };
 /* End PBXBuildFile section */
@@ -170,8 +170,6 @@
 		81ACB3E71A5273AD0039529E /* PartyMembersManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PartyMembersManager.swift; sourceTree = "<group>"; };
 		81B17D8D196F2A680062943C /* SideNavigationMenuCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SideNavigationMenuCell.swift; sourceTree = "<group>"; };
 		81B17D8E196F2A680062943C /* SideNavigationMenuCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SideNavigationMenuCell.xib; sourceTree = "<group>"; };
-		81B79F111AAA53FB005D44AC /* ObjCUtilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObjCUtilities.h; sourceTree = "<group>"; };
-		81B79F121AAA53FB005D44AC /* ObjCUtilities.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObjCUtilities.m; sourceTree = "<group>"; };
 		81B8B2201A9002F100B6DC75 /* UITableViewCellExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UITableViewCellExtensions.swift; sourceTree = "<group>"; };
 		81BC27BB199DC0E2006233AE /* PartySongCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PartySongCell.swift; sourceTree = "<group>"; };
 		81BC27BC199DC0E2006233AE /* PartySongCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PartySongCell.xib; sourceTree = "<group>"; };
@@ -182,6 +180,8 @@
 		81BCC2BD199D65AC00A3500F /* SongSearchResultCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SongSearchResultCell.xib; sourceTree = "<group>"; };
 		81C92CEE1A3CCFE900BE63D1 /* PartySearchResultCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PartySearchResultCell.swift; sourceTree = "<group>"; };
 		81C92CEF1A3CCFE900BE63D1 /* PartySearchResultCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PartySearchResultCell.xib; sourceTree = "<group>"; };
+		81D3E22C1AAA850C007A60CF /* ObjCUtilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObjCUtilities.h; sourceTree = "<group>"; };
+		81D3E22D1AAA850C007A60CF /* ObjCUtilities.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObjCUtilities.m; sourceTree = "<group>"; };
 		81DA8A66198A9FE00037EAD1 /* Song.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Song.swift; sourceTree = "<group>"; };
 		81EAC5F81998132000F02894 /* SongStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SongStore.swift; sourceTree = "<group>"; };
 		A1BC9E433771B4BEBA03DCD4 /* Pods-OneSound.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-OneSound.release.xcconfig"; path = "Pods/Target Support Files/Pods-OneSound/Pods-OneSound.release.xcconfig"; sourceTree = "<group>"; };
@@ -214,11 +214,11 @@
 			isa = PBXGroup;
 			children = (
 				81929C81196B71F3006F336B /* OneSound-Bridging-Header.h */,
+				81D3E22C1AAA850C007A60CF /* ObjCUtilities.h */,
+				81D3E22D1AAA850C007A60CF /* ObjCUtilities.m */,
 				815831441975CD450011D3CE /* SwiftUtilities.swift */,
 				815831461975CD9B0011D3CE /* SwiftyJSON.swift */,
 				813FCE0619774ECF00419097 /* TestingPlayground.playground */,
-				81B79F111AAA53FB005D44AC /* ObjCUtilities.h */,
-				81B79F121AAA53FB005D44AC /* ObjCUtilities.m */,
 			);
 			name = "Utility + Bridging Header";
 			sourceTree = "<group>";
@@ -726,7 +726,7 @@
 				81C92CF01A3CCFE900BE63D1 /* PartySearchResultCell.swift in Sources */,
 				8187B08B1A809A8F0071B9BC /* LoginFlowManager.swift in Sources */,
 				81414DCE197DD1F800081132 /* EnumHackExtensions.swift in Sources */,
-				81B79F131AAA53FB005D44AC /* ObjCUtilities.m in Sources */,
+				81D3E22E1AAA850C007A60CF /* ObjCUtilities.m in Sources */,
 				8195E6861A5B398500FD0CC8 /* OSTabBarController.swift in Sources */,
 				815831111974308E0011D3CE /* OneSoundColors.swift in Sources */,
 				8158314219748F730011D3CE /* PartyMembersViewController.swift in Sources */,
@@ -853,6 +853,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
 			};
@@ -1003,6 +1004,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
 			};
@@ -1095,6 +1097,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
 			};
