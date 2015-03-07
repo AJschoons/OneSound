@@ -12,8 +12,6 @@ import QuartzCore
 let LoggingInSpashViewControllerNibName = "LoggingInSpashViewController"
 let delayTimeInSeconds = 1.0
 
-var loggingInSpashViewControllerIsShowing = false
-
 class LoggingInSpashViewController: UIViewController {
     
     @IBOutlet weak var splashScreenOneSoundLogo: UIImageView!
@@ -36,7 +34,6 @@ class LoggingInSpashViewController: UIViewController {
         //sideMenu?.showSideMenu()
         
         super.viewWillAppear(animated)
-        loggingInSpashViewControllerIsShowing = true
     }
     
     override func viewWillDisappear(animated: Bool) {
@@ -45,7 +42,6 @@ class LoggingInSpashViewController: UIViewController {
     
     override func viewDidDisappear(animated: Bool) {
         super.viewDidDisappear(animated)
-        loggingInSpashViewControllerIsShowing = false
         AlertManager.sharedManager.onLoggingInSpashViewControllerDidDisappear()
     }
     

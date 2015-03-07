@@ -114,13 +114,9 @@ class PartyManager: NSObject {
             resetAllPartyInfo()
         case .Host:
             if oldState == .HostStreamable {
-                if loggingInSpashViewControllerIsShowing {
-                    AlertManager.sharedManager.showAlert(createLostMusicControlAlert())
-                }
+                AlertManager.sharedManager.showAlert(createLostMusicControlAlert())
             } else {
-                if loggingInSpashViewControllerIsShowing {
-                    AlertManager.sharedManager.showAlert(createNoMusicControlAlert())
-                }
+                AlertManager.sharedManager.showAlert(createNoMusicControlAlert())
             }
         default:
             break
