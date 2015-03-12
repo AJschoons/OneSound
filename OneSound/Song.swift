@@ -30,7 +30,7 @@ class Song {
     var userVote: SongVote?
     var voteCount: Int!
     
-    private var playAttempts = 0
+    private(set) var playAttempts = 0
     
     func getExternalIDForPlaying() -> String! {
         ++playAttempts
