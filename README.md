@@ -5,6 +5,10 @@ iOS app
 
 Changelog
 ===
+* 1.1.3
+ * Fixed two songs playing at once in parties
+ * Fixed entire playlist getting skipped
+
 * 1.1.2
   * iOS 7.1 support is back 
     * The "NSClassFromString" method has a bug where it doesn't work in optimized versions of Swift, so the objective C version is now used, making iOS 7.1 work again
