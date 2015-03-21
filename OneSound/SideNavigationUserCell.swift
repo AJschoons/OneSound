@@ -76,7 +76,7 @@ class SideNavigationUserCell: UITableViewCell {
                 // If user guest or doesn't have valid photo
                 println("guest user or invalid photo, use user color")
                 userImageToUse.image = UIImage(named: defaultUserImageForProfileImageName)
-                userImageToUse.backgroundColor = UserManager.sharedUser.colorToUIColor
+                userImageToUse.backgroundColor = UserManager.sharedUser.colorToUIColor()
                 
             }
         }
