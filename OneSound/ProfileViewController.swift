@@ -206,7 +206,7 @@ class ProfileViewController: UIViewController {
                 userImage!.image = UserManager.sharedUser.photo
             } else {
                 userImage!.image = UIImage(named: defaultUserImageForProfileImageName)
-                userImage!.backgroundColor = UserManager.sharedUser.colorToUIColor
+                userImage!.backgroundColor = UserManager.sharedUser.colorToUIColor()
             }
         }
     }

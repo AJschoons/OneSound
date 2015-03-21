@@ -62,30 +62,33 @@ class UserManager {
     //var twitterAccessToken: String?
     //var email: String?
     
-    var colorToUIColor: UIColor {
-    if color == nil {
-        setRandomColor()
-    }
+    // Returns the UIColor of the user's color
+    func colorToUIColor() -> UIColor {
         
-    if let userColor = UserColors(rawValue: color) {
-        switch userColor {
-        case .Green:
-            return UIColor.green()
-        case .Purple:
-            return UIColor.purple()
-        case .Turquoise:
-            return UIColor.turquoise()
-        case .Yellow:
-            return UIColor.yellow()
-        case .Red:
-            return UIColor.red()
-        case .Orange:
-            return UIColor.orange()
+        if color == nil {
+            setRandomColor()
         }
-    }
-    return UIColor.clearColor()
+            
+        if let userColor = UserColors(rawValue: color) {
+            switch userColor {
+            case .Green:
+                return UIColor.green()
+            case .Purple:
+                return UIColor.purple()
+            case .Turquoise:
+                return UIColor.turquoise()
+            case .Yellow:
+                return UIColor.yellow()
+            case .Red:
+                return UIColor.red()
+            case .Orange:
+                return UIColor.orange()
+            }
+        }
+        return UIColor.clearColor()
     }
     
+    // Used to turn a OneSound color string into a UIColor
     class func colorToUIColor(color: String) -> UIColor {
         if let userColor = UserColors(rawValue: color) {
             switch userColor {
