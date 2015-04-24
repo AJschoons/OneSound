@@ -76,6 +76,7 @@ class PartyAudioManager: NSObject {
         let partyManager = PartyManager.sharedParty
         
         switch newState {
+            
         case .Inactive:
             currentSong = nil
             if audioPlayer != nil { audioPlayer!.dispose() }
@@ -85,6 +86,7 @@ class PartyAudioManager: NSObject {
             attemptedToQueueSongForCurrentSong = false
             movingFromInactiveToEmpty = false
             UIApplication.sharedApplication().endReceivingRemoteControlEvents()
+            
         case .Empty:
             emptyStateTimeSinceLastGetNextSong = 0.0
             currentSong = nil
@@ -93,9 +95,11 @@ class PartyAudioManager: NSObject {
             UIApplication.sharedApplication().beginReceivingRemoteControlEvents()
             partyManager.clearSongInfo()
             getNextSong()
+            
         case .Paused:
             audioPlayer!.pause()
             partyManager.delegate.setAudioPlayerButtonsForPlaying(false)
+            
         case .Playing:
             playingStateTimeSinceLastMPNowPlayingRefresh = 0.0
             audioPlayer!.resume()

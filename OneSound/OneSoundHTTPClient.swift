@@ -164,14 +164,6 @@ extension OSAPI {
         // Create a URL string from the base URL string, then user/following/:uid
         let urlString = "\(baseURLString)user/\(uid)/following"
         
-        let failureWithExtraAttempt: AFHTTPFailureBlock = { task, error in
-            if errorShouldBeHandledWithRepeatedRequest(task, error, attemptsLeft: extraAttempts) {
-                self.GETUserFollowing(uid, success: success, failure: failure, extraAttempts: (extraAttempts - 1))
-            } else {
-                failure!(task: task, error: error)
-            }
-        }
-        
         GET(urlString, parameters: nil, success: success, failure: failure)
     }
     

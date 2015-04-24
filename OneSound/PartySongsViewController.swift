@@ -257,6 +257,7 @@ extension PartySongsViewController: UITableViewDataSource {
     }
     
     func songCellForRowAtIndexPath(indexPath: NSIndexPath, fromTableView tableView: UITableView) -> PartySongCell {
+        
         var songCell = songsTable.dequeueReusableCellWithIdentifier(PartySongCellIndentifier, forIndexPath: indexPath) as PartySongCell
         
         // "Connect" the cell to the table to receive song votes

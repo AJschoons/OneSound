@@ -51,7 +51,7 @@ class LoggingInSpashViewController: UIViewController {
     
     func finishedLoginFlow() {
         var navC = navigationController as? OSFrontNavigationController
-        while navC == nil {
+        if navC == nil {
             navC = navigationController as? OSFrontNavigationController
         }
         
