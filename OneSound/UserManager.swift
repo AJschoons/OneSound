@@ -233,7 +233,7 @@ extension UserManager {
                     println("Account is inactive; create account")
                     
                     let loginStoryboard = UIStoryboard(name: LoginStoryboardName, bundle: nil)
-                    let loginViewController = loginStoryboard.instantiateViewControllerWithIdentifier(LoginViewControllerIdentifier) as LoginViewController
+                    let loginViewController = loginStoryboard.instantiateViewControllerWithIdentifier(LoginViewControllerIdentifier) as! LoginViewController
                     let navC = UINavigationController(rootViewController: loginViewController)
                     
                     getFrontNavigationController()!.presentViewController(navC, animated: true,

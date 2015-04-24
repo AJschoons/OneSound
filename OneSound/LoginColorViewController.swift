@@ -45,7 +45,7 @@ extension LoginColorViewController: UITableViewDataSource {
     }
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier(colorCellReuseIdentifier, forIndexPath: indexPath) as LoginColorCell
+        let cell = tableView.dequeueReusableCellWithIdentifier(colorCellReuseIdentifier, forIndexPath: indexPath) as! LoginColorCell
         cell.colorLabel.text = colorNames[indexPath.row].rawValue
         cell.colorView.backgroundColor = colorViewColors[indexPath.row]
         

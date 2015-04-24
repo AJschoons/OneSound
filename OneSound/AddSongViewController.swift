@@ -28,6 +28,11 @@ class AddSongViewController: OSModalViewController {
     let songSearchBarPlaceholderText = "Enter a song name"
     let TypingSearchThreshold = 3
     
+    var firstTypingSearch = true
+    var songSearchTimer: NSTimer = NSTimer()
+    private let typingSearchServicePeriod: Double = 0.3 // Period in seconds of how often to update state. Play around with it
+    var searchLength = 0
+    
     var noSearchResults = false
     
     func search(searchTextLength: Int = 0, isSearchButtonPressed: Bool) {
@@ -35,13 +40,10 @@ class AddSongViewController: OSModalViewController {
         //songSearchBar.resignFirstResponder()
         
         // Empty the table, reload to show its empty, start the animation
-        if searchTextLength == TypingSearchThreshold || isSearchButtonPressed {
-            // Empty the table, reload to show its empty, start the animation
-            noSearchResults = false // Decides if the table will show song rows, or a "no songs found" message
-            searchResultsArray = []
-            searchResultsTable.reloadData()
-            loadingAnimationShouldBeAnimating(true)
-        }
+        noSearchResults = false // Decides if the table will show song rows, or a "no songs found" message
+        searchResultsArray = []
+        searchResultsTable.reloadData()
+        loadingAnimationShouldBeAnimating(true)
         
         SCClient.sharedClient.searchSoundCloudForSongWithString(songSearchBar.text,
             success: {data, responseObject in
@@ -89,6 +91,71 @@ class AddSongViewController: OSModalViewController {
             }
         )
     }
+
+    func search() {//searchTextLength: Int = 0, isSearchButtonPressed: Bool) {
+        // Hide the keyboard
+        //songSearchBar.resignFirstResponder()
+        if searchLength > 0 {
+        
+        if firstTypingSearch {
+            // Empty the table, reload to show its empty, start the animation
+            firstTypingSearch = false
+            noSearchResults = false // Decides if the table will show party rows, or a "no parties found" message
+            searchResultsArray = []
+            searchResultsTable.reloadData()
+            loadingAnimationShouldBeAnimating(true)
+        }else {
+            loadingAnimationShouldBeAnimating(false)
+        }
+        
+        SCClient.sharedClient.searchSoundCloudForSongWithString(songSearchBar.text,
+            success: {data, responseObject in
+                let responseJSON = JSON(responseObject)
+                //println(responseJSON)
+                let songsArray = responseJSON.array
+                //println(songsArray!)
+                //println(songsArray!.count)
+                
+                var newSongSearchResults = [SongSearchResult]()
+                
+                if songsArray != nil {
+                    for result in songsArray! {
+                        //println(result)
+                        let source = "sc"
+                        let id = result["id"].int
+                        let name = result["title"].string
+                        let artistName = result["user"]["username"].string
+                        var duration = result["duration"].int
+                        let artworkURL = result["artwork_url"].string
+                        let playbacks = result["playback_count"].int
+                        
+                        let streamable = result["streamable"].bool
+                        
+                        if duration != nil && streamable == true {
+                            // Soundcloud duration is returned in milliseconds; convert to seconds
+                            duration! /= 1000
+                            if duration < SongDurationMaxInSeconds {
+                                newSongSearchResults.append(SongSearchResult(source: source, externalID: id!, name: name!, artistName: artistName!, duration: duration!, artworkURL: artworkURL, numberOfPlaybacks: playbacks))
+                            }
+                        }
+                    }
+                }
+                
+                // This bool decides whether the table will show song rows, or a "no songs found" message
+                self.noSearchResults = (newSongSearchResults.count == 0)
+                
+                self.searchResultsArray = newSongSearchResults
+                self.searchResultsTable.reloadData()
+                self.loadingAnimationShouldBeAnimating(false)
+            },
+            failure: { task, error in
+                self.loadingAnimationShouldBeAnimating(false)
+                defaultAFHTTPFailureBlock!(task: task, error: error)
+            }
+        )
+        }
+    }
+
     
     func cancel() {
         view.endEditing(true)
@@ -174,7 +241,7 @@ extension AddSongViewController: UITableViewDataSource {
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = searchResultsTable.dequeueReusableCellWithIdentifier(SongSearchResultCellIdentifier, forIndexPath: indexPath) as SongSearchResultCell
+        let cell = searchResultsTable.dequeueReusableCellWithIdentifier(SongSearchResultCellIdentifier, forIndexPath: indexPath) as! SongSearchResultCell
         let result = searchResultsArray[indexPath.row]
 
         var nameText: String = (result.name != nil) ? result.name! : ""
@@ -244,20 +311,27 @@ extension AddSongViewController: UISearchBarDelegate {
     // MARK: UISearchBarDelegate
     
     func searchBar(searchBar: UISearchBar, textDidChange searchText: String) {
-        if countElements(searchText) >= TypingSearchThreshold {
+        /*if countElements(searchText) >= TypingSearchThreshold {
             search(searchTextLength:countElements(searchText), isSearchButtonPressed:false)
-        }
+        }*/
         
         // Clear search data (this should happen when user presses the 'x' on the right side)
-        if countElements(searchText) == 0 {
+        searchLength = count(searchText)
+        if count(searchText) == 0 {
             noSearchResults = false
             searchResultsArray = []
             searchResultsTable.reloadData()
+            firstTypingSearch = true
+            songSearchTimer.invalidate()
+        } else {
+            songSearchTimer.invalidate()
+            songSearchTimer = NSTimer.scheduledTimerWithTimeInterval(typingSearchServicePeriod, target: self, selector: "search", userInfo: nil, repeats: false)
         }
     }
     
     func searchBarTextDidBeginEditing(searchBar: UISearchBar) {
         searchBar.placeholder = nil
+        firstTypingSearch = true
     }
     
     func searchBarTextDidEndEditing(searchBar: UISearchBar) {
