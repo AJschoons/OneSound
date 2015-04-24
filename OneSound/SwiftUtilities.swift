@@ -67,8 +67,8 @@ class SwiftSet<T: Hashable> {
 
 extension String {
     func hasSubstringCaseSensitive(substring: String) -> Bool {
-        let substringLength: Int = countElements(substring)
-        let stringLength: Int = countElements(self)
+        let substringLength: Int = count(substring)
+        let stringLength: Int = count(self)
         if (substringLength <= stringLength) && (substring != "") {
             for var i = 0; (i + substringLength) <= stringLength; ++i {
                 let indexToStartAt = advance(self.startIndex, i)
@@ -87,8 +87,8 @@ extension String {
     func hasSubstringCaseInsensitive(substring: String) -> Bool {
         let substringLowercase = substring.lowercaseString
         let stringLowercase = self.lowercaseString
-        let substringLength = countElements(substringLowercase)
-        let stringLength = countElements(stringLowercase)
+        let substringLength = count(substringLowercase)
+        let stringLength = count(stringLowercase)
         if (substringLength <= stringLength) && (substring != "") {
             for var i = 0; (i + substringLength) <= stringLength; ++i {
                 let indexToStartAt = advance(stringLowercase.startIndex, i)
@@ -105,8 +105,8 @@ extension String {
     }
     
     func replaceSubstringWithString(oldSubstring: String, newSubstring: String) -> String {
-        let oldSubstrL: Int = countElements(oldSubstring)
-        let stringL: Int = countElements(self)
+        let oldSubstrL: Int = count(oldSubstring)
+        let stringL: Int = count(self)
         if (oldSubstrL <= stringL) && (oldSubstring != "") {
             for var i = 0; (i + oldSubstrL) <= stringL; ++i {
                 let indexToStartAt = advance(self.startIndex, i)
@@ -132,7 +132,7 @@ extension UIColor {
             cString = cString.substringFromIndex(advance(cString.startIndex, 1))
         }
         
-        if (countElements(cString) != 6) {
+        if (count(cString) != 6) {
             return UIColor.grayColor()
         }
         
@@ -398,7 +398,7 @@ func addingOnlyWhitespaceToTextFieldWithOnlyWhitespaceOrEmpty(textfieldText: Str
         }
         
         // Only spaces being added, so return true
-        if (countElements(strippedRepStr) == 0) {
+        if (count(strippedRepStr) == 0) {
             return true
         }
     }

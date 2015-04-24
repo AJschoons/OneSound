@@ -26,22 +26,24 @@ class SearchViewController: UIViewController {
     let heightForRows: CGFloat = 64.0
     let partySearchBarPlaceholderText = "Enter a party name"
     let maxSearchLength = 25
-    let TypingSearchThreshold = 1
+    //let TypingSearchThreshold = 6
+    var firstTypingSearch = true
+    var partySearchTimer: NSTimer = NSTimer()
     
     var noSearchResults = false
     
-    func search(searchTextLength: Int = 0, isSearchButtonPressed: Bool) {
+    private let typingSearchServicePeriod: Double = 0.3 // Period in seconds of how often to update state. Play around with it
+    var searchLength = 0
+    
+    func search(searchTextLength: Int, isSearchButtonPressed: Bool) {
         // Hide the keyboard
         //songSearchBar.resignFirstResponder()
         
-        // Empty the table, reload to show its empty, start the animation
-        if searchTextLength == TypingSearchThreshold || isSearchButtonPressed {
             // Empty the table, reload to show its empty, start the animation
-            noSearchResults = false // Decides if the table will show party rows, or a "no parties found" message
-            searchResultsArray = []
-            searchResultsTable.reloadData()
-            loadingAnimationShouldBeAnimating(true)
-        }
+        noSearchResults = false // Decides if the table will show party rows, or a "no parties found" message
+        searchResultsArray = []
+        searchResultsTable.reloadData()
+        loadingAnimationShouldBeAnimating(true)
         
         let searchStr = partySearchBar.text
         OSAPI.sharedClient.GETPartySearch(searchStr,
@@ -76,10 +78,59 @@ class SearchViewController: UIViewController {
         )
     }
     
+    func search(){//searchTextLength: Int = 0, isSearchButtonPressed: Bool) {
+        // Hide the keyboard
+        //songSearchBar.resignFirstResponder()
+        if searchLength > 0 {
+        if firstTypingSearch {
+            // Empty the table, reload to show its empty, start the animation
+            firstTypingSearch = false
+            noSearchResults = false // Decides if the table will show party rows, or a "no parties found" message
+            searchResultsArray = []
+            searchResultsTable.reloadData()
+            loadingAnimationShouldBeAnimating(true)
+        }else {
+            loadingAnimationShouldBeAnimating(false)
+        }
+        
+        let searchStr = partySearchBar.text
+        OSAPI.sharedClient.GETPartySearch(searchStr,
+            success: {data, responseObject in
+                let responseJSON = JSON(responseObject)
+                println(responseJSON)
+                let partiesArray = responseJSON.array
+                println(partiesArray!)
+                println(partiesArray!.count)
+                
+                // Get the parties in the results and store them
+                var newPartySearchResults = [Party]()
+                if partiesArray != nil {
+                    for result in partiesArray! {
+                        //println(result)
+                        newPartySearchResults.append(Party(json: result))
+                    }
+                }
+                
+                // This bool decides whether the table will show party rows, or a "no parties found" message
+                self.noSearchResults = (partiesArray!.count == 0)
+                
+                // Update the party results, reload the table to show them, stop animating
+                self.searchResultsArray = newPartySearchResults
+                self.searchResultsTable.reloadData()
+                self.loadingAnimationShouldBeAnimating(false)
+            },
+            failure: { task, error in
+                self.loadingAnimationShouldBeAnimating(false)
+                defaultAFHTTPFailureBlock!(task: task, error: error)
+            }
+        )
+        }
+    }
+    
     func createParty() {
         if UserManager.sharedUser.guest == false {
             let createPartyStoryboard = UIStoryboard(name: CreatePartyStoryboardName, bundle: nil)
-            let createPartyViewController = createPartyStoryboard.instantiateViewControllerWithIdentifier(CreatePartyViewControllerIdentifier) as CreatePartyViewController
+            let createPartyViewController = createPartyStoryboard.instantiateViewControllerWithIdentifier(CreatePartyViewControllerIdentifier) as! CreatePartyViewController
             createPartyViewController.partyAlreadyExists = false
             // TODO: create the delegate methods and see what they mean
             //createPartyViewController.delegate = self
@@ -253,7 +304,7 @@ extension SearchViewController: UITableViewDataSource {
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
 
-        let cell = searchResultsTable.dequeueReusableCellWithIdentifier(PartySearchResultCellIdentifier, forIndexPath: indexPath) as PartySearchResultCell
+        let cell = searchResultsTable.dequeueReusableCellWithIdentifier(PartySearchResultCellIdentifier, forIndexPath: indexPath) as! PartySearchResultCell
         
         let result = searchResultsArray[indexPath.row]
         
@@ -330,20 +381,28 @@ extension SearchViewController: UISearchBarDelegate {
     // MARK: UISearchBarDelegate
     
     func searchBar(searchBar: UISearchBar, textDidChange searchText: String) {
-        if countElements(searchText) >= TypingSearchThreshold {
+        /*if countElements(searchText) >= TypingSearchThreshold {
             search(searchTextLength:countElements(searchText), isSearchButtonPressed:false)
-        }
+        }*/
         
         // Clear search data (this should happen when user presses the 'x' on the right side)
-        if countElements(searchText) == 0 {
+        searchLength = count(searchText)
+        if count(searchText) == 0 {
             noSearchResults = false
             searchResultsArray = []
             searchResultsTable.reloadData()
+            firstTypingSearch = true
+            partySearchTimer.invalidate()
+        } else {
+            partySearchTimer.invalidate()
+            partySearchTimer = NSTimer.scheduledTimerWithTimeInterval(typingSearchServicePeriod, target: self, selector: "search", userInfo: nil, repeats: false)
         }
+        
     }
     
     func searchBarTextDidBeginEditing(searchBar: UISearchBar) {
         searchBar.placeholder = nil
+        firstTypingSearch = true
     }
     
     func searchBarTextDidEndEditing(searchBar: UISearchBar) {
@@ -354,7 +413,7 @@ extension SearchViewController: UISearchBarDelegate {
     func searchBarSearchButtonClicked(searchBar: UISearchBar) {
         removeLeadingWhitespaceFromSearchBar(&partySearchBar!)
         partySearchBar.resignFirstResponder()
-        search(isSearchButtonPressed:true)
+        search(0, isSearchButtonPressed:true)
     }
     
     func searchBar(searchBar: UISearchBar, shouldChangeTextInRange range: NSRange, replacementText text: String) -> Bool {
@@ -370,7 +429,7 @@ extension SearchViewController: UISearchBarDelegate {
         }
         
         // Only allow change if 25 or less characters
-        let newLength = countElements(searchBar.text as String) + countElements(text as String) - range.length
+        let newLength = count(searchBar.text as String) - range.length
         return newLength <= maxSearchLength
     }
 }

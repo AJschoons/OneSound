@@ -15,7 +15,7 @@ let LoadingCellTag = 1
 class PartySongsViewController: UIViewController {
 
     let songCellImagePlaceholder = UIImage(named: "songCellImagePlaceholder")
-    let songTableViewImageCache = (UIApplication.sharedApplication().delegate as AppDelegate).songTableViewImageCache
+    let songTableViewImageCache = (UIApplication.sharedApplication().delegate as! AppDelegate).songTableViewImageCache
     let playlistManager = PartyManager.sharedParty.playlistManager
     
     @IBOutlet weak var messageLabel1: UILabel?
@@ -345,7 +345,7 @@ extension PartySongsViewController: UITableViewDataSource {
     
     func loadImagesForOnScreenRows() {
         if playlistManager.songs.count > 0 {
-            let visiblePaths = songsTable.indexPathsForVisibleRows() as [NSIndexPath]
+            let visiblePaths = songsTable.indexPathsForVisibleRows() as! [NSIndexPath]
             
             let numberOfValidRows = playlistManager.songs.count - 1 // "- 1" b/c index of rows start at 0
             
