@@ -13,7 +13,7 @@ let PartyMemberCellIdentifier = "PartyMemberCell"
 
 class PartyMembersViewController: UIViewController {
     
-    let userThumbnailImageCache = (UIApplication.sharedApplication().delegate as AppDelegate).userThumbnailImageCache
+    let userThumbnailImageCache = (UIApplication.sharedApplication().delegate as! AppDelegate).userThumbnailImageCache
     let membersManager = PartyManager.sharedParty.membersManager
     
     @IBOutlet weak var messageLabel1: UILabel?
@@ -176,7 +176,7 @@ extension PartyMembersViewController: UITableViewDataSource {
     }
     
     func memberCellForRowAtIndexPath(indexPath: NSIndexPath, fromTableView tableView: UITableView) -> PartyMemberCell {
-        var membersCell = membersTable.dequeueReusableCellWithIdentifier(PartyMemberCellIdentifier, forIndexPath: indexPath) as PartyMemberCell
+        var membersCell = membersTable.dequeueReusableCellWithIdentifier(PartyMemberCellIdentifier, forIndexPath: indexPath) as! PartyMemberCell
         
         let user = membersManager.users[indexPath.row]
         
@@ -245,7 +245,7 @@ extension PartyMembersViewController: UITableViewDataSource {
     
     func loadImagesForOnScreenRows() {
         if membersManager.users.count > 0 {
-            let visiblePaths = membersTable.indexPathsForVisibleRows() as [NSIndexPath]
+            let visiblePaths = membersTable.indexPathsForVisibleRows() as! [NSIndexPath]
             
             let numberOfValidRows = membersManager.users.count - 1 // "- 1" b/c index of rows start at 0
             

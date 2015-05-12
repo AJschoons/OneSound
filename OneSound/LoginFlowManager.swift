@@ -8,7 +8,7 @@
 
 import Foundation
 
-let facebookInitialSessionPermissions = ["public_profile"] // The permissions accessed without explicitly asking user
+let facebookInitialSessionPermissions = ["public_profile", "email", "user_friends"] // The permissions accessed without explicitly asking user
 
 // Handles the login flow with Facebook and the OneSound API
 class LoginFlowManager {

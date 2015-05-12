@@ -73,7 +73,7 @@ class ProfileViewController: UIViewController {
     
     @IBAction func changeSettings(sender: AnyObject) {
         let loginStoryboard = UIStoryboard(name: LoginStoryboardName, bundle: nil)
-        let loginViewController = loginStoryboard.instantiateViewControllerWithIdentifier(LoginViewControllerIdentifier) as LoginViewController
+        let loginViewController = loginStoryboard.instantiateViewControllerWithIdentifier(LoginViewControllerIdentifier) as! LoginViewController
         loginViewController.accountAlreadyExists = true
         loginViewController.delegate = self
         let navC = UINavigationController(rootViewController: loginViewController)
