@@ -10,7 +10,7 @@ import UIKit
 
 let ProfileViewControllerNibName = "ProfileViewController"
 
-class ProfileViewController: UIViewController {
+class ProfileViewController: OSViewController {
     
     @IBOutlet weak var signOutButton: UIBarButtonItem?
     @IBOutlet weak var settingsButton: UIBarButtonItem?
@@ -83,7 +83,9 @@ class ProfileViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view.
+
+        osvcVariables.screenName = ProfileViewControllerNibName
+        
         title = "Profile"
         
         let fnc = getFrontNavigationController()

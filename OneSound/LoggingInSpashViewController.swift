@@ -12,13 +12,16 @@ import QuartzCore
 let LoggingInSpashViewControllerNibName = "LoggingInSpashViewController"
 let delayTimeInSeconds = 1.0
 
-class LoggingInSpashViewController: UIViewController {
+class LoggingInSpashViewController: OSViewController {
     
     @IBOutlet weak var splashScreenOneSoundLogo: UIImageView!
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        osvcVariables.screenName = LoggingInSpashViewControllerNibName
+        
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "removeSplashAfterDelay", name: FinishedLoginFlowNotification, object: nil)
         
         modalTransitionStyle = UIModalTransitionStyle.CrossDissolve

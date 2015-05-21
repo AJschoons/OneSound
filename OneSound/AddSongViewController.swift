@@ -165,6 +165,8 @@ class AddSongViewController: OSModalViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        osvcVariables.screenName = AddSongViewControllerNibName
+        
         // Setup nav bar
         navigationItem.title = "Add Song"
         navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Cancel, target: self, action: "cancel")

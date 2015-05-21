@@ -22,7 +22,7 @@ let thumbsUpUnselectedMainParty = UIImage(named: "thumbsUpUnselectedMainParty")
 let thumbsDownSelectedMainParty = UIImage(named: "thumbsDownSelectedMainParty")
 let thumbsDownUnselectedMainParty = UIImage(named: "thumbsDownUnselectedMainParty")
 
-class PartyMainViewController: UIViewController {
+class PartyMainViewController: OSViewController {
     
     let currentSongImageCache = (UIApplication.sharedApplication().delegate as! AppDelegate).currentSongImageCache
     let userCurrentSongImageCache = (UIApplication.sharedApplication().delegate as! AppDelegate).userCurrentSongImageCache
@@ -92,6 +92,10 @@ class PartyMainViewController: UIViewController {
     }
     
     override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        osvcVariables.screenName = PartyMainViewControllerNibName
+        
         // Stops bottom of view from flowing under tab bar, but not top, for some reason
         edgesForExtendedLayout = UIRectEdge.None
         
@@ -164,6 +168,11 @@ class PartyMainViewController: UIViewController {
             self.setRightBarButtonWhenSelected()
             self.refresh()
         })
+    }
+    
+    override func viewDidAppear(animated: Bool) {
+        super.viewDidAppear(animated)
+        
     }
     
     func updateRightBarButton(# create: Bool, leave: Bool, settings: Bool) {

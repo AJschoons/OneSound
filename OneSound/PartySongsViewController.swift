@@ -12,7 +12,7 @@ let PartySongsViewControllerNibName = "PartySongsViewController"
 let PartySongCellIndentifier = "PartySongCell"
 let LoadingCellTag = 1
 
-class PartySongsViewController: UIViewController {
+class PartySongsViewController: OSViewController {
 
     let songCellImagePlaceholder = UIImage(named: "songCellImagePlaceholder")
     let songTableViewImageCache = (UIApplication.sharedApplication().delegate as! AppDelegate).songTableViewImageCache
@@ -36,6 +36,10 @@ class PartySongsViewController: UIViewController {
     }
     
     override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        osvcVariables.screenName = PartySongsViewControllerNibName
+        
         addSongButton = UIBarButtonItem(title: "Add", style: UIBarButtonItemStyle.Plain, target: self, action: "addSong")
         
         // Make view respond to network reachability changes
@@ -257,8 +261,7 @@ extension PartySongsViewController: UITableViewDataSource {
     }
     
     func songCellForRowAtIndexPath(indexPath: NSIndexPath, fromTableView tableView: UITableView) -> PartySongCell {
-        
-        var songCell = songsTable.dequeueReusableCellWithIdentifier(PartySongCellIndentifier, forIndexPath: indexPath) as PartySongCell
+        var songCell = songsTable.dequeueReusableCellWithIdentifier(PartySongCellIndentifier, forIndexPath: indexPath) as! PartySongCell
         
         // "Connect" the cell to the table to receive song votes
         songCell.index = indexPath.row

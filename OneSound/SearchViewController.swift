@@ -11,7 +11,7 @@ import UIKit
 let SearchViewControllerNibName = "SearchViewController"
 let PartySearchResultCellIdentifier = "PartySearchResultCell"
 
-class SearchViewController: UIViewController {
+class SearchViewController: OSViewController {
     
     @IBOutlet weak var messageLabel1: UILabel?
     @IBOutlet weak var messageLabel2: UILabel?
@@ -146,6 +146,9 @@ class SearchViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        osvcVariables.screenName = SearchViewControllerNibName
+        
         title = "Party Search"
         
         let fnc = getFrontNavigationController()

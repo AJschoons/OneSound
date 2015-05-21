@@ -12,7 +12,7 @@ protocol LoginColorViewControllerDelegate {
     func loginColorViewController(loginColorviewController: LoginColorViewController, didSelectColor: OneSoundColorOption)
 }
 
-class LoginColorViewController: UITableViewController {
+class LoginColorViewController: OSTableViewController {
     
     let colorCellReuseIdentifier = "colorCell"
     let colorNames: [OneSoundColorOption] = [.Random, .Green, .Turquiose, .Purple, .Red, .Orange, .Yellow]
@@ -24,6 +24,8 @@ class LoginColorViewController: UITableViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        osvcVariables.screenName = "LoginColorViewController"
 
         navigationItem.title = "Choose Color"
         

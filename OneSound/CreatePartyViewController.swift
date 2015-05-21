@@ -15,7 +15,7 @@ protocol CreatePartyViewControllerDelegate {
     func CreatePartyViewControllerDone()
 }
 
-class CreatePartyViewController: UITableViewController {
+class CreatePartyViewController: OSTableViewController {
         
     let validCharacters = "abcdefghijklmnopqrstuvwxyz1234567890 "
     let minimumFooterViewHeight: CGFloat = 140
@@ -54,6 +54,8 @@ class CreatePartyViewController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        osvcVariables.screenName = CreatePartyViewControllerIdentifier
         
         // Setup nav bar
         if partyAlreadyExists {

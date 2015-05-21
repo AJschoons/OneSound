@@ -11,7 +11,7 @@ import UIKit
 let PartyMembersViewControllerNibName = "PartyMembersViewController"
 let PartyMemberCellIdentifier = "PartyMemberCell"
 
-class PartyMembersViewController: UIViewController {
+class PartyMembersViewController: OSViewController {
     
     let userThumbnailImageCache = (UIApplication.sharedApplication().delegate as! AppDelegate).userThumbnailImageCache
     let membersManager = PartyManager.sharedParty.membersManager
@@ -26,6 +26,10 @@ class PartyMembersViewController: UIViewController {
     let heightForRows: CGFloat = 64.0
     
     override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        osvcVariables.screenName = PartyMembersViewControllerNibName
+        
         // Make view respond to network reachability changes
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "refreshIfVisible", name: AFNetworkingReachabilityDidChangeNotification, object: nil)
         // Make sure view knows the user is setup so it won't keep displaying 'Not signed into account' when there is no  internet connection when app launches and then the network comes back and UserManager is setup

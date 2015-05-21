@@ -15,7 +15,7 @@ protocol LoginViewControllerDelegate {
     func loginViewControllerCancelled()
 }
 
-class LoginViewController: UITableViewController {
+class LoginViewController: OSTableViewController {
     
     @IBOutlet weak var nameCell: UITableViewCell!
     @IBOutlet weak var nameCellTextField: UITextField!
@@ -35,6 +35,8 @@ class LoginViewController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        osvcVariables.screenName = LoginViewControllerIdentifier
         
         // Setup nav bar
         if accountAlreadyExists {
