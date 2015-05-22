@@ -57,7 +57,7 @@ class ProfileViewController: OSViewController {
     
     @IBAction func signOut(sender: AnyObject) {
         // Only proceeds if refresh leaves view controller with a valid user
-        if refresh() {
+        if refreshWithValidUser() {
             if UserManager.sharedUser.guest == true {
                 // Let the guest know that signing out a guest account doesn't really do anything
                 let alert = UIAlertView(title: "Signing Out Guest", message: "Signing out of guest account deletes current guest account and signs into a new guest account. To sign into a full account, login with Facebook, and your guest account is automatically upgraded.", delegate: self, cancelButtonTitle: "Cancel", otherButtonTitles: "Ok")
@@ -124,7 +124,7 @@ class ProfileViewController: OSViewController {
     }
     
     override func viewWillAppear(animated: Bool) {
-        refresh()
+        refreshWithValidUser()
         super.viewWillAppear(animated)
     }
     
@@ -140,11 +140,11 @@ class ProfileViewController: OSViewController {
     
     func refreshIfVisible() {
         if isViewLoaded() && view.window != nil {
-            refresh()
+            refreshWithValidUser()
         }
     }
     
-    func refresh() -> Bool {
+    func refreshWithValidUser() -> Bool {
         // Returns true if refreshed with a valid user variable for controller
         var validUser = false
         println("refreshing ProfileViewController")
@@ -330,7 +330,7 @@ extension ProfileViewController: UIAlertViewDelegate {
                 // If guest wants to sign out, delete all info and get new guest account, then refresh
                 UserManager.sharedUser.deleteAllSavedUserInformation()
                 UserManager.sharedUser.setupGuestAccount()
-                refresh()
+                refreshWithValidUser()
             }
         } else if alertView.tag == AlertTag.SigningOut.rawValue {
             // If full user is trying to sign out, let the FB session state change handle sign out and updating to new guest account
@@ -344,6 +344,6 @@ extension ProfileViewController: UIAlertViewDelegate {
 
 extension ProfileViewController: LoginViewControllerDelegate {
     func loginViewControllerCancelled() {
-        refresh()
+        refreshWithValidUser()
     }
 }

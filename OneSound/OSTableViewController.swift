@@ -30,3 +30,13 @@ class OSTableViewController: UITableViewController {
         }
     }
 }
+
+extension OSTableViewController: OSViewControllerMethods {
+    func updateUI() {
+        
+    }
+    
+    func refresh() {
+        
+    }
+}

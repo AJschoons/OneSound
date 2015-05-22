@@ -8,6 +8,11 @@
 
 import UIKit
 
+protocol OSViewControllerMethods {
+    func updateUI() // Method that updates all UI for the VC to the correct state
+    func refresh() // Method that refreshs all data for the VC
+}
+
 class OSViewController: UIViewController {
 
     // The variables needed for all OSViewControllers, OSTableViewControllers, etc
@@ -35,5 +40,15 @@ class OSViewController: UIViewController {
             tracker.set(kGAIScreenName, value: osvcVariables.screenName)
             tracker.send(GAIDictionaryBuilder.createScreenView().build() as [NSObject : AnyObject])
         }
+    }
+}
+
+extension OSViewController: OSViewControllerMethods {
+    func updateUI() {
+        
+    }
+    
+    func refresh() {
+        
     }
 }

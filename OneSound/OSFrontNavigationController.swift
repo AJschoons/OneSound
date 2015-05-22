@@ -19,17 +19,7 @@ class OSFrontNavigationController: ENSideMenuNavigationController {
         sideMenu!.menuWidth = 160.0
         sideMenu!.bouncingEnabled = false
         
-        navigationBar.setBackgroundImage(UIImage(named: "navigationBarBackground"), forBarMetrics: UIBarMetrics.Default)
-        navigationBar.shadowImage = UIImage(named: "navigationBarShadow")
-        navigationBar.tintColor = UIColor.blue()
-        navigationBar.barTintColor = UIColor.white()
-        navigationBar.translucent = true
-        
-        toolbar.setBackgroundImage(UIImage(named: "toolbarBackground"), forToolbarPosition: UIBarPosition.Bottom, barMetrics: UIBarMetrics.Default)
-        toolbar.setShadowImage(UIImage(named: "toolbarShadow"), forToolbarPosition: UIBarPosition.Bottom)
-        toolbar.tintColor = UIColor.blue()
-        toolbar.barTintColor = UIColor.white()
-        toolbar.translucent = true
+        setupNavigationAndToolbarAppearance()
     }
 
     required init(coder aDecoder: NSCoder) {
@@ -69,6 +59,20 @@ class OSFrontNavigationController: ENSideMenuNavigationController {
     
     func handleOverlayLeftSwipe() {
         if sideMenu!.isMenuOpen { sideMenu!.hideSideMenu() }
+    }
+    
+    func setupNavigationAndToolbarAppearance() {
+        navigationBar.setBackgroundImage(UIImage(named: "navigationBarBackground"), forBarMetrics: UIBarMetrics.Default)
+        navigationBar.shadowImage = UIImage(named: "navigationBarShadow")
+        navigationBar.tintColor = UIColor.blue()
+        navigationBar.barTintColor = UIColor.white()
+        navigationBar.translucent = true
+        
+        toolbar.setBackgroundImage(UIImage(named: "toolbarBackground"), forToolbarPosition: UIBarPosition.Bottom, barMetrics: UIBarMetrics.Default)
+        toolbar.setShadowImage(UIImage(named: "toolbarShadow"), forToolbarPosition: UIBarPosition.Bottom)
+        toolbar.tintColor = UIColor.blue()
+        toolbar.barTintColor = UIColor.white()
+        toolbar.translucent = true
     }
 }
 

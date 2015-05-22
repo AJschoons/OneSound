@@ -496,6 +496,26 @@ extension OSAPI {
         GET(urlString, parameters: params, success: success, failure: failureWithExtraAttempt)
     }
     
+    // Search for a party by location
+    func GETPartySearchNearby(latitude: Double, longitude: Double, success: AFHTTPSuccessBlock, failure: AFHTTPFailureBlock, extraAttempts: Int = defaultEA) {
+        let urlString = "\(baseURLString)party/search/nearby"
+        
+        // Create parameters to pass
+        var params = Dictionary<String, AnyObject>()
+        params.updateValue(latitude, forKey: "latitude")
+        params.updateValue(longitude, forKey: "longitude")
+        
+        let failureWithExtraAttempt: AFHTTPFailureBlock = { task, error in
+            if errorShouldBeHandledWithRepeatedRequest(task, error, attemptsLeft: extraAttempts) {
+                self.GETPartySearchNearby(latitude, longitude: longitude, success: success, failure: failure, extraAttempts: (extraAttempts - 1))
+            } else {
+                failure!(task: task, error: error)
+            }
+        }
+        
+        GET(urlString, parameters: params, success: success, failure: failureWithExtraAttempt)
+    }
+    
     // Update the permissions for a party. Used to reclaim music streaming control for a host
     func PUTPartyPermissions(pid: Int, musicControl: Bool, success: AFHTTPSuccessBlock, failure: AFHTTPFailureBlock, extraAttempts: Int = defaultEA) {
         let urlString = "\(baseURLString)party/\(pid)/permissions"

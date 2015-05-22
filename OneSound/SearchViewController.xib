@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="7515.2" systemVersion="14D72i" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="7702" systemVersion="14E7f" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7512"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7701"/>
     </dependencies>
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="SearchViewController" customModule="OneSound" customModuleProvider="target">
@@ -13,6 +13,9 @@
                 <outlet property="messageLabel2" destination="8aD-Hx-ffP" id="1N9-s6-Pi1"/>
                 <outlet property="partySearchBar" destination="Nmi-4M-Gbd" id="l79-Yw-nBZ"/>
                 <outlet property="searchResultsTable" destination="iKl-m2-DPf" id="SLX-WH-SjJ"/>
+                <outlet property="searchResultsTableTopConstraint" destination="TFk-Xw-FbK" id="wL9-nc-eTK"/>
+                <outlet property="searchTypeControl" destination="i9P-QL-nw0" id="GYa-sg-gxC"/>
+                <outlet property="toolbar" destination="XT1-5Z-Zca" id="PWf-SA-doX"/>
                 <outlet property="view" destination="9tl-7X-D3T" id="9EX-Cn-gvl"/>
             </connections>
         </placeholder>
@@ -33,26 +36,8 @@
                     <color key="textColor" red="0.51700145009999998" green="0.51698595290000005" blue="0.51699477429999996" alpha="1" colorSpace="calibratedRGB"/>
                     <nil key="highlightedColor"/>
                 </label>
-                <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="iKl-m2-DPf">
-                    <rect key="frame" x="0.0" y="44" width="600" height="556"/>
-                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                    <connections>
-                        <outlet property="dataSource" destination="-1" id="oP7-fA-fDb"/>
-                        <outlet property="delegate" destination="-1" id="sch-OM-OrA"/>
-                    </connections>
-                </tableView>
-                <imageView hidden="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="r7W-Ph-enJ">
-                    <rect key="frame" x="280" y="302" width="40" height="40"/>
-                    <constraints>
-                        <constraint firstAttribute="height" constant="40" id="OiE-BT-DUg"/>
-                        <constraint firstAttribute="width" constant="40" id="ohg-h6-VmJ"/>
-                    </constraints>
-                </imageView>
-                <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="eTM-Kr-9PE">
-                    <rect key="frame" x="290" y="312" width="20" height="20"/>
-                </activityIndicatorView>
                 <searchBar contentMode="redraw" placeholder="Enter a party name" translatesAutoresizingMaskIntoConstraints="NO" id="Nmi-4M-Gbd">
-                    <rect key="frame" x="0.0" y="0.0" width="600" height="44"/>
+                    <rect key="frame" x="0.0" y="44" width="600" height="44"/>
                     <color key="backgroundColor" red="0.95075207948684692" green="0.95072358846664429" blue="0.95073968172073364" alpha="1" colorSpace="calibratedRGB"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="44" id="pxF-fe-3xs"/>
@@ -60,17 +45,59 @@
                     <color key="barTintColor" red="0.95075207948684692" green="0.95072358846664429" blue="0.95073968172073364" alpha="1" colorSpace="calibratedRGB"/>
                     <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" keyboardType="alphabet" returnKeyType="search"/>
                 </searchBar>
+                <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="iKl-m2-DPf">
+                    <rect key="frame" x="0.0" y="88" width="600" height="512"/>
+                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                    <connections>
+                        <outlet property="dataSource" destination="-1" id="oP7-fA-fDb"/>
+                        <outlet property="delegate" destination="-1" id="sch-OM-OrA"/>
+                    </connections>
+                </tableView>
+                <imageView hidden="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="r7W-Ph-enJ">
+                    <rect key="frame" x="280" y="324" width="40" height="40"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="40" id="OiE-BT-DUg"/>
+                        <constraint firstAttribute="width" constant="40" id="ohg-h6-VmJ"/>
+                    </constraints>
+                </imageView>
+                <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="eTM-Kr-9PE">
+                    <rect key="frame" x="290" y="334" width="20" height="20"/>
+                </activityIndicatorView>
+                <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="XT1-5Z-Zca">
+                    <rect key="frame" x="0.0" y="0.0" width="600" height="44"/>
+                    <color key="backgroundColor" red="1" green="0.99997437000274658" blue="0.99999129772186279" alpha="1" colorSpace="calibratedRGB"/>
+                    <items>
+                        <barButtonItem style="plain" systemItem="flexibleSpace" id="fiH-f9-8wJ"/>
+                        <barButtonItem style="plain" id="jgH-Wd-2gE">
+                            <segmentedControl key="customView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="bar" selectedSegmentIndex="0" id="i9P-QL-nw0">
+                                <rect key="frame" x="238" y="8" width="123" height="30"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <segments>
+                                    <segment title="Location"/>
+                                    <segment title="Name"/>
+                                </segments>
+                                <color key="tintColor" red="0.1783866286277771" green="0.73694926500320435" blue="0.94469857215881348" alpha="1" colorSpace="calibratedRGB"/>
+                                <connections>
+                                    <action selector="changeSearchType:" destination="-1" eventType="valueChanged" id="RUn-Xy-2T0"/>
+                                </connections>
+                            </segmentedControl>
+                        </barButtonItem>
+                        <barButtonItem style="plain" systemItem="flexibleSpace" id="eI1-Bz-54Z"/>
+                    </items>
+                </toolbar>
             </subviews>
             <color key="backgroundColor" red="0.95075207949999996" green="0.95072358850000005" blue="0.95073968170000001" alpha="1" colorSpace="calibratedRGB"/>
             <constraints>
-                <constraint firstItem="Nmi-4M-Gbd" firstAttribute="top" secondItem="9tl-7X-D3T" secondAttribute="top" id="1vL-R7-xjV"/>
                 <constraint firstAttribute="centerX" secondItem="Nq1-Qx-HSP" secondAttribute="centerX" id="EH5-IX-KoE"/>
                 <constraint firstItem="Nq1-Qx-HSP" firstAttribute="leading" secondItem="9tl-7X-D3T" secondAttribute="leading" constant="20" id="ELS-ZG-4ft"/>
                 <constraint firstAttribute="centerY" secondItem="Nq1-Qx-HSP" secondAttribute="centerY" id="FMr-hl-MGa"/>
                 <constraint firstItem="eTM-Kr-9PE" firstAttribute="centerX" secondItem="iKl-m2-DPf" secondAttribute="centerX" id="FaC-b1-UU7"/>
+                <constraint firstItem="XT1-5Z-Zca" firstAttribute="bottom" secondItem="Nmi-4M-Gbd" secondAttribute="top" id="IQg-EG-69g"/>
                 <constraint firstItem="iKl-m2-DPf" firstAttribute="leading" secondItem="9tl-7X-D3T" secondAttribute="leading" id="Ln1-3M-nrQ"/>
+                <constraint firstAttribute="trailing" secondItem="XT1-5Z-Zca" secondAttribute="trailing" id="QYX-Yc-mQQ"/>
                 <constraint firstItem="iKl-m2-DPf" firstAttribute="top" secondItem="Nmi-4M-Gbd" secondAttribute="bottom" id="TFk-Xw-FbK"/>
                 <constraint firstItem="eTM-Kr-9PE" firstAttribute="centerY" secondItem="iKl-m2-DPf" secondAttribute="centerY" id="Uw9-HE-Kvz"/>
+                <constraint firstItem="XT1-5Z-Zca" firstAttribute="top" secondItem="9tl-7X-D3T" secondAttribute="top" id="YXt-oH-c9T"/>
                 <constraint firstAttribute="trailing" secondItem="Nmi-4M-Gbd" secondAttribute="trailing" id="adC-6R-oRK"/>
                 <constraint firstItem="8aD-Hx-ffP" firstAttribute="leading" secondItem="9tl-7X-D3T" secondAttribute="leading" constant="20" id="b9o-a7-kwp"/>
                 <constraint firstItem="8aD-Hx-ffP" firstAttribute="top" secondItem="Nq1-Qx-HSP" secondAttribute="bottom" id="fte-Jg-AOa"/>
@@ -80,6 +107,7 @@
                 <constraint firstAttribute="trailing" secondItem="Nq1-Qx-HSP" secondAttribute="trailing" constant="20" id="ndQ-v4-B7t"/>
                 <constraint firstAttribute="trailing" secondItem="8aD-Hx-ffP" secondAttribute="trailing" constant="20" id="ooe-tn-RvF"/>
                 <constraint firstItem="iKl-m2-DPf" firstAttribute="centerY" secondItem="r7W-Ph-enJ" secondAttribute="centerY" id="q6h-Ge-WdN"/>
+                <constraint firstItem="XT1-5Z-Zca" firstAttribute="leading" secondItem="9tl-7X-D3T" secondAttribute="leading" id="qTH-QZ-01A"/>
                 <constraint firstAttribute="trailing" secondItem="iKl-m2-DPf" secondAttribute="trailing" id="xwh-fn-TcF"/>
             </constraints>
         </view>

@@ -192,7 +192,9 @@ class PartyMainViewController: OSViewController {
 extension PartyMainViewController {
     // MARK: Refreshing
     
-    func refresh() {
+    override func refresh() {
+        super.refresh()
+        
         if AFNetworkReachabilityManager.sharedManager().reachable {
             if UserManager.sharedUser.setup == true {
                 refreshForValidUserAndReachableNetwork()

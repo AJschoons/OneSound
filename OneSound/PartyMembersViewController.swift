@@ -77,7 +77,9 @@ class PartyMembersViewController: OSViewController {
         }
     }
     
-    func refresh() {
+    override func refresh() {
+        super.refresh()
+        
         println("refreshing PartyMembersViewController")
         
         if AFNetworkReachabilityManager.sharedManager().reachable {

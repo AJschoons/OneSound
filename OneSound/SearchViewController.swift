@@ -20,6 +20,9 @@ class SearchViewController: OSViewController {
     @IBOutlet weak var searchResultsTable: UITableView!
     @IBOutlet weak var animatedOneSoundOne: UIImageView!
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
+    @IBOutlet weak var toolbar: UIToolbar!
+    @IBOutlet weak var searchTypeControl: UISegmentedControl!
+    @IBOutlet weak var searchResultsTableTopConstraint: NSLayoutConstraint!
     
     var createPartyButton: UIBarButtonItem!
     var searchResultsArray = [Party]()
@@ -29,17 +32,20 @@ class SearchViewController: OSViewController {
     //let TypingSearchThreshold = 6
     var firstTypingSearch = true
     var partySearchTimer: NSTimer = NSTimer()
+    var searchByLocation = true
     
     var noSearchResults = false
     
     private let typingSearchServicePeriod: Double = 0.3 // Period in seconds of how often to update state. Play around with it
     var searchLength = 0
     
-    func search(searchTextLength: Int, isSearchButtonPressed: Bool) {
+    var hasRecentLocation = false
+    
+    func searchWithName(searchTextLength: Int, isSearchButtonPressed: Bool) {
         // Hide the keyboard
         //songSearchBar.resignFirstResponder()
         
-            // Empty the table, reload to show its empty, start the animation
+        // Empty the table, reload to show its empty, start the animation
         noSearchResults = false // Decides if the table will show party rows, or a "no parties found" message
         searchResultsArray = []
         searchResultsTable.reloadData()
@@ -78,7 +84,7 @@ class SearchViewController: OSViewController {
         )
     }
     
-    func search(){//searchTextLength: Int = 0, isSearchButtonPressed: Bool) {
+    func searchWithName() {//searchTextLength: Int = 0, isSearchButtonPressed: Bool) {
         // Hide the keyboard
         //songSearchBar.resignFirstResponder()
         if searchLength > 0 {
@@ -127,6 +133,22 @@ class SearchViewController: OSViewController {
         }
     }
     
+    func searchWithLocation() {
+        if hasRecentLocation || !searchByLocation { return }
+        
+        LocationManager.getLocationForPartySearch(
+            success: {location, accuracy in
+                self.hasRecentLocation = true
+                let latitude = location.coordinate.latitude
+                let longitude = location.coordinate.longitude
+            },
+            failure: {errorDescription in
+                self.hasRecentLocation = false
+                let error = errorDescription
+            }
+        )
+    }
+    
     func createParty() {
         if UserManager.sharedUser.guest == false {
             let createPartyStoryboard = UIStoryboard(name: CreatePartyStoryboardName, bundle: nil)
@@ -143,6 +165,21 @@ class SearchViewController: OSViewController {
             alert.show()
         }
     }
+    
+    
+    @IBAction func changeSearchType(sender: AnyObject) {
+        prepareForSelectedSearchType()
+        updateUI()
+        searchWithLocation()
+    }
+    
+    func prepareForSelectedSearchType() {
+        searchByLocation = searchTypeControl.selectedSegmentIndex == 0
+        
+        searchResultsArray = []
+        searchResultsTable.reloadData()
+        noSearchResults = false
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -151,6 +188,13 @@ class SearchViewController: OSViewController {
         
         title = "Party Search"
         
+        // Setup toolbar
+        toolbar.delegate = self
+        toolbar.setBackgroundImage(UIImage(named: "toolbarBackground"), forToolbarPosition: UIBarPosition.TopAttached, barMetrics: UIBarMetrics.Default)
+        toolbar.setShadowImage(UIImage(named: "navigationBarShadow"), forToolbarPosition: UIBarPosition.TopAttached)
+        toolbar.translucent = false
+        
+        // Setup side menu button
         let fnc = getFrontNavigationController()
         let sideMenuButtonItem = UIBarButtonItem(image: UIImage(named: "sideMenuToggleIcon"), style: UIBarButtonItemStyle.Plain, target: fnc, action: "toggleSideMenu")
         navigationItem.leftBarButtonItem = sideMenuButtonItem
@@ -184,15 +228,29 @@ class SearchViewController: OSViewController {
         activityIndicator.hidden = true
         
         // Make view respond to network reachability changes
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "refresh", name: AFNetworkingReachabilityDidChangeNotification, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "updateUI", name: AFNetworkingReachabilityDidChangeNotification, object: nil)
         // Make sure view knows the user is setup so it won't keep displaying 'Not signed into account' when there is no  internet connection when app launches and then the network comes back and UserManager is setup
-        // Also will refresh the "Create" button
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "refresh", name: UserManagerInformationDidChangeNotification, object: nil)
+        // Also will update the "Create" button
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "updateUI", name: UserManagerInformationDidChangeNotification, object: nil)
     }
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
-        refresh()
+        
+        // Makes it look like the toolbar is part of the navigation bar
+        navigationController?.navigationBar.translucent = false
+        navigationController?.navigationBar.shadowImage = UIImage()
+        
+        prepareForSelectedSearchType()
+        updateUI()
+        searchWithLocation()
+    }
+    
+    override func viewWillDisappear(animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        // Restore nav and toolbar appearance
+        getFrontNavigationController()?.setupNavigationAndToolbarAppearance()
     }
     
     override func viewDidDisappear(animated: Bool) {
@@ -229,13 +287,29 @@ class SearchViewController: OSViewController {
         }
     }
     
-    func refresh() {
-        println("refreshing PartyMembersViewController")
+    override func updateUI() {
+        super.updateUI()
         
         if AFNetworkReachabilityManager.sharedManager().reachable {
             if UserManager.sharedUser.setup == true {
                 hideMessages()
                 setViewInfoHidden(false)
+                
+                //
+                // Change UI based on search type
+                //
+                
+                var newSearchResultsTableTopConstraint: NSLayoutConstraint
+                if searchByLocation {
+                    newSearchResultsTableTopConstraint = NSLayoutConstraint(item: searchResultsTable, attribute: NSLayoutAttribute.Top, relatedBy: NSLayoutRelation.Equal, toItem: toolbar, attribute: NSLayoutAttribute.Bottom, multiplier: 1, constant: 0)
+                } else {
+                    newSearchResultsTableTopConstraint = NSLayoutConstraint(item: searchResultsTable, attribute: NSLayoutAttribute.Top, relatedBy: NSLayoutRelation.Equal, toItem: partySearchBar, attribute: NSLayoutAttribute.Bottom, multiplier: 1, constant: 8)
+                }
+                view.addConstraint(newSearchResultsTableTopConstraint)
+                view.removeConstraint(searchResultsTableTopConstraint)
+                searchResultsTableTopConstraint = newSearchResultsTableTopConstraint
+                
+                partySearchBar.hidden = searchByLocation
                 
             } else {
                 setViewInfoHidden(true)
@@ -416,7 +490,7 @@ extension SearchViewController: UISearchBarDelegate {
     func searchBarSearchButtonClicked(searchBar: UISearchBar) {
         removeLeadingWhitespaceFromSearchBar(&partySearchBar!)
         partySearchBar.resignFirstResponder()
-        search(0, isSearchButtonPressed:true)
+        searchWithName(0, isSearchButtonPressed:true)
     }
     
     func searchBar(searchBar: UISearchBar, shouldChangeTextInRange range: NSRange, replacementText text: String) -> Bool {
@@ -455,5 +529,11 @@ extension SearchViewController: UIAlertViewDelegate {
                 getAppDelegate()?.sideMenuViewController.programaticallySelectRow(SideMenuRow.Profile.rawValue)
             }
         }
+    }
+}
+
+extension SearchViewController: UIToolbarDelegate {
+    func positionForBar(bar: UIBarPositioning) -> UIBarPosition {
+        return UIBarPosition.TopAttached
     }
 }
