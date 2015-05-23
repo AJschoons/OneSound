@@ -23,23 +23,26 @@ class SearchViewController: OSViewController {
     @IBOutlet weak var toolbar: UIToolbar!
     @IBOutlet weak var searchTypeControl: UISegmentedControl!
     @IBOutlet weak var searchResultsTableTopConstraint: NSLayoutConstraint!
+    @IBOutlet weak var gettingLocationLabel: UILabel!
     
-    var createPartyButton: UIBarButtonItem!
-    var searchResultsArray = [Party]()
-    let heightForRows: CGFloat = 64.0
-    let partySearchBarPlaceholderText = "Enter a party name"
-    let maxSearchLength = 25
+    private var createPartyButton: UIBarButtonItem!
+    private var searchResultsArray = [Party]()
+    private let HeightForRows: CGFloat = 64.0
+    private let PartySearchBarPlaceholderText = "Enter a party name"
+    private let MaxSearchLength = 25
     //let TypingSearchThreshold = 6
-    var firstTypingSearch = true
-    var partySearchTimer: NSTimer = NSTimer()
-    var searchByLocation = true
+    private var firstTypingSearch = true
+    private var partySearchTimer: NSTimer = NSTimer()
     
-    var noSearchResults = false
+    private var noSearchResults = false
     
-    private let typingSearchServicePeriod: Double = 0.3 // Period in seconds of how often to update state. Play around with it
-    var searchLength = 0
+    private let TypingSearchServicePeriod: Double = 0.3 // Period in seconds of how often to update state. Play around with it
+    private var searchLength = 0
     
-    var hasRecentLocation = false
+    private var searchByLocation = true // True if Location segment selected
+    private var hasRecentLocation = false
+    private var updateLocationTimer = NSTimer()
+    private let UpdateLocationPeriod = 10.0 // Time in seconds that a location is no longer "recent"
     
     func searchWithName(searchTextLength: Int, isSearchButtonPressed: Bool) {
         // Hide the keyboard
@@ -95,7 +98,7 @@ class SearchViewController: OSViewController {
             searchResultsArray = []
             searchResultsTable.reloadData()
             loadingAnimationShouldBeAnimating(true)
-        }else {
+        } else {
             loadingAnimationShouldBeAnimating(false)
         }
         
@@ -136,17 +139,66 @@ class SearchViewController: OSViewController {
     func searchWithLocation() {
         if hasRecentLocation || !searchByLocation { return }
         
+        loadingAnimationShouldBeAnimating(true)
+        gettingLocationLabel.hidden = false
+        
         LocationManager.getLocationForPartySearch(
             success: {location, accuracy in
                 self.hasRecentLocation = true
                 let latitude = location.coordinate.latitude
                 let longitude = location.coordinate.longitude
+                
+                // Empty the table, reload to show its empty, start the animation
+                self.noSearchResults = false // Decides if the table will show party rows, or a "no parties found" message
+                self.searchResultsArray = []
+                self.searchResultsTable.reloadData()
+                
+                OSAPI.sharedClient.GETPartySearchNearby(latitude, longitude: longitude,
+                    success: {data, responseObject in
+                        let responseJSON = JSON(responseObject)
+                        println(responseJSON)
+                        let partiesArray = responseJSON.array
+                        println(partiesArray!)
+                        println(partiesArray!.count)
+                        
+                        // Get the parties in the results and store them
+                        var newPartySearchResults = [Party]()
+                        if partiesArray != nil {
+                            for result in partiesArray! {
+                                //println(result)
+                                newPartySearchResults.append(Party(json: result))
+                            }
+                        }
+                        
+                        // This bool decides whether the table will show party rows, or a "no parties found" message
+                        self.noSearchResults = (partiesArray!.count == 0)
+                        
+                        // Update the party results, reload the table to show them, stop animating
+                        self.searchResultsArray = newPartySearchResults
+                        self.searchResultsTable.reloadData()
+                        self.loadingAnimationShouldBeAnimating(false)
+                        self.gettingLocationLabel.hidden = true
+                    },
+                    failure: { task, error in
+                        self.loadingAnimationShouldBeAnimating(false)
+                        self.gettingLocationLabel.hidden = true
+                        defaultAFHTTPFailureBlock!(task: task, error: error)
+                    }
+                )
             },
             failure: {errorDescription in
                 self.hasRecentLocation = false
+                self.loadingAnimationShouldBeAnimating(false)
+                self.gettingLocationLabel.hidden = true
                 let error = errorDescription
+                setTableBackgroundViewWithMessages(self.searchResultsTable, "Location Problem", error)
             }
         )
+    }
+    
+    func updateLocation() {
+        hasRecentLocation = false
+        searchWithLocation()
     }
     
     func createParty() {
@@ -175,6 +227,8 @@ class SearchViewController: OSViewController {
     
     func prepareForSelectedSearchType() {
         searchByLocation = searchTypeControl.selectedSegmentIndex == 0
+        
+        if !searchByLocation { hasRecentLocation = false }
         
         searchResultsArray = []
         searchResultsTable.reloadData()
@@ -441,7 +495,7 @@ extension SearchViewController: UITableViewDelegate {
     }
     
     func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
-        return heightForRows
+        return HeightForRows
     }
 }
 
@@ -472,7 +526,7 @@ extension SearchViewController: UISearchBarDelegate {
             partySearchTimer.invalidate()
         } else {
             partySearchTimer.invalidate()
-            partySearchTimer = NSTimer.scheduledTimerWithTimeInterval(typingSearchServicePeriod, target: self, selector: "search", userInfo: nil, repeats: false)
+            partySearchTimer = NSTimer.scheduledTimerWithTimeInterval(TypingSearchServicePeriod, target: self, selector: "searchWithName", userInfo: nil, repeats: false)
         }
         
     }
@@ -483,7 +537,7 @@ extension SearchViewController: UISearchBarDelegate {
     }
     
     func searchBarTextDidEndEditing(searchBar: UISearchBar) {
-        searchBar.placeholder = partySearchBarPlaceholderText
+        searchBar.placeholder = PartySearchBarPlaceholderText
     }
     
     // Hide keyboard when user presses "Search", initiate the search
@@ -507,7 +561,7 @@ extension SearchViewController: UISearchBarDelegate {
         
         // Only allow change if 25 or less characters
         let newLength = count(searchBar.text as String) - range.length
-        return newLength <= maxSearchLength
+        return newLength <= MaxSearchLength
     }
 }
 
