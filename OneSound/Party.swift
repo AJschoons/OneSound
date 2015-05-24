@@ -16,6 +16,7 @@ class Party {
     private(set) var strictness: Int!
     private(set) var memberCount: Int?
     private(set) var hostName: String?
+    private(set) var distance: Double?
     
     init(json: JSON) {
         partyID = json["pid"].int
@@ -25,5 +26,6 @@ class Party {
         strictness = json["strictness"].int
         memberCount = json["member_count"].int
         hostName = json["host_name"].string
+        distance = json["distance"].double
     }
 }
