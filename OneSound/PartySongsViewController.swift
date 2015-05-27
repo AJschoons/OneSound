@@ -198,7 +198,9 @@ extension PartySongsViewController: UITableViewDataSource {
         
         if songsToDelete && !cellIsLoadingCell && shouldAllowActionsOnSongs() {
             // If this is the user's song, they can choose to delete it
-            if playlistManager.songs[indexPath.row].userID == UserManager.sharedUser.id {
+            if playlistManager.songs[indexPath.row].userID == UserManager.sharedUser.id
+                || PartyManager.sharedParty.state == .Host
+                || PartyManager.sharedParty.state == .HostStreamable {
                 return true
             }
         }
@@ -213,7 +215,9 @@ extension PartySongsViewController: UITableViewDataSource {
             let songsToDelete = playlistManager.songs.count > 0
             let cellIsLoadingCell = indexPath.row == playlistManager.songs.count // 1 past # of songs will be loading cell
             
-            if songsToDelete && !cellIsLoadingCell && shouldAllowActionsOnSongs() {
+            if songsToDelete && !cellIsLoadingCell && shouldAllowActionsOnSongs()
+                || PartyManager.sharedParty.state == .Host
+                || PartyManager.sharedParty.state == .HostStreamable {
                 // Delete this cell's song
                 playlistManager.deleteSongAtIndex(indexPath.row,
                     completion: {
