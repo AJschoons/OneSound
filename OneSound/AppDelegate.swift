@@ -51,14 +51,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject : AnyObject]?) -> Bool {
         
+        // Override point for customization after application launch.
+        
         NewRelicAgent.startWithApplicationToken("AAe6bc980a2d996add7c26db97bf6da4eef6a1a622")
         
-        // Override point for customization after application launch.
         setupAppWindowAndViewHierarchy()
         
         setupAppDefaultBarAppearances()
         
         setupAppAFNetworkingTools()
+        
+        setupGoogleAnalytics()
         
         // Create the user manager
         UserManager.sharedUser
@@ -231,6 +234,14 @@ extension AppDelegate {
         UIToolbar.appearance().barTintColor = UIColor.white()
         UIToolbar.appearance().translucent = true
         }*/
+    }
+    
+    func setupGoogleAnalytics() {
+        // For testing
+        //GAI.sharedInstance().logger.logLevel = GAILogLevel.Verbose
+        //GAI.sharedInstance().dispatchInterval = 5
+        
+        GAI.sharedInstance().trackerWithTrackingId("UA-59716743-4")
     }
 }
 

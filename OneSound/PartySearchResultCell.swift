@@ -15,6 +15,8 @@ class PartySearchResultCell: UITableViewCell {
     @IBOutlet weak var nameLabel: UILabel!
     @IBOutlet weak var userNameLabel: UILabel!
     @IBOutlet weak var memberCountLabel: UILabel!
+    @IBOutlet weak var locationImage: UIImageView!
+    @IBOutlet weak var locationLabel: UILabel!
     
     override func awakeFromNib() {
         super.awakeFromNib()

@@ -12,7 +12,7 @@ let PartySongsViewControllerNibName = "PartySongsViewController"
 let PartySongCellIndentifier = "PartySongCell"
 let LoadingCellTag = 1
 
-class PartySongsViewController: UIViewController {
+class PartySongsViewController: OSViewController {
 
     let songCellImagePlaceholder = UIImage(named: "songCellImagePlaceholder")
     let songTableViewImageCache = (UIApplication.sharedApplication().delegate as! AppDelegate).songTableViewImageCache
@@ -36,6 +36,10 @@ class PartySongsViewController: UIViewController {
     }
     
     override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        osvcVariables.screenName = PartySongsViewControllerNibName
+        
         addSongButton = UIBarButtonItem(title: "Add", style: UIBarButtonItemStyle.Plain, target: self, action: "addSong")
         
         // Make view respond to network reachability changes
@@ -94,7 +98,8 @@ class PartySongsViewController: UIViewController {
         }
     }
     
-    func refresh() {
+    override func refresh() {
+        super.refresh()
         println("refreshing PartySongViewController")
         
         if AFNetworkReachabilityManager.sharedManager().reachable {

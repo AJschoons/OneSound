@@ -45,6 +45,9 @@
 		815831471975CD9B0011D3CE /* SwiftyJSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = 815831461975CD9B0011D3CE /* SwiftyJSON.swift */; };
 		8158314C1976D54F0011D3CE /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8158314B1976D54F0011D3CE /* LoginViewController.swift */; };
 		815CB6E31976D749000FD4B7 /* Login.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 815CB6E21976D749000FD4B7 /* Login.storyboard */; };
+		816205F61B0D34CA001BD3E9 /* OSViewControllerVars.swift in Sources */ = {isa = PBXBuildFile; fileRef = 816205F51B0D34CA001BD3E9 /* OSViewControllerVars.swift */; };
+		816205FB1B0E1F81001BD3E9 /* OSTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 816205FA1B0E1F81001BD3E9 /* OSTableViewController.swift */; };
+		816205FD1B0F94CE001BD3E9 /* LocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 816205FC1B0F94CE001BD3E9 /* LocationManager.swift */; };
 		81631F3419994BB000C55A6F /* PartyMemberCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81631F3219994BB000C55A6F /* PartyMemberCell.swift */; };
 		81631F3519994BB000C55A6F /* PartyMemberCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 81631F3319994BB000C55A6F /* PartyMemberCell.xib */; };
 		816FD445196F22B0003CCB1C /* SideNavigationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 816FD444196F22B0003CCB1C /* SideNavigationViewController.swift */; };
@@ -68,6 +71,12 @@
 		8195E6861A5B398500FD0CC8 /* OSTabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8195E6851A5B398500FD0CC8 /* OSTabBarController.swift */; };
 		8195E6881A5B431A00FD0CC8 /* OSModalViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8195E6871A5B431A00FD0CC8 /* OSModalViewController.swift */; };
 		8195E68C1A5CB76D00FD0CC8 /* PartyAudioManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8195E68B1A5CB76D00FD0CC8 /* PartyAudioManager.swift */; };
+		8197FC0C1AF6D173001CF957 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8197FC0B1AF6D173001CF957 /* CoreData.framework */; };
+		8197FC0E1AF6D187001CF957 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8197FC0D1AF6D187001CF957 /* SystemConfiguration.framework */; };
+		8197FC101AF6D19F001CF957 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 8197FC0F1AF6D19F001CF957 /* libz.dylib */; };
+		8197FC121AF6D1AE001CF957 /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 8197FC111AF6D1AE001CF957 /* libsqlite3.dylib */; };
+		8197FC181AF6F7A7001CF957 /* libGoogleAnalyticsServices.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8197FC171AF6F7A7001CF957 /* libGoogleAnalyticsServices.a */; };
+		8197FC311AF6F905001CF957 /* libGoogleAnalyticsServices.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8197FC301AF6F905001CF957 /* libGoogleAnalyticsServices.a */; };
 		81ACB3E81A5273AD0039529E /* PartyMembersManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81ACB3E71A5273AD0039529E /* PartyMembersManager.swift */; };
 		81B17D8F196F2A680062943C /* SideNavigationMenuCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81B17D8D196F2A680062943C /* SideNavigationMenuCell.swift */; };
 		81B17D90196F2A680062943C /* SideNavigationMenuCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 81B17D8E196F2A680062943C /* SideNavigationMenuCell.xib */; };
@@ -141,6 +150,9 @@
 		815831461975CD9B0011D3CE /* SwiftyJSON.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftyJSON.swift; sourceTree = "<group>"; };
 		8158314B1976D54F0011D3CE /* LoginViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
 		815CB6E21976D749000FD4B7 /* Login.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Login.storyboard; sourceTree = "<group>"; };
+		816205F51B0D34CA001BD3E9 /* OSViewControllerVars.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OSViewControllerVars.swift; sourceTree = "<group>"; };
+		816205FA1B0E1F81001BD3E9 /* OSTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OSTableViewController.swift; sourceTree = "<group>"; };
+		816205FC1B0F94CE001BD3E9 /* LocationManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationManager.swift; sourceTree = "<group>"; };
 		81631F3219994BB000C55A6F /* PartyMemberCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PartyMemberCell.swift; sourceTree = "<group>"; };
 		81631F3319994BB000C55A6F /* PartyMemberCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PartyMemberCell.xib; sourceTree = "<group>"; };
 		816FD444196F22B0003CCB1C /* SideNavigationViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SideNavigationViewController.swift; sourceTree = "<group>"; };
@@ -167,6 +179,23 @@
 		8195E6871A5B431A00FD0CC8 /* OSModalViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OSModalViewController.swift; sourceTree = "<group>"; };
 		8195E6891A5C7BAE00FD0CC8 /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = SDKROOT; };
 		8195E68B1A5CB76D00FD0CC8 /* PartyAudioManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PartyAudioManager.swift; sourceTree = "<group>"; };
+		8197FC0B1AF6D173001CF957 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
+		8197FC0D1AF6D187001CF957 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
+		8197FC0F1AF6D19F001CF957 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
+		8197FC111AF6D1AE001CF957 /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = usr/lib/libsqlite3.dylib; sourceTree = SDKROOT; };
+		8197FC131AF6D1FF001CF957 /* libGoogleAnalyticsServices.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libGoogleAnalyticsServices.a; path = GoogleAnalyticsServicesiOS_3.11/libGoogleAnalyticsServices.a; sourceTree = "<group>"; };
+		8197FC171AF6F7A7001CF957 /* libGoogleAnalyticsServices.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libGoogleAnalyticsServices.a; path = GoogleAnalytics/libGoogleAnalyticsServices.a; sourceTree = "<group>"; };
+		8197FC261AF6F8BB001CF957 /* GAI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GAI.h; path = GoogleAnalytics/GAI.h; sourceTree = "<group>"; };
+		8197FC271AF6F8BB001CF957 /* GAIDictionaryBuilder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GAIDictionaryBuilder.h; path = GoogleAnalytics/GAIDictionaryBuilder.h; sourceTree = "<group>"; };
+		8197FC281AF6F8BB001CF957 /* GAIEcommerceFields.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GAIEcommerceFields.h; path = GoogleAnalytics/GAIEcommerceFields.h; sourceTree = "<group>"; };
+		8197FC291AF6F8BB001CF957 /* GAIEcommerceProduct.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GAIEcommerceProduct.h; path = GoogleAnalytics/GAIEcommerceProduct.h; sourceTree = "<group>"; };
+		8197FC2A1AF6F8BB001CF957 /* GAIEcommerceProductAction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GAIEcommerceProductAction.h; path = GoogleAnalytics/GAIEcommerceProductAction.h; sourceTree = "<group>"; };
+		8197FC2B1AF6F8BB001CF957 /* GAIEcommercePromotion.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GAIEcommercePromotion.h; path = GoogleAnalytics/GAIEcommercePromotion.h; sourceTree = "<group>"; };
+		8197FC2C1AF6F8BB001CF957 /* GAIFields.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GAIFields.h; path = GoogleAnalytics/GAIFields.h; sourceTree = "<group>"; };
+		8197FC2D1AF6F8BB001CF957 /* GAILogger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GAILogger.h; path = GoogleAnalytics/GAILogger.h; sourceTree = "<group>"; };
+		8197FC2E1AF6F8BB001CF957 /* GAITrackedViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GAITrackedViewController.h; path = GoogleAnalytics/GAITrackedViewController.h; sourceTree = "<group>"; };
+		8197FC2F1AF6F8BB001CF957 /* GAITracker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GAITracker.h; path = GoogleAnalytics/GAITracker.h; sourceTree = "<group>"; };
+		8197FC301AF6F905001CF957 /* libGoogleAnalyticsServices.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libGoogleAnalyticsServices.a; path = GoogleAnalytics/libGoogleAnalyticsServices.a; sourceTree = "<group>"; };
 		81ACB3E71A5273AD0039529E /* PartyMembersManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PartyMembersManager.swift; sourceTree = "<group>"; };
 		81B17D8D196F2A680062943C /* SideNavigationMenuCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SideNavigationMenuCell.swift; sourceTree = "<group>"; };
 		81B17D8E196F2A680062943C /* SideNavigationMenuCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SideNavigationMenuCell.xib; sourceTree = "<group>"; };
@@ -193,6 +222,12 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8197FC181AF6F7A7001CF957 /* libGoogleAnalyticsServices.a in Frameworks */,
+				8197FC121AF6D1AE001CF957 /* libsqlite3.dylib in Frameworks */,
+				8197FC101AF6D19F001CF957 /* libz.dylib in Frameworks */,
+				8197FC311AF6F905001CF957 /* libGoogleAnalyticsServices.a in Frameworks */,
+				8197FC0E1AF6D187001CF957 /* SystemConfiguration.framework in Frameworks */,
+				8197FC0C1AF6D173001CF957 /* CoreData.framework in Frameworks */,
 				81953482197860A7000B97A3 /* Security.framework in Frameworks */,
 				81751FF7196DEB1D00B9F9A9 /* UIKit.framework in Frameworks */,
 				81751FF5196DEB0F00B9F9A9 /* Foundation.framework in Frameworks */,
@@ -271,6 +306,7 @@
 		81062F94196B6C7E0057D230 = {
 			isa = PBXGroup;
 			children = (
+				8197FC191AF6F834001CF957 /* GoogleAnalytics */,
 				8179444B1A5751C000A9C636 /* ENSideMenu Library */,
 				8138979D1A57256F008BBC77 /* Podfile */,
 				81062F9F196B6C7E0057D230 /* OneSound */,
@@ -427,6 +463,7 @@
 				8195347F197857E6000B97A3 /* UserManager.swift */,
 				8187B08A1A809A8F0071B9BC /* LoginFlowManager.swift */,
 				814AF0BC1A82F360003ECEED /* AlertManager.swift */,
+				816205FC1B0F94CE001BD3E9 /* LocationManager.swift */,
 			);
 			name = Managers;
 			sourceTree = "<group>";
@@ -476,13 +513,33 @@
 		8195E6821A5B36B400FD0CC8 /* Base Classes */ = {
 			isa = PBXGroup;
 			children = (
+				816205F51B0D34CA001BD3E9 /* OSViewControllerVars.swift */,
+				816205FA1B0E1F81001BD3E9 /* OSTableViewController.swift */,
+				8195E6831A5B370A00FD0CC8 /* OSViewController.swift */,
 				817944501A5752DE00A9C636 /* OSFrontNavigationController.swift */,
 				816FD446196F22DB003CCB1C /* FrontNavigationController.swift */,
-				8195E6831A5B370A00FD0CC8 /* OSViewController.swift */,
 				8195E6871A5B431A00FD0CC8 /* OSModalViewController.swift */,
 				8195E6851A5B398500FD0CC8 /* OSTabBarController.swift */,
 			);
 			name = "Base Classes";
+			sourceTree = "<group>";
+		};
+		8197FC191AF6F834001CF957 /* GoogleAnalytics */ = {
+			isa = PBXGroup;
+			children = (
+				8197FC301AF6F905001CF957 /* libGoogleAnalyticsServices.a */,
+				8197FC261AF6F8BB001CF957 /* GAI.h */,
+				8197FC271AF6F8BB001CF957 /* GAIDictionaryBuilder.h */,
+				8197FC281AF6F8BB001CF957 /* GAIEcommerceFields.h */,
+				8197FC291AF6F8BB001CF957 /* GAIEcommerceProduct.h */,
+				8197FC2A1AF6F8BB001CF957 /* GAIEcommerceProductAction.h */,
+				8197FC2B1AF6F8BB001CF957 /* GAIEcommercePromotion.h */,
+				8197FC2C1AF6F8BB001CF957 /* GAIFields.h */,
+				8197FC2D1AF6F8BB001CF957 /* GAILogger.h */,
+				8197FC2E1AF6F8BB001CF957 /* GAITrackedViewController.h */,
+				8197FC2F1AF6F8BB001CF957 /* GAITracker.h */,
+			);
+			name = GoogleAnalytics;
 			sourceTree = "<group>";
 		};
 		81B8B21F1A9001BF00B6DC75 /* Subclasses/Extensions */ = {
@@ -520,6 +577,12 @@
 		F0954DF62FE441E2A671CB82 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				8197FC171AF6F7A7001CF957 /* libGoogleAnalyticsServices.a */,
+				8197FC131AF6D1FF001CF957 /* libGoogleAnalyticsServices.a */,
+				8197FC111AF6D1AE001CF957 /* libsqlite3.dylib */,
+				8197FC0F1AF6D19F001CF957 /* libz.dylib */,
+				8197FC0D1AF6D187001CF957 /* SystemConfiguration.framework */,
+				8197FC0B1AF6D173001CF957 /* CoreData.framework */,
 				8195E6891A5C7BAE00FD0CC8 /* Accelerate.framework */,
 				81953481197860A7000B97A3 /* Security.framework */,
 				81751FF6196DEB1D00B9F9A9 /* UIKit.framework */,
@@ -725,6 +788,7 @@
 				81953480197857E6000B97A3 /* UserManager.swift in Sources */,
 				81C92CF01A3CCFE900BE63D1 /* PartySearchResultCell.swift in Sources */,
 				8187B08B1A809A8F0071B9BC /* LoginFlowManager.swift in Sources */,
+				816205FB1B0E1F81001BD3E9 /* OSTableViewController.swift in Sources */,
 				81414DCE197DD1F800081132 /* EnumHackExtensions.swift in Sources */,
 				81D3E22E1AAA850C007A60CF /* ObjCUtilities.m in Sources */,
 				8195E6861A5B398500FD0CC8 /* OSTabBarController.swift in Sources */,
@@ -736,6 +800,7 @@
 				8108DF97199BBC900040B8E7 /* CreatePartyViewController.swift in Sources */,
 				8195E6881A5B431A00FD0CC8 /* OSModalViewController.swift in Sources */,
 				8130D7D21986B8BD00DD4B47 /* Party.swift in Sources */,
+				816205F61B0D34CA001BD3E9 /* OSViewControllerVars.swift in Sources */,
 				8179444F1A5751C000A9C636 /* ENSideMenuNavigationController.swift in Sources */,
 				8130D7D41986B8EB00DD4B47 /* PartyManager.swift in Sources */,
 				8158314C1976D54F0011D3CE /* LoginViewController.swift in Sources */,
@@ -747,6 +812,7 @@
 				81929C88196C2C2C006F336B /* OneSoundHTTPClient.swift in Sources */,
 				816FD447196F22DB003CCB1C /* FrontNavigationController.swift in Sources */,
 				81BCC2BB199D60DD00A3500F /* SongSearchResult.swift in Sources */,
+				816205FD1B0F94CE001BD3E9 /* LocationManager.swift in Sources */,
 				81DA8A67198A9FE00037EAD1 /* Song.swift in Sources */,
 				81B17D8F196F2A680062943C /* SideNavigationMenuCell.swift in Sources */,
 				813FCE081977583C00419097 /* LoginColorViewController.swift in Sources */,
@@ -886,6 +952,8 @@
 					"$(PROJECT_DIR)/Fabric.framework",
 					"$(PROJECT_DIR)/Fabric.framework/Versions/A",
 					"$(PROJECT_DIR)",
+					"$(PROJECT_DIR)/GoogleAnalyticsServicesiOS_3.11",
+					"$(PROJECT_DIR)/GoogleAnalytics",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
@@ -922,6 +990,8 @@
 					"$(PROJECT_DIR)/Fabric.framework",
 					"$(PROJECT_DIR)/Fabric.framework/Versions/A",
 					"$(PROJECT_DIR)",
+					"$(PROJECT_DIR)/GoogleAnalyticsServicesiOS_3.11",
+					"$(PROJECT_DIR)/GoogleAnalytics",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
@@ -1037,6 +1107,8 @@
 					"$(PROJECT_DIR)/Fabric.framework",
 					"$(PROJECT_DIR)/Fabric.framework/Versions/A",
 					"$(PROJECT_DIR)",
+					"$(PROJECT_DIR)/GoogleAnalyticsServicesiOS_3.11",
+					"$(PROJECT_DIR)/GoogleAnalytics",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
@@ -1130,6 +1202,8 @@
 					"$(PROJECT_DIR)/Fabric.framework",
 					"$(PROJECT_DIR)/Fabric.framework/Versions/A",
 					"$(PROJECT_DIR)",
+					"$(PROJECT_DIR)/GoogleAnalyticsServicesiOS_3.11",
+					"$(PROJECT_DIR)/GoogleAnalytics",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";

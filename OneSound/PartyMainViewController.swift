@@ -22,7 +22,7 @@ let thumbsUpUnselectedMainParty = UIImage(named: "thumbsUpUnselectedMainParty")
 let thumbsDownSelectedMainParty = UIImage(named: "thumbsDownSelectedMainParty")
 let thumbsDownUnselectedMainParty = UIImage(named: "thumbsDownUnselectedMainParty")
 
-class PartyMainViewController: UIViewController {
+class PartyMainViewController: OSViewController {
     
     let currentSongImageCache = (UIApplication.sharedApplication().delegate as! AppDelegate).currentSongImageCache
     let userCurrentSongImageCache = (UIApplication.sharedApplication().delegate as! AppDelegate).userCurrentSongImageCache
@@ -92,6 +92,10 @@ class PartyMainViewController: UIViewController {
     }
     
     override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        osvcVariables.screenName = PartyMainViewControllerNibName
+        
         // Stops bottom of view from flowing under tab bar, but not top, for some reason
         edgesForExtendedLayout = UIRectEdge.None
         
@@ -166,6 +170,11 @@ class PartyMainViewController: UIViewController {
         })
     }
     
+    override func viewDidAppear(animated: Bool) {
+        super.viewDidAppear(animated)
+        
+    }
+    
     func updateRightBarButton(# create: Bool, leave: Bool, settings: Bool) {
         if create { rightBarButton = createPartyButton }
         else if leave { rightBarButton = leavePartyButton }
@@ -183,7 +192,9 @@ class PartyMainViewController: UIViewController {
 extension PartyMainViewController {
     // MARK: Refreshing
     
-    func refresh() {
+    override func refresh() {
+        super.refresh()
+        
         if AFNetworkReachabilityManager.sharedManager().reachable {
             if UserManager.sharedUser.setup == true {
                 refreshForValidUserAndReachableNetwork()

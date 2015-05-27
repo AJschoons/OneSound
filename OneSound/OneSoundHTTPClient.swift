@@ -164,14 +164,6 @@ extension OSAPI {
         // Create a URL string from the base URL string, then user/following/:uid
         let urlString = "\(baseURLString)user/\(uid)/following"
         
-        let failureWithExtraAttempt: AFHTTPFailureBlock = { task, error in
-            if errorShouldBeHandledWithRepeatedRequest(task, error, attemptsLeft: extraAttempts) {
-                self.GETUserFollowing(uid, success: success, failure: failure, extraAttempts: (extraAttempts - 1))
-            } else {
-                failure!(task: task, error: error)
-            }
-        }
-        
         GET(urlString, parameters: nil, success: success, failure: failure)
     }
     
@@ -496,6 +488,26 @@ extension OSAPI {
         let failureWithExtraAttempt: AFHTTPFailureBlock = { task, error in
             if errorShouldBeHandledWithRepeatedRequest(task, error, attemptsLeft: extraAttempts) {
                 self.GETPartySearch(searchText, success: success, failure: failure, extraAttempts: (extraAttempts - 1))
+            } else {
+                failure!(task: task, error: error)
+            }
+        }
+        
+        GET(urlString, parameters: params, success: success, failure: failureWithExtraAttempt)
+    }
+    
+    // Search for a party by location
+    func GETPartySearchNearby(latitude: Double, longitude: Double, success: AFHTTPSuccessBlock, failure: AFHTTPFailureBlock, extraAttempts: Int = defaultEA) {
+        let urlString = "\(baseURLString)party/search/nearby"
+        
+        // Create parameters to pass
+        var params = Dictionary<String, AnyObject>()
+        params.updateValue(latitude, forKey: "latitude")
+        params.updateValue(longitude, forKey: "longitude")
+        
+        let failureWithExtraAttempt: AFHTTPFailureBlock = { task, error in
+            if errorShouldBeHandledWithRepeatedRequest(task, error, attemptsLeft: extraAttempts) {
+                self.GETPartySearchNearby(latitude, longitude: longitude, success: success, failure: failure, extraAttempts: (extraAttempts - 1))
             } else {
                 failure!(task: task, error: error)
             }
