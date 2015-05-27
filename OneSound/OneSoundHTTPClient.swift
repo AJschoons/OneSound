@@ -434,7 +434,7 @@ extension OSAPI {
     }
     
     // Create a new party
-    func POSTParty(name: String, privacy: Bool, strictness: Int, success: AFHTTPSuccessBlock, failure: AFHTTPFailureBlock, extraAttempts: Int = defaultEA) {
+    func POSTParty(name: String, privacy: Bool, strictness: Int, latitude: Double, longitude: Double, success: AFHTTPSuccessBlock, failure: AFHTTPFailureBlock, extraAttempts: Int = defaultEA) {
 
         let urlString = "\(baseURLString)party"
         
@@ -444,9 +444,14 @@ extension OSAPI {
         params.updateValue(privacy, forKey: "privacy")
         params.updateValue(strictness, forKey: "strictness")
         
+        var location = Dictionary<String, AnyObject>()
+        location.updateValue(latitude, forKey: "latitude")
+        location.updateValue(longitude, forKey: "longitude")
+        params.updateValue(location, forKey: "location")
+        
         let failureWithExtraAttempt: AFHTTPFailureBlock = { task, error in
             if errorShouldBeHandledWithRepeatedRequest(task, error, attemptsLeft: extraAttempts) {
-                self.POSTParty(name, privacy: privacy, strictness: strictness, success: success, failure: failure, extraAttempts: (extraAttempts - 1))
+                self.POSTParty(name, privacy: privacy, strictness: strictness, latitude: latitude, longitude: longitude, success: success, failure: failure, extraAttempts: (extraAttempts - 1))
             } else {
                 failure!(task: task, error: error)
             }
