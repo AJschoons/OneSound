@@ -17,40 +17,51 @@ protocol CreatePartyViewControllerDelegate {
 
 class CreatePartyViewController: OSTableViewController {
         
-    let validCharacters = "abcdefghijklmnopqrstuvwxyz1234567890 "
-    let minimumFooterViewHeight: CGFloat = 140
-    let numberOfSections = 2
+    private let ValidCharacters = "abcdefghijklmnopqrstuvwxyz1234567890 "
+    private let MinimumFooterViewHeight: CGFloat = 140
+    private let LocationCellFooterHeight: CGFloat = 100
+    private let DefaultCellFooterHeight: CGFloat = 45
     
     @IBOutlet weak var nameCell: UITableViewCell!
     @IBOutlet weak var nameCellTextField: UITextField!
     @IBOutlet weak var nameCellTextFieldCount: UILabel!
+    
     @IBOutlet weak var privacyCell: UITableViewCell!
-    var privacyCellSwitch: UISwitch!
+    private var privacyCellSwitch: UISwitch!
+    
     @IBOutlet weak var strictnessCell: UITableViewCell!
     @IBOutlet weak var strictnessCellStrictnessLabel: UILabel!
+    
+    @IBOutlet weak var locationCell: UITableViewCell!
+    @IBOutlet weak var locationCellStatusIcon: UIImageView!
+    
     @IBOutlet weak var footerView: UIView!
     
-    var streamControlButton: UIButton?
-    let scButtonTitleEnabled = "Control Music Stream"
-    let scButtonTitleDisabled = "Controlling Music Stream"
-    let scButtonTextColorEnabled = UIColor.white()
-    let scButtonTextColorDisabled = UIColor.grayLight()
-    let scButtonBGColorEnabled = UIColor.blue()
-    let scButtonBGColorDisabled = UIColor.grayMid()
+    private var locationCellFooterViewController: LocationCellFooterViewController?
     
-    var skipSongButton: UIButton?
-    let skipButtonTitle = "Skip Playing Song"
-    let skipButtonTextColorEnabled = UIColor.white()
-    let skipButtonTextColorDisabled = UIColor.grayLight()
-    let skipButtonBGColorEnabled = UIColor.red()
-    let skipButtonBGColorDisabled = UIColor.grayMid()
+    private var streamControlButton: UIButton?
+    private let scButtonTitleEnabled = "Control Music Stream"
+    private let scButtonTitleDisabled = "Controlling Music Stream"
+    private let scButtonTextColorEnabled = UIColor.white()
+    private let scButtonTextColorDisabled = UIColor.grayLight()
+    private let scButtonBGColorEnabled = UIColor.blue()
+    private let scButtonBGColorDisabled = UIColor.grayMid()
     
-    var leavePartyButton: UIButton?
+    private var skipSongButton: UIButton?
+    private let skipButtonTitle = "Skip Playing Song"
+    private let skipButtonTextColorEnabled = UIColor.white()
+    private let skipButtonTextColorDisabled = UIColor.grayLight()
+    private let skipButtonBGColorEnabled = UIColor.red()
+    private let skipButtonBGColorDisabled = UIColor.grayMid()
     
-    var strictness: PartyStrictnessOption = .Default
+    private var leavePartyButton: UIButton?
+    
+    private var strictness: PartyStrictnessOption = .Default
     var partyAlreadyExists = false
+    private var location: CLLocation?
     
     var delegate: CreatePartyViewControllerDelegate?
+
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -101,6 +112,9 @@ class CreatePartyViewController: OSTableViewController {
         if partyAlreadyExists {
             // Add a tableView footer with a button to leave the party
             setupButtonsInTableFooterView()
+        } else {
+            locationCellFooterViewController = LocationCellFooterViewController(nibName: LocationCellFooterViewControllerNibName, bundle: nil)
+            locationCellFooterViewController!.delegate = self
         }
         
         // Give the privacy cell a switch
@@ -127,7 +141,7 @@ class CreatePartyViewController: OSTableViewController {
     func done() {
         if !partyAlreadyExists {
             println("Creating NEW party")
-            PartyManager.sharedParty.createNewParty(nameCellTextField.text, privacy: privacyCellSwitch.on, strictness: strictness.rawValue,
+            PartyManager.sharedParty.createNewParty(nameCellTextField.text, privacy: privacyCellSwitch.on, strictness: strictness.rawValue, location: location!,
                 respondToChangeAttempt: { partyWasCreated in
                     if partyWasCreated {
                         self.onSuccessfulPartyCreateOrUpdateOrLeave()
@@ -200,7 +214,7 @@ class CreatePartyViewController: OSTableViewController {
         setDoneButtonState()
     }
     
-    func setDoneButtonState() {
+    private func setDoneButtonState() {
         if partyAlreadyExists {
             // Only allow Done to be pressed if party information has changed from what is already is
             // TODO: add in a check for privacy info change
@@ -210,7 +224,7 @@ class CreatePartyViewController: OSTableViewController {
                 navigationItem.rightBarButtonItem!.enabled = false
             }
         } else {
-            if count(nameCellTextField.text as String) > 2 {
+            if count(nameCellTextField.text as String) > 2 && location != nil {
                 navigationItem.rightBarButtonItem!.enabled = true
             } else {
                 navigationItem.rightBarButtonItem!.enabled = false
@@ -218,13 +232,13 @@ class CreatePartyViewController: OSTableViewController {
         }
     }
     
-    func partyInfoHasChanged() -> Bool {
+    private func partyInfoHasChanged() -> Bool {
         // TODO: add in a check for privacy info change
         let party = PartyManager.sharedParty
         return (nameCellTextField.text != party.name) || (strictness.rawValue != party.strictness)
     }
     
-    func updateNameCellTextFieldCount() {
+    private func updateNameCellTextFieldCount() {
         let numberOfCharacters = count(nameCellTextField.text as String)
         
         // Update label
@@ -250,10 +264,10 @@ class CreatePartyViewController: OSTableViewController {
         tableView.endEditing(true)
     }
     
-    func setupButtonsInTableFooterView() {
+    private func setupButtonsInTableFooterView() {
         tableView.layoutIfNeeded() // Calculates the content size
         var footerViewHeight = UIScreen.mainScreen().bounds.height - NavigationBarHeight - tableView.contentSize.height
-        if (footerViewHeight < minimumFooterViewHeight) { footerViewHeight = minimumFooterViewHeight }
+        if (footerViewHeight < MinimumFooterViewHeight) { footerViewHeight = MinimumFooterViewHeight }
         
         let footerView = UIView(frame: CGRectMake(0, 0, tableView.frame.width, CGFloat(footerViewHeight)))
         footerView.backgroundColor = UIColor.clearColor()
@@ -329,6 +343,8 @@ class CreatePartyViewController: OSTableViewController {
 }
 
 extension CreatePartyViewController: UITableViewDataSource {
+    // MARK: UITableViewDataSource
+    
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return 1
     }
@@ -339,8 +355,8 @@ extension CreatePartyViewController: UITableViewDataSource {
             return nameCell
         case 1:
             return strictnessCell
-        //case 2:
-        //    return strictnessCell
+        case 2:
+            return locationCell
         default:
             println("Error: LoginViewController cellForRowAtIndexPath couldn't get cell")
             return UITableViewCell()
@@ -348,11 +364,13 @@ extension CreatePartyViewController: UITableViewDataSource {
     }
     
     override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-        return numberOfSections
+        return partyAlreadyExists ? 2 : 3
     }
 }
 
 extension CreatePartyViewController: UITableViewDelegate {
+    // MARK: UITableViewDelegate
+    
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         switch indexPath.section {
         case 0:
@@ -373,13 +391,35 @@ extension CreatePartyViewController: UITableViewDelegate {
         // Only highlight the party strictness cell
         return indexPath.section == 1
     }
+    
+    override func tableView(tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
+        if section != 2 { return nil }
+        
+        tableView.layoutIfNeeded() // Calculates the content size
+        var footerViewHeight = UIScreen.mainScreen().bounds.height - NavigationBarHeight - tableView.contentSize.height
+        
+        let footerView = UIView(frame: CGRectMake(0, 0, tableView.frame.width, 200))
+        footerView.backgroundColor = UIColor.purple()
+        
+        return locationCellFooterViewController?.view
+    }
+    
+    override func tableView(tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+        if section == 2 && !partyAlreadyExists {
+            return LocationCellFooterHeight
+        } else {
+            return DefaultCellFooterHeight
+        }
+    }
 }
 
 extension CreatePartyViewController: UITextFieldDelegate {
+    // MARK: UITextFieldDelegate
+    
     func textField(textField: UITextField, shouldChangeCharactersInRange range: NSRange, replacementString string: String) -> Bool {
         // Returns false if any of the replacementString characters are invalid
         for c in string {
-            if !validCharacters.hasSubstringCaseInsensitive(String(c)) {
+            if !ValidCharacters.hasSubstringCaseInsensitive(String(c)) {
                 return false
             }
         }
@@ -402,6 +442,8 @@ extension CreatePartyViewController: UITextFieldDelegate {
 }
 
 extension CreatePartyViewController: CreatePartyStrictnessViewControllerDelegate {
+    // MARK: CreatePartyStrictnessViewControllerDelegate
+    
     func createPartyStrictnessViewController(partyStrictnessViewController: CreatePartyStrictnessViewController, didSelectStrictness selectedStrictness: PartyStrictnessOption) {
         // Update the strictness and and strictness label, pop the CreatePartyStrictnessViewController
         strictness = selectedStrictness
@@ -416,6 +458,8 @@ extension CreatePartyViewController: CreatePartyStrictnessViewControllerDelegate
 }
 
 extension CreatePartyViewController: UIAlertViewDelegate {
+    // MARK: UIAlertViewDelegate
+    
     func alertView(alertView: UIAlertView, clickedButtonAtIndex buttonIndex: Int) {
         if alertView.tag == AlertTag.LeavingPartyAsHost.rawValue {
             if buttonIndex == 1 {
@@ -432,5 +476,17 @@ extension CreatePartyViewController: UIAlertViewDelegate {
                 )
             }
         }
+    }
+}
+
+extension CreatePartyViewController: LocationCellFooterDelegate {
+    // MARK: LocationCellFooterDelegate
+    
+    func receivedLocation(location: CLLocation) {
+        self.location = location
+        //let lat = location.coordinate.latitude
+        //let long = location.coordinate.longitude
+        locationCellStatusIcon.image = UIImage(named: "checkIcon")
+        setDoneButtonState()
     }
 }

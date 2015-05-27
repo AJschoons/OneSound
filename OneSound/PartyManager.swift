@@ -399,10 +399,10 @@ extension PartyManager {
         }
     }
     
-    func createNewParty(name: String, privacy: Bool, strictness: Int, respondToChangeAttempt: (Bool) -> (), failure: AFHTTPFailureBlock = defaultAFHTTPFailureBlockForSigningIn) {
+    func createNewParty(name: String, privacy: Bool, strictness: Int, location: CLLocation, respondToChangeAttempt: (Bool) -> (), failure: AFHTTPFailureBlock = defaultAFHTTPFailureBlockForSigningIn) {
         let user = UserManager.sharedUser
         
-        OSAPI.sharedClient.POSTParty(name, privacy: privacy, strictness: strictness,
+        OSAPI.sharedClient.POSTParty(name, privacy: privacy, strictness: strictness, latitude: location.coordinate.latitude, longitude: location.coordinate.longitude,
             success: { data, responseObject in
                 let responseJSON = JSON(responseObject)
                 println(responseJSON)

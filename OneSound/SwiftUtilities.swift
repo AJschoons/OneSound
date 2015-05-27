@@ -552,8 +552,8 @@ func setTableBackgroundViewWithMessages(tableView: UITableView, mainLine: String
     bgView.addSubview(messageLabel1)
     
     bgView.addConstraint(NSLayoutConstraint(item: messageLabel1, attribute: NSLayoutAttribute.CenterY, relatedBy: NSLayoutRelation.Equal, toItem: bgView, attribute: NSLayoutAttribute.CenterY, multiplier: 1, constant: -messageLabel1.frame.height / 2))
-    bgView.addConstraint(NSLayoutConstraint(item: messageLabel1, attribute: NSLayoutAttribute.Left, relatedBy: NSLayoutRelation.Equal, toItem: bgView, attribute: NSLayoutAttribute.Left, multiplier: 1, constant: 0))
-    bgView.addConstraint(NSLayoutConstraint(item: messageLabel1, attribute: NSLayoutAttribute.Right, relatedBy: NSLayoutRelation.Equal, toItem: bgView, attribute: NSLayoutAttribute.Right, multiplier: 1, constant: 0))
+    bgView.addConstraint(NSLayoutConstraint(item: messageLabel1, attribute: NSLayoutAttribute.Left, relatedBy: NSLayoutRelation.Equal, toItem: bgView, attribute: NSLayoutAttribute.Left, multiplier: 1, constant: 8))
+    bgView.addConstraint(NSLayoutConstraint(item: messageLabel1, attribute: NSLayoutAttribute.Right, relatedBy: NSLayoutRelation.Equal, toItem: bgView, attribute: NSLayoutAttribute.Right, multiplier: 1, constant: -8))
     
     
     let messageLabel2 = UILabel()
@@ -567,8 +567,8 @@ func setTableBackgroundViewWithMessages(tableView: UITableView, mainLine: String
     bgView.addSubview(messageLabel2)
     
     bgView.addConstraint(NSLayoutConstraint(item: messageLabel2, attribute: NSLayoutAttribute.Top, relatedBy: NSLayoutRelation.Equal, toItem: messageLabel1, attribute: NSLayoutAttribute.Bottom, multiplier: 1, constant: 0))
-    bgView.addConstraint(NSLayoutConstraint(item: messageLabel2, attribute: NSLayoutAttribute.Left, relatedBy: NSLayoutRelation.Equal, toItem: bgView, attribute: NSLayoutAttribute.Left, multiplier: 1, constant: 0))
-    bgView.addConstraint(NSLayoutConstraint(item: messageLabel2, attribute: NSLayoutAttribute.Right, relatedBy: NSLayoutRelation.Equal, toItem: bgView, attribute: NSLayoutAttribute.Right, multiplier: 1, constant: 0))
+    bgView.addConstraint(NSLayoutConstraint(item: messageLabel2, attribute: NSLayoutAttribute.Left, relatedBy: NSLayoutRelation.Equal, toItem: bgView, attribute: NSLayoutAttribute.Left, multiplier: 1, constant: 8))
+    bgView.addConstraint(NSLayoutConstraint(item: messageLabel2, attribute: NSLayoutAttribute.Right, relatedBy: NSLayoutRelation.Equal, toItem: bgView, attribute: NSLayoutAttribute.Right, multiplier: 1, constant: -8))
 }
 
 func getAppDelegate() -> AppDelegate! {
