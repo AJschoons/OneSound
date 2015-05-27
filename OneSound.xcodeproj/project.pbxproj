@@ -93,6 +93,8 @@
 		81D3E22E1AAA850C007A60CF /* ObjCUtilities.m in Sources */ = {isa = PBXBuildFile; fileRef = 81D3E22D1AAA850C007A60CF /* ObjCUtilities.m */; };
 		81DA8A67198A9FE00037EAD1 /* Song.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81DA8A66198A9FE00037EAD1 /* Song.swift */; };
 		81EAC5F91998132000F02894 /* SongStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81EAC5F81998132000F02894 /* SongStore.swift */; };
+		81EF5D951B120F05006DD0F3 /* LocationCellFooterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81EF5D931B120F05006DD0F3 /* LocationCellFooterViewController.swift */; };
+		81EF5D961B120F05006DD0F3 /* LocationCellFooterViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 81EF5D941B120F05006DD0F3 /* LocationCellFooterViewController.xib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -213,6 +215,8 @@
 		81D3E22D1AAA850C007A60CF /* ObjCUtilities.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObjCUtilities.m; sourceTree = "<group>"; };
 		81DA8A66198A9FE00037EAD1 /* Song.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Song.swift; sourceTree = "<group>"; };
 		81EAC5F81998132000F02894 /* SongStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SongStore.swift; sourceTree = "<group>"; };
+		81EF5D931B120F05006DD0F3 /* LocationCellFooterViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationCellFooterViewController.swift; sourceTree = "<group>"; };
+		81EF5D941B120F05006DD0F3 /* LocationCellFooterViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LocationCellFooterViewController.xib; sourceTree = "<group>"; };
 		A1BC9E433771B4BEBA03DCD4 /* Pods-OneSound.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-OneSound.release.xcconfig"; path = "Pods/Target Support Files/Pods-OneSound/Pods-OneSound.release.xcconfig"; sourceTree = "<group>"; };
 		A676421E6983DD5A8B82753E /* Pods-OneSound.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-OneSound.debug.xcconfig"; path = "Pods/Target Support Files/Pods-OneSound/Pods-OneSound.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -375,6 +379,8 @@
 				8108DF93199BBBE70040B8E7 /* CreateParty.storyboard */,
 				8108DF96199BBC900040B8E7 /* CreatePartyViewController.swift */,
 				8108DF98199BDD150040B8E7 /* CreatePartyStrictnessViewController.swift */,
+				81EF5D931B120F05006DD0F3 /* LocationCellFooterViewController.swift */,
+				81EF5D941B120F05006DD0F3 /* LocationCellFooterViewController.xib */,
 			);
 			name = "Create Party";
 			sourceTree = "<group>";
@@ -698,6 +704,7 @@
 				81631F3519994BB000C55A6F /* PartyMemberCell.xib in Resources */,
 				8138979E1A57256F008BBC77 /* Podfile in Resources */,
 				81BCC2BF199D65AC00A3500F /* SongSearchResultCell.xib in Resources */,
+				81EF5D961B120F05006DD0F3 /* LocationCellFooterViewController.xib in Resources */,
 				81BCC2B8199D2EA900A3500F /* AddSongViewController.xib in Resources */,
 				81583124197477E30011D3CE /* SearchViewController.xib in Resources */,
 				8158313B19747F7B0011D3CE /* PartyTabBarController.xib in Resources */,
@@ -765,6 +772,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				81EF5D951B120F05006DD0F3 /* LocationCellFooterViewController.swift in Sources */,
 				8179444E1A5751C000A9C636 /* ENSideMenu.swift in Sources */,
 				815831451975CD450011D3CE /* SwiftUtilities.swift in Sources */,
 				81583123197477E30011D3CE /* SearchViewController.swift in Sources */,

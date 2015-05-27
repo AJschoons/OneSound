@@ -30,12 +30,28 @@ class LocationManager: NSObject {
         })
     }
     
+    static func getLocationForInitialPartyCreation(#success: LocationSuccessBlock, failure: LocationFailureBlock) {
+        let locMgr = INTULocationManager.sharedInstance()
+        
+        locMgr.requestLocationWithDesiredAccuracy(INTULocationAccuracy.Block, timeout: 10.0, delayUntilAuthorized: true, block: {currentLocation, accuracy, status in
+            
+            // Got location within Block distance of ~1000 meters
+            if status == .Success || (currentLocation != nil && accuracy == .Neighborhood) {
+                success(location: currentLocation, accuracy: accuracy)
+            } else if status == .TimedOut {
+                failure(errorDesciption: "Could not determine location within 3000ft. Please try again in better conditions")
+            } else {
+                failure(errorDesciption: self.getINTUStatusErrorMessageFromStatus(status))
+            }
+        })
+    }
+    
     private static func getINTUStatusErrorMessageFromStatus(status: INTULocationStatus) -> String {
         switch status {
         case .ServicesNotDetermined:
             return "Must respond to the dialog to grant OneSound permission to access location services"
         case .ServicesDenied:
-            return "OneSound has been explicitly deined permission to access location services. Please go to Settings>OneSound>Location to allow this feature."
+            return "OneSound has been explicitly deined permission to access location services. Please go to Settings>OneSound>Location to allow this feature"
         case .ServicesRestricted:
             return "Location services have been turned off device-wide (for all apps) from the system Settings app. Location services are required for this feature"
         case .ServicesDisabled:
