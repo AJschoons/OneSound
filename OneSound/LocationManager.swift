@@ -35,11 +35,27 @@ class LocationManager: NSObject {
         
         locMgr.requestLocationWithDesiredAccuracy(INTULocationAccuracy.Block, timeout: 10.0, delayUntilAuthorized: true, block: {currentLocation, accuracy, status in
             
-            // Got location within Block distance of ~1000 meters
+            // Got location within Neighborhood distance of ~1000 meters
             if status == .Success || (currentLocation != nil && accuracy == .Neighborhood) {
                 success(location: currentLocation, accuracy: accuracy)
             } else if status == .TimedOut {
                 failure(errorDesciption: "Could not determine location within 3000ft. Please try again in better conditions")
+            } else {
+                failure(errorDesciption: self.getINTUStatusErrorMessageFromStatus(status))
+            }
+        })
+    }
+    
+    static func getLocationForUpdatingParty(#success: LocationSuccessBlock, failure: LocationFailureBlock) {
+        let locMgr = INTULocationManager.sharedInstance()
+        
+        locMgr.requestLocationWithDesiredAccuracy(INTULocationAccuracy.House, timeout: 30.0, delayUntilAuthorized: true, block: {currentLocation, accuracy, status in
+            
+            // Got location within Block distance of ~100 meters
+            if status == .Success || (currentLocation != nil && accuracy == .Block) {
+                success(location: currentLocation, accuracy: accuracy)
+            } else if status == .TimedOut {
+                failure(errorDesciption: "Could not determine location within 300ft. Please try again in better conditions")
             } else {
                 failure(errorDesciption: self.getINTUStatusErrorMessageFromStatus(status))
             }

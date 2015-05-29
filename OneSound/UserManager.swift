@@ -368,8 +368,8 @@ extension UserManager {
         )
     }
     
-    func updateServerWithNewNameAndColor(name: String?, color: String?, respondToChangeAttempt: (Bool) -> () ) {
-        OSAPI.sharedClient.PUTUser(id, newName: name, newColor: color,
+    func updateUserInformationOnServer(name: String?, color: String?, latitude: Double?, longitude: Double?, respondToChangeAttempt: (Bool) -> ()) {
+        OSAPI.sharedClient.PUTUser(id, newName: name, newColor: color, newLatitude: latitude, newLongitude: longitude,
             success: { data, responseObject in
                 let responseJSON = JSON(responseObject)
                 println(responseJSON)
@@ -386,7 +386,7 @@ extension UserManager {
         )
     }
     
-    func updateUserFromJSON(json: JSON, accessToken: String, completion: completionClosure? = nil, forcePhotoUpdate: Bool = false) {
+    func updateUserFromJSON(json: JSON, accessToken: String, forcePhotoUpdate: Bool = false, completion: completionClosure? = nil) {
         println("Updating UserManager from JSON")
         
         setup = true

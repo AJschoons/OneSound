@@ -162,7 +162,7 @@ extension AppDelegate {
                 
                 // Try setting up the user if network reachable but still not setup
                 OSAPI.sharedClient.GETPublicInfo(
-                    { data, responseObject in
+                    success: { data, responseObject in
                         let responseJSON = JSON(responseObject)
                         println(responseJSON)
                         

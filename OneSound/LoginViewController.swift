@@ -130,8 +130,8 @@ class LoginViewController: OSTableViewController {
             if userColor != UserManager.sharedUser.color {
                 newUserColor = userColor
             }
-            UserManager.sharedUser.updateServerWithNewNameAndColor(newUserName, color: newUserColor, respondToChangeAttempt:
-                { nameIsValid in
+            UserManager.sharedUser.updateUserInformationOnServer(newUserName, color: newUserColor, latitude: nil, longitude: nil,
+                respondToChangeAttempt: { nameIsValid in
                     if nameIsValid {
                         self.tableView.endEditing(true)
                         self.dismissViewControllerAnimated(true, completion: nil)

@@ -71,10 +71,13 @@ class PartyManager: NSObject {
     
     private(set) var state: PartyManagerState = .None
     private var stateTime: Double = 0.0
-    private let stateServicePeriod = 0.1 // Period in seconds of how often to update state
+    private let StateServicePeriod = 0.1 // Period in seconds of how often to update state
     
     private var timeSinceLastGetCurrentParty = 0.0
-    let getCurrentPartyRefreshPeriod = 10.0
+    let GetCurrentPartyRefreshPeriod = 10.0 // Period in seconds of how often to refresh with get current party
+    
+    private var timeSinceLastLocationUpdate = 0.0
+    let UpdateLocationRefreshPeriod = 100.0 // Period in seconds of how often to update party location
     
     class var sharedParty: PartyManager {
         struct Static {
@@ -89,12 +92,12 @@ class PartyManager: NSObject {
         // Refresh the party info when the user info changes
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "refreshForUserInfoChange", name: UserManagerInformationDidChangeNotification, object: nil)
         
-        NSTimer.scheduledTimerWithTimeInterval(stateServicePeriod, target: self, selector: "serviceState", userInfo: nil, repeats: true)
+        NSTimer.scheduledTimerWithTimeInterval(StateServicePeriod, target: self, selector: "serviceState", userInfo: nil, repeats: true)
         
         // Make sure to call setupAudioManager after init
     }
     
-    // Things that must be done after the shared singleton instance os intantiated
+    // Things that must be done after the shared singleton instance is intantiated
     func prepareAfterInit() {
         setupAudioManager()
     }
@@ -106,8 +109,11 @@ class PartyManager: NSObject {
     
     func setState(newState: PartyManagerState) {
         let oldState = state
+        if oldState == newState { return }
         state = newState
         stateTime = 0.0
+        
+        timeSinceLastLocationUpdate = 0.0
         
         switch newState {
         case .None:
@@ -118,6 +124,10 @@ class PartyManager: NSObject {
             } else {
                 AlertManager.sharedManager.showAlert(createNoMusicControlAlert())
             }
+        case .HostStreamable:
+            // Update the party location when initially becoming HostStreamable
+            // Happens when first creating party, gaining back music control, or reopening app
+            updatePartyLocation()
         default:
             break
         }
@@ -126,16 +136,24 @@ class PartyManager: NSObject {
     }
     
     func serviceState() {
-        stateTime += stateServicePeriod
-        timeSinceLastGetCurrentParty += stateServicePeriod
+        stateTime += StateServicePeriod
+        timeSinceLastGetCurrentParty += StateServicePeriod
         
         // Make sure to check this first, or else failing getCurrentParty calls will be made
         if !AFNetworkReachabilityManager.sharedManager().reachable && !UserManager.sharedUser.setup {
             if state != .None { setState(.None) }
         }
         
-        if timeSinceLastGetCurrentParty > getCurrentPartyRefreshPeriod {
+        if timeSinceLastGetCurrentParty > GetCurrentPartyRefreshPeriod {
             refresh()
+        }
+        
+        if state == .HostStreamable {
+            timeSinceLastLocationUpdate += StateServicePeriod
+            
+            if timeSinceLastLocationUpdate >= UpdateLocationRefreshPeriod {
+                updatePartyLocation()
+            }
         }
     }
     
@@ -259,6 +277,24 @@ class PartyManager: NSObject {
         } else {
             MPNowPlayingInfoCenter.defaultCenter().nowPlayingInfo = ["" : ""]
         }
+    }
+    
+    func updatePartyLocation() {
+        timeSinceLastLocationUpdate = 0.0
+        
+        LocationManager.getLocationForUpdatingParty(
+            success: { location, accuracy in
+                /*
+                UserManager.sharedUser.updateUserInformationOnServer(nil, color: nil, latitude: location.coordinate.latitude, longitude: location.coordinate.longitude,
+                    respondToChangeAttempt: { successfulUpdate in
+                        // Do nothing regardless of success or fail
+                    }
+                )*/
+            },
+            failure: { error in
+                // Do nothing if fails to get location
+            }
+        )
     }
     
     func clearSongInfo() {

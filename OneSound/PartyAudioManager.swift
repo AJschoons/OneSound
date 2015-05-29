@@ -388,7 +388,7 @@ class PartyAudioManager: NSObject {
     
     private func currentSongIsMismatched() -> Bool {
         // Make sure the party has had proper time to refresh the info
-        if audioPlayer!.progress > (PartyManager.sharedParty.getCurrentPartyRefreshPeriod + 2) {
+        if audioPlayer!.progress > (PartyManager.sharedParty.GetCurrentPartyRefreshPeriod + 2) {
             // Song can be mismatched when queueing the next one, make sure it's not for that reason
             if (audioPlayer!.duration - audioPlayer!.progress) > (SongTimeRemainingToQueueNextSong + 2) {
                 if currentSong != PartyManager.sharedParty.currentSong { return true }
