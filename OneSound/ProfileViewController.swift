@@ -147,7 +147,7 @@ class ProfileViewController: OSViewController {
     func refreshWithValidUser() -> Bool {
         // Returns true if refreshed with a valid user variable for controller
         var validUser = false
-        println("refreshing ProfileViewController")
+        // println("refreshing ProfileViewController")
         
         if AFNetworkReachabilityManager.sharedManager().reachable {
             if UserManager.sharedUser.setup == true {
@@ -236,13 +236,13 @@ class ProfileViewController: OSViewController {
         let userSavedName = defaults.objectForKey(userNameKey) as? String
         if userSavedName != nil {
             // If user information can be retreived (assumes getting ANY user info means the rest is saved)
-            println("found userSavedName; assuming that means the rest of info is saved")
+            // println("found userSavedName; assuming that means the rest of info is saved")
             let userSavedIsGuest = defaults.boolForKey(userGuestKey)
             if userSavedIsGuest == false {
                 // If a full user
-                println("saved user is a full user")
+                // println("saved user is a full user")
                 if let imageData = defaults.objectForKey(userPhotoUIImageKey) as? NSData! {
-                    println("image data for full user valid, use their image and set up other info")
+                    // println("image data for full user valid, use their image and set up other info")
                     let userUpvoteCount = defaults.integerForKey(userUpvoteCountKey)
                     let userSongCount = defaults.integerForKey(userSongCountKey)
                     let userHotnessPercent = defaults.integerForKey(userHotnessPercentKey)

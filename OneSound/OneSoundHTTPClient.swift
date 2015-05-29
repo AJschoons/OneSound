@@ -54,8 +54,8 @@ let defaultAFHTTPFailureBlock: AFHTTPFailureBlock = { task, error in
         if error != nil && !haveHTTPCodeErrorMessage {
             var alert: UIAlertView
             let code = error.code
-            println("ERROR: has the following code... \(code)")
-            println(error.localizedDescription)
+            // println("ERROR: has the following code... \(code)")
+            // println(error.localizedDescription)
             switch code {
             case -1001:
                 alert = UIAlertView(title: "Connection Timed Out", message: "Couldn't connect to the server in time, please try again with a better internet connection", delegate: nil, cancelButtonTitle: defaultAlertCancelButtonText)
@@ -93,7 +93,7 @@ func errorShouldBeHandledWithRepeatedRequest(task: NSURLSessionDataTask!, error:
             if code == -1001 || code == -1003 || code == -1004 || code == -1005 || code == -1009 || code == -1011 {
                 // If timed out, cannot find host, cannot connect to host, connection lost, not connected to internet, server 500 code equivalent
                 shouldRepeatRequest = true
-                println("SHOULD BE TRYING TO REPEAT ATTEMPT")
+                // println("SHOULD BE TRYING TO REPEAT ATTEMPT")
             }
         }
     }

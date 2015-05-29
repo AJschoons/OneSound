@@ -79,12 +79,12 @@ class OSFrontNavigationController: ENSideMenuNavigationController {
 extension OSFrontNavigationController: ENSideMenuDelegate {
     // MARK: - ENSideMenu Delegate
     func sideMenuWillOpen() {
-        println("sideMenuWillOpen")
+        // println("sideMenuWillOpen")
         hideKeyboardOfVisibleViewController()
     }
     
     func sideMenuWillClose() {
-        println("sideMenuWillClose")
+        // println("sideMenuWillClose")
     }
     
     func getOverlay() -> UIView? {

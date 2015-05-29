@@ -60,21 +60,21 @@ class SideNavigationUserCell: UITableViewCell {
     }
     
     func refresh() {
-        println("refreshing SideNavigationUserCell")
+        // println("refreshing SideNavigationUserCell")
         
         if UserManager.sharedUser.setup == true {
             // If user exists
-            println("user is setup")
+            // println("user is setup")
             let userName = UserManager.sharedUser.name
             userLabel.text = userName
             
             if UserManager.sharedUser.guest == false && UserManager.sharedUser.photo != nil {
                 // If user isn't a guest and has a valid photo
-                println("full user with valid photo; use their photo")
+                // println("full user with valid photo; use their photo")
                 userImageToUse.image = UserManager.sharedUser.photo
             } else {
                 // If user guest or doesn't have valid photo
-                println("guest user or invalid photo, use user color")
+                // println("guest user or invalid photo, use user color")
                 userImageToUse.image = UIImage(named: defaultUserImageForProfileImageName)
                 userImageToUse.backgroundColor = UserManager.sharedUser.colorToUIColor()
                 
@@ -82,7 +82,7 @@ class SideNavigationUserCell: UITableViewCell {
         }
         else {
             // User isn't setup, check if any info saved in NSUserDefaults
-            println("user isn't setup")
+            // println("user isn't setup")
             let defaults = NSUserDefaults.standardUserDefaults()
             let userSavedName = defaults.objectForKey(userNameKey) as? String
             let userSavedColor = defaults.objectForKey(userColorKey) as? String
@@ -90,10 +90,10 @@ class SideNavigationUserCell: UITableViewCell {
             
             if userSavedName != nil {
                 // If user information can be retreived (assumes getting ANY user info means the rest is saved)
-                println("found user info in user defaults")
+                // println("found user info in user defaults")
                 userLabel.text = userSavedName
                 if userSavedIsGuest {
-                    println("saved user was guest")
+                    // println("saved user was guest")
                     userImageToUse.image = UIImage(named: defaultUserImageForProfileImageName)
                     
                     if userSavedColor != nil {
@@ -104,16 +104,16 @@ class SideNavigationUserCell: UITableViewCell {
                     }
                 } else {
                     // Deal with non-guests here
-                    println("found full user info in user defaults")
+                    // println("found full user info in user defaults")
                     if let imageData = defaults.objectForKey(userPhotoUIImageKey) as? NSData! {
                         if imageData != nil {
-                            println("image data valid, use their image")
+                            // println("image data valid, use their image")
                             let image = UIImage(data: imageData)
                             userImageToUse.image = image
                             
                             var blurredImage = image!.applyBlurWithRadius(2, tintColor: nil, saturationDeltaFactor: 1.3, maskImage: nil)
                         } else {
-                            println("image data valid but was nil, try using their color")
+                            // println("image data valid but was nil, try using their color")
                             userImageToUse.image = UIImage(named: defaultUserImageForProfileImageName)
                             
                             if userSavedColor != nil  {
@@ -125,7 +125,7 @@ class SideNavigationUserCell: UITableViewCell {
                         }
                     } else {
                         // Couldn't get image
-                        println("image data invalid, use their color")
+                        // println("image data invalid, use their color")
                         userImageToUse.image = UIImage(named: defaultUserImageForProfileImageName)
                         
                         if userSavedColor != nil  {
@@ -138,7 +138,7 @@ class SideNavigationUserCell: UITableViewCell {
                 }
             } else {
                 // Can't retrieve any user info
-                println("user isn't setup")
+                // println("user isn't setup")
                 userLabel.text = "Not Signed In"
                 userImageToUse.image = UIImage(named: defaultUserImageForProfileImageName)
                 userImageToUse.backgroundColor = UIColor.grayDark()

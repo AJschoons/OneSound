@@ -109,7 +109,7 @@ class LoginViewController: OSTableViewController {
         let userName = nameCellTextField.text
         
         if !accountAlreadyExists {
-            println("Creating FULL account")
+            // println("Creating FULL account")
             
             UserManager.sharedUser.setupFullAccount(userName, userColor: userColor, userID: userID, userAccessToken: userAPIToken, providerToken: userFacebookToken,
                 respondToChangeAttempt: { nameIsValid in
@@ -130,7 +130,7 @@ class LoginViewController: OSTableViewController {
             if userColor != UserManager.sharedUser.color {
                 newUserColor = userColor
             }
-            UserManager.sharedUser.updateUserInformationOnServer(newUserName, color: newUserColor, latitude: nil, longitude: nil,
+            UserManager.sharedUser.updateUserInformationOnServer(newUserName, color: newUserColor, 
                 respondToChangeAttempt: { nameIsValid in
                     if nameIsValid {
                         self.tableView.endEditing(true)
@@ -222,7 +222,7 @@ extension LoginViewController: UITableViewDataSource {
         case 1:
             return colorCell
         default:
-            println("Error: LoginViewController cellForRowAtIndexPath couldn't get cell")
+            // println("Error: LoginViewController cellForRowAtIndexPath couldn't get cell")
             return UITableViewCell()
         }
     }
