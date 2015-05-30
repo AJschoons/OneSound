@@ -81,6 +81,6 @@ class PartyMembersManager
         users = updatedUsers
         updating = false
         if completion != nil { completion!() }
-        println("UPDATED MEMBERS WITH \(usersAdded) USERS OF THE \(self.users.count)")
+        // println("UPDATED MEMBERS WITH \(usersAdded) USERS OF THE \(self.users.count)")
     }
 }

@@ -46,21 +46,12 @@ class UserManager {
     
     var photo: UIImage?
     
-    //var party: Int?
-    
     class var sharedUser: UserManager {
     struct Static {
         static let userManager = UserManager()
         }
         return Static.userManager
     }
-    
-    // Maybe added later?
-    //var soundCloudUID: String?
-    //var soundCloudAccessToken: String?
-    //var twitterUID: String?
-    //var twitterAccessToken: String?
-    //var email: String?
     
     // Returns the UIColor of the user's color
     func colorToUIColor() -> UIColor {
@@ -112,7 +103,7 @@ class UserManager {
     func randomColor() -> UserColors {
         // Generates a random number 0-(numberOfOneSoundColors - 1)
         let randomInt = Int(arc4random()) % numberOfOneSoundColors
-        println("random int for color:\(randomInt)")
+        // println("random int for color:\(randomInt)")
         switch randomInt {
         case 0:
             return UserColors.Green
@@ -147,7 +138,7 @@ extension UserManager {
     
     // For use in the login flow of signing a guest user in
     func signIntoGuestAccount(id: Int, userAccessToken: String) {
-        println("Signing in with GUEST information... userID:\(id)   userAccessToken:\(userAccessToken)")
+        // println("Signing in with GUEST information... userID:\(id)   userAccessToken:\(userAccessToken)")
         
         // Make sure there aren't any saved tokens when signing into guest account
         FBSession.activeSession().closeAndClearTokenInformation()
@@ -156,31 +147,31 @@ extension UserManager {
         OSAPI.sharedClient.requestSerializer.setValue(userAccessToken, forHTTPHeaderField: accessTokenHeaderKey)
         
         OSAPI.sharedClient.GETUserLoginGuest(
-            success: { data, responseObject in
+            success: {[unowned self] data, responseObject in
                 let responseJSON = JSON(responseObject)
-                println(responseJSON)
+                // println(responseJSON)
                 
                 // Get the guest's new access token
                 let newGuestAccessToken = responseJSON["access_token"].string
                 let guestUserID = responseJSON["uid"].int
                 
                 self.updateUserInformationAfterSignIn(userID: guestUserID!, accessToken: newGuestAccessToken!,
-                    failure: { task, error in
-                        println("ERROR: Couldn't sign into account, creating new one")
-                        println(error.localizedDescription)
+                    failure: {[unowned self] task, error in
+                        // println("ERROR: Couldn't sign into account, creating new one")
+                        // println(error.localizedDescription)
                         self.setupGuestAccount()
                     }
                 )
             
-            }, failure: { task, error in
-                println("ERROR: Guest account no longer exists, creating new one")
-                println(error.localizedDescription)
+            }, failure: {[unowned self] task, error in
+                // println("ERROR: Guest account no longer exists, creating new one")
+                // println(error.localizedDescription)
                 
                 // Clear the saved access token in the header
                 OSAPI.sharedClient.requestSerializer.setValue("", forHTTPHeaderField: accessTokenHeaderKey)
                 
                 self.deleteAllSavedUserInformation(
-                    completion: {
+                    completion: {[unowned self] in
                         self.setupGuestAccount()
                     }
                 )
@@ -190,22 +181,22 @@ extension UserManager {
     
     // For use in the login flow of creating a guest user
     func setupGuestAccount() {
-        println("Setup guest user")
+        // println("Setup guest user")
         
         // Make sure there aren't any saved tokens when setting up guest account
         FBSession.activeSession().closeAndClearTokenInformation()
         
         // Get the guest user creation info from the server
         OSAPI.sharedClient.GETGuestUser(
-            success: { data, responseObject in
+            success: {[unowned self] data, responseObject in
                 let responseJSON = JSON(responseObject)
-                println(responseJSON)
+                // println(responseJSON)
                 
                 // Get the guest response info
                 let guestAccessToken = responseJSON["access_token"].string
                 let guestUID = responseJSON["uid"].int
                 
-                println("Signing in with GUEST information... userID:\(guestUID)   userAccessToken:\(guestAccessToken)")
+                // println("Signing in with GUEST information... userID:\(guestUID)   userAccessToken:\(guestAccessToken)")
                 
                 if guestAccessToken != nil && guestUID != nil {
                     self.updateUserInformationAfterSignIn(userID: guestUID!, accessToken: guestAccessToken!)
@@ -227,20 +218,20 @@ extension UserManager {
         OSAPI.sharedClient.requestSerializer.setValue(userAccessToken, forHTTPHeaderField: accessTokenHeaderKey)
         
         OSAPI.sharedClient.GETUserLoginProvider(fbAuthToken,
-            success: { data, responseObject in
+            success: {[unowned self] data, responseObject in
                 let responseJSON = JSON(responseObject)
-                println(responseJSON)
+                // println(responseJSON)
                 let activeAccount = responseJSON["active"].bool
                 if activeAccount == false {
                     // Haven't seen that Facebook account before
-                    println("Account is inactive; create account")
+                    // println("Account is inactive; create account")
                     
                     let loginStoryboard = UIStoryboard(name: LoginStoryboardName, bundle: nil)
                     let loginViewController = loginStoryboard.instantiateViewControllerWithIdentifier(LoginViewControllerIdentifier) as! LoginViewController
                     let navC = UINavigationController(rootViewController: loginViewController)
                     
                     getFrontNavigationController()!.presentViewController(navC, animated: true,
-                        completion: {
+                        completion: {[unowned self] in
                             loginViewController.userID = userID
                             loginViewController.userAPIToken = userAccessToken
                             loginViewController.userFacebookToken = fbAuthToken
@@ -248,7 +239,7 @@ extension UserManager {
                     )
                 } else {
                     // Facebook account HAS been seen before
-                    println("Account is active; update information and sign in")
+                    // println("Account is active; update information and sign in")
                     
                     let userAccessToken = responseJSON["access_token"].string
                     let userID = responseJSON["uid"].int
@@ -256,19 +247,19 @@ extension UserManager {
                     self.updateUserInformationAfterSignIn(userID: userID!, accessToken: userAccessToken!)
                 }
             },
-            failure: { task, error in
-                println("ERROR: Failed sign on for full account, setup a guest account")
-                println(error.localizedDescription)
+            failure: {[unowned self] task, error in
+                // println("ERROR: Failed sign on for full account, setup a guest account")
+                // println(error.localizedDescription)
                 
                 // Clear the saved access token in the header
                 OSAPI.sharedClient.requestSerializer.setValue("", forHTTPHeaderField: accessTokenHeaderKey)
                 
                 if let response = task.response as? NSHTTPURLResponse {
-                    println("errorResponseCode:\(response.statusCode)")
+                    // println("errorResponseCode:\(response.statusCode)")
                     if response.statusCode == 401 {
                         // Unauthorized token, so just delete everything
                         self.deleteAllSavedUserInformation(
-                            completion: {
+                            completion: {[unowned self] in
                                 self.setupGuestAccount()
                             }
                         )
@@ -290,9 +281,9 @@ extension UserManager {
         OSAPI.sharedClient.requestSerializer.setValue(userAccessToken, forHTTPHeaderField: accessTokenHeaderKey)
         
         OSAPI.sharedClient.POSTUserProvider(userName, userColor: userColor, providerToken: providerToken,
-            success: { data, responseObject in
+            success: {[unowned self] data, responseObject in
                 let responseJSON = JSON(responseObject)
-                println(responseJSON)
+                // println(responseJSON)
                 let status = responseJSON["status"].string
                 
                 if status == "success" {
@@ -305,19 +296,19 @@ extension UserManager {
                 }
                 
             },
-            failure: { task, error in
-                println("ERROR: Guest account no longer exists, creating new one")
-                println(error.localizedDescription)
+            failure: {[unowned self] task, error in
+                // println("ERROR: Guest account no longer exists, creating new one")
+                // println(error.localizedDescription)
 
                 // Clear the saved access token in the header
                 OSAPI.sharedClient.requestSerializer.setValue("", forHTTPHeaderField: accessTokenHeaderKey)
                 
                 if let response = task.response as? NSHTTPURLResponse {
-                    println("errorResponseCode:\(response.statusCode)")
+                    // println("errorResponseCode:\(response.statusCode)")
                     if response.statusCode == 401 {
                         // Unauthorized token, so just delete everything
                         self.deleteAllSavedUserInformation(
-                            completion: {
+                            completion: {[unowned self] in
                                 self.setupGuestAccount()
                             }
                         )
@@ -341,13 +332,13 @@ extension UserManager {
         
         // Get the user's info from the server
         OSAPI.sharedClient.GETUser(id,
-            success: { data, responseObject in
+            success: {[unowned self] data, responseObject in
                 let responseJSON = JSON(responseObject)
-                println(responseJSON)
+                // println(responseJSON)
                 
                 // Update shared User's information, UserDefaults, and Keychain info
                 UserManager.sharedUser.updateUserFromJSON(responseJSON, accessToken: token,
-                    completion: {
+                    completion: {[unowned self] in
                         // Join the party that the user is in
                         PartyManager.sharedParty.refresh()
                         
@@ -368,26 +359,37 @@ extension UserManager {
         )
     }
     
-    func updateServerWithNewNameAndColor(name: String?, color: String?, respondToChangeAttempt: (Bool) -> () ) {
-        OSAPI.sharedClient.PUTUser(id, newName: name, newColor: color,
-            success: { data, responseObject in
+    func updateUserInformationOnServer(name: String?, color: String?, respondToChangeAttempt: ((Bool) -> ())? ) {
+        OSAPI.sharedClient.PUTUser(id, newName: name, newColor: color, newLatitude: nil, newLongitude: nil,
+            success: {[unowned self] data, responseObject in
                 let responseJSON = JSON(responseObject)
-                println(responseJSON)
+                // println(responseJSON)
                 let status = responseJSON["status"].string
                 
                 if status == "success" {
                     NSNotificationCenter.defaultCenter().postNotificationName(UserManagerInformationDidChangeNotification, object: nil)
                     self.updateUserInformationFromServer()
-                    respondToChangeAttempt(true)
+                    if respondToChangeAttempt != nil {respondToChangeAttempt!(true)}
                 } else {
-                    respondToChangeAttempt(false)
+                    if respondToChangeAttempt != nil {respondToChangeAttempt!(false)}
                 }
             }, failure: defaultAFHTTPFailureBlock
         )
     }
     
-    func updateUserFromJSON(json: JSON, accessToken: String, completion: completionClosure? = nil, forcePhotoUpdate: Bool = false) {
-        println("Updating UserManager from JSON")
+    func updateUserLocationOnServer(# latitude: Double?, longitude: Double?) {
+        OSAPI.sharedClient.PUTUser(id, newName: nil, newColor: nil, newLatitude: latitude, newLongitude: longitude,
+            success: {[unowned self] data, responseObject in
+                let responseJSON = JSON(responseObject)
+                // println(responseJSON)
+                let status = responseJSON["status"].string
+                
+            }, failure: defaultAFHTTPFailureBlock
+        )
+    }
+    
+    func updateUserFromJSON(json: JSON, accessToken: String, forcePhotoUpdate: Bool = false, completion: completionClosure? = nil) {
+        // println("Updating UserManager from JSON")
         
         setup = true
         
@@ -404,10 +406,10 @@ extension UserManager {
         following = json["following"].int
         
         let photoStr = "photo"
-        println("guest:\(guest) json[photo]:\(json[photoStr].string != nil) force:\(forcePhotoUpdate) photoUrl:\(photoURL) photoUrlChanged:\(photoURL != json[photoStr].string)")
+        // println("guest:\(guest) json[photo]:\(json[photoStr].string != nil) force:\(forcePhotoUpdate) photoUrl:\(photoURL) photoUrlChanged:\(photoURL != json[photoStr].string)")
         if guest == false && json["photo"].string != nil && (forcePhotoUpdate == true || photoURL == nil || photoURL != json["photo"].string) {
             // If not a guest and a non-empty photoURL gets sent that's different from what it was (or forced)
-            println("Setting new photo URL")
+            // println("Setting new photo URL")
             photoURL = json["photo"].string
             updateUserPhoto(photoURL!)
         } else if guest == true {
@@ -425,15 +427,15 @@ extension UserManager {
     
     func updateUserPhoto(urlString: String) {
         SDWebImageManager.sharedManager().downloadImageWithURL(NSURL(string: urlString), options: nil, progress: nil,
-            completed: { image, error, cacheType, boolValue, url in
+            completed: {[unowned self] image, error, cacheType, boolValue, url in
                 if error == nil && image != nil {
                     let smallestSide = (image!.size.height > image!.size.width) ? image!.size.width : image!.size.height
                     self.photo = cropBiggestCenteredSquareImageFromImage(image!, sideLength: smallestSide)
-                    println("Saved new photo for user")
+                    // println("Saved new photo for user")
                     NSUserDefaults.standardUserDefaults().setObject(UIImagePNGRepresentation(self.photo), forKey: userPhotoUIImageKey)
                     NSNotificationCenter.defaultCenter().postNotificationName(UserManagerInformationDidChangeNotification, object: nil)
                 } else {
-                    println("UNABLE to save new photo for user; download failed")
+                    // println("UNABLE to save new photo for user; download failed")
                 }
             }
         )
@@ -441,15 +443,15 @@ extension UserManager {
     
     // For updating the local user when NOT in the login flow
     func updateUserInformationFromServer(addToSuccess: completionClosure? = nil) {
-        println("Updating user information from server (NOT login flow)")
+        // println("Updating user information from server (NOT login flow)")
         
         OSAPI.sharedClient.GETUser(id,
-            success: { data, responseObject in
+            success: {[unowned self] data, responseObject in
                 let responseJSON = JSON(responseObject)
-                println(responseJSON)
+                // println(responseJSON)
                 
                 self.updateUserFromJSON(responseJSON, accessToken: self.accessToken)
-                println(self.description())
+                // println(self.description())
                 if addToSuccess != nil {
                     addToSuccess!()
                 }
@@ -459,7 +461,7 @@ extension UserManager {
     }
     
     func updateUserDefaultsForUserManager() {
-        println("Updating information for UserManager in UserDefaults")
+        // println("Updating information for UserManager in UserDefaults")
         
         let defaults = NSUserDefaults.standardUserDefaults()
         defaults.setObject(name, forKey: userNameKey)
@@ -472,9 +474,9 @@ extension UserManager {
     
     func updateKeychainInfoForUserManager(userID: Int, accessToken: String) {
         // Save the account's info in the keychain
-        println("Updating information for UserManager in Keychain")
-        println("Saved userID to keychain:\(userID)")
-        println("Saved accessToken to keychain:\(accessToken)")
+        // println("Updating information for UserManager in Keychain")
+        // println("Saved userID to keychain:\(userID)")
+        // println("Saved accessToken to keychain:\(accessToken)")
         
         SSKeychain.setPassword(String(userID), forService: service, account: userIDKeychainKey)
         SSKeychain.setPassword(accessToken, forService: service, account: userAccessTokenKeychainKey)

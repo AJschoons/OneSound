@@ -193,7 +193,7 @@ class PartyPlaylistManager {
         songs = updatedSongs
         updating = false
         if completion != nil { completion!() }
-        println("UPDATED PLAYLIST WITH \(songsAdded) SONGS OF THE \(self.songs.count)")
+        // println("UPDATED PLAYLIST WITH \(songsAdded) SONGS OF THE \(self.songs.count)")
     }
     
 }

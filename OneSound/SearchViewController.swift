@@ -303,10 +303,10 @@ extension SearchViewController {
         OSAPI.sharedClient.GETPartySearch(searchStr,
             success: {data, responseObject in
                 let responseJSON = JSON(responseObject)
-                println(responseJSON)
+                // println(responseJSON)
                 let partiesArray = responseJSON.array
-                println(partiesArray!)
-                println(partiesArray!.count)
+                // println(partiesArray!)
+                // println(partiesArray!.count)
                 
                 // Get the parties in the results and store them
                 var newPartySearchResults = [Party]()
@@ -351,10 +351,10 @@ extension SearchViewController {
             OSAPI.sharedClient.GETPartySearch(searchStr,
                 success: {data, responseObject in
                     let responseJSON = JSON(responseObject)
-                    println(responseJSON)
+                    // println(responseJSON)
                     let partiesArray = responseJSON.array
-                    println(partiesArray!)
-                    println(partiesArray!.count)
+                    // println(partiesArray!)
+                    // println(partiesArray!.count)
                     
                     // Get the parties in the results and store them
                     var newPartySearchResults = [Party]()
@@ -387,7 +387,7 @@ extension SearchViewController {
         loadingAnimationShouldBeAnimating(true)
         gettingLocationLabel.hidden = false
         
-        LocationManager.getLocationForPartySearch(
+        LocationManager.sharedManager.getLocationForPartySearch(
             success: { location, accuracy in
                 self.hasRecentLocation = true
                 let latitude = location.coordinate.latitude
@@ -403,10 +403,10 @@ extension SearchViewController {
                         
                         dispatchAsyncToMainQueue(action: {
                             let responseJSON = JSON(responseObject)
-                            println(responseJSON)
+                            // println(responseJSON)
                             let partiesArray = responseJSON.array
-                            println(partiesArray!)
-                            println(partiesArray!.count)
+                            // println(partiesArray!)
+                            // println(partiesArray!.count)
                             
                             // Get the parties in the results and store them
                             var newPartySearchResults = [Party]()

@@ -70,7 +70,7 @@ class User {
                 if success {
                     let smallestSide = (image!.size.height > image!.size.width) ? image!.size.width : image!.size.height
                     self.photo = cropBiggestCenteredSquareImageFromImage(image!, sideLength: smallestSide)
-                    println("Got new photo for user")
+                    // println("Got new photo for user")
                 }
             }
         )

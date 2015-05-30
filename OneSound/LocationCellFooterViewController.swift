@@ -44,7 +44,7 @@ class LocationCellFooterViewController: UIViewController {
     func getLocation() {
         showActivityIndicator()
         
-        LocationManager.getLocationForInitialPartyCreation(
+        LocationManager.sharedManager.getLocationForInitialPartyCreation(
             success: {[weak self] location, accuracy in
                 self?.hideActivityIndicator()
                 self?.delegate?.receivedLocation(location)

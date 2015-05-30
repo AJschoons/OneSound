@@ -140,7 +140,7 @@ class CreatePartyViewController: OSTableViewController {
     
     func done() {
         if !partyAlreadyExists {
-            println("Creating NEW party")
+            // println("Creating NEW party")
             PartyManager.sharedParty.createNewParty(nameCellTextField.text, privacy: privacyCellSwitch.on, strictness: strictness.rawValue, location: location!,
                 respondToChangeAttempt: { partyWasCreated in
                     if partyWasCreated {
@@ -152,7 +152,7 @@ class CreatePartyViewController: OSTableViewController {
                 }
             )
         } else {
-            println("updating party information")
+            // println("updating party information")
             PartyManager.sharedParty.changePartyInfo(nameCellTextField.text, privacy: privacyCellSwitch.on, strictness: strictness.rawValue,
                 respondToChangeAttempt: { partyWasUpdated in
                     if partyWasUpdated {
@@ -338,7 +338,7 @@ class CreatePartyViewController: OSTableViewController {
         leavePartyButton.addConstraint(NSLayoutConstraint(item: leavePartyButton, attribute: NSLayoutAttribute.Height, relatedBy: NSLayoutRelation.Equal, toItem: nil, attribute: NSLayoutAttribute.NotAnAttribute, multiplier: 1, constant: 30))
         footerView.addConstraint(NSLayoutConstraint(item: leavePartyButton, attribute: NSLayoutAttribute.Left, relatedBy: NSLayoutRelation.Equal, toItem: footerView, attribute: NSLayoutAttribute.Left, multiplier: 1, constant: 15))
         footerView.addConstraint(NSLayoutConstraint(item: leavePartyButton, attribute: NSLayoutAttribute.Right, relatedBy: NSLayoutRelation.Equal, toItem: footerView, attribute: NSLayoutAttribute.Right, multiplier: 1, constant: -15))
-        footerView.addConstraint(NSLayoutConstraint(item: leavePartyButton, attribute: NSLayoutAttribute.Bottom, relatedBy: NSLayoutRelation.Equal, toItem: footerView, attribute: NSLayoutAttribute.Bottom, multiplier: 1, constant: 0))
+        footerView.addConstraint(NSLayoutConstraint(item: leavePartyButton, attribute: NSLayoutAttribute.Bottom, relatedBy: NSLayoutRelation.Equal, toItem: footerView, attribute: NSLayoutAttribute.Bottom, multiplier: 1, constant: -10))
     }
 }
 
@@ -358,7 +358,7 @@ extension CreatePartyViewController: UITableViewDataSource {
         case 2:
             return locationCell
         default:
-            println("Error: LoginViewController cellForRowAtIndexPath couldn't get cell")
+            // println("Error: LoginViewController cellForRowAtIndexPath couldn't get cell")
             return UITableViewCell()
         }
     }

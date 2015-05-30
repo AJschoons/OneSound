@@ -71,10 +71,13 @@ class PartyManager: NSObject {
     
     private(set) var state: PartyManagerState = .None
     private var stateTime: Double = 0.0
-    private let stateServicePeriod = 0.1 // Period in seconds of how often to update state
+    private let StateServicePeriod = 0.1 // Period in seconds of how often to update state
     
     private var timeSinceLastGetCurrentParty = 0.0
-    let getCurrentPartyRefreshPeriod = 10.0
+    let GetCurrentPartyRefreshPeriod = 10.0 // Period in seconds of how often to refresh with get current party
+    
+    private var timeSinceLastLocationUpdate = 0.0
+    let UpdateLocationRefreshPeriod = 600.0 // Period in seconds of how often to update party location
     
     class var sharedParty: PartyManager {
         struct Static {
@@ -89,12 +92,12 @@ class PartyManager: NSObject {
         // Refresh the party info when the user info changes
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "refreshForUserInfoChange", name: UserManagerInformationDidChangeNotification, object: nil)
         
-        NSTimer.scheduledTimerWithTimeInterval(stateServicePeriod, target: self, selector: "serviceState", userInfo: nil, repeats: true)
+        NSTimer.scheduledTimerWithTimeInterval(StateServicePeriod, target: self, selector: "serviceState", userInfo: nil, repeats: true)
         
         // Make sure to call setupAudioManager after init
     }
     
-    // Things that must be done after the shared singleton instance os intantiated
+    // Things that must be done after the shared singleton instance is intantiated
     func prepareAfterInit() {
         setupAudioManager()
     }
@@ -104,10 +107,13 @@ class PartyManager: NSObject {
         audioManager = PartyAudioManager()
     }
     
-    func setState(newState: PartyManagerState) {
+    private func setState(newState: PartyManagerState) {
         let oldState = state
+        if oldState == newState { return }
         state = newState
         stateTime = 0.0
+        
+        timeSinceLastLocationUpdate = 0.0
         
         switch newState {
         case .None:
@@ -118,6 +124,10 @@ class PartyManager: NSObject {
             } else {
                 AlertManager.sharedManager.showAlert(createNoMusicControlAlert())
             }
+        case .HostStreamable:
+            // Update the party location when initially becoming HostStreamable
+            // Happens when first creating party, gaining back music control, or reopening app
+            updatePartyLocation()
         default:
             break
         }
@@ -126,16 +136,24 @@ class PartyManager: NSObject {
     }
     
     func serviceState() {
-        stateTime += stateServicePeriod
-        timeSinceLastGetCurrentParty += stateServicePeriod
+        stateTime += StateServicePeriod
+        timeSinceLastGetCurrentParty += StateServicePeriod
         
         // Make sure to check this first, or else failing getCurrentParty calls will be made
         if !AFNetworkReachabilityManager.sharedManager().reachable && !UserManager.sharedUser.setup {
             if state != .None { setState(.None) }
         }
         
-        if timeSinceLastGetCurrentParty > getCurrentPartyRefreshPeriod {
+        if timeSinceLastGetCurrentParty > GetCurrentPartyRefreshPeriod {
             refresh()
+        }
+        
+        if state == .HostStreamable {
+            timeSinceLastLocationUpdate += StateServicePeriod
+            
+            if timeSinceLastLocationUpdate >= UpdateLocationRefreshPeriod {
+                updatePartyLocation()
+            }
         }
     }
     
@@ -149,15 +167,15 @@ class PartyManager: NSObject {
         
         if AFNetworkReachabilityManager.sharedManager().reachable && UserManager.sharedUser.setup {
             getCurrentParty(
-                completion: {
+                completion: {[unowned self] in
                     self.decideStateOfValidParty()
                     if completion != nil { completion!() }
                 },
-                noCurrentParty: {
+                noCurrentParty: {[unowned self] in
                     if self.state != .None { self.setState(.None) }
                     if completion != nil { completion!() }
                 },
-                failureAddOn: {
+                failureAddOn: {[unowned self] in
                     if self.state != .None { self.setState(.None) }
                     if completion != nil { completion!() }
                 }
@@ -191,7 +209,7 @@ class PartyManager: NSObject {
     func getNextSong(skipped: Bool) {
         audioManager.resetEmptyStateTimeSinceLastGetNextSong()
         getNextSong(partyID, skipped: skipped,
-            completion: { song, user in
+            completion: {[unowned self] song, user in
                 self.currentSong = song
                 self.currentUser = user
             }, noCurrentSong: {
@@ -205,7 +223,7 @@ class PartyManager: NSObject {
     // Only to be used for hosts
     func queueNextSong(skipped: Bool, completion: completionClosure? = nil) {
         getNextSong(partyID, skipped: skipped,
-            completion: { song, user in
+            completion: {[unowned self] song, user in
                 self.queueSong = song
                 self.queueUser = user
                 if completion != nil { completion!() }
@@ -239,7 +257,7 @@ class PartyManager: NSObject {
                 let largerArtworkURL = currentSong!.artworkURL!.replaceSubstringWithString("-large.jpg", newSubstring: "-t500x500.jpg")
                 let currentSongImageCache = getAppDelegate().currentSongImageCache
                 currentSongImageCache.queryDiskCacheForKey(largerArtworkURL,
-                    done: { image, imageCacheType in
+                    done: {[unowned self] image, imageCacheType in
                         // If the current song is still non-nil after the query
                         if self.currentSong != nil {
                             if image != nil {
@@ -259,6 +277,20 @@ class PartyManager: NSObject {
         } else {
             MPNowPlayingInfoCenter.defaultCenter().nowPlayingInfo = ["" : ""]
         }
+    }
+    
+    func updatePartyLocation() {
+        timeSinceLastLocationUpdate = 0.0
+        
+        LocationManager.sharedManager.getLocationForUpdatingParty(
+            success: {[unowned self] location, accuracy in
+                
+                UserManager.sharedUser.updateUserLocationOnServer(latitude: location.coordinate.latitude, longitude: location.coordinate.longitude)
+            },
+            failure: {[unowned self] error in
+                // Do nothing if fails to get location
+            }
+        )
     }
     
     func clearSongInfo() {
@@ -309,16 +341,16 @@ extension PartyManager {
     func getCurrentParty(completion: completionClosure? = nil, noCurrentParty: completionClosure? = nil, failureAddOn: completionClosure? = nil) {
         
         OSAPI.sharedClient.GETPartyCurrent(
-            success: { data, responseObject in
+            success: {[unowned self] data, responseObject in
                 let responseJSON = JSON(responseObject)
-                println(responseJSON)
+                //println(responseJSON)
                 
                 self.updateMainPartyInfoFromJSON(responseJSON, completion: completion)
-            }, failure: { task, error in
+            }, failure: {[unowned self] task, error in
                 var shouldDoDefaultFailureBlock = true
                 
                 if let response = task.response as? NSHTTPURLResponse {
-                    println("errorResponseCode:\(response.statusCode)")
+                    // println("errorResponseCode:\(response.statusCode)")
                     if response.statusCode == 404 && noCurrentParty != nil {
                         shouldDoDefaultFailureBlock = false
                         if noCurrentParty != nil {
@@ -341,19 +373,19 @@ extension PartyManager {
         
         if state == .HostStreamable {
             OSAPI.sharedClient.GETNextSong(pid, skipped: skipped,
-                success: { data, responseObject in
+                success: {[unowned self] data, responseObject in
                     let responseJSON = JSON(responseObject)
-                    println(responseJSON)
+                    // println(responseJSON)
                     
                     if completion != nil {
                         completion!(song: Song(json: responseJSON), user: User(json: responseJSON["user"]))
                     }
                 },
-                failure: { task, error in
+                failure: {[unowned self] task, error in
                     var shouldDoDefaultFailureBlock = true
                     
                     if let response = task.response as? NSHTTPURLResponse {
-                        println("errorResponseCode:\(response.statusCode)")
+                        // println("errorResponseCode:\(response.statusCode)")
                         if response.statusCode == 404 && noCurrentSong != nil {
                             shouldDoDefaultFailureBlock = false
                             if noCurrentSong != nil {
@@ -380,14 +412,14 @@ extension PartyManager {
         if pid != 0 {
             let user = UserManager.sharedUser
             OSAPI.sharedClient.GETParty(pid,
-                success: { data, responseObject in
+                success: {[unowned self] data, responseObject in
                     let responseJSON = JSON(responseObject)
                     //println(responseJSON)
                     self.updateMainPartyInfoFromJSON(responseJSON, completion: JSONUpdateCompletion)
                     //self.refresh()
                     self.decideStateOfValidParty()
                     self.initializeManagers()
-                }, failure: { task, error in
+                }, failure: {[unowned self] task, error in
                     if failureAddOn != nil {
                         failureAddOn!()
                     }
@@ -395,7 +427,7 @@ extension PartyManager {
                 }
             )
         } else {
-            println("ERROR: trying to join a party with pid = 0")
+            // println("ERROR: trying to join a party with pid = 0")
         }
     }
     
@@ -403,14 +435,14 @@ extension PartyManager {
         let user = UserManager.sharedUser
         
         OSAPI.sharedClient.POSTParty(name, privacy: privacy, strictness: strictness, latitude: location.coordinate.latitude, longitude: location.coordinate.longitude,
-            success: { data, responseObject in
+            success: {[unowned self] data, responseObject in
                 let responseJSON = JSON(responseObject)
-                println(responseJSON)
+                // println(responseJSON)
                 let status = responseJSON["status"].string
                 
                 if status == "success" {
                     // Update new party information
-                    self.updateMainPartyInfoFromJSON(responseJSON, completion: {
+                    self.updateMainPartyInfoFromJSON(responseJSON, completion: {[unowned self] in
                         self.decideStateOfValidParty()
                         self.resetManagers()
                         respondToChangeAttempt(true)
@@ -430,9 +462,9 @@ extension PartyManager {
         let user = UserManager.sharedUser
         
         OSAPI.sharedClient.PUTParty(partyID, name: name, privacy: privacy, strictness: strictness,
-            success: { data, responseObject in
+            success: {[unowned self] data, responseObject in
                 let responseJSON = JSON(responseObject)
-                println(responseJSON)
+                //println(responseJSON)
                 let status = responseJSON["status"].string
                 
                 if status == "success" {
@@ -453,9 +485,9 @@ extension PartyManager {
     func leaveParty(# respondToChangeAttempt: (Bool) -> ()) {
         let user = UserManager.sharedUser
         OSAPI.sharedClient.DELETEUserParty(user.id,
-            success: { data, responseObject in
+            success: {[unowned self] data, responseObject in
                 let responseJSON = JSON(responseObject)
-                println(responseJSON)
+                // println(responseJSON)
                 let status = responseJSON["status"].string
                 
                 if status == "success" {
@@ -473,9 +505,9 @@ extension PartyManager {
     func getMusicStreamControl(# respondToChangeAttempt: (Bool) -> ()) {
         
         OSAPI.sharedClient.PUTPartyPermissions(partyID, musicControl: true,
-            success: { data, responseObject in
+            success: {[unowned self] data, responseObject in
                 let responseJSON = JSON(responseObject)
-                println(responseJSON)
+                // println(responseJSON)
                 let status = responseJSON["status"].string
                 
                 if status == "success" {
@@ -493,7 +525,7 @@ extension PartyManager {
     }
     
     private func updateMainPartyInfoFromJSON(json: JSON, completion: completionClosure? = nil) {
-        println(json)
+        // println(json)
         
         partyID = json["pid"].int
         isPrivate = json["privacy"].bool
@@ -543,17 +575,14 @@ extension PartyManager {
     // MARK: Party networking related code for song voting
     
     func songUpvote(sid: Int) {
-        let user = UserManager.sharedUser
         OSAPI.sharedClient.POSTSongUpvote(sid, success: nil, failure: defaultAFHTTPFailureBlock)
     }
     
     func songDownvote(sid: Int) {
-        let user = UserManager.sharedUser
         OSAPI.sharedClient.POSTSongDownvote(sid, success: nil, failure: defaultAFHTTPFailureBlock)
     }
     
     func songClearVote(sid: Int) {
-        let user = UserManager.sharedUser
         OSAPI.sharedClient.DELETESongVote(sid, success: nil, failure: defaultAFHTTPFailureBlock)
     }
 }

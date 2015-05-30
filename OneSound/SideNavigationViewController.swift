@@ -106,7 +106,7 @@ extension SideNavigationViewController: UITableViewDataSource {
     }
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        println("SideNavigationViewController: cellForRowAtIndexPath")
+        // println("SideNavigationViewController: cellForRowAtIndexPath")
         var cell: UITableViewCell?
         
         if indexPath.row == 0 {

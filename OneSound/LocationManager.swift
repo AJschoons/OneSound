@@ -14,10 +14,17 @@ typealias LocationFailureBlock = (errorDesciption: String) -> Void
 // Manages location for user
 class LocationManager: NSObject {
     
-    static func getLocationForPartySearch(#success: LocationSuccessBlock, failure: LocationFailureBlock) {
+    class var sharedManager: LocationManager {
+        struct Static {
+            static let locationManager = LocationManager()
+        }
+        return Static.locationManager
+    }
+    
+    func getLocationForPartySearch(#success: LocationSuccessBlock, failure: LocationFailureBlock) {
         let locMgr = INTULocationManager.sharedInstance()
         
-        locMgr.requestLocationWithDesiredAccuracy(INTULocationAccuracy.House, timeout: 10.0, delayUntilAuthorized: true, block: {currentLocation, accuracy, status in
+        locMgr.requestLocationWithDesiredAccuracy(INTULocationAccuracy.House, timeout: 10.0, delayUntilAuthorized: true, block: {[unowned self] currentLocation, accuracy, status in
             
             // Got location within Block distance of ~100 meters
             if status == .Success || (currentLocation != nil && accuracy == .Block) {
@@ -30,12 +37,12 @@ class LocationManager: NSObject {
         })
     }
     
-    static func getLocationForInitialPartyCreation(#success: LocationSuccessBlock, failure: LocationFailureBlock) {
+    func getLocationForInitialPartyCreation(#success: LocationSuccessBlock, failure: LocationFailureBlock) {
         let locMgr = INTULocationManager.sharedInstance()
         
-        locMgr.requestLocationWithDesiredAccuracy(INTULocationAccuracy.Block, timeout: 10.0, delayUntilAuthorized: true, block: {currentLocation, accuracy, status in
+        locMgr.requestLocationWithDesiredAccuracy(INTULocationAccuracy.Block, timeout: 10.0, delayUntilAuthorized: true, block: {[unowned self] currentLocation, accuracy, status in
             
-            // Got location within Block distance of ~1000 meters
+            // Got location within Neighborhood distance of ~1000 meters
             if status == .Success || (currentLocation != nil && accuracy == .Neighborhood) {
                 success(location: currentLocation, accuracy: accuracy)
             } else if status == .TimedOut {
@@ -46,7 +53,23 @@ class LocationManager: NSObject {
         })
     }
     
-    private static func getINTUStatusErrorMessageFromStatus(status: INTULocationStatus) -> String {
+    func getLocationForUpdatingParty(#success: LocationSuccessBlock, failure: LocationFailureBlock) {
+        let locMgr = INTULocationManager.sharedInstance()
+        
+        locMgr.requestLocationWithDesiredAccuracy(INTULocationAccuracy.House, timeout: 30.0, delayUntilAuthorized: true, block: {[unowned self] currentLocation, accuracy, status in
+            
+            // Got location within Block distance of ~100 meters
+            if status == .Success || (currentLocation != nil && accuracy == .Block) {
+                success(location: currentLocation, accuracy: accuracy)
+            } else if status == .TimedOut {
+                failure(errorDesciption: "Could not determine location within 300ft. Please try again in better conditions")
+            } else {
+                failure(errorDesciption: self.getINTUStatusErrorMessageFromStatus(status))
+            }
+        })
+    }
+    
+    private func getINTUStatusErrorMessageFromStatus(status: INTULocationStatus) -> String {
         switch status {
         case .ServicesNotDetermined:
             return "Must respond to the dialog to grant OneSound permission to access location services"

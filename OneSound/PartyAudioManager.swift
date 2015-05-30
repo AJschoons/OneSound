@@ -388,7 +388,7 @@ class PartyAudioManager: NSObject {
     
     private func currentSongIsMismatched() -> Bool {
         // Make sure the party has had proper time to refresh the info
-        if audioPlayer!.progress > (PartyManager.sharedParty.getCurrentPartyRefreshPeriod + 2) {
+        if audioPlayer!.progress > (PartyManager.sharedParty.GetCurrentPartyRefreshPeriod + 2) {
             // Song can be mismatched when queueing the next one, make sure it's not for that reason
             if (audioPlayer!.duration - audioPlayer!.progress) > (SongTimeRemainingToQueueNextSong + 2) {
                 if currentSong != PartyManager.sharedParty.currentSong { return true }
@@ -430,30 +430,30 @@ class PartyAudioManager: NSObject {
         var setBufferDurationError = NSErrorPointer()
         var success1 = audioSession.setPreferredIOBufferDuration(0.1, error: setBufferDurationError)
         if !success1 {
-            println("not successful 1")
+            // println("not successful 1")
             if setBufferDurationError != nil {
-                println("ERROR with set buffer")
-                println(setBufferDurationError)
+                // println("ERROR with set buffer")
+                // println(setBufferDurationError)
             }
         }
         
         var setCategoryError = NSErrorPointer()
         var success2 = audioSession!.setCategory(AVAudioSessionCategoryPlayback, error: setCategoryError)
         if !success2 {
-            println("not successful 2")
+            // println("not successful 2")
             if setCategoryError != nil {
-                println("ERROR with set category")
-                println(setCategoryError)
+                // println("ERROR with set category")
+                // println(setCategoryError)
             }
         }
         
         var activationError = NSErrorPointer()
         var success3 = audioSession!.setActive(true, error: activationError)
         if !success3 {
-            println("not successful 3")
+            // println("not successful 3")
             if activationError != nil {
-                println("ERROR with set active")
-                println(activationError)
+                // println("ERROR with set active")
+                // println(activationError)
             }
         }
         
@@ -561,7 +561,7 @@ extension PartyAudioManager {
         if n.name != AVAudioSessionInterruptionNotification || n.userInfo == nil
             || PartyManager.sharedParty.state != .HostStreamable { return }
         
-        println("AVAudioSessionInterruptionNotification")
+        // println("AVAudioSessionInterruptionNotification")
         var info = n.userInfo!
         var interruptionTypeValue: UInt = 0
         (info[AVAudioSessionInterruptionTypeKey] as! NSValue).getValue(&interruptionTypeValue)
@@ -570,12 +570,12 @@ extension PartyAudioManager {
             case .Began:
                 // Audio has stopped, already inactive
                 // Change state of UI, etc., to reflect non-playing state
-                println("began")
+                // println("began")
                 onAudioInterruptionBegan()
             case .Ended:
                 // Make session active
                 // Update user interface
-                println("ended")
+                // println("ended")
                 var interruptionOptionValue: UInt = 0
                 (info[AVAudioSessionInterruptionOptionKey] as! NSValue).getValue(&interruptionOptionValue)
                 let option = AVAudioSessionInterruptionOptions(rawValue: interruptionOptionValue)
@@ -593,7 +593,7 @@ extension PartyAudioManager {
         if n.name != AVAudioSessionRouteChangeNotification || n.userInfo == nil
             || PartyManager.sharedParty.state != .HostStreamable { return }
         
-        println("AVAudioSessionRouteChangeNotification")
+        // println("AVAudioSessionRouteChangeNotification")
         var info = n.userInfo!
         var routeChangeTypeValue: UInt = 0
         (info[AVAudioSessionRouteChangeReasonKey] as! NSValue).getValue(&routeChangeTypeValue)

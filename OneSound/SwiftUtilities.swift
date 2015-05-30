@@ -182,7 +182,7 @@ func downloadImageWithURLString(urlString: String, completion: (success: Bool, i
                 completion(success: true, image: image)
             } else {
                 completion(success: false, image: nil)
-                println("ERROR DOWNLOADING IMAGE")
+                // println("ERROR DOWNLOADING IMAGE")
             }
         }
     )
@@ -271,7 +271,7 @@ func formatFirstThreeDigitsOfIntFromBaseWithPostfix(numberToFormat num: Int, bas
                 return "\(digitsFromBase)\(postfix)"
             }
         } else {
-            println("Error: Int(num / base) must leave max of three leading integers from base")
+            // println("Error: Int(num / base) must leave max of three leading integers from base")
             return "ERR"
         }
     } else {
