@@ -191,22 +191,22 @@ extension PartySongsViewController: UITableViewDataSource {
         return 1
     }
     
-    // Should a cell be able to be deleted?
-    func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
-        let songsToDelete = playlistManager.songs.count > 0
-        let cellIsLoadingCell = indexPath.row == playlistManager.songs.count // 1 past # of songs will be loading cell
-        
-        if songsToDelete && !cellIsLoadingCell && shouldAllowActionsOnSongs() {
-            // If this is the user's song, they can choose to delete it
-            if playlistManager.songs[indexPath.row].userID == UserManager.sharedUser.id
-                || PartyManager.sharedParty.state == .Host
-                || PartyManager.sharedParty.state == .HostStreamable {
-                return true
-            }
-        }
-        return false
-    }
-    
+//    // Should a cell be able to be deleted?
+//    func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
+//        let songsToDelete = playlistManager.songs.count > 0
+//        let cellIsLoadingCell = indexPath.row == playlistManager.songs.count // 1 past # of songs will be loading cell
+//        
+//        if songsToDelete && !cellIsLoadingCell && shouldAllowActionsOnSongs() {
+//            // If this is the user's song, they can choose to delete it
+//            if playlistManager.songs[indexPath.row].userID == UserManager.sharedUser.id
+//                || PartyManager.sharedParty.state == .Host
+//                || PartyManager.sharedParty.state == .HostStreamable {
+//                return true
+//            }
+//        }
+//        return false
+//    }
+//    
     // Delete the cell
     func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
         
@@ -271,7 +271,12 @@ extension PartySongsViewController: UITableViewDataSource {
         
         // "Connect" the cell to the table to receive song votes
         songCell.index = indexPath.row
+        songCell.voteDelegate = self
+        
+        // Set up SW Table Cell
         songCell.delegate = self
+        songCell.rightUtilityButtons = rightUtilityButtonsForCellAtIndexPath(indexPath)
+        
         
         var song = playlistManager.songs[indexPath.row]
         
@@ -317,6 +322,26 @@ extension PartySongsViewController: UITableViewDataSource {
         }
         
         return songCell
+    }
+    
+    private func rightUtilityButtonsForCellAtIndexPath(indexPath: NSIndexPath) -> [AnyObject] {
+        var rightUtilityButtons = NSMutableArray()
+        rightUtilityButtons.sw_addUtilityButtonWithColor(UIColor.yellow(), title:"Favorite")
+        
+        let songsToDelete = playlistManager.songs.count > 0
+        let cellIsLoadingCell = indexPath.row == playlistManager.songs.count // 1 past # of songs will be loading cell
+        
+        
+        if songsToDelete && !cellIsLoadingCell && shouldAllowActionsOnSongs() {
+            // If this is the user's song, they can choose to delete it
+            if playlistManager.songs[indexPath.row].userID == UserManager.sharedUser.id
+                || PartyManager.sharedParty.state == .Host
+                || PartyManager.sharedParty.state == .HostStreamable {
+                    rightUtilityButtons.sw_addUtilityButtonWithColor(UIColor.red(), title:"Delete")
+            }
+        }
+        
+        return rightUtilityButtons as [AnyObject]
     }
     
     func startImageDownload(urlString: String, forIndexPath indexPath: NSIndexPath) {
@@ -470,4 +495,25 @@ extension PartySongsViewController: PartySongCellDelegate {
             }
         }
     }
+}
+
+extension PartySongsViewController: SWTableViewCellDelegate {
+    // MARK: SWTableViewCellDelegate
+    
+    // Handle button presses
+    
+    // click event on right utility button
+    func swipeableTableViewCell(cell: SWTableViewCell!, didTriggerRightUtilityButtonWithIndex index: NSInteger) {
+        
+    }
+    
+    // prevent multiple cells from showing utilty buttons simultaneously
+    func swipeableTableViewCellShouldHideUtilityButtonsOnSwipe(cell: SWTableViewCell) -> Bool {
+        return true
+    }
+
+    
+    
+    
+    
 }
