@@ -572,7 +572,7 @@ extension PartyManager {
 }
 
 extension PartyManager {
-    // MARK: Party networking related code for song voting
+    // MARK: Party networking related code for song voting and favorting
     
     func songUpvote(sid: Int) {
         OSAPI.sharedClient.POSTSongUpvote(sid, success: nil, failure: defaultAFHTTPFailureBlock)
@@ -584,6 +584,10 @@ extension PartyManager {
     
     func songClearVote(sid: Int) {
         OSAPI.sharedClient.DELETESongVote(sid, success: nil, failure: defaultAFHTTPFailureBlock)
+    }
+    
+    func songFavorite(sid: Int) {
+        OSAPI.sharedClient.POSTSongFavorite(sid, success: nil, failure: defaultAFHTTPFailureBlock)
     }
 }
 

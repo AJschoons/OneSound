@@ -624,7 +624,7 @@ extension OSAPI {
             }
         }
         
-        GET(urlString, parameters: nil, success: success, failure: failure)
+        GET(urlString, parameters: nil, success: success, failure: failureWithExtraAttempt)
     }
     
     func POSTSongUpvote(sid: Int, extraAttempts: Int = defaultEA, success: AFHTTPSuccessBlock, failure: AFHTTPFailureBlock) {
@@ -639,7 +639,7 @@ extension OSAPI {
             }
         }
         
-        POST(urlString, parameters: nil, success: success, failure: failure)
+        POST(urlString, parameters: nil, success: success, failure: failureWithExtraAttempt)
     }
     
     func POSTSongDownvote(sid: Int, extraAttempts: Int = defaultEA, success: AFHTTPSuccessBlock, failure: AFHTTPFailureBlock) {
@@ -654,7 +654,7 @@ extension OSAPI {
             }
         }
         
-        POST(urlString, parameters: nil, success: success, failure: failure)
+        POST(urlString, parameters: nil, success: success, failure: failureWithExtraAttempt)
     }
     
     func DELETESongVote(sid: Int, extraAttempts: Int = defaultEA, success: AFHTTPSuccessBlock, failure: AFHTTPFailureBlock) {
@@ -669,7 +669,22 @@ extension OSAPI {
             }
         }
         
-        DELETE(urlString, parameters: nil, success: success, failure: failure)
+        DELETE(urlString, parameters: nil, success: success, failure: failureWithExtraAttempt)
+    }
+    
+    func POSTSongFavorite(sid: Int, extraAttempts: Int = defaultEA, success: AFHTTPSuccessBlock, failure: AFHTTPFailureBlock) {
+        let urlString = "song/\(sid)/favorite"
+        
+        let failureWithExtraAttempt: AFHTTPFailureBlock = { task, error in
+            if errorShouldBeHandledWithRepeatedRequest(task, error, attemptsLeft: extraAttempts) {
+                self.POSTSongFavorite(sid, extraAttempts: (extraAttempts - 1), success: success, failure: failure)
+            } else {
+                failure!(task: task, error: error)
+            }
+        }
+        
+        POST(urlString, parameters: nil, success: success, failure: failureWithExtraAttempt)
+        
     }
 }
 

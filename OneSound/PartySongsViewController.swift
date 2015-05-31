@@ -206,7 +206,7 @@ extension PartySongsViewController: UITableViewDataSource {
 //        }
 //        return false
 //    }
-//    
+    
     // Delete the cell
     func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
         
@@ -504,7 +504,28 @@ extension PartySongsViewController: SWTableViewCellDelegate {
     
     // click event on right utility button
     func swipeableTableViewCell(cell: SWTableViewCell!, didTriggerRightUtilityButtonWithIndex index: NSInteger) {
-        
+        switch (index) {
+        case 0:
+            // Favorite
+            if let songCell = cell as? PartySongCell {
+                if let row = songCell.index {
+                    var song = playlistManager.songs[row]
+                    PartyManager.sharedParty.songFavorite(song.songID!)
+                    cell.hideUtilityButtonsAnimated(true)
+                }
+            }
+            
+        case 1:
+            // Deletes
+            if let songCell = cell as? PartySongCell {
+                if let row = songCell.index {
+                    tableView(songsTable, commitEditingStyle: UITableViewCellEditingStyle.Delete, forRowAtIndexPath: NSIndexPath(forRow: row, inSection: 0))
+                    cell.hideUtilityButtonsAnimated(true)
+                }
+            }
+        default:
+            break;
+        }
     }
     
     // prevent multiple cells from showing utilty buttons simultaneously
