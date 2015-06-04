@@ -34,9 +34,12 @@ class ProfileViewController: OSViewController {
     @IBOutlet weak var spacer4: UIView?
     @IBOutlet weak var messageLabel3: UILabel?
     @IBOutlet weak var messageLabel4: UILabel?
+    
+    @IBOutlet weak var favoritesTable: UITableView!
 
     private var loadedFullUserInfoFromDefaults = false
     private let defaultUserImageForProfileImageName = "defaultUserImageForProfile"
+    private let profileFavoritesTableViewController = ProfileFavoritesTableViewController(style: UITableViewStyle.Plain)
 
     @IBAction func signIntoFacebook(sender: AnyObject) {
         let fbSession = FBSession.activeSession()
@@ -94,6 +97,9 @@ class ProfileViewController: OSViewController {
         
         // Stop view from being covered by the nav bar / laid out from top of screen
         edgesForExtendedLayout = UIRectEdge.None
+        
+        // Setup favorites table
+        profileFavoritesTableViewController.tableView = favoritesTable
         
         disableButtons()
         hideMessages()
@@ -162,11 +168,13 @@ class ProfileViewController: OSViewController {
                             self.facebookSignInButton!.hidden = false
                             self.signOutButton!.enabled = false
                             self.settingsButton!.enabled = false
+                            self.favoritesTable.hidden = true
                         } else {
                             // Full accounts
                             self.facebookSignInButton!.hidden = true
                             self.signOutButton!.enabled = true
                             self.settingsButton!.enabled = true
+                            self.favoritesTable.hidden = false
                         }
                     }
                 )
@@ -226,6 +234,7 @@ class ProfileViewController: OSViewController {
         spacer2!.hidden = hidden
         spacer3!.hidden = hidden
         spacer4!.hidden = hidden
+        favoritesTable.hidden = hidden
     }
     
     func setUserProfileInfoFromUserDefaults() -> Bool {
