@@ -38,6 +38,7 @@ PODS:
   - SDWebImage/Core (3.7.2)
   - SSKeychain (1.2.3)
   - StreamingKit (0.1.25)
+  - SWTableViewCell (0.3.7)
   - UIImageEffects (0.0.1)
 
 DEPENDENCIES:
@@ -49,6 +50,7 @@ DEPENDENCIES:
   - SDWebImage (~> 3.7)
   - SSKeychain (~> 1.2)
   - StreamingKit (~> 0.1)
+  - SWTableViewCell (~> 0.3.7)
   - UIImageEffects
 
 SPEC CHECKSUMS:
@@ -61,6 +63,7 @@ SPEC CHECKSUMS:
   SDWebImage: 71b7cdc1d1721d6a82ed62889030225f2c249e29
   SSKeychain: 3f42991739c6c60a9cf1bbd4dff6c0d3694bcf3d
   StreamingKit: f00c054cfd0f59d88c8be7a2270e208302ce48c4
+  SWTableViewCell: 2a94aadc9d47b2b611fa064566bf57948b95b579
   UIImageEffects: 37b99fa461e4965f332ca82e92f2c22a1075ee84
 
-COCOAPODS: 0.37.0
+COCOAPODS: 0.37.1

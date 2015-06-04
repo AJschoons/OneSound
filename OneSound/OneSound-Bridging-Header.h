@@ -17,7 +17,7 @@
 #import "UIImage+ImageEffects.h"
 #import "ObjCUtilities.h"
 #import "INTULocationManager.h"
-
+#import "SWTableViewCell.h"
 #import "GAI.h"
 #import "GAIFields.h"
 #import "GAIDictionaryBuilder.h"
