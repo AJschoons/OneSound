@@ -55,6 +55,7 @@
 		81742A671A7A716900FC2AFD /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81742A661A7A716900FC2AFD /* Constants.swift */; };
 		81751FF5196DEB0F00B9F9A9 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 81751FF4196DEB0F00B9F9A9 /* Foundation.framework */; };
 		81751FF7196DEB1D00B9F9A9 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 81751FF6196DEB1D00B9F9A9 /* UIKit.framework */; };
+		8175E7341B1FFDAF001E1DA9 /* ProfileFavoritesTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8175E7331B1FFDAF001E1DA9 /* ProfileFavoritesTableViewController.swift */; };
 		8179444E1A5751C000A9C636 /* ENSideMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8179444C1A5751C000A9C636 /* ENSideMenu.swift */; };
 		8179444F1A5751C000A9C636 /* ENSideMenuNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8179444D1A5751C000A9C636 /* ENSideMenuNavigationController.swift */; };
 		817944511A5752DE00A9C636 /* OSFrontNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 817944501A5752DE00A9C636 /* OSFrontNavigationController.swift */; };
@@ -162,6 +163,7 @@
 		81742A661A7A716900FC2AFD /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		81751FF4196DEB0F00B9F9A9 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		81751FF6196DEB1D00B9F9A9 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
+		8175E7331B1FFDAF001E1DA9 /* ProfileFavoritesTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfileFavoritesTableViewController.swift; sourceTree = "<group>"; };
 		8179444C1A5751C000A9C636 /* ENSideMenu.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ENSideMenu.swift; sourceTree = "<group>"; };
 		8179444D1A5751C000A9C636 /* ENSideMenuNavigationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ENSideMenuNavigationController.swift; sourceTree = "<group>"; };
 		817944501A5752DE00A9C636 /* OSFrontNavigationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OSFrontNavigationController.swift; sourceTree = "<group>"; };
@@ -399,6 +401,7 @@
 			isa = PBXGroup;
 			children = (
 				81414DCF197DF9CF00081132 /* ProfileViewController.swift */,
+				8175E7331B1FFDAF001E1DA9 /* ProfileFavoritesTableViewController.swift */,
 				81414DD0197DF9CF00081132 /* ProfileViewController.xib */,
 			);
 			name = Profile;
@@ -774,6 +777,7 @@
 			files = (
 				81EF5D951B120F05006DD0F3 /* LocationCellFooterViewController.swift in Sources */,
 				8179444E1A5751C000A9C636 /* ENSideMenu.swift in Sources */,
+				8175E7341B1FFDAF001E1DA9 /* ProfileFavoritesTableViewController.swift in Sources */,
 				815831451975CD450011D3CE /* SwiftUtilities.swift in Sources */,
 				81583123197477E30011D3CE /* SearchViewController.swift in Sources */,
 				8103D66B19805E9000AE5A27 /* LoggingInSpashViewController.swift in Sources */,
