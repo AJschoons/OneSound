@@ -18,10 +18,12 @@ let SongDurationMaxInSeconds = 600 // 10 minute max
 class AddSongViewController: OSModalViewController {
 
     @IBOutlet weak var songSearchBar: UISearchBar!
+    @IBOutlet weak var favoritesTable: UITableView!
     @IBOutlet weak var searchResultsTable: UITableView!
     @IBOutlet weak var animatedOneSoundOne: UIImageView!
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
     
+    @IBOutlet weak var searchTypeControl: UISegmentedControl!
     var searchResultsArray = [SongSearchResult]()
     
     let heightForRows: CGFloat = 68.0
@@ -33,7 +35,9 @@ class AddSongViewController: OSModalViewController {
     private let typingSearchServicePeriod: Double = 0.3 // Period in seconds of how often to update state. Play around with it
     var searchLength = 0
     
+    private var searchBySoundcloud = true // Defaults to searching by soundcloud
     var noSearchResults = false
+    private let addSongFavoritesTableViewController = AddSongFavoritesTableViewController()
     
     func search(searchTextLength: Int = 0, isSearchButtonPressed: Bool) {
         // Hide the keyboard
@@ -162,6 +166,54 @@ class AddSongViewController: OSModalViewController {
         dismissViewControllerAnimated(true, completion: nil)
     }
     
+    
+    @IBAction func changeSearchType(sender: AnyObject) {
+        prepareForSelectedSearchType()
+        updateUI()
+        
+    }
+    
+    func prepareForSelectedSearchType() {
+        searchBySoundcloud = searchTypeControl.selectedSegmentIndex == 0
+        
+        if searchBySoundcloud {
+            searchResultsArray = []
+            searchResultsTable.reloadData()
+            noSearchResults = false
+        } else {
+            
+        }
+        
+    }
+    
+    override func updateUI() {
+        super.updateUI()
+        
+        if AFNetworkReachabilityManager.sharedManager().reachable {
+            if UserManager.sharedUser.setup == true {
+                
+                if searchBySoundcloud {
+                    
+                } else {
+                    
+                }
+                
+            } else {
+//                setViewInfoHidden(true)
+//                showMessages("Not signed into an account", detailLine: "Please connect to the internet and restart OneSound")
+//                disableButtons()
+                searchResultsArray = []
+                searchResultsTable.reloadData()
+            }
+        } else {
+//            setViewInfoHidden(true)
+//            showMessages("Not connected to the internet", detailLine: "Please connect to the internet to use OneSound")
+//            disableButtons()
+            searchResultsArray = []
+            searchResultsTable.reloadData()
+        }
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -194,6 +246,11 @@ class AddSongViewController: OSModalViewController {
         //animatedOneSoundOne.animationDuration = 1.5
         //animatedOneSoundOne.hidden = true
         activityIndicator.hidden = true
+        
+        // Set up favorites table
+        
+        addSongFavoritesTableViewController.dataHelper.tableView = searchResultsTable
+        addSongFavoritesTableViewController.viewDidLoad()
     }
     
     override func viewDidDisappear(animated: Bool) {
@@ -202,7 +259,26 @@ class AddSongViewController: OSModalViewController {
         searchResultsArray = []
         searchResultsTable.reloadData()
         noSearchResults = false
+        
+        addSongFavoritesTableViewController.viewDidDisappear(animated)
     }
+    
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
+        addSongFavoritesTableViewController.viewWillAppear(animated)
+    }
+    
+    override func viewDidAppear(animated: Bool) {
+        super.viewDidAppear(animated)
+        addSongFavoritesTableViewController.viewDidAppear(animated)
+    }
+    
+    override func viewWillDisappear(animated: Bool)
+    {
+        super.viewWillDisappear(animated)
+        addSongFavoritesTableViewController.viewWillDisappear(animated)
+    }
+    
     
     func tap() {
         // Dismiss the keyboard whenever the background is touched while editing

@@ -45,6 +45,7 @@ class SearchViewController: OSViewController {
     private var updateLocationTimer = NSTimer()
     private let UpdateLocationPeriod = 10.0 // Time in seconds that a location is no longer "recent"
     
+    
     func updateLocation() {
         hasRecentLocation = false
         searchResultsArray = []
@@ -232,6 +233,11 @@ class SearchViewController: OSViewController {
                 if !searchByLocation {
                     retryButton.hidden = true
                     updateLocationTimer.invalidate()
+                    
+                    // Stop animation "updating location" when name is pressed
+                    activityIndicator.stopAnimating()
+                    activityIndicator.hidden = true
+                    gettingLocationLabel.hidden = true
                 }
                 
             } else {
@@ -400,7 +406,7 @@ extension SearchViewController {
                 
                 OSAPI.sharedClient.GETPartySearchNearby(latitude, longitude: longitude,
                     success: { data, responseObject in
-                        
+                        if !self.searchByLocation { return }
                         dispatchAsyncToMainQueue(action: {
                             let responseJSON = JSON(responseObject)
                             // println(responseJSON)
@@ -442,12 +448,14 @@ extension SearchViewController {
             },
             failure: { errorDescription in
                 dispatchAsyncToMainQueue(action: {
-                    self.hasRecentLocation = false
-                    self.loadingAnimationShouldBeAnimating(false)
-                    self.gettingLocationLabel.hidden = true
-                    self.retryButton.hidden = false
-                    let error = errorDescription
-                    setTableBackgroundViewWithMessages(self.searchResultsTable, "Location Problem", error)
+                    if self.searchByLocation {
+                        self.hasRecentLocation = false
+                        self.loadingAnimationShouldBeAnimating(false)
+                        self.gettingLocationLabel.hidden = true
+                        self.retryButton.hidden = false
+                        let error = errorDescription
+                        setTableBackgroundViewWithMessages(self.searchResultsTable, "Location Problem", error)
+                    }
                 })
             }
         )
@@ -467,8 +475,16 @@ extension SearchViewController: UITableViewDataSource {
             return 1
         } else {
             // Display a message when the table is empty after searching
-            setTableBackgroundViewWithMessages(tableView, "No parties found", "Please try searching with a different name")
+            setTableBackgroundViewWithMessages(tableView, "No parties found", getTableViewBackgroundMessageFromSelectedSegment())
             return 0
+        }
+    }
+    
+    func getTableViewBackgroundMessageFromSelectedSegment() -> String {
+        if searchTypeControl.selectedSegmentIndex == 0 {
+            return "There are no parties in your area, try searching by name instead"
+        } else {
+            return "Please try searching with a different name"
         }
     }
     

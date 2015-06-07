@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		49218FBD0D84F21CB16F6804 /* libPods-OneSound.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 52F652D4E9264838BE2D4D5C /* libPods-OneSound.a */; };
+		6CF751FD1B24C4D700FE982F /* AddSongFavoritesTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CF751FC1B24C4D700FE982F /* AddSongFavoritesTableViewController.swift */; };
 		8103D66B19805E9000AE5A27 /* LoggingInSpashViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8103D66919805E9000AE5A27 /* LoggingInSpashViewController.swift */; };
 		8103D66C19805E9000AE5A27 /* LoggingInSpashViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8103D66A19805E9000AE5A27 /* LoggingInSpashViewController.xib */; };
 		81062FA3196B6C7E0057D230 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81062FA2196B6C7E0057D230 /* AppDelegate.swift */; };
@@ -118,6 +119,7 @@
 /* Begin PBXFileReference section */
 		01416F21672EEFB515CDCA1E /* Pods-OneSound.distribution.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-OneSound.distribution.xcconfig"; path = "Pods/Target Support Files/Pods-OneSound/Pods-OneSound.distribution.xcconfig"; sourceTree = "<group>"; };
 		52F652D4E9264838BE2D4D5C /* libPods-OneSound.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-OneSound.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		6CF751FC1B24C4D700FE982F /* AddSongFavoritesTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddSongFavoritesTableViewController.swift; sourceTree = "<group>"; };
 		8103D66919805E9000AE5A27 /* LoggingInSpashViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoggingInSpashViewController.swift; sourceTree = "<group>"; };
 		8103D66A19805E9000AE5A27 /* LoggingInSpashViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LoggingInSpashViewController.xib; sourceTree = "<group>"; };
 		81062F9D196B6C7E0057D230 /* OneSound.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OneSound.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -586,6 +588,7 @@
 				81BCC2B6199D2EA900A3500F /* AddSongViewController.xib */,
 				81BCC2BC199D65AC00A3500F /* SongSearchResultCell.swift */,
 				81BCC2BD199D65AC00A3500F /* SongSearchResultCell.xib */,
+				6CF751FC1B24C4D700FE982F /* AddSongFavoritesTableViewController.swift */,
 			);
 			name = "Add Song";
 			sourceTree = "<group>";
@@ -852,6 +855,7 @@
 				81431C0D1B23BC6B00DF67C7 /* UserFavoritesTableDataHelper.swift in Sources */,
 				8158314C1976D54F0011D3CE /* LoginViewController.swift in Sources */,
 				81ACB3E81A5273AD0039529E /* PartyMembersManager.swift in Sources */,
+				6CF751FD1B24C4D700FE982F /* AddSongFavoritesTableViewController.swift in Sources */,
 				814AF0BD1A82F360003ECEED /* AlertManager.swift in Sources */,
 				8158311A197471ED0011D3CE /* PartyMainViewController.swift in Sources */,
 				8162C9691B239BC0006C6D16 /* UserFavoritesManager.swift in Sources */,

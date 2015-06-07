@@ -1,17 +1,16 @@
 //
-//  ProfileFavoritesTableViewController.swift
+//  AddSongFavoritesTableViewController.swift
 //  OneSound
 //
-//  Created by adam on 6/3/15.
+//  Created by Tanay Salpekar on 6/7/15.
 //  Copyright (c) 2015 Adam Schoonmaker. All rights reserved.
 //
 
 import UIKit
 
-class ProfileFavoritesTableViewController: OSViewController
-{
+class AddSongFavoritesTableViewController: OSViewController {
+
     let dataHelper = UserFavoritesTableDataHelper()
-    //let TableViewHeaderNibName: CGFloat = "UserFavoritesTableViewHeader"
     let TableViewHeaderHeight: CGFloat = 20.0
     
     override func viewDidLoad()
@@ -46,18 +45,21 @@ class ProfileFavoritesTableViewController: OSViewController
         super.viewDidDisappear(animated)
         dataHelper.viewDidDisappear(animated)
     }
+    
+
+    /*
+    // MARK: - Navigation
+    */
+
 }
 
-extension ProfileFavoritesTableViewController: UserFavoritesTableDataHelperDelegate
+extension AddSongFavoritesTableViewController: UserFavoritesTableDataHelperDelegate
 {
     // MARK: UserFavoritesTableDataHelperDelegate
     
     func rightUtilityButtonsForCellAtIndexPath(indexPath: NSIndexPath) -> [AnyObject]
     {
-        let rightUtilityButtons = NSMutableArray()
-        rightUtilityButtons.sw_addUtilityButtonWithColor(UIColor.red(), icon: UIImage(named: "trashIcon"))
-        
-        return rightUtilityButtons as [AnyObject]
+        return NSMutableArray() as [AnyObject]
     }
     
     // Click event on right utility button of a cell
@@ -67,11 +69,10 @@ extension ProfileFavoritesTableViewController: UserFavoritesTableDataHelperDeleg
     }
     
     func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return TableViewHeaderHeight
+        return 0
     }
     
     func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        let nib = NSBundle.mainBundle().loadNibNamed(TableViewHeaderNibName, owner: self, options: nil)
-        nib.o
+        return nil
     }
 }
