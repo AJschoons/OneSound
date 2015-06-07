@@ -93,7 +93,10 @@ extension AddSongFavoritesTableViewController: UserFavoritesTableDataHelperDeleg
                         if responseJSON != nil
                             && responseJSON["streamable"].bool == true {
                                 
-                                OSAPI.sharedClient.POSTSong(PartyManager.sharedParty.partyID, externalID: selectedSong.externalID!.toInt()!, source: source, title: selectedSong.name, artist: selectedSong.artistName, duration: 500, artworkURL: selectedSong.artworkURL,
+                                var duration = responseJSON["duration"].int!
+                                duration /= 1000
+                                
+                                OSAPI.sharedClient.POSTSong(PartyManager.sharedParty.partyID, externalID: selectedSong.externalID!.toInt()!, source: source, title: selectedSong.name, artist: selectedSong.artistName, duration: duration, artworkURL: selectedSong.artworkURL,
                                     success: { data, responseObject in
                                         // If no song playing when song added, bring them to the Now Playing tab
                                         if !partyManager.hasCurrentSongAndUser && partyManager.state == .HostStreamable {
@@ -106,7 +109,7 @@ extension AddSongFavoritesTableViewController: UserFavoritesTableDataHelperDeleg
                                     }, failure: { task, error in
                                         self.parentAddSongViewController?.dismissViewControllerAnimated(true, completion: nil)
                                         let alert = UIAlertView(title: "Problem Adding Song", message: "The song could not be added to the playlist, please try a different song", delegate: nil, cancelButtonTitle: defaultAlertCancelButtonText)
-                                        alert.show()
+                                        AlertManager.sharedManager.showAlert(alert)
                                     }
                                 )
 
@@ -114,9 +117,10 @@ extension AddSongFavoritesTableViewController: UserFavoritesTableDataHelperDeleg
                             
                             self.parentAddSongViewController?.dismissViewControllerAnimated(true, completion: nil)
                             let alert = UIAlertView(title: "SoundCloud doesn't support this song", message: "The song could not be added to the playlist because SoundCloud doesn't allow us to stream the song.", delegate: nil, cancelButtonTitle: defaultAlertCancelButtonText)
-                            alert.show()
+                            AlertManager.sharedManager.showAlert(alert)
+                        
                             
-                            // TODO: Handle taking the song out of favorites (UnFavorite)
+                            PartyManager.sharedParty.songUnfavorite(selectedSong.songID)
 
                         }
                     }, failure: {task, error in
@@ -124,7 +128,7 @@ extension AddSongFavoritesTableViewController: UserFavoritesTableDataHelperDeleg
                         let alert = UIAlertView(title: "Problem Adding Song", message: "The song could not be added to the playlist, please try a different song", delegate: nil, cancelButtonTitle: defaultAlertCancelButtonText)
                         alert.show()
                         
-                        // TODO: Problem trying to connect to SoundCloud, handle somehow?? 
+                        // TODO: Problem trying to connect to SoundCloud, handle somehow??
                     }
                 )
             } else {
