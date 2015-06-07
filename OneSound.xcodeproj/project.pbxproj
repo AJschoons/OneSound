@@ -98,6 +98,8 @@
 		81DA8A67198A9FE00037EAD1 /* Song.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81DA8A66198A9FE00037EAD1 /* Song.swift */; };
 		81E3E8471B24278E00EE8ED9 /* UserFavoriteSongCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 81E3E8461B24278E00EE8ED9 /* UserFavoriteSongCell.xib */; };
 		81E3E8491B2427CA00EE8ED9 /* UserFavoriteSongCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81E3E8481B2427CA00EE8ED9 /* UserFavoriteSongCell.swift */; };
+		81E3E84C1B24A71200EE8ED9 /* UserFavoritesTableHeaderView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 81E3E84B1B24A71200EE8ED9 /* UserFavoritesTableHeaderView.xib */; };
+		81E3E84E1B24B30600EE8ED9 /* UserFavoritesTableHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81E3E84D1B24B30600EE8ED9 /* UserFavoritesTableHeaderView.swift */; };
 		81EAC5F91998132000F02894 /* SongStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81EAC5F81998132000F02894 /* SongStore.swift */; };
 		81EF5D951B120F05006DD0F3 /* LocationCellFooterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81EF5D931B120F05006DD0F3 /* LocationCellFooterViewController.swift */; };
 		81EF5D961B120F05006DD0F3 /* LocationCellFooterViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 81EF5D941B120F05006DD0F3 /* LocationCellFooterViewController.xib */; };
@@ -226,6 +228,8 @@
 		81DA8A66198A9FE00037EAD1 /* Song.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Song.swift; sourceTree = "<group>"; };
 		81E3E8461B24278E00EE8ED9 /* UserFavoriteSongCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = UserFavoriteSongCell.xib; sourceTree = "<group>"; };
 		81E3E8481B2427CA00EE8ED9 /* UserFavoriteSongCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserFavoriteSongCell.swift; sourceTree = "<group>"; };
+		81E3E84B1B24A71200EE8ED9 /* UserFavoritesTableHeaderView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = UserFavoritesTableHeaderView.xib; sourceTree = "<group>"; };
+		81E3E84D1B24B30600EE8ED9 /* UserFavoritesTableHeaderView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserFavoritesTableHeaderView.swift; sourceTree = "<group>"; };
 		81EAC5F81998132000F02894 /* SongStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SongStore.swift; sourceTree = "<group>"; };
 		81EF5D931B120F05006DD0F3 /* LocationCellFooterViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationCellFooterViewController.swift; sourceTree = "<group>"; };
 		81EF5D941B120F05006DD0F3 /* LocationCellFooterViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LocationCellFooterViewController.xib; sourceTree = "<group>"; };
@@ -592,6 +596,8 @@
 				81431C0C1B23BC6B00DF67C7 /* UserFavoritesTableDataHelper.swift */,
 				81E3E8461B24278E00EE8ED9 /* UserFavoriteSongCell.xib */,
 				81E3E8481B2427CA00EE8ED9 /* UserFavoriteSongCell.swift */,
+				81E3E84B1B24A71200EE8ED9 /* UserFavoritesTableHeaderView.xib */,
+				81E3E84D1B24B30600EE8ED9 /* UserFavoritesTableHeaderView.swift */,
 			);
 			name = Reusable;
 			sourceTree = "<group>";
@@ -733,6 +739,7 @@
 				81EF5D961B120F05006DD0F3 /* LocationCellFooterViewController.xib in Resources */,
 				81BCC2B8199D2EA900A3500F /* AddSongViewController.xib in Resources */,
 				81E3E8471B24278E00EE8ED9 /* UserFavoriteSongCell.xib in Resources */,
+				81E3E84C1B24A71200EE8ED9 /* UserFavoritesTableHeaderView.xib in Resources */,
 				81583124197477E30011D3CE /* SearchViewController.xib in Resources */,
 				8158313B19747F7B0011D3CE /* PartyTabBarController.xib in Resources */,
 				81BC27BE199DC0E2006233AE /* PartySongCell.xib in Resources */,
@@ -812,6 +819,7 @@
 				818B34901A945257008BCD9A /* ForceUpdateViewController.swift in Sources */,
 				81414DD1197DF9CF00081132 /* ProfileViewController.swift in Sources */,
 				8130D7D6198714C900DD4B47 /* SoundCloudClient.swift in Sources */,
+				81E3E84E1B24B30600EE8ED9 /* UserFavoritesTableHeaderView.swift in Sources */,
 				8108DF9A199BDD150040B8E7 /* CreatePartyStrictnessViewController.swift in Sources */,
 				81BCC2BE199D65AC00A3500F /* SongSearchResultCell.swift in Sources */,
 				8195E6841A5B370A00FD0CC8 /* OSViewController.swift in Sources */,

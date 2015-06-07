@@ -11,6 +11,8 @@ import UIKit
 class ProfileFavoritesTableViewController: OSViewController
 {
     let dataHelper = UserFavoritesTableDataHelper()
+    let TableViewHeaderNibName: CGFloat = "UserFavoritesTableViewHeader"
+    let TableViewHeaderHeight: CGFloat = 20.0
     
     override func viewDidLoad()
     {
@@ -62,5 +64,14 @@ extension ProfileFavoritesTableViewController: UserFavoritesTableDataHelperDeleg
     func swipeableTableViewCell(cell: SWTableViewCell!, didTriggerRightUtilityButtonWithIndex rightButtonsIndex: NSInteger)
     {
         
+    }
+    
+    func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return TableViewHeaderHeight
+    }
+    
+    func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        let nib = NSBundle.mainBundle().loadNibNamed(TableViewHeaderNibName, owner: self, options: nil)
+        nib.o
     }
 }

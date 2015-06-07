@@ -14,6 +14,8 @@ protocol UserFavoritesTableDataHelperDelegate: class
 {
     func rightUtilityButtonsForCellAtIndexPath(indexPath: NSIndexPath) -> [AnyObject]
     func swipeableTableViewCell(cell: SWTableViewCell!, didTriggerRightUtilityButtonWithIndex rightButtonsIndex: NSInteger)
+    func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat
+    func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView?
 }
 
 class UserFavoritesTableDataHelper: OSTableViewController
@@ -308,6 +310,14 @@ extension UserFavoritesTableDataHelper: UITableViewDelegate {
                 }
             )
         }
+    }
+    
+    override func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return (delegate != nil) ? delegate!.tableView(tableView, heightForHeaderInSection: section) : 0.0
+    }
+    
+    override func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        return (delegate != nil) ? delegate!.tableView(tableView, viewForHeaderInSection: section) : nil
     }
 }
 
