@@ -123,6 +123,8 @@ class OSAPI: AFHTTPSessionManager {
                 let config = NSURLSessionConfiguration.defaultSessionConfiguration()
                 config.HTTPAdditionalHeaders = ["CLIENT_ID" : "1", "CLIENT_SECRET" : "d7aa3fcb7141e876cea6121b600d1d8854ea74d7"]
                 
+                config
+                
                 let initAPI = OSAPI(baseURL: NSURL(string: baseURLString), sessionConfiguration: config)
                 
                 initAPI.requestSerializer = AFJSONRequestSerializer() as AFJSONRequestSerializer
