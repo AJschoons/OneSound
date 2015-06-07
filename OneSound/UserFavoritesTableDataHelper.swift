@@ -92,12 +92,12 @@ class UserFavoritesTableDataHelper: OSTableViewController
                 completion:
                 {
                     self.reloadDataAndImagesForOnScreenRows()
-                    self.refreshControl!.endRefreshing()
+                    self.refreshControl?.endRefreshing()
                 }
             )
         } else
         {
-            refreshControl!.endRefreshing()
+            refreshControl?.endRefreshing()
         }
     }
     
@@ -314,7 +314,7 @@ extension UserFavoritesTableDataHelper: UITableViewDelegate {
             userFavoritesManager.pagedDataArray.fetchNextPage(
                 completion: {
                     self.reloadDataAndImagesForOnScreenRows()
-                    self.refreshControl!.endRefreshing()
+                    self.refreshControl?.endRefreshing()
                 }
             )
         }
