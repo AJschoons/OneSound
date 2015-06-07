@@ -11,7 +11,7 @@ import UIKit
 let PartySongCellNibName = "PartySongCell"
 
 protocol PartySongCellDelegate: class {
-    func didVoteOnSongCellAtIndex(index: Int, withVote vote: SongVote, andVoteCountChange voteCountChange: Int)
+    func didVoteOnSongCellAtIndex(index: Int, withVote vote: PartySongVote, andVoteCountChange voteCountChange: Int)
 }
 
 class PartySongCell: SWTableViewCell {
@@ -97,7 +97,7 @@ extension PartySongCell {
     
     func handleThumbsUp(button: AnyObject) {
         if let thumbsUpButton = button as? UIButton {
-            var vote: SongVote
+            var vote: PartySongVote
             var voteCountChange: Int
             
             // If the button is selected before it is pressed, make it unselected
@@ -131,7 +131,7 @@ extension PartySongCell {
     
     func handleThumbsDown(button: AnyObject) {
         if let thumbsDownButton = button as? UIButton {
-            var vote: SongVote
+            var vote: PartySongVote
             var voteCountChange: Int
             
             // If the button is selected before it is pressed, make it unselected

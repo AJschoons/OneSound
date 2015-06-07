@@ -25,7 +25,7 @@ class PagedDataArray<T> {
     
     func hasMorePages() -> Bool { return currentPage < totalPages() }
     
-    private(set) var data = [T]()
+    var data = [T]()
     
     // Used while updating so data array has something to show for any displayer
     private var updatedData = [T]()
@@ -53,6 +53,11 @@ class PagedDataArray<T> {
             //let pageStartingFromZero = currentPage - 1
             manager.fetchDataPage(currentPage, usingFailureBlock: getPagedDataFetchFailureBlock(), withCompletion: completion)
         }
+    }
+    
+    func removeDataAtIndex(index: Int)
+    {
+        data.removeAtIndex(index)
     }
     
     // Resets all information to like new
