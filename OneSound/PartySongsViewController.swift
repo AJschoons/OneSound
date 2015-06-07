@@ -480,7 +480,7 @@ extension PartySongsViewController: PartySongCellDelegate {
     // MARK: PartySongCellDelegate
     
     // Handle votes on songs
-    func didVoteOnSongCellAtIndex(index: Int, withVote vote: SongVote, andVoteCountChange voteCountChange: Int) {
+    func didVoteOnSongCellAtIndex(index: Int, withVote vote: PartySongVote, andVoteCountChange voteCountChange: Int) {
         let song = playlistManager.songs[index]
         
         if shouldAllowActionsOnSongs() {

@@ -11,8 +11,8 @@ import Foundation
 
 class UserFavoritesManager: PagedDataArrayManager
 {
-    typealias DataType = Song
-    var pagedDataArray: PagedDataArray<Song>!
+    typealias DataType = FavoriteSong
+    var pagedDataArray: PagedDataArray<FavoriteSong>!
     
     func fetchDataPage(page: Int, usingFailureBlock failureBlock: AFHTTPFailureBlock, withCompletion completion: completionClosure?)
     {
@@ -26,10 +26,10 @@ class UserFavoritesManager: PagedDataArrayManager
                     println(responseJSON)
                     let dataSize = responseJSON["paging"]["total_count"].int!
                     
-                    var favorites = [Song]()
+                    var favorites = [FavoriteSong]()
                     if let favoritesJSON = responseJSON["results"].array {
                         for favoriteJSON in favoritesJSON {
-                            favorites.append(Song(json: favoriteJSON))
+                            favorites.append(FavoriteSong(json: favoriteJSON))
                         }
                     }
                     

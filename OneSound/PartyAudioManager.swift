@@ -21,7 +21,7 @@ enum PartyAudioManagerState {
 
 class PartyAudioManager: NSObject {
     
-    private var currentSong: Song?
+    private var currentSong: PartySong?
     
     private var hasAudio: Bool {
         return state == .Paused || state == .Playing

@@ -63,9 +63,9 @@ class PartyManager: NSObject {
     private var userHasMusicControl: Bool! = false // Use the state to check streaming status, NOT the bool
     private var userCanSkipSong: Bool! = false
     
-    private(set) var currentSong: Song?
+    private(set) var currentSong: PartySong?
     private(set) var currentUser: User?
-    private(set) var queueSong: Song?
+    private(set) var queueSong: PartySong?
     private(set) var queueUser: User?
     var hasCurrentSongAndUser: Bool { return currentSong != nil && currentUser != nil }
     
@@ -369,7 +369,7 @@ extension PartyManager {
         )
     }
     
-    func getNextSong(pid: Int, skipped: Bool, completion: ((song: Song, user: User) -> ())? = nil, noCurrentSong: completionClosure? = nil, failureAddOn: completionClosure? = nil) {
+    func getNextSong(pid: Int, skipped: Bool, completion: ((song: PartySong, user: User) -> ())? = nil, noCurrentSong: completionClosure? = nil, failureAddOn: completionClosure? = nil) {
         
         if state == .HostStreamable {
             OSAPI.sharedClient.GETNextSong(pid, skipped: skipped,
@@ -378,7 +378,7 @@ extension PartyManager {
                     // println(responseJSON)
                     
                     if completion != nil {
-                        completion!(song: Song(json: responseJSON), user: User(json: responseJSON["user"]))
+                        completion!(song: PartySong(json: responseJSON), user: User(json: responseJSON["user"]))
                     }
                 },
                 failure: {[unowned self] task, error in
@@ -544,7 +544,7 @@ extension PartyManager {
         if json["current_song"]["user"] != nil {
             // Got a song for the party
             let oldCurrentSong = currentSong
-            currentSong = Song(json: json["current_song"])
+            currentSong = PartySong(json: json["current_song"])
             currentUser = User(json: json["current_song"]["user"])
             
             if oldCurrentSong == nil {
@@ -588,6 +588,10 @@ extension PartyManager {
     
     func songFavorite(sid: Int) {
         OSAPI.sharedClient.POSTSongFavorite(sid, success: nil, failure: defaultAFHTTPFailureBlock)
+    }
+    
+    func songUnfavorite(sid: Int) {
+        OSAPI.sharedClient.DELETESongFavorite(sid, success: nil, failure: defaultAFHTTPFailureBlock)
     }
 }
 

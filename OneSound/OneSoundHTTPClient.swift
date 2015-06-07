@@ -693,6 +693,7 @@ extension OSAPI {
         DELETE(urlString, parameters: nil, success: success, failure: failureWithExtraAttempt)
     }
     
+    // Favorite the song for a user
     func POSTSongFavorite(sid: Int, extraAttempts: Int = defaultEA, success: AFHTTPSuccessBlock, failure: AFHTTPFailureBlock) {
         let urlString = "song/\(sid)/favorite"
         
@@ -705,7 +706,22 @@ extension OSAPI {
         }
         
         POST(urlString, parameters: nil, success: success, failure: failureWithExtraAttempt)
+    }
+    
+    // Un-favorite the song for a user
+    func DELETESongFavorite(sid: Int, extraAttempts: Int = defaultEA, success: AFHTTPSuccessBlock, failure: AFHTTPFailureBlock) {
         
+        let urlString = "favorite/\(sid)"
+        
+        let failureWithExtraAttempt: AFHTTPFailureBlock = { task, error in
+            if errorShouldBeHandledWithRepeatedRequest(task, error, attemptsLeft: extraAttempts) {
+                self.DELETESongFavorite(sid, extraAttempts: (extraAttempts - 1), success: success, failure: failure)
+            } else {
+                failure!(task: task, error: error)
+            }
+        }
+        
+        DELETE(urlString, parameters: nil, success: success, failure: failureWithExtraAttempt)
     }
 }
 

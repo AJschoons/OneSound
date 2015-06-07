@@ -63,7 +63,24 @@ extension ProfileFavoritesTableViewController: UserFavoritesTableDataHelperDeleg
     // Click event on right utility button of a cell
     func swipeableTableViewCell(cell: SWTableViewCell!, didTriggerRightUtilityButtonWithIndex rightButtonsIndex: NSInteger)
     {
-        
+        // Delete the favorite button
+        if rightButtonsIndex == 0
+        {
+            if let cellIndexPath = dataHelper.tableView.indexPathForCell(cell)
+            {
+                cell.hideUtilityButtonsAnimated(true)
+                
+                // Unfavorite the song
+                let favorites = dataHelper.userFavoritesManager.pagedDataArray.data
+                PartyManager.sharedParty.songUnfavorite(favorites[cellIndexPath.row].songID)
+                
+                // Remove from favorites and reload
+                dataHelper.userFavoritesManager.pagedDataArray.removeDataAtIndex(cellIndexPath.row)
+                dataHelper.tableView.beginUpdates()
+                dataHelper.tableView.deleteRowsAtIndexPaths([cellIndexPath], withRowAnimation: UITableViewRowAnimation.Automatic)
+                dataHelper.tableView.endUpdates()
+            }
+        }
     }
     
     func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat
@@ -74,6 +91,7 @@ extension ProfileFavoritesTableViewController: UserFavoritesTableDataHelperDeleg
     func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView?
     {
         let headerView = UIView.loadFromNibNamed(TableViewHeaderViewNibName)
+        headerView!.backgroundColor = refreshControlBackgroundColor()
         headerView!.frame = CGRect(x: 0, y: 0, width: view.frame.width, height: TableViewHeaderHeight)
         return headerView
     }

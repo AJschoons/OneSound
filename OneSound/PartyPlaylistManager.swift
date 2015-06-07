@@ -13,9 +13,9 @@ class PartyPlaylistManager {
     
     func hasMorePages() -> Bool { return currentPage < totalPages() }
     
-    final private(set) var songs = [Song]() // Has to stay final to allow elements to be swapped
+    final private(set) var songs = [PartySong]() // Has to stay final to allow elements to be swapped
     // Used while updating so table still has something to show
-    private var updatedSongs = [Song]()
+    private var updatedSongs = [PartySong]()
     
     private var currentPage = 0
     
@@ -73,7 +73,7 @@ class PartyPlaylistManager {
     }
     
     // Moves the song in the array based on the new vote count in O(n), returns the new index
-    func moveSongAtIndex(initialIndex: Int, afterChangingVoteCountBy voteCountChange: Int, withVote vote: SongVote) -> Int {
+    func moveSongAtIndex(initialIndex: Int, afterChangingVoteCountBy voteCountChange: Int, withVote vote: PartySongVote) -> Int {
         let song = songs[initialIndex]
         let newVoteCount = song.voteCount + voteCountChange
         song.voteCount = newVoteCount
@@ -94,7 +94,7 @@ class PartyPlaylistManager {
     }
     
     // Moves down the song in the array based on the new vote count in O(n), returns the new index
-    private func moveDownSong(song: Song, atInitialIndex initialIndex: Int, withNewVoteCount newVoteCount: Int) -> Int {
+    private func moveDownSong(song: PartySong, atInitialIndex initialIndex: Int, withNewVoteCount newVoteCount: Int) -> Int {
         var newIndex = initialIndex
         
         // song.voteCount will now be less than the song before it
@@ -133,7 +133,7 @@ class PartyPlaylistManager {
     }
     
     // Moves up the song in the array based on the new vote count in O(n), returns the new index
-    private func moveUpSong(song: Song, atInitialIndex initialIndex: Int, withNewVoteCount newVoteCount: Int) -> Int {
+    private func moveUpSong(song: PartySong, atInitialIndex initialIndex: Int, withNewVoteCount newVoteCount: Int) -> Int {
         var newIndex = initialIndex
         
         // song.voteCount will now be greater than the song before it
@@ -186,7 +186,7 @@ class PartyPlaylistManager {
             if currentPage == 0 { updatedSongs = [] }
             
             for song in songsArray! {
-                updatedSongs.append(Song(json: song))
+                updatedSongs.append(PartySong(json: song))
             }
         }
         
