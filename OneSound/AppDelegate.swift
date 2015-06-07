@@ -201,6 +201,7 @@ extension AppDelegate {
         
         // Start logging AFNetworking activiy
         AFNetworkActivityLogger.sharedLogger().startLogging()
+        AFNetworkActivityLogger.sharedLogger().level = AFHTTPRequestLoggerLevel.AFLoggerLevelDebug
         
         // Start showing network activity
         AFNetworkActivityIndicatorManager.sharedManager().enabled = true

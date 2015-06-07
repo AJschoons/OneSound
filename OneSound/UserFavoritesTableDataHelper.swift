@@ -10,12 +10,14 @@ import Foundation
 
 let UserFavoriteSongCellIdentifier = "UserFavoriteSongCell"
 
-protocol UserFavoritesTableDataHelperDelegate: class
+@objc protocol UserFavoritesTableDataHelperDelegate: class
 {
     func rightUtilityButtonsForCellAtIndexPath(indexPath: NSIndexPath) -> [AnyObject]
     func swipeableTableViewCell(cell: SWTableViewCell!, didTriggerRightUtilityButtonWithIndex rightButtonsIndex: NSInteger)
     func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat
     func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView?
+    optional func refreshControlBackgroundColor() -> UIColor
+    optional func refreshControlTintColor() -> UIColor
 }
 
 class UserFavoritesTableDataHelper: OSTableViewController
@@ -32,10 +34,16 @@ class UserFavoritesTableDataHelper: OSTableViewController
         // Creating an (empty) footer stops table from showing empty cells
         tableView.tableFooterView = UIView(frame: CGRectZero)
         
-        refreshControl = UIRefreshControl()
-        refreshControl!.backgroundColor = UIColor.blue()
-        refreshControl!.tintColor = UIColor.white()
-        refreshControl!.addTarget(self, action: "refresh", forControlEvents: UIControlEvents.ValueChanged)
+        if delegate != nil
+            && delegate!.refreshControlBackgroundColor?() != nil
+            && delegate!.refreshControlTintColor?() != nil
+        {
+            refreshControl = UIRefreshControl()
+            refreshControl!.backgroundColor = delegate!.refreshControlBackgroundColor!()
+            refreshControl!.tintColor = delegate!.refreshControlTintColor!()
+            refreshControl!.addTarget(self, action: "refresh", forControlEvents: UIControlEvents.ValueChanged)
+            
+        }
         
         let nib = UINib(nibName: UserFavoriteSongCellNibName, bundle: nil)
         tableView.registerNib(nib, forCellReuseIdentifier: UserFavoriteSongCellIdentifier)

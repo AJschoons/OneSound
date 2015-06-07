@@ -7,25 +7,25 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
-        <view contentMode="scaleToFill" restorationIdentifier="UserFavoritesTableHeader" id="iN0-l3-epB" customClass="UserFavoritesTableHeaderView" customModule="OneSound" customModuleProvider="target">
-            <rect key="frame" x="0.0" y="0.0" width="320" height="20"/>
+        <view contentMode="scaleToFill" restorationIdentifier="UserFavoritesTableHeaderView" id="iN0-l3-epB" customClass="UserFavoritesTableHeaderView" customModule="OneSound" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="320" height="25"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Favorites" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="DWZ-Ip-1GP">
-                    <rect key="frame" x="128" y="0.0" width="65" height="18"/>
+                    <rect key="frame" x="128" y="3" width="65" height="18"/>
                     <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="15"/>
-                    <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                    <color key="textColor" red="0.5170014500617981" green="0.51698595285415649" blue="0.51699477434158325" alpha="1" colorSpace="calibratedRGB"/>
                     <nil key="highlightedColor"/>
                 </label>
-                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="D9Q-G3-BMd">
-                    <rect key="frame" x="0.0" y="19" width="320" height="1"/>
+                <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="D9Q-G3-BMd" userLabel="seperator">
+                    <rect key="frame" x="0.0" y="24" width="320" height="1"/>
                     <color key="backgroundColor" cocoaTouchSystemColor="darkTextColor"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="1" id="CkJ-Dq-Wic"/>
                     </constraints>
                 </view>
             </subviews>
-            <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+            <color key="backgroundColor" red="0.83137254901960789" green="0.83137254901960789" blue="0.83137254901960789" alpha="1" colorSpace="calibratedRGB"/>
             <constraints>
                 <constraint firstAttribute="trailing" secondItem="D9Q-G3-BMd" secondAttribute="trailing" id="AmI-Fp-7mK"/>
                 <constraint firstItem="D9Q-G3-BMd" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="HLS-cY-TI2"/>

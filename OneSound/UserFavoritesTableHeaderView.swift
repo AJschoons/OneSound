@@ -8,8 +8,6 @@
 
 import UIKit
 
-let UserFavoritesTableHeaderViewNibName = "UserFavoritesTableHeaderView"
-
 class UserFavoritesTableHeaderView: UIView {
 
 }

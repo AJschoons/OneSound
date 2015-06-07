@@ -11,8 +11,8 @@ import UIKit
 class ProfileFavoritesTableViewController: OSViewController
 {
     let dataHelper = UserFavoritesTableDataHelper()
-    let TableViewHeaderNibName: CGFloat = "UserFavoritesTableViewHeader"
-    let TableViewHeaderHeight: CGFloat = 20.0
+    let TableViewHeaderViewNibName = "UserFavoritesTableHeaderView"
+    let TableViewHeaderHeight: CGFloat = 25.0
     
     override func viewDidLoad()
     {
@@ -66,12 +66,25 @@ extension ProfileFavoritesTableViewController: UserFavoritesTableDataHelperDeleg
         
     }
     
-    func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+    func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat
+    {
         return TableViewHeaderHeight
     }
     
-    func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        let nib = NSBundle.mainBundle().loadNibNamed(TableViewHeaderNibName, owner: self, options: nil)
-        nib.o
+    func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView?
+    {
+        let headerView = UIView.loadFromNibNamed(TableViewHeaderViewNibName)
+        headerView!.frame = CGRect(x: 0, y: 0, width: view.frame.width, height: TableViewHeaderHeight)
+        return headerView
+    }
+    
+    func refreshControlBackgroundColor() -> UIColor
+    {
+        return UIColor.grayMid()
+    }
+    
+    func refreshControlTintColor() -> UIColor
+    {
+        return UIColor.grayDark()
     }
 }

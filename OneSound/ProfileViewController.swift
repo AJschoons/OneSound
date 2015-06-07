@@ -130,6 +130,8 @@ class ProfileViewController: OSViewController {
         //
         profileFavoritesTableViewController.dataHelper.tableView = favoritesTable
         profileFavoritesTableViewController.viewDidLoad()
+        // Allows cells to flow under toolbar, but not stop scrolling behind them when content stops
+        favoritesTable.contentInset = UIEdgeInsetsMake(0, 0, toolbar.frame.height, 0)
     }
     
     override func viewWillAppear(animated: Bool) {
