@@ -325,6 +325,25 @@ extension OSAPI {
         
         GET(urlString, parameters: params, success: success, failure: failureWithExtraAttempt)
     }
+    
+    // Get the user's favorited songs
+    func GETUserFavorites(uid: Int, page: Int, pageSize: Int, extraAttempts: Int = defaultEA, success: AFHTTPSuccessBlock, failure: AFHTTPFailureBlock) {
+        let urlString = "\(baseURLString)user/\(uid)/favorites"
+        
+        var params = Dictionary<String, AnyObject>()
+        params.updateValue(page, forKey: "page")
+        params.updateValue(pageSize, forKey: "limit") // Server is 20 by default
+        
+        let failureWithExtraAttempt: AFHTTPFailureBlock = { task, error in
+            if errorShouldBeHandledWithRepeatedRequest(task, error, attemptsLeft: extraAttempts) {
+                self.GETUserFavorites(uid, page: page, pageSize: pageSize, extraAttempts: (extraAttempts - 1), success: success, failure: failure)
+            } else {
+                failure!(task: task, error: error)
+            }
+        }
+        
+        GET(urlString, parameters: params, success: success, failure: failureWithExtraAttempt)
+    }
 }
 
 extension OSAPI {

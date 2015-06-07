@@ -29,6 +29,7 @@ class Song {
     private(set) var artworkURL: String?
     var userVote: SongVote?
     var voteCount: Int!
+    var isFavorited: Bool?
     
     private(set) var playAttempts = 0
     
@@ -56,6 +57,10 @@ class Song {
         // Songs in the playlist will have this, but not the current song
         if let dateCreatedAtString = json["created_at"].string {
             dateCreatedAt = oneSoundDateFormatter.dateFromString(dateCreatedAtString)
+        }
+        
+        if let favorited = json["favorited"].bool {
+            isFavorited = favorited
         }
     }
 }

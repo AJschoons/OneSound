@@ -26,6 +26,7 @@
 		81414DCE197DD1F800081132 /* EnumHackExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81414DCD197DD1F800081132 /* EnumHackExtensions.swift */; };
 		81414DD1197DF9CF00081132 /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81414DCF197DF9CF00081132 /* ProfileViewController.swift */; };
 		81414DD2197DF9CF00081132 /* ProfileViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 81414DD0197DF9CF00081132 /* ProfileViewController.xib */; };
+		81431C0D1B23BC6B00DF67C7 /* UserFavoritesTableDataHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81431C0C1B23BC6B00DF67C7 /* UserFavoritesTableDataHelper.swift */; };
 		814AF0BD1A82F360003ECEED /* AlertManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 814AF0BC1A82F360003ECEED /* AlertManager.swift */; };
 		81527128196C5A8E00464068 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81527127196C5A8E00464068 /* User.swift */; };
 		815831111974308E0011D3CE /* OneSoundColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 815831101974308E0011D3CE /* OneSoundColors.swift */; };
@@ -48,6 +49,8 @@
 		816205F61B0D34CA001BD3E9 /* OSViewControllerVars.swift in Sources */ = {isa = PBXBuildFile; fileRef = 816205F51B0D34CA001BD3E9 /* OSViewControllerVars.swift */; };
 		816205FB1B0E1F81001BD3E9 /* OSTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 816205FA1B0E1F81001BD3E9 /* OSTableViewController.swift */; };
 		816205FD1B0F94CE001BD3E9 /* LocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 816205FC1B0F94CE001BD3E9 /* LocationManager.swift */; };
+		8162C9651B216808006C6D16 /* PagedDataArray.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8162C9641B216808006C6D16 /* PagedDataArray.swift */; };
+		8162C9691B239BC0006C6D16 /* UserFavoritesManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8162C9681B239BC0006C6D16 /* UserFavoritesManager.swift */; };
 		81631F3419994BB000C55A6F /* PartyMemberCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81631F3219994BB000C55A6F /* PartyMemberCell.swift */; };
 		81631F3519994BB000C55A6F /* PartyMemberCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 81631F3319994BB000C55A6F /* PartyMemberCell.xib */; };
 		816FD445196F22B0003CCB1C /* SideNavigationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 816FD444196F22B0003CCB1C /* SideNavigationViewController.swift */; };
@@ -93,6 +96,8 @@
 		81C92CF11A3CCFE900BE63D1 /* PartySearchResultCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 81C92CEF1A3CCFE900BE63D1 /* PartySearchResultCell.xib */; };
 		81D3E22E1AAA850C007A60CF /* ObjCUtilities.m in Sources */ = {isa = PBXBuildFile; fileRef = 81D3E22D1AAA850C007A60CF /* ObjCUtilities.m */; };
 		81DA8A67198A9FE00037EAD1 /* Song.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81DA8A66198A9FE00037EAD1 /* Song.swift */; };
+		81E3E8471B24278E00EE8ED9 /* UserFavoriteSongCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 81E3E8461B24278E00EE8ED9 /* UserFavoriteSongCell.xib */; };
+		81E3E8491B2427CA00EE8ED9 /* UserFavoriteSongCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81E3E8481B2427CA00EE8ED9 /* UserFavoriteSongCell.swift */; };
 		81EAC5F91998132000F02894 /* SongStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81EAC5F81998132000F02894 /* SongStore.swift */; };
 		81EF5D951B120F05006DD0F3 /* LocationCellFooterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81EF5D931B120F05006DD0F3 /* LocationCellFooterViewController.swift */; };
 		81EF5D961B120F05006DD0F3 /* LocationCellFooterViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 81EF5D941B120F05006DD0F3 /* LocationCellFooterViewController.xib */; };
@@ -134,6 +139,7 @@
 		81414DCD197DD1F800081132 /* EnumHackExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EnumHackExtensions.swift; sourceTree = "<group>"; };
 		81414DCF197DF9CF00081132 /* ProfileViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
 		81414DD0197DF9CF00081132 /* ProfileViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ProfileViewController.xib; sourceTree = "<group>"; };
+		81431C0C1B23BC6B00DF67C7 /* UserFavoritesTableDataHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserFavoritesTableDataHelper.swift; sourceTree = "<group>"; };
 		814AF0BC1A82F360003ECEED /* AlertManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AlertManager.swift; sourceTree = "<group>"; };
 		81527127196C5A8E00464068 /* User.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		815831101974308E0011D3CE /* OneSoundColors.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OneSoundColors.swift; sourceTree = "<group>"; };
@@ -156,6 +162,8 @@
 		816205F51B0D34CA001BD3E9 /* OSViewControllerVars.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OSViewControllerVars.swift; sourceTree = "<group>"; };
 		816205FA1B0E1F81001BD3E9 /* OSTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OSTableViewController.swift; sourceTree = "<group>"; };
 		816205FC1B0F94CE001BD3E9 /* LocationManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationManager.swift; sourceTree = "<group>"; };
+		8162C9641B216808006C6D16 /* PagedDataArray.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PagedDataArray.swift; sourceTree = "<group>"; };
+		8162C9681B239BC0006C6D16 /* UserFavoritesManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserFavoritesManager.swift; sourceTree = "<group>"; };
 		81631F3219994BB000C55A6F /* PartyMemberCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PartyMemberCell.swift; sourceTree = "<group>"; };
 		81631F3319994BB000C55A6F /* PartyMemberCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PartyMemberCell.xib; sourceTree = "<group>"; };
 		816FD444196F22B0003CCB1C /* SideNavigationViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SideNavigationViewController.swift; sourceTree = "<group>"; };
@@ -216,6 +224,8 @@
 		81D3E22C1AAA850C007A60CF /* ObjCUtilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObjCUtilities.h; sourceTree = "<group>"; };
 		81D3E22D1AAA850C007A60CF /* ObjCUtilities.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObjCUtilities.m; sourceTree = "<group>"; };
 		81DA8A66198A9FE00037EAD1 /* Song.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Song.swift; sourceTree = "<group>"; };
+		81E3E8461B24278E00EE8ED9 /* UserFavoriteSongCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = UserFavoriteSongCell.xib; sourceTree = "<group>"; };
+		81E3E8481B2427CA00EE8ED9 /* UserFavoriteSongCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserFavoriteSongCell.swift; sourceTree = "<group>"; };
 		81EAC5F81998132000F02894 /* SongStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SongStore.swift; sourceTree = "<group>"; };
 		81EF5D931B120F05006DD0F3 /* LocationCellFooterViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationCellFooterViewController.swift; sourceTree = "<group>"; };
 		81EF5D941B120F05006DD0F3 /* LocationCellFooterViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LocationCellFooterViewController.xib; sourceTree = "<group>"; };
@@ -390,6 +400,7 @@
 		8158311C197472000011D3CE /* MainViewControllers */ = {
 			isa = PBXGroup;
 			children = (
+				81E3E84A1B242ACC00EE8ED9 /* Reusable */,
 				8158313619747EEE0011D3CE /* Party */,
 				8158313419747ECA0011D3CE /* Search */,
 				8158313119747EAA0011D3CE /* Profile */,
@@ -468,6 +479,8 @@
 				8130D7D31986B8EB00DD4B47 /* PartyManager.swift */,
 				8195E68B1A5CB76D00FD0CC8 /* PartyAudioManager.swift */,
 				818750551A50C624000CC353 /* PartyPlaylistManager.swift */,
+				8162C9641B216808006C6D16 /* PagedDataArray.swift */,
+				8162C9681B239BC0006C6D16 /* UserFavoritesManager.swift */,
 				81ACB3E71A5273AD0039529E /* PartyMembersManager.swift */,
 				8195347F197857E6000B97A3 /* UserManager.swift */,
 				8187B08A1A809A8F0071B9BC /* LoginFlowManager.swift */,
@@ -571,6 +584,16 @@
 				81BCC2BD199D65AC00A3500F /* SongSearchResultCell.xib */,
 			);
 			name = "Add Song";
+			sourceTree = "<group>";
+		};
+		81E3E84A1B242ACC00EE8ED9 /* Reusable */ = {
+			isa = PBXGroup;
+			children = (
+				81431C0C1B23BC6B00DF67C7 /* UserFavoritesTableDataHelper.swift */,
+				81E3E8461B24278E00EE8ED9 /* UserFavoriteSongCell.xib */,
+				81E3E8481B2427CA00EE8ED9 /* UserFavoriteSongCell.swift */,
+			);
+			name = Reusable;
 			sourceTree = "<group>";
 		};
 		E27DB2FE218F2C0F072301C0 /* Pods */ = {
@@ -709,6 +732,7 @@
 				81BCC2BF199D65AC00A3500F /* SongSearchResultCell.xib in Resources */,
 				81EF5D961B120F05006DD0F3 /* LocationCellFooterViewController.xib in Resources */,
 				81BCC2B8199D2EA900A3500F /* AddSongViewController.xib in Resources */,
+				81E3E8471B24278E00EE8ED9 /* UserFavoriteSongCell.xib in Resources */,
 				81583124197477E30011D3CE /* SearchViewController.xib in Resources */,
 				8158313B19747F7B0011D3CE /* PartyTabBarController.xib in Resources */,
 				81BC27BE199DC0E2006233AE /* PartySongCell.xib in Resources */,
@@ -778,6 +802,7 @@
 				81EF5D951B120F05006DD0F3 /* LocationCellFooterViewController.swift in Sources */,
 				8179444E1A5751C000A9C636 /* ENSideMenu.swift in Sources */,
 				8175E7341B1FFDAF001E1DA9 /* ProfileFavoritesTableViewController.swift in Sources */,
+				8162C9651B216808006C6D16 /* PagedDataArray.swift in Sources */,
 				815831451975CD450011D3CE /* SwiftUtilities.swift in Sources */,
 				81583123197477E30011D3CE /* SearchViewController.swift in Sources */,
 				8103D66B19805E9000AE5A27 /* LoggingInSpashViewController.swift in Sources */,
@@ -807,6 +832,7 @@
 				815831111974308E0011D3CE /* OneSoundColors.swift in Sources */,
 				8158314219748F730011D3CE /* PartyMembersViewController.swift in Sources */,
 				818750561A50C624000CC353 /* PartyPlaylistManager.swift in Sources */,
+				81E3E8491B2427CA00EE8ED9 /* UserFavoriteSongCell.swift in Sources */,
 				8158313A19747F7B0011D3CE /* PartyTabBarController.swift in Sources */,
 				8195347B19775FCE000B97A3 /* LoginColorCell.swift in Sources */,
 				8108DF97199BBC900040B8E7 /* CreatePartyViewController.swift in Sources */,
@@ -815,10 +841,12 @@
 				816205F61B0D34CA001BD3E9 /* OSViewControllerVars.swift in Sources */,
 				8179444F1A5751C000A9C636 /* ENSideMenuNavigationController.swift in Sources */,
 				8130D7D41986B8EB00DD4B47 /* PartyManager.swift in Sources */,
+				81431C0D1B23BC6B00DF67C7 /* UserFavoritesTableDataHelper.swift in Sources */,
 				8158314C1976D54F0011D3CE /* LoginViewController.swift in Sources */,
 				81ACB3E81A5273AD0039529E /* PartyMembersManager.swift in Sources */,
 				814AF0BD1A82F360003ECEED /* AlertManager.swift in Sources */,
 				8158311A197471ED0011D3CE /* PartyMainViewController.swift in Sources */,
+				8162C9691B239BC0006C6D16 /* UserFavoritesManager.swift in Sources */,
 				81583116197443940011D3CE /* SideNavigationUserCell.swift in Sources */,
 				813897991A5465B0008BBC77 /* OSTriangleView.swift in Sources */,
 				81929C88196C2C2C006F336B /* OneSoundHTTPClient.swift in Sources */,
