@@ -18,7 +18,7 @@ let UserFavoriteSongCellIdentifier = "UserFavoriteSongCell"
     func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView?
     optional func refreshControlBackgroundColor() -> UIColor
     optional func refreshControlTintColor() -> UIColor
-    //optional func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath)
+    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath)
 }
 
 class UserFavoritesTableDataHelper: OSTableViewController
@@ -330,13 +330,11 @@ extension UserFavoritesTableDataHelper: UITableViewDelegate {
         return (delegate != nil) ? delegate!.tableView(tableView, viewForHeaderInSection: section) : nil
     }
     
-//    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-//        if delegate != nil {
-//            if delegate!.tableView?(tableView, didSelectRowAtIndexPath: indexPath) != nil {
-//                delegate!.tableView!(tableView, didSelectRowAtIndexPath: indexPath)
-//            }
-//        }
-//    }
+    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        if delegate != nil {
+            delegate!.tableView(tableView, didSelectRowAtIndexPath: indexPath)
+        }
+    }
 }
 
 extension UserFavoritesTableDataHelper: UIScrollViewDelegate {

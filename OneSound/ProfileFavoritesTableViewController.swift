@@ -78,6 +78,10 @@ extension ProfileFavoritesTableViewController: UserFavoritesTableDataHelperDeleg
         return headerView
     }
     
+    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        
+    }
+    
     func refreshControlBackgroundColor() -> UIColor
     {
         return UIColor.grayMid()

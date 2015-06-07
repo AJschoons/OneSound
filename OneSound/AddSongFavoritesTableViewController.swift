@@ -12,6 +12,7 @@ class AddSongFavoritesTableViewController: OSViewController {
 
     let dataHelper = UserFavoritesTableDataHelper()
     let TableViewHeaderHeight: CGFloat = 20.0
+    weak var parentAddSongViewController: UIViewController?
     
     override func viewDidLoad()
     {
@@ -83,17 +84,21 @@ extension AddSongFavoritesTableViewController: UserFavoritesTableDataHelperDeleg
         if UserManager.sharedUser.setup == true {
             let partyManager = PartyManager.sharedParty
             if partyManager.state != .None {
-            
-                OSAPI.sharedClient.POSTSong(PartyManager.sharedParty.partyID, externalID: selectedSong.getExternalIDForPlaying().toInt()!, source: source, title: selectedSong.name, artist: selectedSong.artistName, duration: selectedSong.duration, artworkURL: selectedSong.artworkURL,
+                
+                // TODO: NIGGA MAKE DURATION WORK
+                
+                OSAPI.sharedClient.POSTSong(PartyManager.sharedParty.partyID, externalID: selectedSong.getExternalIDForPlaying().toInt()!, source: source, title: selectedSong.name, artist: selectedSong.artistName, duration: 500, artworkURL: selectedSong.artworkURL,
                     success: { data, responseObject in
                         // If no song playing when song added, bring them to the Now Playing tab
                         if !partyManager.hasCurrentSongAndUser && partyManager.state == .HostStreamable {
                             getPartyTabBarController()?.selectedIndex = 1
                         }
-                        self.dismissViewControllerAnimated(true, completion: nil)
+                        
+                        self.parentAddSongViewController?.dismissViewControllerAnimated(true, completion: nil)
+                        
                         NSNotificationCenter.defaultCenter().postNotificationName(PartySongWasAddedNotification, object: nil)
                     }, failure: { task, error in
-                        self.dismissViewControllerAnimated(true, completion: nil)
+                        self.parentAddSongViewController?.dismissViewControllerAnimated(true, completion: nil)
                         let alert = UIAlertView(title: "Problem Adding Song", message: "The song could not be added to the playlist, please try a different song", delegate: nil, cancelButtonTitle: defaultAlertCancelButtonText)
                         alert.show()
                     }

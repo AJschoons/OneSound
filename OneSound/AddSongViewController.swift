@@ -259,7 +259,8 @@ class AddSongViewController: OSModalViewController {
         //animatedOneSoundOne.hidden = true
         activityIndicator.hidden = true
         
-        
+        addSongFavoritesTableViewController.parentAddSongViewController = self
+        addSongFavoritesTableViewController.dataHelper.tableView = favoritesTable
         searchResultsTable.hidden = false
         favoritesTable.backgroundColor = UIColor.grayLight()
         favoritesTable.hidden = true
