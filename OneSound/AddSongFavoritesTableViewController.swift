@@ -86,21 +86,45 @@ extension AddSongFavoritesTableViewController: UserFavoritesTableDataHelperDeleg
             if partyManager.state != .None {
                 
                 //TODO: NIGGA MAKE DURATION WORK
-                
-                OSAPI.sharedClient.POSTSong(PartyManager.sharedParty.partyID, externalID: selectedSong.externalID!.toInt()!, source: source, title: selectedSong.name, artist: selectedSong.artistName, duration: 500, artworkURL: selectedSong.artworkURL,
-                    success: { data, responseObject in
-                        // If no song playing when song added, bring them to the Now Playing tab
-                        if !partyManager.hasCurrentSongAndUser && partyManager.state == .HostStreamable {
-                            getPartyTabBarController()?.selectedIndex = 1
+                SCClient.sharedClient.getSoundCloudSongByID(selectedSong.externalID!.toInt()!,
+                    success: {data, responseObject in
+                        let responseJSON = JSON(responseObject)
+                        
+                        if responseJSON != nil
+                            && responseJSON["streamable"].bool == true {
+                                
+                                OSAPI.sharedClient.POSTSong(PartyManager.sharedParty.partyID, externalID: selectedSong.externalID!.toInt()!, source: source, title: selectedSong.name, artist: selectedSong.artistName, duration: 500, artworkURL: selectedSong.artworkURL,
+                                    success: { data, responseObject in
+                                        // If no song playing when song added, bring them to the Now Playing tab
+                                        if !partyManager.hasCurrentSongAndUser && partyManager.state == .HostStreamable {
+                                            getPartyTabBarController()?.selectedIndex = 1
+                                        }
+                                        
+                                        self.parentAddSongViewController?.dismissViewControllerAnimated(true, completion: nil)
+                                        
+                                        NSNotificationCenter.defaultCenter().postNotificationName(PartySongWasAddedNotification, object: nil)
+                                    }, failure: { task, error in
+                                        self.parentAddSongViewController?.dismissViewControllerAnimated(true, completion: nil)
+                                        let alert = UIAlertView(title: "Problem Adding Song", message: "The song could not be added to the playlist, please try a different song", delegate: nil, cancelButtonTitle: defaultAlertCancelButtonText)
+                                        alert.show()
+                                    }
+                                )
+
+                        } else {
+                            
+                            self.parentAddSongViewController?.dismissViewControllerAnimated(true, completion: nil)
+                            let alert = UIAlertView(title: "SoundCloud doesn't support this song", message: "The song could not be added to the playlist because SoundCloud doesn't allow us to stream the song.", delegate: nil, cancelButtonTitle: defaultAlertCancelButtonText)
+                            alert.show()
+                            
+                            // TODO: Handle taking the song out of favorites (UnFavorite)
+
                         }
-                        
-                        self.parentAddSongViewController?.dismissViewControllerAnimated(true, completion: nil)
-                        
-                        NSNotificationCenter.defaultCenter().postNotificationName(PartySongWasAddedNotification, object: nil)
-                    }, failure: { task, error in
+                    }, failure: {task, error in
                         self.parentAddSongViewController?.dismissViewControllerAnimated(true, completion: nil)
                         let alert = UIAlertView(title: "Problem Adding Song", message: "The song could not be added to the playlist, please try a different song", delegate: nil, cancelButtonTitle: defaultAlertCancelButtonText)
                         alert.show()
+                        
+                        // TODO: Problem trying to connect to SoundCloud, handle somehow?? 
                     }
                 )
             } else {
