@@ -85,9 +85,9 @@ extension AddSongFavoritesTableViewController: UserFavoritesTableDataHelperDeleg
             let partyManager = PartyManager.sharedParty
             if partyManager.state != .None {
                 
-                // TODO: NIGGA MAKE DURATION WORK
+                //TODO: NIGGA MAKE DURATION WORK
                 
-                OSAPI.sharedClient.POSTSong(PartyManager.sharedParty.partyID, externalID: selectedSong.getExternalIDForPlaying().toInt()!, source: source, title: selectedSong.name, artist: selectedSong.artistName, duration: 500, artworkURL: selectedSong.artworkURL,
+                OSAPI.sharedClient.POSTSong(PartyManager.sharedParty.partyID, externalID: selectedSong.externalID!.toInt()!, source: source, title: selectedSong.name, artist: selectedSong.artistName, duration: 500, artworkURL: selectedSong.artworkURL,
                     success: { data, responseObject in
                         // If no song playing when song added, bring them to the Now Playing tab
                         if !partyManager.hasCurrentSongAndUser && partyManager.state == .HostStreamable {

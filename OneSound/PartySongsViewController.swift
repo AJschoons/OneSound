@@ -565,7 +565,7 @@ extension PartySongsViewController: SWTableViewCellDelegate {
                 
                 if songWasFavorited {
                     // Un-favorite the song
-                    // TODO: api call to unfavorite the song
+                    PartyManager.sharedParty.songUnfavorite(song.songID!)
                 } else {
                     // Favorite the song
                     PartyManager.sharedParty.songFavorite(song.songID!)
