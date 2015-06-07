@@ -24,8 +24,8 @@ class PartySongCell: SWTableViewCell {
     @IBOutlet weak var thumbsDownImage: UIImageView!
     @IBOutlet weak var thumbsUpImage: UIImageView!
     
-    @IBOutlet weak private var triangleView: OSTriangleView!
-    @IBOutlet weak private var voteCountLabel: UILabel!
+    @IBOutlet weak private(set) var triangleView: OSTriangleView!
+    @IBOutlet weak private(set) var voteCountLabel: UILabel!
     
     // Used for tracking where cell is for votes (need a way to "talk" to the tableViewController)
     weak var voteDelegate: PartySongCellDelegate?

@@ -39,7 +39,7 @@ class ProfileViewController: OSViewController {
 
     private var loadedFullUserInfoFromDefaults = false
     private let defaultUserImageForProfileImageName = "defaultUserImageForProfile"
-    private let profileFavoritesTableViewController = ProfileFavoritesTableViewController(style: UITableViewStyle.Plain)
+    private let profileFavoritesTableViewController = ProfileFavoritesTableViewController()
 
     @IBAction func signIntoFacebook(sender: AnyObject) {
         let fbSession = FBSession.activeSession()
@@ -98,9 +98,6 @@ class ProfileViewController: OSViewController {
         // Stop view from being covered by the nav bar / laid out from top of screen
         edgesForExtendedLayout = UIRectEdge.None
         
-        // Setup favorites table
-        profileFavoritesTableViewController.tableView = favoritesTable
-        
         disableButtons()
         hideMessages()
         setUserInfoHidden(true)
@@ -127,11 +124,18 @@ class ProfileViewController: OSViewController {
         loadedFullUserInfoFromDefaults = setUserProfileInfoFromUserDefaults()
         
         signOutButton!.tintColor = UIColor.red()
+        
+        //
+        // Setup and load favorites table
+        //
+        profileFavoritesTableViewController.dataHelper.tableView = favoritesTable
+        profileFavoritesTableViewController.viewDidLoad()
     }
     
     override func viewWillAppear(animated: Bool) {
-        refreshWithValidUser()
         super.viewWillAppear(animated)
+        refreshWithValidUser()
+        profileFavoritesTableViewController.viewWillAppear(animated)
     }
     
     override func viewWillDisappear(animated: Bool) {
@@ -142,6 +146,12 @@ class ProfileViewController: OSViewController {
         setUserInfoHidden(true)
         setStoriesTableToHidden(true)
         */
+        profileFavoritesTableViewController.viewWillDisappear(animated)
+    }
+    
+    override func viewDidDisappear(animated: Bool) {
+        super.viewDidDisappear(animated)
+        profileFavoritesTableViewController.viewDidDisappear(animated)
     }
     
     func refreshIfVisible() {

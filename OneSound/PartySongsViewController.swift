@@ -319,12 +319,21 @@ extension PartySongsViewController: UITableViewDataSource {
         
         // If the user is a guest, don't allow them to favorite songs
         if showsFavoriteForSongCellAtIndexPathWithRow(indexPath.row) {
-            rightUtilityButtons.sw_addUtilityButtonWithColor(UIColor.yellow(), title:"Favorite")
+            let song = playlistManager.songs[indexPath.row]
+            
+            var favoriteButtonColor: UIColor
+            if song.isFavorited != nil && song.isFavorited! {
+                favoriteButtonColor = UIColor.yellow()
+            } else {
+                favoriteButtonColor = UIColor.yellow().colorWithAlphaComponent(0.3)
+            }
+            
+            rightUtilityButtons.sw_addUtilityButtonWithColor(favoriteButtonColor, icon: UIImage(named: "favoriteIcon"))
         }
         
         // Check if the current song has been added by the user or if the user is host
         if showsDeleteForSongCellAtIndexPathWithRow(indexPath.row) {
-            rightUtilityButtons.sw_addUtilityButtonWithColor(UIColor.red(),title:"Delete")
+            rightUtilityButtons.sw_addUtilityButtonWithColor(UIColor.red(), icon: UIImage(named: "trashIcon"))
         }
         
         return rightUtilityButtons as [AnyObject]
@@ -511,38 +520,75 @@ extension PartySongsViewController: SWTableViewCellDelegate {
     
     // click event on right utility button
     func swipeableTableViewCell(cell: SWTableViewCell!, didTriggerRightUtilityButtonWithIndex rightButtonsIndex: NSInteger) {
-        var isDelete = false
-        var isFavorite = false
-        var cellIndexPath = songsTable.indexPathForCell(cell)
+        
+        //
+        // Ensure correct cell type and indexPath exist
+        //
+        
+        let songCell: PartySongCell! = cell as? PartySongCell
+        if songCell == nil { return }
+        
+        let cellIndexPath = songsTable.indexPathForCell(cell)
+        if cellIndexPath == nil { return }
         var row = cellIndexPath!.row
         
+        
+        //
+        // Determine which button was pressed
+        //
+        
+        var isDeleteButton = false
+        var isFavoriteButton = false
+        
         if showsDeleteForSongCellAtIndexPathWithRow(row) && showsFavoriteForSongCellAtIndexPathWithRow(row) {
-            isDelete = rightButtonsIndex == 1
-            isFavorite = rightButtonsIndex == 0
+            isDeleteButton = rightButtonsIndex == 1
+            isFavoriteButton = rightButtonsIndex == 0
         } else if showsDeleteForSongCellAtIndexPathWithRow(row) {
-            isDelete = true
+            isDeleteButton = true
         } else {
-            isFavorite = true
+            isFavoriteButton = true
         }
         
-        if isFavorite {
-            // Favorite
+        
+        //
+        // Actions based on the button pressed
+        //
+        
+        if isFavoriteButton {
+            // Favorite button pressed
             if let songCell = cell as? PartySongCell {
-                if let row = songCell.index {
-                    var song = playlistManager.songs[row]
+                let song = playlistManager.songs[row]
+                let songWasFavorited = song.isFavorited != nil && song.isFavorited!
+                
+                // Flip the isFavorited bool of the local song model
+                song.isFavorited = !songWasFavorited
+                
+                if songWasFavorited {
+                    // Un-favorite the song
+                    // TODO: api call to unfavorite the song
+                } else {
+                    // Favorite the song
                     PartyManager.sharedParty.songFavorite(song.songID!)
-                    cell.hideUtilityButtonsAnimated(true)
                 }
+                
+                // Reload the song cells buttons to be correct
+                songCell.rightUtilityButtons = rightUtilityButtonsForCellAtIndexPath(cellIndexPath!)
             }
-        } else if isDelete {
+        } else if isDeleteButton {
             // Delete
             if let songCell = cell as? PartySongCell {
                 if let row = songCell.index {
                     tableView(songsTable, commitEditingStyle: UITableViewCellEditingStyle.Delete, forRowAtIndexPath: NSIndexPath(forRow: row, inSection: 0))
-                    cell.hideUtilityButtonsAnimated(true)
                 }
             }
         }
+        
+        
+        //
+        // Do this regardless of which button it was
+        //
+        
+        cell.hideUtilityButtonsAnimated(true)
     }
     
     
@@ -551,9 +597,4 @@ extension PartySongsViewController: SWTableViewCellDelegate {
     func swipeableTableViewCellShouldHideUtilityButtonsOnSwipe(cell: SWTableViewCell) -> Bool {
         return true
     }
-
-    
-    
-    
-    
 }
