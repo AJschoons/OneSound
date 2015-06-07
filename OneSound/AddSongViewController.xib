@@ -10,9 +10,11 @@
                 <outlet property="activityIndicator" destination="0Hp-gN-8bF" id="cT2-Gu-847"/>
                 <outlet property="animatedOneSoundOne" destination="QBl-38-kz5" id="9cF-mF-xRj"/>
                 <outlet property="favoritesTable" destination="Icp-ad-9qV" id="5wW-pO-F2w"/>
+                <outlet property="searchBar" destination="Zha-Cf-aAR" id="9Ty-Qe-xgN"/>
                 <outlet property="searchResultsTable" destination="LRn-oE-J4g" id="LQU-N1-K8I"/>
                 <outlet property="searchTypeControl" destination="ndO-bm-YAL" id="YDu-32-Pe1"/>
                 <outlet property="songSearchBar" destination="Zha-Cf-aAR" id="MxG-3u-sKt"/>
+                <outlet property="toolbar" destination="Z3v-88-Q0q" id="Y2A-Q7-VGU"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
             </connections>
         </placeholder>
@@ -21,14 +23,6 @@
             <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
-                <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="LRn-oE-J4g">
-                    <rect key="frame" x="0.0" y="88" width="600" height="512"/>
-                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                    <connections>
-                        <outlet property="dataSource" destination="-1" id="wdT-L5-dau"/>
-                        <outlet property="delegate" destination="-1" id="16q-aQ-HKD"/>
-                    </connections>
-                </tableView>
                 <imageView hidden="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="QBl-38-kz5">
                     <rect key="frame" x="280" y="324" width="40" height="40"/>
                     <constraints>
@@ -73,12 +67,22 @@
                         <barButtonItem style="plain" systemItem="flexibleSpace" id="DK5-Xr-z2J"/>
                     </items>
                 </toolbar>
-                <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="Icp-ad-9qV">
-                    <rect key="frame" x="0.0" y="44" width="600" height="556"/>
-                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                <tableView clipsSubviews="YES" contentMode="scaleToFill" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="Icp-ad-9qV" userLabel="favoritesTable">
+                    <rect key="frame" x="0.0" y="47" width="600" height="553"/>
+                    <color key="backgroundColor" red="0.96078431372549022" green="0.96078431372549022" blue="0.96078431372549022" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                    <color key="separatorColor" red="0.96078431372549022" green="0.96078431372549022" blue="0.96078431372549022" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                </tableView>
+                <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="LRn-oE-J4g" userLabel="soundCloudTable">
+                    <rect key="frame" x="0.0" y="88" width="600" height="512"/>
+                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                    <color key="separatorColor" red="0.96078431372549022" green="0.96078431372549022" blue="0.96078431372549022" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                    <connections>
+                        <outlet property="dataSource" destination="-1" id="wdT-L5-dau"/>
+                        <outlet property="delegate" destination="-1" id="16q-aQ-HKD"/>
+                    </connections>
                 </tableView>
             </subviews>
-            <color key="backgroundColor" red="0.95075207948684692" green="0.95072358846664429" blue="0.95073968172073364" alpha="1" colorSpace="calibratedRGB"/>
+            <color key="backgroundColor" red="0.96078431372549022" green="0.96078431372549022" blue="0.96078431372549022" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
             <constraints>
                 <constraint firstItem="Zha-Cf-aAR" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" id="5Nd-cD-5oq"/>
                 <constraint firstAttribute="trailing" secondItem="Icp-ad-9qV" secondAttribute="trailing" id="DFU-9h-KFs"/>
@@ -96,7 +100,7 @@
                 <constraint firstItem="Z3v-88-Q0q" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="m09-JX-K9g"/>
                 <constraint firstItem="LRn-oE-J4g" firstAttribute="centerY" secondItem="QBl-38-kz5" secondAttribute="centerY" id="oHP-0X-BWn"/>
                 <constraint firstItem="Zha-Cf-aAR" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="pqL-4u-LEf"/>
-                <constraint firstItem="Icp-ad-9qV" firstAttribute="top" secondItem="Z3v-88-Q0q" secondAttribute="bottom" id="tJy-gg-fAJ"/>
+                <constraint firstItem="Icp-ad-9qV" firstAttribute="top" secondItem="Z3v-88-Q0q" secondAttribute="bottom" constant="3" id="tJy-gg-fAJ"/>
                 <constraint firstItem="LRn-oE-J4g" firstAttribute="centerX" secondItem="QBl-38-kz5" secondAttribute="centerX" id="uyJ-K3-04F"/>
                 <constraint firstAttribute="trailing" secondItem="Z3v-88-Q0q" secondAttribute="trailing" id="xBh-xE-BPj"/>
             </constraints>

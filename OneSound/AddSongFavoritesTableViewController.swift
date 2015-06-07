@@ -75,4 +75,37 @@ extension AddSongFavoritesTableViewController: UserFavoritesTableDataHelperDeleg
     func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         return nil
     }
+    
+    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        let selectedSong = dataHelper.userFavoritesManager.pagedDataArray.data[indexPath.row]
+        let source = "sc"
+        
+        if UserManager.sharedUser.setup == true {
+            let partyManager = PartyManager.sharedParty
+            if partyManager.state != .None {
+            
+                OSAPI.sharedClient.POSTSong(PartyManager.sharedParty.partyID, externalID: selectedSong.getExternalIDForPlaying().toInt()!, source: source, title: selectedSong.name, artist: selectedSong.artistName, duration: selectedSong.duration, artworkURL: selectedSong.artworkURL,
+                    success: { data, responseObject in
+                        // If no song playing when song added, bring them to the Now Playing tab
+                        if !partyManager.hasCurrentSongAndUser && partyManager.state == .HostStreamable {
+                            getPartyTabBarController()?.selectedIndex = 1
+                        }
+                        self.dismissViewControllerAnimated(true, completion: nil)
+                        NSNotificationCenter.defaultCenter().postNotificationName(PartySongWasAddedNotification, object: nil)
+                    }, failure: { task, error in
+                        self.dismissViewControllerAnimated(true, completion: nil)
+                        let alert = UIAlertView(title: "Problem Adding Song", message: "The song could not be added to the playlist, please try a different song", delegate: nil, cancelButtonTitle: defaultAlertCancelButtonText)
+                        alert.show()
+                    }
+                )
+            } else {
+                let alert = UIAlertView(title: "Not A Party Member", message: "Please join a party before adding a song", delegate: nil, cancelButtonTitle: defaultAlertCancelButtonText)
+                alert.show()
+            }
+        } else {
+            let alert = UIAlertView(title: "Not Signed In", message: "Please sign into an account before adding a song", delegate: nil, cancelButtonTitle: defaultAlertCancelButtonText)
+            alert.show()
+        }
+
+    }
 }

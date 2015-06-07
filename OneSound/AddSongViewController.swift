@@ -23,6 +23,8 @@ class AddSongViewController: OSModalViewController {
     @IBOutlet weak var animatedOneSoundOne: UIImageView!
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
     
+    @IBOutlet weak var searchBar: UISearchBar!
+    @IBOutlet weak var toolbar: UIToolbar!
     @IBOutlet weak var searchTypeControl: UISegmentedControl!
     var searchResultsArray = [SongSearchResult]()
     
@@ -180,8 +182,13 @@ class AddSongViewController: OSModalViewController {
             searchResultsArray = []
             searchResultsTable.reloadData()
             noSearchResults = false
+            searchResultsTable.hidden = false
+            favoritesTable.hidden = true
+            searchBar.hidden = false
         } else {
-            
+            searchResultsTable.hidden = true
+            favoritesTable.hidden = false
+            searchBar.hidden = true
         }
         
     }
@@ -219,6 +226,11 @@ class AddSongViewController: OSModalViewController {
         
         osvcVariables.screenName = AddSongViewControllerNibName
         
+        toolbar.delegate = self
+        toolbar.setBackgroundImage(UIImage(named: "toolbarBackground"), forToolbarPosition: UIBarPosition.TopAttached, barMetrics: UIBarMetrics.Default)
+        toolbar.setShadowImage(UIImage(named: "navigationBarShadow"), forToolbarPosition: UIBarPosition.TopAttached)
+        toolbar.translucent = false
+        
         // Setup nav bar
         navigationItem.title = "Add Song"
         navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Cancel, target: self, action: "cancel")
@@ -247,9 +259,10 @@ class AddSongViewController: OSModalViewController {
         //animatedOneSoundOne.hidden = true
         activityIndicator.hidden = true
         
-        // Set up favorites table
         
-        addSongFavoritesTableViewController.dataHelper.tableView = searchResultsTable
+        searchResultsTable.hidden = false
+        favoritesTable.backgroundColor = UIColor.grayLight()
+        favoritesTable.hidden = true
         addSongFavoritesTableViewController.viewDidLoad()
     }
     
@@ -265,7 +278,13 @@ class AddSongViewController: OSModalViewController {
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
+        
+        // Makes it look like the toolbar is part of the navigation bar
         addSongFavoritesTableViewController.viewWillAppear(animated)
+        
+        navigationController?.navigationBar.translucent = false
+        navigationController?.navigationBar.shadowImage = UIImage()
+        
     }
     
     override func viewDidAppear(animated: Bool) {
@@ -276,7 +295,11 @@ class AddSongViewController: OSModalViewController {
     override func viewWillDisappear(animated: Bool)
     {
         super.viewWillDisappear(animated)
+        
         addSongFavoritesTableViewController.viewWillDisappear(animated)
+        
+        // Restore nav and toolbar appearance
+        getFrontNavigationController()?.setupNavigationAndToolbarAppearance()
     }
     
     
@@ -420,6 +443,13 @@ extension AddSongViewController: UISearchBarDelegate {
     func searchBarSearchButtonClicked(searchBar: UISearchBar) {
         songSearchBar.resignFirstResponder()
         search(isSearchButtonPressed:true)
+    }
+}
+
+
+extension AddSongViewController: UIToolbarDelegate {
+    func positionForBar(bar: UIBarPositioning) -> UIBarPosition {
+        return UIBarPosition.TopAttached
     }
 }
 
