@@ -786,7 +786,7 @@ extension PartyMainViewController {
         } else {
             let alert = UIAlertView(title: "Guests cannot create parties", message: "To create a party go to the Profile and sign in with Facebook, then try again", delegate: self, cancelButtonTitle: "Cancel", otherButtonTitles: "Profile")
             alert.tag = AlertTag.GuestCreatingParty.rawValue
-            AlertManager.sharedManager.showAlert(alert)
+            alert.show()
         }
     }
     

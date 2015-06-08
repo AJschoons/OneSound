@@ -204,7 +204,7 @@ class CreatePartyViewController: OSTableViewController {
                 })
             } else {
                 let alert = UIAlertView(title: "Music Control Failure", message: "Failed to get the music stream control. Please reload the party settings and try again", delegate: self, cancelButtonTitle: defaultAlertCancelButtonText)
-                AlertManager.sharedManager.showAlert(alert)
+                alert.show()
             }
         })
     }
