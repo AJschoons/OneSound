@@ -96,8 +96,9 @@ extension ProfileFavoritesTableViewController: UserFavoritesTableDataHelperDeleg
         return headerView
     }
     
-    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        
+    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath)
+    {
+        // Do nothing when selecting a favorite on the user's profile
     }
     
     func refreshControlBackgroundColor() -> UIColor
@@ -109,4 +110,7 @@ extension ProfileFavoritesTableViewController: UserFavoritesTableDataHelperDeleg
     {
         return UIColor.grayDark()
     }
+    
+    func titleMessageForEmptyTableBackgroundView() -> String { return "No favorited songs" }
+    func detailMessageForEmptyTableBackgroundView() -> String { return "Your favorited songs will shown and managed here" }
 }

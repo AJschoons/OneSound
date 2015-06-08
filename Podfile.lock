@@ -23,16 +23,16 @@ PODS:
   - AFNetworking/UIKit (2.5.4):
     - AFNetworking/NSURLConnection
     - AFNetworking/NSURLSession
-  - Bolts (1.1.5):
-    - Bolts/AppLinks (= 1.1.5)
-    - Bolts/Tasks (= 1.1.5)
-  - Bolts/AppLinks (1.1.5):
+  - Bolts (1.2.0):
+    - Bolts/AppLinks (= 1.2.0)
+    - Bolts/Tasks (= 1.2.0)
+  - Bolts/AppLinks (1.2.0):
     - Bolts/Tasks
-  - Bolts/Tasks (1.1.5)
+  - Bolts/Tasks (1.2.0)
   - Facebook-iOS-SDK (3.23.2):
     - Bolts (~> 1.0)
-  - INTULocationManager (3.0.1)
-  - NewRelicAgent (5.0.3)
+  - INTULocationManager (3.0.3)
+  - NewRelicAgent (5.1.0)
   - SDWebImage (3.7.2):
     - SDWebImage/Core (= 3.7.2)
   - SDWebImage/Core (3.7.2)
@@ -56,14 +56,14 @@ DEPENDENCIES:
 SPEC CHECKSUMS:
   AFNetworkActivityLogger: 121486778117d53b3ab1c61d264b88081d0c3eee
   AFNetworking: 05edc0ac4c4c8cf57bcf4b84be5b0744b6d8e71e
-  Bolts: aac24961496d504aa56fc267cde95162a71bac39
+  Bolts: d176cb1e0012175589e389a9db49b85e27787576
   Facebook-iOS-SDK: cd87f0b2f0c1d9574b44e8fa2baacc275524bac3
-  INTULocationManager: c27483113e1bbc5952ead6417f9b39824a240ebb
-  NewRelicAgent: f59d6d0dd064f214b13bbc87e78277de0c3d60a4
+  INTULocationManager: e79327803a163f5fec28eb042bb124ed0c6e4876
+  NewRelicAgent: ab0ca8fe6477d3650eb58c95d5d26dfbd9be7bac
   SDWebImage: 71b7cdc1d1721d6a82ed62889030225f2c249e29
   SSKeychain: 3f42991739c6c60a9cf1bbd4dff6c0d3694bcf3d
   StreamingKit: f00c054cfd0f59d88c8be7a2270e208302ce48c4
   SWTableViewCell: 2a94aadc9d47b2b611fa064566bf57948b95b579
   UIImageEffects: 37b99fa461e4965f332ca82e92f2c22a1075ee84
 
-COCOAPODS: 0.37.1
+COCOAPODS: 0.37.0

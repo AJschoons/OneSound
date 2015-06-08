@@ -137,4 +137,7 @@ extension AddSongFavoritesTableViewController: UserFavoritesTableDataHelperDeleg
         }
 
     }
+    
+    func titleMessageForEmptyTableBackgroundView() -> String { return "No favorited songs" }
+    func detailMessageForEmptyTableBackgroundView() -> String { return "Your favorited songs will shown here" }
 }

@@ -10,17 +10,26 @@ import Foundation
 
 let UserFavoriteSongCellIdentifier = "UserFavoriteSongCell"
 
+// Protocol for a view controller that controls the UserFavoritesTableDataHelper
+// Keeps the UserFavoritesTableDataHelper flexibility
 @objc protocol UserFavoritesTableDataHelperDelegate: class
 {
     func rightUtilityButtonsForCellAtIndexPath(indexPath: NSIndexPath) -> [AnyObject]
     func swipeableTableViewCell(cell: SWTableViewCell!, didTriggerRightUtilityButtonWithIndex rightButtonsIndex: NSInteger)
+    
     func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat
     func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView?
+    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath)
+    
+    // The lines of text that show when the table is empty
+    func titleMessageForEmptyTableBackgroundView() -> String
+    func detailMessageForEmptyTableBackgroundView() -> String
+    
     optional func refreshControlBackgroundColor() -> UIColor
     optional func refreshControlTintColor() -> UIColor
-    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath)
 }
 
+// Manages displaying a users favorites in a table view
 class UserFavoritesTableDataHelper: OSTableViewController
 {
     let userFavoritesManager = UserFavoritesManager()
@@ -30,20 +39,27 @@ class UserFavoritesTableDataHelper: OSTableViewController
     
     weak var delegate: UserFavoritesTableDataHelperDelegate?
     
+    private var titleMessageForEmptyTableBackgroundView = ""
+    private var detailMessageForEmptyTableBackgroundView = ""
+    
     override func viewDidLoad()
     {
         // Creating an (empty) footer stops table from showing empty cells
         tableView.tableFooterView = UIView(frame: CGRectZero)
         
         if delegate != nil
-            && delegate!.refreshControlBackgroundColor?() != nil
-            && delegate!.refreshControlTintColor?() != nil
         {
-            refreshControl = UIRefreshControl()
-            refreshControl!.backgroundColor = delegate!.refreshControlBackgroundColor!()
-            refreshControl!.tintColor = delegate!.refreshControlTintColor!()
-            refreshControl!.addTarget(self, action: "refresh", forControlEvents: UIControlEvents.ValueChanged)
+            titleMessageForEmptyTableBackgroundView = delegate!.titleMessageForEmptyTableBackgroundView()
+            detailMessageForEmptyTableBackgroundView = delegate!.detailMessageForEmptyTableBackgroundView()
             
+            if delegate!.refreshControlBackgroundColor?() != nil && delegate!.refreshControlTintColor?() != nil
+            {
+                refreshControl = UIRefreshControl()
+                refreshControl!.backgroundColor = delegate!.refreshControlBackgroundColor!()
+                refreshControl!.tintColor = delegate!.refreshControlTintColor!()
+                refreshControl!.addTarget(self, action: "refresh", forControlEvents: UIControlEvents.ValueChanged)
+                
+            }
         }
         
         let nib = UINib(nibName: UserFavoriteSongCellNibName, bundle: nil)
@@ -130,7 +146,7 @@ extension UserFavoritesTableDataHelper: UITableViewDataSource
             tableView.backgroundView = nil
         } else {
             // Display a message when the table is empty
-            setTableBackgroundViewWithMessages(tableView, "No favorited songs", "Your favorited songs will shown and managed here")
+            setTableBackgroundViewWithMessages(tableView, titleMessageForEmptyTableBackgroundView, detailMessageForEmptyTableBackgroundView)
         }
         
         return 1
