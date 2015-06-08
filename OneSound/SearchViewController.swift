@@ -66,7 +66,7 @@ class SearchViewController: OSViewController {
         } else {
             let alert = UIAlertView(title: "Guests cannot create parties", message: "To create a party go to the Profile and sign in with Facebook, then try again", delegate: self, cancelButtonTitle: "Cancel", otherButtonTitles: "Profile")
             alert.tag = AlertTag.GuestCreatingParty.rawValue
-            alert.show()
+            AlertManager.sharedManager.showAlert(alert)
         }
     }
     
@@ -527,7 +527,7 @@ extension SearchViewController: UITableViewDelegate {
                             getAppDelegate()!.sideMenuViewController.programaticallySelectRow(1)
                         } else {
                             let alert = UIAlertView(title: "Problem Joining Party", message: "Unable to join party at this time, please try again", delegate: nil, cancelButtonTitle: defaultAlertCancelButtonText)
-                            alert.show()
+                            AlertManager.sharedManager.showAlert(alert)
                         }
                         
                         self.searchResultsArray = [Party]() // Remove the results so they have to search again
@@ -542,12 +542,12 @@ extension SearchViewController: UITableViewDelegate {
                     self.searchResultsArray = [] // Remove the results so they have to search again
                     tableView.reloadData()
                     let alert = UIAlertView(title: "Problem Joining Party", message: "Unable to join party at this time, please try again", delegate: nil, cancelButtonTitle: defaultAlertCancelButtonText)
-                    alert.show()
+                    AlertManager.sharedManager.showAlert(alert)
                 }
             )
         } else {
             let alert = UIAlertView(title: "Not Signed In", message: "Please sign into an account before joining a party", delegate: nil, cancelButtonTitle: defaultAlertCancelButtonText)
-            alert.show()
+            AlertManager.sharedManager.showAlert(alert)
         }
         
         // Deselect it after

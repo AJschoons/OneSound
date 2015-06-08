@@ -786,7 +786,7 @@ extension PartyMainViewController {
         } else {
             let alert = UIAlertView(title: "Guests cannot create parties", message: "To create a party go to the Profile and sign in with Facebook, then try again", delegate: self, cancelButtonTitle: "Cancel", otherButtonTitles: "Profile")
             alert.tag = AlertTag.GuestCreatingParty.rawValue
-            alert.show()
+            AlertManager.sharedManager.showAlert(alert)
         }
     }
     
@@ -798,7 +798,7 @@ extension PartyMainViewController {
                     self.refresh()
                 } else {
                     let alert = UIAlertView(title: "Could not leave party", message: "Please try again, or just create a new one", delegate: nil, cancelButtonTitle: defaultAlertCancelButtonText)
-                    alert.show()
+                    AlertManager.sharedManager.showAlert(alert)
                 }
             }
         )
@@ -817,7 +817,7 @@ extension PartyMainViewController {
             }
         } else {
             let alert = UIAlertView(title: "Only hosts edit party settings", message: "Please become the host before editing party settings, or make sure you still are the host", delegate: nil, cancelButtonTitle: defaultAlertCancelButtonText)
-            alert.show()
+            AlertManager.sharedManager.showAlert(alert)
         }
     }
 }

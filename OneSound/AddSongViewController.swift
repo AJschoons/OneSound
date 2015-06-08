@@ -382,16 +382,16 @@ extension AddSongViewController: UITableViewDelegate {
                     }, failure: { task, error in
                         self.dismissViewControllerAnimated(true, completion: nil)
                         let alert = UIAlertView(title: "Problem Adding Song", message: "The song could not be added to the playlist, please try a different song", delegate: nil, cancelButtonTitle: defaultAlertCancelButtonText)
-                        alert.show()
+                        AlertManager.sharedManager.showAlert(alert)
                     }
                 )
             } else {
                 let alert = UIAlertView(title: "Not A Party Member", message: "Please join a party before adding a song", delegate: nil, cancelButtonTitle: defaultAlertCancelButtonText)
-                alert.show()
+                AlertManager.sharedManager.showAlert(alert)
             }
         } else {
             let alert = UIAlertView(title: "Not Signed In", message: "Please sign into an account before adding a song", delegate: nil, cancelButtonTitle: defaultAlertCancelButtonText)
-            alert.show()
+            AlertManager.sharedManager.showAlert(alert)
         }
     }
     
