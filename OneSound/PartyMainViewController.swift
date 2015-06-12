@@ -22,6 +22,9 @@ let thumbsUpUnselectedMainParty = UIImage(named: "thumbsUpUnselectedMainParty")
 let thumbsDownSelectedMainParty = UIImage(named: "thumbsDownSelectedMainParty")
 let thumbsDownUnselectedMainParty = UIImage(named: "thumbsDownUnselectedMainParty")
 
+let favoritesIconUnselectedMainParty = UIImage(named: "favoritesIconMainPartyUnselected")
+let favoritesIconSelectedMainParty = UIImage(named: "favoritesIconMainPartySelected")
+
 class PartyMainViewController: OSViewController {
     
     let currentSongImageCache = (UIApplication.sharedApplication().delegate as! AppDelegate).currentSongImageCache
@@ -39,6 +42,7 @@ class PartyMainViewController: OSViewController {
     @IBOutlet weak var songArtistLabel: OSLabel!
     @IBOutlet weak var songTimeLabel: OSLabel!
     @IBOutlet weak var addSongButton: UIButton!
+    @IBOutlet weak var favoritesButton: UIButton!
     
     @IBOutlet weak var userView: UIView!
     @IBOutlet weak var shortUserLabel: UILabel!
@@ -91,6 +95,11 @@ class PartyMainViewController: OSViewController {
         presentViewController(navC, animated: true, completion: nil)
     }
     
+    @IBAction func favoriteSong(sender: AnyObject) {
+        handleFavoritesDownPress(sender)
+    }
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -122,9 +131,11 @@ class PartyMainViewController: OSViewController {
         setupOSLabelToDefaultDesiredLook(songArtistLabel!)
         setupOSLabelToDefaultDesiredLook(songTimeLabel!)
         
-        // Setup the thumb up/down buttons
+        // Setup the thumb up/down/favorites buttons
         shortThumbsUpButton.setImage(thumbsUpUnselectedMainParty, forState: UIControlState.Disabled)
         shortThumbsDownButton.setImage(thumbsDownUnselectedMainParty, forState: UIControlState.Disabled)
+        favoritesButton.setImage(favoritesIconUnselectedMainParty, forState: UIControlState.Normal)
+        favoritesButton.setImage(favoritesIconSelectedMainParty, forState: UIControlState.Selected)
         
         // Setup the add song button
         addSongButton.backgroundColor = UIColor.blue()
@@ -286,6 +297,7 @@ extension PartyMainViewController {
             
             var thumbsUp = false
             var thumbsDown = false
+            var favorited = currentSong.isFavorited != nil && currentSong.isFavorited!
             
             if currentSong.userVote != nil {
                 switch currentSong.userVote! {
@@ -299,7 +311,7 @@ extension PartyMainViewController {
             }
             
             setCurrentSongUserInfo(currentUser, thumbsUp: thumbsUp, thumbsDown: thumbsDown)
-            setCurrentSongInfo(name: currentSong.name, artist: currentSong.artistName, time: timeInSecondsToFormattedMinSecondTimeLabelString(currentSong.duration))
+            setCurrentSongInfo(name: currentSong.name, artist: currentSong.artistName, time: timeInSecondsToFormattedMinSecondTimeLabelString(currentSong.duration), favorited: favorited)
             updateSongImage()
         } else {
             clearAllCurrentSongAndUserInfo()
@@ -308,7 +320,7 @@ extension PartyMainViewController {
     
     func clearAllCurrentSongAndUserInfo() {
         setCurrentSongImage(songToPlay: false, artworkToShow: false, image: nil)
-        setCurrentSongInfo(name: "", artist: "", time: "")
+        setCurrentSongInfo(name: "", artist: "", time: "", favorited: false)
         setCurrentSongUserInfo(nil, thumbsUp: false, thumbsDown: false)
         resetThumbsUpDownButtons()
     }
@@ -353,7 +365,7 @@ extension PartyMainViewController {
         }
     }
     
-    func setCurrentSongInfo(# name: String, artist: String, time: String) {
+    func setCurrentSongInfo(# name: String, artist: String, time: String, favorited: Bool) {
         showCurrentSongInfo()
         
         songNameLabel.attributedText =
@@ -385,6 +397,9 @@ extension PartyMainViewController {
                 ])
         
         songNameLabel!.adjustFontSizeToFit(minFontSize: 16, heightToAdjustFor: 25)
+
+        favoritesButton.selected = favorited
+        
     }
     
     func showCurrentSongUserInfo() {
@@ -467,14 +482,17 @@ extension PartyMainViewController {
             songImage!.image = songImageForNoSongToPlay
             addSongButton.hidden = false
             soundcloudLogo!.hidden = true
+            favoritesButton!.hidden = true
             return
         }
         
         soundcloudLogo!.hidden = false
+        favoritesButton!.hidden = false
         
         if !artworkToShow {
             songImage!.image = songImageForNoSongArtwork
             soundcloudLogo!.hidden = false
+            favoritesButton!.hidden = false
             return
         }
         
@@ -576,7 +594,7 @@ extension PartyMainViewController {
 }
 
 extension PartyMainViewController {
-    // MARK: Thumbs up/down button handling
+    // MARK: Thumbs up/down/favorites button handling
     
     func setThumbsUpDownButtons(thumbsUp: Bool, thumbsDown: Bool) {
         if thumbsUp {
@@ -648,6 +666,17 @@ extension PartyMainViewController {
         }
     }
     
+    func handleFavoritesDownPress(button: AnyObject) {
+        favoritesButton.selected = !favoritesButton.selected
+        if let currentSong = PartyManager.sharedParty.currentSong {
+            if favoritesButton.selected {
+                PartyManager.sharedParty.songFavorite(currentSong.songID)
+            } else {
+                PartyManager.sharedParty.songUnfavorite(currentSong.songID)
+            }
+        }
+    }
+    
     func resetThumbsUpDownButtons() {
         setThumbsUpUnselected()
         setThumbsDownUnselected()
@@ -701,6 +730,8 @@ extension PartyMainViewController {
             tallThumbsDownButton.selected = false
         }
     }
+    
+    
 }
 
 extension PartyMainViewController {
@@ -720,6 +751,7 @@ extension PartyMainViewController {
         // When hiding the party info, reset the song labels to empty and the song progress to 0
         if hidden == true {
             soundcloudLogo!.hidden = hidden
+            favoritesButton!.hidden = hidden
             
             playButton!.hidden = hidden
             playButton!.alpha = 0.0
