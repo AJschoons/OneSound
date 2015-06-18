@@ -388,7 +388,11 @@ extension SearchViewController {
     }
     
     func searchWithLocation() {
-        if hasRecentLocation || !searchByLocation { return }
+        if hasRecentLocation || !searchByLocation {
+            loadingAnimationShouldBeAnimating(false)
+            gettingLocationLabel.hidden = true
+            return
+        }
         
         loadingAnimationShouldBeAnimating(true)
         gettingLocationLabel.hidden = false

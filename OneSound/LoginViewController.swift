@@ -133,6 +133,7 @@ class LoginViewController: OSTableViewController {
             UserManager.sharedUser.updateUserInformationOnServer(newUserName, color: newUserColor, 
                 respondToChangeAttempt: { nameIsValid in
                     if nameIsValid {
+                        UserManager.sharedUser.name = newUserName
                         self.tableView.endEditing(true)
                         self.dismissViewControllerAnimated(true, completion: nil)
                     } else {
@@ -140,6 +141,7 @@ class LoginViewController: OSTableViewController {
                     }
                 }
             )
+            
         }
     }
     
