@@ -51,14 +51,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject : AnyObject]?) -> Bool {
         
+        // Override point for customization after application launch.
+        
         NewRelicAgent.startWithApplicationToken("AAe6bc980a2d996add7c26db97bf6da4eef6a1a622")
         
-        // Override point for customization after application launch.
         setupAppWindowAndViewHierarchy()
         
         setupAppDefaultBarAppearances()
         
         setupAppAFNetworkingTools()
+        
+        setupGoogleAnalytics()
         
         // Create the user manager
         UserManager.sharedUser
@@ -127,7 +130,7 @@ extension AppDelegate {
         sideMenuViewController = SideNavigationViewController()
         
         let rowInitiallySelected = sideMenuViewController.initiallySelectedRow
-        println(rowInitiallySelected)
+        // println(rowInitiallySelected)
         let viewControllerToNavTo = sideMenuViewController.menuViewControllers[rowInitiallySelected]!
         let loggingInSplashViewController = LoggingInSpashViewController(nibName: LoggingInSpashViewControllerNibName, bundle: nil)
         
@@ -146,7 +149,7 @@ extension AppDelegate {
         AFNetworkReachabilityManager.sharedManager().setReachabilityStatusChangeBlock({ reachability in
             if reachability == AFNetworkReachabilityStatus.NotReachable {
                 
-                println("Network has changed to UNreachable")
+                // println("Network has changed to UNreachable")
                 // Make sure splash screen would get closed at this point in the Login Flow
                 NSNotificationCenter.defaultCenter().postNotificationName(FinishedLoginFlowNotification, object: nil)
                 
@@ -155,13 +158,13 @@ extension AppDelegate {
                 AlertManager.sharedManager.showAlert(alert)
                 
             } else if (reachability == AFNetworkReachabilityStatus.ReachableViaWiFi) || (reachability == AFNetworkReachabilityStatus.ReachableViaWWAN) {
-                println("Network has changed to reachable")
+                // println("Network has changed to reachable")
                 
                 // Try setting up the user if network reachable but still not setup
                 OSAPI.sharedClient.GETPublicInfo(
-                    { data, responseObject in
+                    success: { data, responseObject in
                         let responseJSON = JSON(responseObject)
-                        println(responseJSON)
+                        // println(responseJSON)
                         
                         // Check that a supported version is being used
                         if let versionStatus = VersionStatus(rawValue: responseJSON["version_status"].int!) {
@@ -198,6 +201,7 @@ extension AppDelegate {
         
         // Start logging AFNetworking activiy
         AFNetworkActivityLogger.sharedLogger().startLogging()
+        AFNetworkActivityLogger.sharedLogger().level = AFHTTPRequestLoggerLevel.AFLoggerLevelDebug
         
         // Start showing network activity
         AFNetworkActivityIndicatorManager.sharedManager().enabled = true
@@ -232,6 +236,14 @@ extension AppDelegate {
         UIToolbar.appearance().translucent = true
         }*/
     }
+    
+    func setupGoogleAnalytics() {
+        // For testing
+        //GAI.sharedInstance().logger.logLevel = GAILogLevel.Verbose
+        //GAI.sharedInstance().dispatchInterval = 5
+        
+        GAI.sharedInstance().trackerWithTrackingId("UA-59716743-4")
+    }
 }
 
 extension AppDelegate {
@@ -254,7 +266,7 @@ extension AppDelegate {
 extension AppDelegate {
     override func remoteControlReceivedWithEvent(event: UIEvent) {
         let rc = event.subtype
-        println("received remote control \(rc.rawValue)")
+        // println("received remote control \(rc.rawValue)")
         let audioManager = PartyManager.sharedParty.audioManager
         
         switch rc {

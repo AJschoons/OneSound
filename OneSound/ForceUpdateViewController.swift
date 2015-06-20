@@ -10,10 +10,12 @@ import UIKit
 
 let ForceUpdateViewControllerNibName = "ForceUpdateViewController"
 
-class ForceUpdateViewController: UIViewController {
+class ForceUpdateViewController: OSViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        osvcVariables.screenName = ForceUpdateViewControllerNibName
     }
     
     override func prefersStatusBarHidden() -> Bool {

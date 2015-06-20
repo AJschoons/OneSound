@@ -8,7 +8,7 @@
 
 import Foundation
 
-let facebookInitialSessionPermissions = ["public_profile"] // The permissions accessed without explicitly asking user
+let facebookInitialSessionPermissions = ["public_profile", "email", "user_friends"] // The permissions accessed without explicitly asking user
 
 // Handles the login flow with Facebook and the OneSound API
 class LoginFlowManager {
@@ -187,7 +187,7 @@ class LoginFlowManager {
     }
     
     private func handleFacebookErrors(error: NSError) {
-        println("Facebook error")
+        // println("Facebook error")
         // If the error requires people using an app to make an action outside of the app in order to recover
         if FBErrorUtility.shouldNotifyUserForError(error) {
             let alertTitle = "Something went wrong"
@@ -201,7 +201,7 @@ class LoginFlowManager {
             
             // If the user cancelled login, do nothing
             if FBErrorUtility.errorCategoryForError(error) == .UserCancelled {
-                println("User cancelled login")
+                // println("User cancelled login")
                 
             // Handle session closures that happen outside of the app
             } else if FBErrorUtility.errorCategoryForError(error) == .AuthenticationReopenSession {

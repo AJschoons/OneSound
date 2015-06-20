@@ -106,16 +106,16 @@ extension SideNavigationViewController: UITableViewDataSource {
     }
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        println("SideNavigationViewController: cellForRowAtIndexPath")
+        // println("SideNavigationViewController: cellForRowAtIndexPath")
         var cell: UITableViewCell?
         
         if indexPath.row == 0 {
             // If the user cell
-            cell = tableView.dequeueReusableCellWithIdentifier(userCellIdentifier, forIndexPath: indexPath) as SideNavigationUserCell
-            userCell = (cell as SideNavigationUserCell)
+            cell = tableView.dequeueReusableCellWithIdentifier(userCellIdentifier, forIndexPath: indexPath) as! SideNavigationUserCell
+            userCell = (cell as! SideNavigationUserCell)
         } else {
             // If a menu cell
-            let menuCell = tableView.dequeueReusableCellWithIdentifier(menuCellIdentifier, forIndexPath: indexPath) as SideNavigationMenuCell
+            let menuCell = tableView.dequeueReusableCellWithIdentifier(menuCellIdentifier, forIndexPath: indexPath) as! SideNavigationMenuCell
             menuCell.sideMenuItemLabel.text = sideMenuItemLabels[indexPath.row]
             menuCell.sideMenuItemIcon.image = sideMenuIcons[indexPath.row]
             

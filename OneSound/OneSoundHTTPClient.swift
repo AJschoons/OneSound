@@ -54,8 +54,8 @@ let defaultAFHTTPFailureBlock: AFHTTPFailureBlock = { task, error in
         if error != nil && !haveHTTPCodeErrorMessage {
             var alert: UIAlertView
             let code = error.code
-            println("ERROR: has the following code... \(code)")
-            println(error.localizedDescription)
+            // println("ERROR: has the following code... \(code)")
+            // println(error.localizedDescription)
             switch code {
             case -1001:
                 alert = UIAlertView(title: "Connection Timed Out", message: "Couldn't connect to the server in time, please try again with a better internet connection", delegate: nil, cancelButtonTitle: defaultAlertCancelButtonText)
@@ -93,7 +93,7 @@ func errorShouldBeHandledWithRepeatedRequest(task: NSURLSessionDataTask!, error:
             if code == -1001 || code == -1003 || code == -1004 || code == -1005 || code == -1009 || code == -1011 {
                 // If timed out, cannot find host, cannot connect to host, connection lost, not connected to internet, server 500 code equivalent
                 shouldRepeatRequest = true
-                println("SHOULD BE TRYING TO REPEAT ATTEMPT")
+                // println("SHOULD BE TRYING TO REPEAT ATTEMPT")
             }
         }
     }
@@ -123,6 +123,8 @@ class OSAPI: AFHTTPSessionManager {
                 let config = NSURLSessionConfiguration.defaultSessionConfiguration()
                 config.HTTPAdditionalHeaders = ["CLIENT_ID" : "1", "CLIENT_SECRET" : "d7aa3fcb7141e876cea6121b600d1d8854ea74d7"]
                 
+                config
+                
                 let initAPI = OSAPI(baseURL: NSURL(string: baseURLString), sessionConfiguration: config)
                 
                 initAPI.requestSerializer = AFJSONRequestSerializer() as AFJSONRequestSerializer
@@ -144,13 +146,13 @@ extension OSAPI {
     // MARK: User-related API
     
     // Get a user's generic information that is available to everyone
-    func GETUser(uid: Int, success: AFHTTPSuccessBlock, failure: AFHTTPFailureBlock, extraAttempts: Int = defaultEA) {
+    func GETUser(uid: Int, extraAttempts: Int = defaultEA, success: AFHTTPSuccessBlock, failure: AFHTTPFailureBlock) {
         // Create a URL string from the base URL string, then user/:uid
         let urlString = "\(baseURLString)user/\(uid)"
         
         let failureWithExtraAttempt: AFHTTPFailureBlock = { task, error in
             if errorShouldBeHandledWithRepeatedRequest(task, error, attemptsLeft: extraAttempts) {
-                self.GETUser(uid, success: success, failure: failure, extraAttempts: (extraAttempts - 1))
+                self.GETUser(uid, extraAttempts: (extraAttempts - 1), success: success, failure: failure)
             } else {
                 failure!(task: task, error: error)
             }
@@ -159,43 +161,11 @@ extension OSAPI {
         GET(urlString, parameters: nil, success: success, failure: failure)
     }
     
-    // Get a list of users the current user is following
-    func GETUserFollowing(uid: Int, success: AFHTTPSuccessBlock, failure: AFHTTPFailureBlock, extraAttempts: Int = defaultEA) {
-        // Create a URL string from the base URL string, then user/following/:uid
-        let urlString = "\(baseURLString)user/\(uid)/following"
+    // Update the user's info with a new name, color, or location
+    func PUTUser(uid: Int, newName: String?, newColor: String?, newLatitude: Double?, newLongitude: Double?, extraAttempts: Int = defaultEA, success: AFHTTPSuccessBlock, failure: AFHTTPFailureBlock) {
         
-        let failureWithExtraAttempt: AFHTTPFailureBlock = { task, error in
-            if errorShouldBeHandledWithRepeatedRequest(task, error, attemptsLeft: extraAttempts) {
-                self.GETUserFollowing(uid, success: success, failure: failure, extraAttempts: (extraAttempts - 1))
-            } else {
-                failure!(task: task, error: error)
-            }
-        }
-        
-        GET(urlString, parameters: nil, success: success, failure: failure)
-    }
-    
-    // Get a list of users the current user has following them
-    func GETUserFollowers(uid: Int, success: AFHTTPSuccessBlock, failure: AFHTTPFailureBlock, extraAttempts: Int = defaultEA) {
-        // Create a URL string from the base URL string, then user/following/:uid
-        let urlString = "\(baseURLString)user/\(uid)/followers"
-        
-        let failureWithExtraAttempt: AFHTTPFailureBlock = { task, error in
-            if errorShouldBeHandledWithRepeatedRequest(task, error, attemptsLeft: extraAttempts) {
-                self.GETUserFollowers(uid, success: success, failure: failure, extraAttempts: (extraAttempts
-                     - 1))
-            } else {
-                failure!(task: task, error: error)
-            }
-        }
-        
-        GET(urlString, parameters: nil, success: success, failure: failure)
-    }
-    
-    // Update the user's info with a new name and color
-    func PUTUser(uid: Int, newName: String?, newColor: String?, success: AFHTTPSuccessBlock, failure: AFHTTPFailureBlock, extraAttempts: Int = defaultEA) {
         // Only make put request if given value to change
-        if newName != nil || newColor != nil {
+        if newName != nil || newColor != nil || (newLatitude != nil && newLongitude != nil) {
             // Create a URL string from the base URL string, then user/:uid
             let urlString = "\(baseURLString)user/\(uid)"
             
@@ -204,9 +174,16 @@ extension OSAPI {
             if newName != nil { params.updateValue(newName!, forKey: "name") }
             if newColor != nil { params.updateValue(newColor!, forKey: "color") }
             
+            if newLatitude != nil && newLongitude != nil {
+                var location = Dictionary<String, AnyObject>()
+                location.updateValue(newLatitude!, forKey: "latitude")
+                location.updateValue(newLongitude!, forKey: "longitude")
+                params.updateValue(location, forKey: "location")
+            }
+            
             let failureWithExtraAttempt: AFHTTPFailureBlock = { task, error in
                 if errorShouldBeHandledWithRepeatedRequest(task, error, attemptsLeft: extraAttempts) {
-                    self.PUTUser(uid, newName: newName, newColor: newColor, success: success, failure: failure, extraAttempts: (extraAttempts - 1))
+                    self.PUTUser(uid, newName: newName, newColor: newColor, newLatitude: newLatitude, newLongitude: newLongitude, extraAttempts: (extraAttempts - 1), success: success, failure: failure)
                 } else {
                     failure!(task: task, error: error)
                 }
@@ -217,7 +194,7 @@ extension OSAPI {
     }
     
     // Upgrade guest user to a full user. Provider can only be facebook, for now
-    func POSTUserProvider(userName: String, userColor: String, providerToken: String, success: AFHTTPSuccessBlock, failure: AFHTTPFailureBlock, extraAttempts: Int = defaultEA) {
+    func POSTUserProvider(userName: String, userColor: String, providerToken: String, extraAttempts: Int = defaultEA, success: AFHTTPSuccessBlock, failure: AFHTTPFailureBlock) {
         // Checks if facebook id already in the database. Called before creating user so user can login to old account
         let urlString = "\(baseURLString)user/facebook"
         
@@ -240,7 +217,7 @@ extension OSAPI {
             
             if shouldConsiderRepeatedRequest {
                 if errorShouldBeHandledWithRepeatedRequest(task, error, attemptsLeft: extraAttempts) {
-                    self.POSTUserProvider(userName, userColor: userColor, providerToken: providerToken, success: success, failure: failure, extraAttempts: (extraAttempts - 1))
+                    self.POSTUserProvider(userName, userColor: userColor, providerToken: providerToken, extraAttempts: (extraAttempts - 1), success: success, failure: failure)
                 } else {
                     failure!(task: task, error: error)
                 }
@@ -250,18 +227,14 @@ extension OSAPI {
         POST(urlString, parameters: params, success: success, failure: failure)
     }
     
-    // func POSTFollowUser
-    
-    // func POSTUnfollowUser
-    
     // Creates a guest account
-    func GETGuestUser(#success: AFHTTPSuccessBlock, failure: AFHTTPFailureBlock, extraAttempts: Int = defaultEA) {
+    func GETGuestUser(extraAttempts: Int = defaultEA, success: AFHTTPSuccessBlock, failure: AFHTTPFailureBlock) {
         // Create a URL string from the base URL string, then guest
         let urlString = "\(baseURLString)guest"
         
         let failureWithExtraAttempt: AFHTTPFailureBlock = { task, error in
             if errorShouldBeHandledWithRepeatedRequest(task, error, attemptsLeft: extraAttempts) {
-                self.GETGuestUser(success: success, failure: failure, extraAttempts: (extraAttempts - 1))
+                self.GETGuestUser(extraAttempts: (extraAttempts - 1), success: success, failure: failure)
             } else {
                 failure!(task: task, error: error)
             }
@@ -272,7 +245,7 @@ extension OSAPI {
     
     // Login full user from Facebook. Checks if Facebook ID is already in database / active
     // If active, returns access_token of user. If not, user must be setup
-    func GETUserLoginProvider(providerToken: String, success: AFHTTPSuccessBlock, failure: AFHTTPFailureBlock, extraAttempts: Int = defaultEA) {
+    func GETUserLoginProvider(providerToken: String, extraAttempts: Int = defaultEA, success: AFHTTPSuccessBlock, failure: AFHTTPFailureBlock) {
         // Checks if facebook id already in the database. Called before creating user so user can login to old account
         let urlString = "\(baseURLString)login/facebook"
         
@@ -293,7 +266,7 @@ extension OSAPI {
             
             if shouldConsiderRepeatedRequest {
                 if errorShouldBeHandledWithRepeatedRequest(task, error, attemptsLeft: extraAttempts) {
-                    self.GETUserLoginProvider(providerToken, success: success, failure: failure, extraAttempts: (extraAttempts - 1))
+                    self.GETUserLoginProvider(providerToken, extraAttempts: (extraAttempts - 1), success: success, failure: failure)
                 } else {
                     failure!(task: task, error: error)
                 }
@@ -304,13 +277,13 @@ extension OSAPI {
     }
     
     // Login guest user. Returns new token
-    func GETUserLoginGuest(# success: AFHTTPSuccessBlock, failure: AFHTTPFailureBlock, extraAttempts: Int = defaultEA) {
+    func GETUserLoginGuest(extraAttempts: Int = defaultEA, success: AFHTTPSuccessBlock, failure: AFHTTPFailureBlock) {
         // Refreshes the guest user's API Token
         let urlString = "\(baseURLString)login/guest"
         
         let failureWithExtraAttempt: AFHTTPFailureBlock = { task, error in
             if errorShouldBeHandledWithRepeatedRequest(task, error, attemptsLeft: extraAttempts) {
-                self.GETUserLoginGuest(success: success, failure: failure, extraAttempts: (extraAttempts - 1))
+                self.GETUserLoginGuest(extraAttempts: (extraAttempts - 1), success: success, failure: failure)
             } else {
                 failure!(task: task, error: error)
             }
@@ -320,13 +293,13 @@ extension OSAPI {
     }
     
     // Delete a user's party (leave it)
-    func DELETEUserParty(uid: Int, success: AFHTTPSuccessBlock, failure: AFHTTPFailureBlock, extraAttempts: Int = defaultEA) {
+    func DELETEUserParty(uid: Int, extraAttempts: Int = defaultEA, success: AFHTTPSuccessBlock, failure: AFHTTPFailureBlock) {
         
         let urlString = "\(baseURLString)user/\(uid)/party"
         
         let failureWithExtraAttempt: AFHTTPFailureBlock = { task, error in
             if errorShouldBeHandledWithRepeatedRequest(task, error, attemptsLeft: extraAttempts) {
-                self.DELETEUserParty(uid, success: success, failure: failure, extraAttempts: (extraAttempts - 1))
+                self.DELETEUserParty(uid, extraAttempts: (extraAttempts - 1), success: success, failure: failure)
             } else {
                 failure!(task: task, error: error)
             }
@@ -336,7 +309,7 @@ extension OSAPI {
     }
     
     // Checks to see if user's input name is valid (not taken already, etc.)
-    func GETUserNameValidate(name: String, success: AFHTTPSuccessBlock, failure: AFHTTPFailureBlock, extraAttempts: Int = defaultEA) {
+    func GETUserNameValidate(name: String, extraAttempts: Int = defaultEA, success: AFHTTPSuccessBlock, failure: AFHTTPFailureBlock) {
         // Refreshes the guest user's API Token
         let urlString = "\(baseURLString)user/name/validate"
         
@@ -346,7 +319,26 @@ extension OSAPI {
         
         let failureWithExtraAttempt: AFHTTPFailureBlock = { task, error in
             if errorShouldBeHandledWithRepeatedRequest(task, error, attemptsLeft: extraAttempts) {
-                self.GETUserNameValidate(name, success: success, failure: failure, extraAttempts: (extraAttempts - 1))
+                self.GETUserNameValidate(name, extraAttempts: (extraAttempts - 1), success: success, failure: failure)
+            } else {
+                failure!(task: task, error: error)
+            }
+        }
+        
+        GET(urlString, parameters: params, success: success, failure: failureWithExtraAttempt)
+    }
+    
+    // Get the user's favorited songs
+    func GETUserFavorites(uid: Int, page: Int, pageSize: Int, extraAttempts: Int = defaultEA, success: AFHTTPSuccessBlock, failure: AFHTTPFailureBlock) {
+        let urlString = "\(baseURLString)user/\(uid)/favorites"
+        
+        var params = Dictionary<String, AnyObject>()
+        params.updateValue(page, forKey: "page")
+        params.updateValue(pageSize, forKey: "limit") // Server is 20 by default
+        
+        let failureWithExtraAttempt: AFHTTPFailureBlock = { task, error in
+            if errorShouldBeHandledWithRepeatedRequest(task, error, attemptsLeft: extraAttempts) {
+                self.GETUserFavorites(uid, page: page, pageSize: pageSize, extraAttempts: (extraAttempts - 1), success: success, failure: failure)
             } else {
                 failure!(task: task, error: error)
             }
@@ -360,7 +352,7 @@ extension OSAPI {
     // MARK: Party-related API
     
     // Gets the user's current party info
-    func GETPartyCurrent(#success: AFHTTPSuccessBlock, failure: AFHTTPFailureBlock, extraAttempts: Int = defaultEA) {
+    func GETPartyCurrent(extraAttempts: Int = defaultEA, success: AFHTTPSuccessBlock, failure: AFHTTPFailureBlock) {
         
         let urlString = "\(baseURLString)party/current"
         
@@ -377,7 +369,7 @@ extension OSAPI {
             
             if shouldConsiderRepeatedRequest {
                 if errorShouldBeHandledWithRepeatedRequest(task, error, attemptsLeft: extraAttempts) {
-                    self.GETPartyCurrent(success: success, failure: failure, extraAttempts: (extraAttempts - 1))
+                    self.GETPartyCurrent(extraAttempts: (extraAttempts - 1), success: success, failure: failure)
                 } else {
                     failure!(task: task, error: error)
                 }
@@ -388,13 +380,13 @@ extension OSAPI {
     }
     
     // Allows user to join a party
-    func GETParty(pid: Int, success: AFHTTPSuccessBlock, failure: AFHTTPFailureBlock, extraAttempts: Int = defaultEA) {
+    func GETParty(pid: Int, extraAttempts: Int = defaultEA, success: AFHTTPSuccessBlock, failure: AFHTTPFailureBlock) {
         
         let urlString = "\(baseURLString)party/\(pid)"
         
         let failureWithExtraAttempt: AFHTTPFailureBlock = { task, error in
             if errorShouldBeHandledWithRepeatedRequest(task, error, attemptsLeft: extraAttempts) {
-                self.GETParty(pid, success: success, failure: failure, extraAttempts: (extraAttempts - 1))
+                self.GETParty(pid, extraAttempts: (extraAttempts - 1), success: success, failure: failure)
             } else {
                 failure!(task: task, error: error)
             }
@@ -404,7 +396,7 @@ extension OSAPI {
     }
     
     // Get the party's current songs in the playlist
-    func GETPartyPlaylist(pid: Int, page: Int, pageSize: Int, success: AFHTTPSuccessBlock, failure: AFHTTPFailureBlock, extraAttempts: Int = defaultEA) {
+    func GETPartyPlaylist(pid: Int, page: Int, pageSize: Int, extraAttempts: Int = defaultEA, success: AFHTTPSuccessBlock, failure: AFHTTPFailureBlock) {
         let urlString = "\(baseURLString)party/\(pid)/playlist"
         
         var params = Dictionary<String, AnyObject>()
@@ -413,7 +405,7 @@ extension OSAPI {
         
         let failureWithExtraAttempt: AFHTTPFailureBlock = { task, error in
             if errorShouldBeHandledWithRepeatedRequest(task, error, attemptsLeft: extraAttempts) {
-                self.GETPartyPlaylist(pid, page: page, pageSize: pageSize, success: success, failure: failure, extraAttempts: (extraAttempts - 1))
+                self.GETPartyPlaylist(pid, page: page, pageSize: pageSize, extraAttempts: (extraAttempts - 1), success: success, failure: failure)
             } else {
                 failure!(task: task, error: error)
             }
@@ -423,7 +415,7 @@ extension OSAPI {
     }
     
     // Get the party's members
-    func GETPartyMembers(pid: Int, page: Int, pageSize: Int, success: AFHTTPSuccessBlock, failure: AFHTTPFailureBlock, extraAttempts: Int = defaultEA) {
+    func GETPartyMembers(pid: Int, page: Int, pageSize: Int, extraAttempts: Int = defaultEA, success: AFHTTPSuccessBlock, failure: AFHTTPFailureBlock) {
         let urlString = "\(baseURLString)party/\(pid)/members"
         
         var params = Dictionary<String, AnyObject>()
@@ -432,7 +424,7 @@ extension OSAPI {
         
         let failureWithExtraAttempt: AFHTTPFailureBlock = { task, error in
             if errorShouldBeHandledWithRepeatedRequest(task, error, attemptsLeft: extraAttempts) {
-                self.GETPartyMembers(pid, page: page, pageSize: pageSize, success: success, failure: failure, extraAttempts: (extraAttempts - 1))
+                self.GETPartyMembers(pid, page: page, pageSize: pageSize, extraAttempts: (extraAttempts - 1), success: success, failure: failure)
             } else {
                 failure!(task: task, error: error)
             }
@@ -442,7 +434,7 @@ extension OSAPI {
     }
     
     // Create a new party
-    func POSTParty(name: String, privacy: Bool, strictness: Int, success: AFHTTPSuccessBlock, failure: AFHTTPFailureBlock, extraAttempts: Int = defaultEA) {
+    func POSTParty(name: String, privacy: Bool, strictness: Int, latitude: Double, longitude: Double, extraAttempts: Int = defaultEA, success: AFHTTPSuccessBlock, failure: AFHTTPFailureBlock) {
 
         let urlString = "\(baseURLString)party"
         
@@ -452,9 +444,14 @@ extension OSAPI {
         params.updateValue(privacy, forKey: "privacy")
         params.updateValue(strictness, forKey: "strictness")
         
+        var location = Dictionary<String, AnyObject>()
+        location.updateValue(latitude, forKey: "latitude")
+        location.updateValue(longitude, forKey: "longitude")
+        params.updateValue(location, forKey: "location")
+        
         let failureWithExtraAttempt: AFHTTPFailureBlock = { task, error in
             if errorShouldBeHandledWithRepeatedRequest(task, error, attemptsLeft: extraAttempts) {
-                self.POSTParty(name, privacy: privacy, strictness: strictness, success: success, failure: failure, extraAttempts: (extraAttempts - 1))
+                self.POSTParty(name, privacy: privacy, strictness: strictness, latitude: latitude, longitude: longitude, extraAttempts: (extraAttempts - 1), success: success, failure: failure)
             } else {
                 failure!(task: task, error: error)
             }
@@ -464,7 +461,7 @@ extension OSAPI {
     }
     
     // Update a party's info
-    func PUTParty(pid: Int, name: String, privacy: Bool, strictness: Int, success: AFHTTPSuccessBlock, failure: AFHTTPFailureBlock, extraAttempts: Int = defaultEA) {
+    func PUTParty(pid: Int, name: String, privacy: Bool, strictness: Int, extraAttempts: Int = defaultEA, success: AFHTTPSuccessBlock, failure: AFHTTPFailureBlock) {
         
         let urlString = "\(baseURLString)party/\(pid)"
         
@@ -476,7 +473,7 @@ extension OSAPI {
         
         let failureWithExtraAttempt: AFHTTPFailureBlock = { task, error in
             if errorShouldBeHandledWithRepeatedRequest(task, error, attemptsLeft: extraAttempts) {
-                self.PUTParty(pid, name: name, privacy: privacy, strictness: strictness, success: success, failure: failure, extraAttempts: (extraAttempts - 1))
+                self.PUTParty(pid, name: name, privacy: privacy, strictness: strictness, extraAttempts: (extraAttempts - 1), success: success, failure: failure)
             } else {
                 failure!(task: task, error: error)
             }
@@ -486,7 +483,7 @@ extension OSAPI {
     }
     
     // Search for a party by name
-    func GETPartySearch(searchText: String, success: AFHTTPSuccessBlock, failure: AFHTTPFailureBlock, extraAttempts: Int = defaultEA) {
+    func GETPartySearch(searchText: String, extraAttempts: Int = defaultEA, success: AFHTTPSuccessBlock, failure: AFHTTPFailureBlock) {
         let urlString = "\(baseURLString)party/search"
         
         // Create parameters to pass
@@ -495,7 +492,27 @@ extension OSAPI {
         
         let failureWithExtraAttempt: AFHTTPFailureBlock = { task, error in
             if errorShouldBeHandledWithRepeatedRequest(task, error, attemptsLeft: extraAttempts) {
-                self.GETPartySearch(searchText, success: success, failure: failure, extraAttempts: (extraAttempts - 1))
+                self.GETPartySearch(searchText, extraAttempts: (extraAttempts - 1), success: success, failure: failure)
+            } else {
+                failure!(task: task, error: error)
+            }
+        }
+        
+        GET(urlString, parameters: params, success: success, failure: failureWithExtraAttempt)
+    }
+    
+    // Search for a party by location
+    func GETPartySearchNearby(latitude: Double, longitude: Double, extraAttempts: Int = defaultEA, success: AFHTTPSuccessBlock, failure: AFHTTPFailureBlock) {
+        let urlString = "\(baseURLString)party/search/nearby"
+        
+        // Create parameters to pass
+        var params = Dictionary<String, AnyObject>()
+        params.updateValue(latitude, forKey: "latitude")
+        params.updateValue(longitude, forKey: "longitude")
+        
+        let failureWithExtraAttempt: AFHTTPFailureBlock = { task, error in
+            if errorShouldBeHandledWithRepeatedRequest(task, error, attemptsLeft: extraAttempts) {
+                self.GETPartySearchNearby(latitude, longitude: longitude, extraAttempts: (extraAttempts - 1), success: success, failure: failure)
             } else {
                 failure!(task: task, error: error)
             }
@@ -505,7 +522,7 @@ extension OSAPI {
     }
     
     // Update the permissions for a party. Used to reclaim music streaming control for a host
-    func PUTPartyPermissions(pid: Int, musicControl: Bool, success: AFHTTPSuccessBlock, failure: AFHTTPFailureBlock, extraAttempts: Int = defaultEA) {
+    func PUTPartyPermissions(pid: Int, musicControl: Bool, extraAttempts: Int = defaultEA, success: AFHTTPSuccessBlock, failure: AFHTTPFailureBlock) {
         let urlString = "\(baseURLString)party/\(pid)/permissions"
         
         // Create parameters to pass
@@ -514,7 +531,7 @@ extension OSAPI {
         
         let failureWithExtraAttempt: AFHTTPFailureBlock = { task, error in
             if errorShouldBeHandledWithRepeatedRequest(task, error, attemptsLeft: extraAttempts) {
-                self.PUTPartyPermissions(pid, musicControl: musicControl, success: success, failure: failure, extraAttempts: (extraAttempts - 1))
+                self.PUTPartyPermissions(pid, musicControl: musicControl, extraAttempts: (extraAttempts - 1), success: success, failure: failure)
             } else {
                 failure!(task: task, error: error)
             }
@@ -528,7 +545,7 @@ extension OSAPI {
     // MARK: Song-related API
     
     // Add a song to a party playlist
-    func POSTSong(pid: Int, externalID: Int, source: String, title: String, artist: String, duration: Int, artworkURL: String?,success: AFHTTPSuccessBlock, failure: AFHTTPFailureBlock, extraAttempts: Int = defaultEA) {
+    func POSTSong(pid: Int, externalID: Int, source: String, title: String, artist: String, duration: Int, artworkURL: String?,extraAttempts: Int = defaultEA, success: AFHTTPSuccessBlock, failure: AFHTTPFailureBlock) {
         
         let urlString = "\(baseURLString)song"
         
@@ -549,7 +566,7 @@ extension OSAPI {
         
         let failureWithExtraAttempt: AFHTTPFailureBlock = { task, error in
             if errorShouldBeHandledWithRepeatedRequest(task, error, attemptsLeft: extraAttempts) {
-                self.POSTSong(pid, externalID: externalID, source: source, title: title, artist: artist, duration: duration, artworkURL: artworkURL, success: success, failure: failure, extraAttempts: (extraAttempts - 1))
+                self.POSTSong(pid, externalID: externalID, source: source, title: title, artist: artist, duration: duration, artworkURL: artworkURL, extraAttempts: (extraAttempts - 1), success: success, failure: failure)
             } else {
                 failure!(task: task, error: error)
             }
@@ -559,12 +576,12 @@ extension OSAPI {
     }
     
     // Delete a song from the playlist. Only works if it is the user's song
-    func DELETESong(sid: Int, success: AFHTTPSuccessBlock, failure: AFHTTPFailureBlock, extraAttempts: Int = defaultEA) {
+    func DELETESong(sid: Int, extraAttempts: Int = defaultEA, success: AFHTTPSuccessBlock, failure: AFHTTPFailureBlock) {
         let urlString = "\(baseURLString)song/\(sid)"
         
         let failureWithExtraAttempt: AFHTTPFailureBlock = { task, error in
             if errorShouldBeHandledWithRepeatedRequest(task, error, attemptsLeft: extraAttempts) {
-                self.DELETESong(sid, success: success, failure: failure, extraAttempts: (extraAttempts - 1))
+                self.DELETESong(sid, extraAttempts: (extraAttempts - 1), success: success, failure: failure)
             } else {
                 failure!(task: task, error: error)
             }
@@ -574,7 +591,7 @@ extension OSAPI {
     }
     
     // Get the party's current song
-    func GETCurrentSong(pid: Int, success: AFHTTPSuccessBlock, failure: AFHTTPFailureBlock, extraAttempts: Int = defaultEA) {
+    func GETCurrentSong(pid: Int, extraAttempts: Int = defaultEA, success: AFHTTPSuccessBlock, failure: AFHTTPFailureBlock) {
         let urlString = "\(baseURLString)party/\(pid)/currentsong"
         
         let failureWithExtraAttempt: AFHTTPFailureBlock = { task, error in
@@ -590,7 +607,7 @@ extension OSAPI {
             
             if shouldConsiderRepeatedRequest {
                 if errorShouldBeHandledWithRepeatedRequest(task, error, attemptsLeft: extraAttempts) {
-                    self.GETCurrentSong(pid, success: success, failure: failure, extraAttempts: (extraAttempts - 1))
+                    self.GETCurrentSong(pid, extraAttempts: (extraAttempts - 1), success: success, failure: failure)
                 } else {
                     failure!(task: task, error: error)
                 }
@@ -600,7 +617,7 @@ extension OSAPI {
         GET(urlString, parameters: nil, success: success, failure: failureWithExtraAttempt)
     }
     
-    func GETNextSong(pid: Int, skipped: Bool, success: AFHTTPSuccessBlock, failure: AFHTTPFailureBlock, extraAttempts: Int = defaultEA) {
+    func GETNextSong(pid: Int, skipped: Bool, extraAttempts: Int = defaultEA, success: AFHTTPSuccessBlock, failure: AFHTTPFailureBlock) {
         
         let urlString = "party/\(pid)/nextsong"
         
@@ -621,59 +638,90 @@ extension OSAPI {
             
             if shouldConsiderRepeatedRequest {
                 if errorShouldBeHandledWithRepeatedRequest(task, error, attemptsLeft: extraAttempts) {
-                    self.GETNextSong(pid, skipped: skipped, success: success, failure: failure, extraAttempts: (extraAttempts - 1))
+                    self.GETNextSong(pid, skipped: skipped, extraAttempts: (extraAttempts - 1), success: success, failure: failure)
                 } else {
                     failure!(task: task, error: error)
                 }
             }
         }
         
-        GET(urlString, parameters: nil, success: success, failure: failure)
+        GET(urlString, parameters: nil, success: success, failure: failureWithExtraAttempt)
     }
     
-    func POSTSongUpvote(sid: Int, success: AFHTTPSuccessBlock, failure: AFHTTPFailureBlock, extraAttempts: Int = defaultEA) {
+    func POSTSongUpvote(sid: Int, extraAttempts: Int = defaultEA, success: AFHTTPSuccessBlock, failure: AFHTTPFailureBlock) {
         
         let urlString = "song/\(sid)/upvote"
         
         let failureWithExtraAttempt: AFHTTPFailureBlock = { task, error in
             if errorShouldBeHandledWithRepeatedRequest(task, error, attemptsLeft: extraAttempts) {
-                self.POSTSongUpvote(sid, success: success, failure: failure, extraAttempts: (extraAttempts - 1))
+                self.POSTSongUpvote(sid, extraAttempts: (extraAttempts - 1), success: success, failure: failure)
             } else {
                 failure!(task: task, error: error)
             }
         }
         
-        POST(urlString, parameters: nil, success: success, failure: failure)
+        POST(urlString, parameters: nil, success: success, failure: failureWithExtraAttempt)
     }
     
-    func POSTSongDownvote(sid: Int, success: AFHTTPSuccessBlock, failure: AFHTTPFailureBlock, extraAttempts: Int = defaultEA) {
+    func POSTSongDownvote(sid: Int, extraAttempts: Int = defaultEA, success: AFHTTPSuccessBlock, failure: AFHTTPFailureBlock) {
         
         let urlString = "song/\(sid)/downvote"
         
         let failureWithExtraAttempt: AFHTTPFailureBlock = { task, error in
             if errorShouldBeHandledWithRepeatedRequest(task, error, attemptsLeft: extraAttempts) {
-                self.POSTSongDownvote(sid, success: success, failure: failure, extraAttempts: (extraAttempts - 1))
+                self.POSTSongDownvote(sid, extraAttempts: (extraAttempts - 1), success: success, failure: failure)
             } else {
                 failure!(task: task, error: error)
             }
         }
         
-        POST(urlString, parameters: nil, success: success, failure: failure)
+        POST(urlString, parameters: nil, success: success, failure: failureWithExtraAttempt)
     }
     
-    func DELETESongVote(sid: Int, success: AFHTTPSuccessBlock, failure: AFHTTPFailureBlock, extraAttempts: Int = defaultEA) {
+    func DELETESongVote(sid: Int, extraAttempts: Int = defaultEA, success: AFHTTPSuccessBlock, failure: AFHTTPFailureBlock) {
         
         let urlString = "song/\(sid)/vote"
 
         let failureWithExtraAttempt: AFHTTPFailureBlock = { task, error in
             if errorShouldBeHandledWithRepeatedRequest(task, error, attemptsLeft: extraAttempts) {
-                self.DELETESongVote(sid, success: success, failure: failure, extraAttempts: (extraAttempts - 1))
+                self.DELETESongVote(sid, extraAttempts: (extraAttempts - 1), success: success, failure: failure)
             } else {
                 failure!(task: task, error: error)
             }
         }
         
-        DELETE(urlString, parameters: nil, success: success, failure: failure)
+        DELETE(urlString, parameters: nil, success: success, failure: failureWithExtraAttempt)
+    }
+    
+    // Favorite the song for a user
+    func POSTSongFavorite(sid: Int, extraAttempts: Int = defaultEA, success: AFHTTPSuccessBlock, failure: AFHTTPFailureBlock) {
+        let urlString = "song/\(sid)/favorite"
+        
+        let failureWithExtraAttempt: AFHTTPFailureBlock = { task, error in
+            if errorShouldBeHandledWithRepeatedRequest(task, error, attemptsLeft: extraAttempts) {
+                self.POSTSongFavorite(sid, extraAttempts: (extraAttempts - 1), success: success, failure: failure)
+            } else {
+                failure!(task: task, error: error)
+            }
+        }
+        
+        POST(urlString, parameters: nil, success: success, failure: failureWithExtraAttempt)
+    }
+    
+    // Un-favorite the song for a user
+    func DELETESongFavorite(sid: Int, extraAttempts: Int = defaultEA, success: AFHTTPSuccessBlock, failure: AFHTTPFailureBlock) {
+        
+        let urlString = "favorite/\(sid)"
+        
+        let failureWithExtraAttempt: AFHTTPFailureBlock = { task, error in
+            if errorShouldBeHandledWithRepeatedRequest(task, error, attemptsLeft: extraAttempts) {
+                self.DELETESongFavorite(sid, extraAttempts: (extraAttempts - 1), success: success, failure: failure)
+            } else {
+                failure!(task: task, error: error)
+            }
+        }
+        
+        DELETE(urlString, parameters: nil, success: success, failure: failureWithExtraAttempt)
     }
 }
 
@@ -681,12 +729,12 @@ extension OSAPI {
     // MARK: General-related API
     
     // Gets the version status of the iOS app, and the total # of parties in the app
-    func GETPublicInfo(success: AFHTTPSuccessBlock, failure: AFHTTPFailureBlock, extraAttempts: Int = 10) {
+    func GETPublicInfo(extraAttempts: Int = 10, success: AFHTTPSuccessBlock, failure: AFHTTPFailureBlock) {
         let urlString = "public/info"
         
         let failureWithExtraAttempt: AFHTTPFailureBlock = { task, error in
             if errorShouldBeHandledWithRepeatedRequest(task, error, attemptsLeft: extraAttempts) {
-                self.GETPublicInfo(success, failure: failure, extraAttempts: (extraAttempts - 1))
+                self.GETPublicInfo(extraAttempts: (extraAttempts - 1), success: success, failure: failure)
             } else {
                 failure!(task: task, error: error)
             }

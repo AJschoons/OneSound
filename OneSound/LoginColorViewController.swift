@@ -12,7 +12,7 @@ protocol LoginColorViewControllerDelegate {
     func loginColorViewController(loginColorviewController: LoginColorViewController, didSelectColor: OneSoundColorOption)
 }
 
-class LoginColorViewController: UITableViewController {
+class LoginColorViewController: OSTableViewController {
     
     let colorCellReuseIdentifier = "colorCell"
     let colorNames: [OneSoundColorOption] = [.Random, .Green, .Turquiose, .Purple, .Red, .Orange, .Yellow]
@@ -24,6 +24,8 @@ class LoginColorViewController: UITableViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        osvcVariables.screenName = "LoginColorViewController"
 
         navigationItem.title = "Choose Color"
         
@@ -45,7 +47,7 @@ extension LoginColorViewController: UITableViewDataSource {
     }
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier(colorCellReuseIdentifier, forIndexPath: indexPath) as LoginColorCell
+        let cell = tableView.dequeueReusableCellWithIdentifier(colorCellReuseIdentifier, forIndexPath: indexPath) as! LoginColorCell
         cell.colorLabel.text = colorNames[indexPath.row].rawValue
         cell.colorView.backgroundColor = colorViewColors[indexPath.row]
         

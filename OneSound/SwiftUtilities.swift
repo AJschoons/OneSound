@@ -67,8 +67,8 @@ class SwiftSet<T: Hashable> {
 
 extension String {
     func hasSubstringCaseSensitive(substring: String) -> Bool {
-        let substringLength: Int = countElements(substring)
-        let stringLength: Int = countElements(self)
+        let substringLength: Int = count(substring)
+        let stringLength: Int = count(self)
         if (substringLength <= stringLength) && (substring != "") {
             for var i = 0; (i + substringLength) <= stringLength; ++i {
                 let indexToStartAt = advance(self.startIndex, i)
@@ -87,8 +87,8 @@ extension String {
     func hasSubstringCaseInsensitive(substring: String) -> Bool {
         let substringLowercase = substring.lowercaseString
         let stringLowercase = self.lowercaseString
-        let substringLength = countElements(substringLowercase)
-        let stringLength = countElements(stringLowercase)
+        let substringLength = count(substringLowercase)
+        let stringLength = count(stringLowercase)
         if (substringLength <= stringLength) && (substring != "") {
             for var i = 0; (i + substringLength) <= stringLength; ++i {
                 let indexToStartAt = advance(stringLowercase.startIndex, i)
@@ -105,8 +105,8 @@ extension String {
     }
     
     func replaceSubstringWithString(oldSubstring: String, newSubstring: String) -> String {
-        let oldSubstrL: Int = countElements(oldSubstring)
-        let stringL: Int = countElements(self)
+        let oldSubstrL: Int = count(oldSubstring)
+        let stringL: Int = count(self)
         if (oldSubstrL <= stringL) && (oldSubstring != "") {
             for var i = 0; (i + oldSubstrL) <= stringL; ++i {
                 let indexToStartAt = advance(self.startIndex, i)
@@ -132,7 +132,7 @@ extension UIColor {
             cString = cString.substringFromIndex(advance(cString.startIndex, 1))
         }
         
-        if (countElements(cString) != 6) {
+        if (count(cString) != 6) {
             return UIColor.grayColor()
         }
         
@@ -182,7 +182,7 @@ func downloadImageWithURLString(urlString: String, completion: (success: Bool, i
                 completion(success: true, image: image)
             } else {
                 completion(success: false, image: nil)
-                println("ERROR DOWNLOADING IMAGE")
+                // println("ERROR DOWNLOADING IMAGE")
             }
         }
     )
@@ -271,7 +271,7 @@ func formatFirstThreeDigitsOfIntFromBaseWithPostfix(numberToFormat num: Int, bas
                 return "\(digitsFromBase)\(postfix)"
             }
         } else {
-            println("Error: Int(num / base) must leave max of three leading integers from base")
+            // println("Error: Int(num / base) must leave max of three leading integers from base")
             return "ERR"
         }
     } else {
@@ -398,7 +398,7 @@ func addingOnlyWhitespaceToTextFieldWithOnlyWhitespaceOrEmpty(textfieldText: Str
         }
         
         // Only spaces being added, so return true
-        if (countElements(strippedRepStr) == 0) {
+        if (count(strippedRepStr) == 0) {
             return true
         }
     }
@@ -552,8 +552,8 @@ func setTableBackgroundViewWithMessages(tableView: UITableView, mainLine: String
     bgView.addSubview(messageLabel1)
     
     bgView.addConstraint(NSLayoutConstraint(item: messageLabel1, attribute: NSLayoutAttribute.CenterY, relatedBy: NSLayoutRelation.Equal, toItem: bgView, attribute: NSLayoutAttribute.CenterY, multiplier: 1, constant: -messageLabel1.frame.height / 2))
-    bgView.addConstraint(NSLayoutConstraint(item: messageLabel1, attribute: NSLayoutAttribute.Left, relatedBy: NSLayoutRelation.Equal, toItem: bgView, attribute: NSLayoutAttribute.Left, multiplier: 1, constant: 0))
-    bgView.addConstraint(NSLayoutConstraint(item: messageLabel1, attribute: NSLayoutAttribute.Right, relatedBy: NSLayoutRelation.Equal, toItem: bgView, attribute: NSLayoutAttribute.Right, multiplier: 1, constant: 0))
+    bgView.addConstraint(NSLayoutConstraint(item: messageLabel1, attribute: NSLayoutAttribute.Left, relatedBy: NSLayoutRelation.Equal, toItem: bgView, attribute: NSLayoutAttribute.Left, multiplier: 1, constant: 8))
+    bgView.addConstraint(NSLayoutConstraint(item: messageLabel1, attribute: NSLayoutAttribute.Right, relatedBy: NSLayoutRelation.Equal, toItem: bgView, attribute: NSLayoutAttribute.Right, multiplier: 1, constant: -8))
     
     
     let messageLabel2 = UILabel()
@@ -567,8 +567,8 @@ func setTableBackgroundViewWithMessages(tableView: UITableView, mainLine: String
     bgView.addSubview(messageLabel2)
     
     bgView.addConstraint(NSLayoutConstraint(item: messageLabel2, attribute: NSLayoutAttribute.Top, relatedBy: NSLayoutRelation.Equal, toItem: messageLabel1, attribute: NSLayoutAttribute.Bottom, multiplier: 1, constant: 0))
-    bgView.addConstraint(NSLayoutConstraint(item: messageLabel2, attribute: NSLayoutAttribute.Left, relatedBy: NSLayoutRelation.Equal, toItem: bgView, attribute: NSLayoutAttribute.Left, multiplier: 1, constant: 0))
-    bgView.addConstraint(NSLayoutConstraint(item: messageLabel2, attribute: NSLayoutAttribute.Right, relatedBy: NSLayoutRelation.Equal, toItem: bgView, attribute: NSLayoutAttribute.Right, multiplier: 1, constant: 0))
+    bgView.addConstraint(NSLayoutConstraint(item: messageLabel2, attribute: NSLayoutAttribute.Left, relatedBy: NSLayoutRelation.Equal, toItem: bgView, attribute: NSLayoutAttribute.Left, multiplier: 1, constant: 8))
+    bgView.addConstraint(NSLayoutConstraint(item: messageLabel2, attribute: NSLayoutAttribute.Right, relatedBy: NSLayoutRelation.Equal, toItem: bgView, attribute: NSLayoutAttribute.Right, multiplier: 1, constant: -8))
 }
 
 func getAppDelegate() -> AppDelegate! {
@@ -605,4 +605,13 @@ func getPartyTabBarController() -> PartyTabBarController? {
         }
     }
     return nil
+}
+
+extension UIView {
+    class func loadFromNibNamed(nibNamed: String, bundle : NSBundle? = NSBundle.mainBundle()) -> UIView? {
+        return UINib(
+            nibName: nibNamed,
+            bundle: bundle
+            ).instantiateWithOwner(nil, options: nil)[0] as? UIView
+    }
 }

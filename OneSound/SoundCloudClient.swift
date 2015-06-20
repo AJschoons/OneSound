@@ -53,7 +53,7 @@ extension SCClient {
 extension SCClient {
     // MARK: searching songs and getting songs by their id
     
-    func searchSoundCloudForSongWithString(str: String, success: AFHTTPSuccessBlock, failure: AFHTTPFailureBlock, extraAttempts: Int = defaultEA) {
+    func searchSoundCloudForSongWithString(str: String, extraAttempts: Int = defaultEA, success: AFHTTPSuccessBlock, failure: AFHTTPFailureBlock) {
         // Create a URL string from the base URL string, then user/:uid
         let urlString = "\(SCBaseURL)tracks.json"
         
@@ -67,7 +67,7 @@ extension SCClient {
         
         let failureWithExtraAttempt: AFHTTPFailureBlock = { task, error in
             if errorShouldBeHandledWithRepeatedRequest(task, error, attemptsLeft: extraAttempts) {
-                self.searchSoundCloudForSongWithString(str, success: success, failure: failure, extraAttempts: (extraAttempts - 1))
+                self.searchSoundCloudForSongWithString(str, extraAttempts: (extraAttempts - 1), success: success, failure: failure)
             } else {
                 failure!(task: task, error: error)
             }
@@ -77,8 +77,8 @@ extension SCClient {
     }
     
     // (Only used when initially testing audio player for party)
-    /*
-    func getSoundCloudSongByID(songID: Int, success: AFHTTPSuccessBlock, failure: AFHTTPFailureBlock, extraAttempts: Int = defaultEA) {
+    
+    func getSoundCloudSongByID(songID: Int, extraAttempts: Int = defaultEA, success: AFHTTPSuccessBlock, failure: AFHTTPFailureBlock) {
         // Create a URL string from the base URL string, then user/:uid
         let urlString = "\(SCBaseURL)tracks/\(songID).json"
         
@@ -87,12 +87,12 @@ extension SCClient {
         
         let failureWithExtraAttempt: AFHTTPFailureBlock = { task, error in
             if errorShouldBeHandledWithRepeatedRequest(task, error, attemptsLeft: extraAttempts) {
-                self.getSoundCloudSongByID(songID, success: success, failure: failure, extraAttempts: (extraAttempts - 1))
+                self.getSoundCloudSongByID(songID, extraAttempts: (extraAttempts - 1), success: success, failure: failure)
             } else {
                 failure!(task: task, error: error)
             }
         }
         
         httpSessionManager.GET(urlString, parameters: params, success: success, failure: failure)
-    }*/
+    }
 }

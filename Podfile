@@ -14,6 +14,8 @@ pod 'StreamingKit', '~> 0.1'
 pod 'UIImageEffects'
 #pod 'FXBlurView', '~> 1.6' // Might add later for blurring in iOS 7?
 pod 'NewRelicAgent'
+pod 'INTULocationManager', '~> 3.0'
+pod 'SWTableViewCell', '~> 0.3.7'
 
 end
 

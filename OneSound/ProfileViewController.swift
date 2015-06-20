@@ -10,7 +10,7 @@ import UIKit
 
 let ProfileViewControllerNibName = "ProfileViewController"
 
-class ProfileViewController: UIViewController {
+class ProfileViewController: OSViewController {
     
     @IBOutlet weak var signOutButton: UIBarButtonItem?
     @IBOutlet weak var settingsButton: UIBarButtonItem?
@@ -34,9 +34,12 @@ class ProfileViewController: UIViewController {
     @IBOutlet weak var spacer4: UIView?
     @IBOutlet weak var messageLabel3: UILabel?
     @IBOutlet weak var messageLabel4: UILabel?
+    
+    @IBOutlet weak var favoritesTable: UITableView!
 
     private var loadedFullUserInfoFromDefaults = false
     private let defaultUserImageForProfileImageName = "defaultUserImageForProfile"
+    private let profileFavoritesTableViewController = ProfileFavoritesTableViewController()
 
     @IBAction func signIntoFacebook(sender: AnyObject) {
         let fbSession = FBSession.activeSession()
@@ -57,7 +60,7 @@ class ProfileViewController: UIViewController {
     
     @IBAction func signOut(sender: AnyObject) {
         // Only proceeds if refresh leaves view controller with a valid user
-        if refresh() {
+        if refreshWithValidUser() {
             if UserManager.sharedUser.guest == true {
                 // Let the guest know that signing out a guest account doesn't really do anything
                 let alert = UIAlertView(title: "Signing Out Guest", message: "Signing out of guest account deletes current guest account and signs into a new guest account. To sign into a full account, login with Facebook, and your guest account is automatically upgraded.", delegate: self, cancelButtonTitle: "Cancel", otherButtonTitles: "Ok")
@@ -73,7 +76,7 @@ class ProfileViewController: UIViewController {
     
     @IBAction func changeSettings(sender: AnyObject) {
         let loginStoryboard = UIStoryboard(name: LoginStoryboardName, bundle: nil)
-        let loginViewController = loginStoryboard.instantiateViewControllerWithIdentifier(LoginViewControllerIdentifier) as LoginViewController
+        let loginViewController = loginStoryboard.instantiateViewControllerWithIdentifier(LoginViewControllerIdentifier) as! LoginViewController
         loginViewController.accountAlreadyExists = true
         loginViewController.delegate = self
         let navC = UINavigationController(rootViewController: loginViewController)
@@ -83,7 +86,9 @@ class ProfileViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view.
+
+        osvcVariables.screenName = ProfileViewControllerNibName
+        
         title = "Profile"
         
         let fnc = getFrontNavigationController()
@@ -119,11 +124,20 @@ class ProfileViewController: UIViewController {
         loadedFullUserInfoFromDefaults = setUserProfileInfoFromUserDefaults()
         
         signOutButton!.tintColor = UIColor.red()
+        
+        //
+        // Setup and load favorites table
+        //
+        profileFavoritesTableViewController.dataHelper.tableView = favoritesTable
+        profileFavoritesTableViewController.viewDidLoad()
+        // Allows cells to flow under toolbar, but not stop scrolling behind them when content stops
+        favoritesTable.contentInset = UIEdgeInsetsMake(0, 0, toolbar.frame.height, 0)
     }
     
     override func viewWillAppear(animated: Bool) {
-        refresh()
         super.viewWillAppear(animated)
+        refreshWithValidUser()
+        profileFavoritesTableViewController.viewWillAppear(animated)
     }
     
     override func viewWillDisappear(animated: Bool) {
@@ -134,18 +148,24 @@ class ProfileViewController: UIViewController {
         setUserInfoHidden(true)
         setStoriesTableToHidden(true)
         */
+        profileFavoritesTableViewController.viewWillDisappear(animated)
+    }
+    
+    override func viewDidDisappear(animated: Bool) {
+        super.viewDidDisappear(animated)
+        profileFavoritesTableViewController.viewDidDisappear(animated)
     }
     
     func refreshIfVisible() {
         if isViewLoaded() && view.window != nil {
-            refresh()
+            refreshWithValidUser()
         }
     }
     
-    func refresh() -> Bool {
+    func refreshWithValidUser() -> Bool {
         // Returns true if refreshed with a valid user variable for controller
         var validUser = false
-        println("refreshing ProfileViewController")
+        // println("refreshing ProfileViewController")
         
         if AFNetworkReachabilityManager.sharedManager().reachable {
             if UserManager.sharedUser.setup == true {
@@ -160,11 +180,13 @@ class ProfileViewController: UIViewController {
                             self.facebookSignInButton!.hidden = false
                             self.signOutButton!.enabled = false
                             self.settingsButton!.enabled = false
+                            self.favoritesTable.hidden = true
                         } else {
                             // Full accounts
                             self.facebookSignInButton!.hidden = true
                             self.signOutButton!.enabled = true
                             self.settingsButton!.enabled = true
+                            self.favoritesTable.hidden = false
                         }
                     }
                 )
@@ -206,7 +228,7 @@ class ProfileViewController: UIViewController {
                 userImage!.image = UserManager.sharedUser.photo
             } else {
                 userImage!.image = UIImage(named: defaultUserImageForProfileImageName)
-                userImage!.backgroundColor = UserManager.sharedUser.colorToUIColor
+                userImage!.backgroundColor = UserManager.sharedUser.colorToUIColor()
             }
         }
     }
@@ -224,6 +246,7 @@ class ProfileViewController: UIViewController {
         spacer2!.hidden = hidden
         spacer3!.hidden = hidden
         spacer4!.hidden = hidden
+        favoritesTable.hidden = hidden
     }
     
     func setUserProfileInfoFromUserDefaults() -> Bool {
@@ -234,13 +257,13 @@ class ProfileViewController: UIViewController {
         let userSavedName = defaults.objectForKey(userNameKey) as? String
         if userSavedName != nil {
             // If user information can be retreived (assumes getting ANY user info means the rest is saved)
-            println("found userSavedName; assuming that means the rest of info is saved")
+            // println("found userSavedName; assuming that means the rest of info is saved")
             let userSavedIsGuest = defaults.boolForKey(userGuestKey)
             if userSavedIsGuest == false {
                 // If a full user
-                println("saved user is a full user")
+                // println("saved user is a full user")
                 if let imageData = defaults.objectForKey(userPhotoUIImageKey) as? NSData! {
-                    println("image data for full user valid, use their image and set up other info")
+                    // println("image data for full user valid, use their image and set up other info")
                     let userUpvoteCount = defaults.integerForKey(userUpvoteCountKey)
                     let userSongCount = defaults.integerForKey(userSongCountKey)
                     let userHotnessPercent = defaults.integerForKey(userHotnessPercentKey)
@@ -328,7 +351,7 @@ extension ProfileViewController: UIAlertViewDelegate {
                 // If guest wants to sign out, delete all info and get new guest account, then refresh
                 UserManager.sharedUser.deleteAllSavedUserInformation()
                 UserManager.sharedUser.setupGuestAccount()
-                refresh()
+                refreshWithValidUser()
             }
         } else if alertView.tag == AlertTag.SigningOut.rawValue {
             // If full user is trying to sign out, let the FB session state change handle sign out and updating to new guest account
@@ -342,6 +365,6 @@ extension ProfileViewController: UIAlertViewDelegate {
 
 extension ProfileViewController: LoginViewControllerDelegate {
     func loginViewControllerCancelled() {
-        refresh()
+        refreshWithValidUser()
     }
 }

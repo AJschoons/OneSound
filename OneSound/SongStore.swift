@@ -113,9 +113,9 @@ class SongStore: NSObject {
         var result = _privateSongAudioDictionary[key]
         
         if result == nil {
-            println("song AUDIO not cached, need to download it")
+            // println("song AUDIO not cached, need to download it")
             if songsWithAudioBeingDownloaded.contains(key) {
-                println("song AUDIO is already being downloaded")
+                // println("song AUDIO is already being downloaded")
             } else {
                 songsWithAudioBeingDownloaded.add(key)
                 SCClient.sharedClient.downloadSoundCloudSongData(String(key),
@@ -149,13 +149,13 @@ class SongStore: NSObject {
     
     func clearSongInformationCache() {
         // Removes all instances of Songs from the SongStore's dictionary
-        println("Flushing \(_privateSongDictionary.count) songs out of the cache")
+        // println("Flushing \(_privateSongDictionary.count) songs out of the cache")
         _privateSongDictionary.removeAll(keepCapacity: false)
     }
     
     func clearSongAudioCache() {
         // Removes all instances of NSData from the SongStore's dictionary
-        println("Flushing \(_privateSongAudioDictionary.count) song audio out of the cache")
+        // println("Flushing \(_privateSongAudioDictionary.count) song audio out of the cache")
         _privateSongAudioDictionary.removeAll(keepCapacity: false)
     }
     

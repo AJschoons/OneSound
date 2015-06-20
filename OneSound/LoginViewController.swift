@@ -15,7 +15,7 @@ protocol LoginViewControllerDelegate {
     func loginViewControllerCancelled()
 }
 
-class LoginViewController: UITableViewController {
+class LoginViewController: OSTableViewController {
     
     @IBOutlet weak var nameCell: UITableViewCell!
     @IBOutlet weak var nameCellTextField: UITextField!
@@ -35,6 +35,8 @@ class LoginViewController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        osvcVariables.screenName = LoginViewControllerIdentifier
         
         // Setup nav bar
         if accountAlreadyExists {
@@ -107,7 +109,7 @@ class LoginViewController: UITableViewController {
         let userName = nameCellTextField.text
         
         if !accountAlreadyExists {
-            println("Creating FULL account")
+            // println("Creating FULL account")
             
             UserManager.sharedUser.setupFullAccount(userName, userColor: userColor, userID: userID, userAccessToken: userAPIToken, providerToken: userFacebookToken,
                 respondToChangeAttempt: { nameIsValid in
@@ -128,9 +130,10 @@ class LoginViewController: UITableViewController {
             if userColor != UserManager.sharedUser.color {
                 newUserColor = userColor
             }
-            UserManager.sharedUser.updateServerWithNewNameAndColor(newUserName, color: newUserColor, respondToChangeAttempt:
-                { nameIsValid in
+            UserManager.sharedUser.updateUserInformationOnServer(newUserName, color: newUserColor, 
+                respondToChangeAttempt: { nameIsValid in
                     if nameIsValid {
+                        UserManager.sharedUser.name = newUserName
                         self.tableView.endEditing(true)
                         self.dismissViewControllerAnimated(true, completion: nil)
                     } else {
@@ -138,19 +141,20 @@ class LoginViewController: UITableViewController {
                     }
                 }
             )
+            
         }
     }
     
     func setDoneButtonState() {
         if accountAlreadyExists {
             // Only allow Done to be pressed if user information has changed from what is already is
-            if countElements(nameCellTextField.text as String) > 2 && userInfoHasChanged() {
+            if count(nameCellTextField.text as String) > 2 && userInfoHasChanged() {
                 navigationItem.rightBarButtonItem!.enabled = true
             } else {
                 navigationItem.rightBarButtonItem!.enabled = false
             }
         } else {
-            if countElements(nameCellTextField.text as String) > 2 {
+            if count(nameCellTextField.text as String) > 2 {
                 navigationItem.rightBarButtonItem!.enabled = true
             } else {
                 navigationItem.rightBarButtonItem!.enabled = false
@@ -164,7 +168,7 @@ class LoginViewController: UITableViewController {
     }
     
     func updateNameCellTextFieldCount() {
-        let numberOfCharacters = countElements(nameCellTextField.text as String)
+        let numberOfCharacters = count(nameCellTextField.text as String)
         
         // Update label
         nameCellTextFieldCount.text = "\(numberOfCharacters)/15"
@@ -220,7 +224,7 @@ extension LoginViewController: UITableViewDataSource {
         case 1:
             return colorCell
         default:
-            println("Error: LoginViewController cellForRowAtIndexPath couldn't get cell")
+            // println("Error: LoginViewController cellForRowAtIndexPath couldn't get cell")
             return UITableViewCell()
         }
     }
@@ -262,7 +266,7 @@ extension LoginViewController: UITextFieldDelegate {
         }
     
         // Only allow change if 15 or less characters
-        let newLength = countElements(textField.text as String) + countElements(string as String) - range.length
+        let newLength = count(textField.text as String) + count(string as String) - range.length
         return ((newLength > 15) ? false : true)
     }
     
@@ -276,7 +280,7 @@ extension LoginViewController: UITextFieldDelegate {
     func textFieldDidChange() {
         updateNameCellTextFieldCount()
         setDoneButtonState()
-        let numberOfCharacters = countElements(nameCellTextField.text as String)
+        let numberOfCharacters = count(nameCellTextField.text as String)
         if numberOfCharacters >= 3 {
             let userName = nameCellTextField.text
         OSAPI.sharedClient.GETUserNameValidate(userName,

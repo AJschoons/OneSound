@@ -12,10 +12,10 @@ let PartySongsViewControllerNibName = "PartySongsViewController"
 let PartySongCellIndentifier = "PartySongCell"
 let LoadingCellTag = 1
 
-class PartySongsViewController: UIViewController {
+class PartySongsViewController: OSViewController {
 
     let songCellImagePlaceholder = UIImage(named: "songCellImagePlaceholder")
-    let songTableViewImageCache = (UIApplication.sharedApplication().delegate as AppDelegate).songTableViewImageCache
+    let songTableViewImageCache = (UIApplication.sharedApplication().delegate as! AppDelegate).songTableViewImageCache
     let playlistManager = PartyManager.sharedParty.playlistManager
     
     @IBOutlet weak var messageLabel1: UILabel?
@@ -36,6 +36,10 @@ class PartySongsViewController: UIViewController {
     }
     
     override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        osvcVariables.screenName = PartySongsViewControllerNibName
+        
         addSongButton = UIBarButtonItem(title: "Add", style: UIBarButtonItemStyle.Plain, target: self, action: "addSong")
         
         // Make view respond to network reachability changes
@@ -94,8 +98,9 @@ class PartySongsViewController: UIViewController {
         }
     }
     
-    func refresh() {
-        println("refreshing PartySongViewController")
+    override func refresh() {
+        super.refresh()
+        // println("refreshing PartySongViewController")
         
         if AFNetworkReachabilityManager.sharedManager().reachable {
             if UserManager.sharedUser.setup == true {
@@ -188,15 +193,7 @@ extension PartySongsViewController: UITableViewDataSource {
     
     // Should a cell be able to be deleted?
     func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
-        let songsToDelete = playlistManager.songs.count > 0
-        let cellIsLoadingCell = indexPath.row == playlistManager.songs.count // 1 past # of songs will be loading cell
-        
-        if songsToDelete && !cellIsLoadingCell && shouldAllowActionsOnSongs() {
-            // If this is the user's song, they can choose to delete it
-            if playlistManager.songs[indexPath.row].userID == UserManager.sharedUser.id {
-                return true
-            }
-        }
+        // Remove delete button from normal table (use SWTableViewCell instead)
         return false
     }
     
@@ -208,7 +205,10 @@ extension PartySongsViewController: UITableViewDataSource {
             let songsToDelete = playlistManager.songs.count > 0
             let cellIsLoadingCell = indexPath.row == playlistManager.songs.count // 1 past # of songs will be loading cell
             
-            if songsToDelete && !cellIsLoadingCell && shouldAllowActionsOnSongs() {
+            if songsToDelete && !cellIsLoadingCell && shouldAllowActionsOnSongs()
+                || PartyManager.sharedParty.state == .Host
+                || PartyManager.sharedParty.state == .HostStreamable {
+                    
                 // Delete this cell's song
                 playlistManager.deleteSongAtIndex(indexPath.row,
                     completion: {
@@ -257,11 +257,16 @@ extension PartySongsViewController: UITableViewDataSource {
     }
     
     func songCellForRowAtIndexPath(indexPath: NSIndexPath, fromTableView tableView: UITableView) -> PartySongCell {
-        var songCell = songsTable.dequeueReusableCellWithIdentifier(PartySongCellIndentifier, forIndexPath: indexPath) as PartySongCell
+        var songCell = songsTable.dequeueReusableCellWithIdentifier(PartySongCellIndentifier, forIndexPath: indexPath) as! PartySongCell
         
         // "Connect" the cell to the table to receive song votes
         songCell.index = indexPath.row
+        songCell.voteDelegate = self
+        
+        // Set up SW Table Cell
         songCell.delegate = self
+        songCell.rightUtilityButtons = rightUtilityButtonsForCellAtIndexPath(indexPath)
+        
         
         var song = playlistManager.songs[indexPath.row]
         
@@ -309,6 +314,52 @@ extension PartySongsViewController: UITableViewDataSource {
         return songCell
     }
     
+    private func rightUtilityButtonsForCellAtIndexPath(indexPath: NSIndexPath) -> [AnyObject] {
+        var rightUtilityButtons = NSMutableArray()
+        
+        // If the user is a guest, don't allow them to favorite songs
+        if showsFavoriteForSongCellAtIndexPathWithRow(indexPath.row) {
+            let song = playlistManager.songs[indexPath.row]
+            
+            var favoriteButtonColor: UIColor
+            if song.isFavorited != nil && song.isFavorited! {
+                favoriteButtonColor = UIColor.yellow()
+            } else {
+                favoriteButtonColor = UIColor.yellow().colorWithAlphaComponent(0.3)
+            }
+            
+            rightUtilityButtons.sw_addUtilityButtonWithColor(favoriteButtonColor, icon: UIImage(named: "favoriteIcon"))
+        }
+        
+        // Check if the current song has been added by the user or if the user is host
+        if showsDeleteForSongCellAtIndexPathWithRow(indexPath.row) {
+            rightUtilityButtons.sw_addUtilityButtonWithColor(UIColor.red(), icon: UIImage(named: "trashIcon"))
+        }
+        
+        return rightUtilityButtons as [AnyObject]
+    }
+    
+    func showsDeleteForSongCellAtIndexPathWithRow(row: Int) -> Bool {
+        let songsToDelete = playlistManager.songs.count > 0
+        let cellIsLoadingCell = row == playlistManager.songs.count // 1 past # of songs will be loading cell
+        
+        
+        if songsToDelete && !cellIsLoadingCell && shouldAllowActionsOnSongs() {
+            // If this is the user's song, they can choose to delete it
+            if playlistManager.songs[row].userID == UserManager.sharedUser.id
+                || PartyManager.sharedParty.state == .Host
+                || PartyManager.sharedParty.state == .HostStreamable {
+                    return true
+            }
+        }
+        
+        return false
+    }
+    
+    func showsFavoriteForSongCellAtIndexPathWithRow(row: Int) -> Bool {
+        return !UserManager.sharedUser.guest
+    }
+    
     func startImageDownload(urlString: String, forIndexPath indexPath: NSIndexPath) {
         
         SDWebImageManager.sharedManager().downloadImageWithURL(NSURL(string: urlString), options: nil, progress: nil,
@@ -344,7 +395,7 @@ extension PartySongsViewController: UITableViewDataSource {
     
     func loadImagesForOnScreenRows() {
         if playlistManager.songs.count > 0 {
-            let visiblePaths = songsTable.indexPathsForVisibleRows() as [NSIndexPath]
+            let visiblePaths = songsTable.indexPathsForVisibleRows() as! [NSIndexPath]
             
             let numberOfValidRows = playlistManager.songs.count - 1 // "- 1" b/c index of rows start at 0
             
@@ -429,7 +480,7 @@ extension PartySongsViewController: PartySongCellDelegate {
     // MARK: PartySongCellDelegate
     
     // Handle votes on songs
-    func didVoteOnSongCellAtIndex(index: Int, withVote vote: SongVote, andVoteCountChange voteCountChange: Int) {
+    func didVoteOnSongCellAtIndex(index: Int, withVote vote: PartySongVote, andVoteCountChange voteCountChange: Int) {
         let song = playlistManager.songs[index]
         
         if shouldAllowActionsOnSongs() {
@@ -459,5 +510,91 @@ extension PartySongsViewController: PartySongCellDelegate {
                 }
             }
         }
+    }
+}
+
+extension PartySongsViewController: SWTableViewCellDelegate {
+    // MARK: SWTableViewCellDelegate
+    
+    // Handle button presses
+    
+    // click event on right utility button
+    func swipeableTableViewCell(cell: SWTableViewCell!, didTriggerRightUtilityButtonWithIndex rightButtonsIndex: NSInteger) {
+        
+        //
+        // Ensure correct cell type and indexPath exist
+        //
+        
+        let songCell: PartySongCell! = cell as? PartySongCell
+        if songCell == nil { return }
+        
+        let cellIndexPath = songsTable.indexPathForCell(cell)
+        if cellIndexPath == nil { return }
+        var row = cellIndexPath!.row
+        
+        
+        //
+        // Determine which button was pressed
+        //
+        
+        var isDeleteButton = false
+        var isFavoriteButton = false
+        
+        if showsDeleteForSongCellAtIndexPathWithRow(row) && showsFavoriteForSongCellAtIndexPathWithRow(row) {
+            isDeleteButton = rightButtonsIndex == 1
+            isFavoriteButton = rightButtonsIndex == 0
+        } else if showsDeleteForSongCellAtIndexPathWithRow(row) {
+            isDeleteButton = true
+        } else {
+            isFavoriteButton = true
+        }
+        
+        
+        //
+        // Actions based on the button pressed
+        //
+        
+        if isFavoriteButton {
+            // Favorite button pressed
+            if let songCell = cell as? PartySongCell {
+                let song = playlistManager.songs[row]
+                let songWasFavorited = song.isFavorited != nil && song.isFavorited!
+                
+                // Flip the isFavorited bool of the local song model
+                song.isFavorited = !songWasFavorited
+                
+                if songWasFavorited {
+                    // Un-favorite the song
+                    PartyManager.sharedParty.songUnfavorite(song.songID!)
+                } else {
+                    // Favorite the song
+                    PartyManager.sharedParty.songFavorite(song.songID!)
+                }
+                
+                // Reload the song cells buttons to be correct
+                songCell.rightUtilityButtons = rightUtilityButtonsForCellAtIndexPath(cellIndexPath!)
+            }
+        } else if isDeleteButton {
+            // Delete
+            if let songCell = cell as? PartySongCell {
+                if let row = songCell.index {
+                    tableView(songsTable, commitEditingStyle: UITableViewCellEditingStyle.Delete, forRowAtIndexPath: NSIndexPath(forRow: row, inSection: 0))
+                }
+            }
+        }
+        
+        
+        //
+        // Do this regardless of which button it was
+        //
+        
+        cell.hideUtilityButtonsAnimated(true)
+    }
+    
+    
+    
+    // prevent multiple cells from showing utilty buttons simultaneously
+    func swipeableTableViewCellShouldHideUtilityButtonsOnSwipe(cell: SWTableViewCell) -> Bool {
+        return true
     }
 }

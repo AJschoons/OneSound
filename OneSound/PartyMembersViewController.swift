@@ -11,9 +11,9 @@ import UIKit
 let PartyMembersViewControllerNibName = "PartyMembersViewController"
 let PartyMemberCellIdentifier = "PartyMemberCell"
 
-class PartyMembersViewController: UIViewController {
+class PartyMembersViewController: OSViewController {
     
-    let userThumbnailImageCache = (UIApplication.sharedApplication().delegate as AppDelegate).userThumbnailImageCache
+    let userThumbnailImageCache = (UIApplication.sharedApplication().delegate as! AppDelegate).userThumbnailImageCache
     let membersManager = PartyManager.sharedParty.membersManager
     
     @IBOutlet weak var messageLabel1: UILabel?
@@ -26,6 +26,10 @@ class PartyMembersViewController: UIViewController {
     let heightForRows: CGFloat = 64.0
     
     override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        osvcVariables.screenName = PartyMembersViewControllerNibName
+        
         // Make view respond to network reachability changes
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "refreshIfVisible", name: AFNetworkingReachabilityDidChangeNotification, object: nil)
         // Make sure view knows the user is setup so it won't keep displaying 'Not signed into account' when there is no  internet connection when app launches and then the network comes back and UserManager is setup
@@ -73,8 +77,10 @@ class PartyMembersViewController: UIViewController {
         }
     }
     
-    func refresh() {
-        println("refreshing PartyMembersViewController")
+    override func refresh() {
+        super.refresh()
+        
+        // println("refreshing PartyMembersViewController")
         
         if AFNetworkReachabilityManager.sharedManager().reachable {
             if UserManager.sharedUser.setup == true {
@@ -176,7 +182,7 @@ extension PartyMembersViewController: UITableViewDataSource {
     }
     
     func memberCellForRowAtIndexPath(indexPath: NSIndexPath, fromTableView tableView: UITableView) -> PartyMemberCell {
-        var membersCell = membersTable.dequeueReusableCellWithIdentifier(PartyMemberCellIdentifier, forIndexPath: indexPath) as PartyMemberCell
+        var membersCell = membersTable.dequeueReusableCellWithIdentifier(PartyMemberCellIdentifier, forIndexPath: indexPath) as! PartyMemberCell
         
         let user = membersManager.users[indexPath.row]
         
@@ -245,7 +251,7 @@ extension PartyMembersViewController: UITableViewDataSource {
     
     func loadImagesForOnScreenRows() {
         if membersManager.users.count > 0 {
-            let visiblePaths = membersTable.indexPathsForVisibleRows() as [NSIndexPath]
+            let visiblePaths = membersTable.indexPathsForVisibleRows() as! [NSIndexPath]
             
             let numberOfValidRows = membersManager.users.count - 1 // "- 1" b/c index of rows start at 0
             

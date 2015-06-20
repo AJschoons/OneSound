@@ -11,10 +11,10 @@ import UIKit
 let PartySongCellNibName = "PartySongCell"
 
 protocol PartySongCellDelegate: class {
-    func didVoteOnSongCellAtIndex(index: Int, withVote vote: SongVote, andVoteCountChange voteCountChange: Int)
+    func didVoteOnSongCellAtIndex(index: Int, withVote vote: PartySongVote, andVoteCountChange voteCountChange: Int)
 }
 
-class PartySongCell: UITableViewCell {
+class PartySongCell: SWTableViewCell {
 
     @IBOutlet private(set) weak var songName: UILabel!
     @IBOutlet weak var songArtist: UILabel!
@@ -24,11 +24,11 @@ class PartySongCell: UITableViewCell {
     @IBOutlet weak var thumbsDownImage: UIImageView!
     @IBOutlet weak var thumbsUpImage: UIImageView!
     
-    @IBOutlet weak private var triangleView: OSTriangleView!
-    @IBOutlet weak private var voteCountLabel: UILabel!
+    @IBOutlet weak private(set) var triangleView: OSTriangleView!
+    @IBOutlet weak private(set) var voteCountLabel: UILabel!
     
     // Used for tracking where cell is for votes (need a way to "talk" to the tableViewController)
-    weak var delegate: PartySongCellDelegate?
+    weak var voteDelegate: PartySongCellDelegate?
     var index: Int?
     
     private var voteCountIsNegative = false
@@ -97,7 +97,7 @@ extension PartySongCell {
     
     func handleThumbsUp(button: AnyObject) {
         if let thumbsUpButton = button as? UIButton {
-            var vote: SongVote
+            var vote: PartySongVote
             var voteCountChange: Int
             
             // If the button is selected before it is pressed, make it unselected
@@ -124,14 +124,14 @@ extension PartySongCell {
             // Update the vote count on the label, playlistManager, and server
             changeSongVoteCountLabelCountBy(voteCountChange)
             if index != nil {
-                delegate?.didVoteOnSongCellAtIndex(index!, withVote: vote, andVoteCountChange: voteCountChange)
+                voteDelegate?.didVoteOnSongCellAtIndex(index!, withVote: vote, andVoteCountChange: voteCountChange)
             }
         }
     }
     
     func handleThumbsDown(button: AnyObject) {
         if let thumbsDownButton = button as? UIButton {
-            var vote: SongVote
+            var vote: PartySongVote
             var voteCountChange: Int
             
             // If the button is selected before it is pressed, make it unselected
@@ -158,7 +158,7 @@ extension PartySongCell {
             // Update the vote count on the label, PlaylistManager, and server
             changeSongVoteCountLabelCountBy(voteCountChange)
             if index != nil {
-                delegate?.didVoteOnSongCellAtIndex(index!, withVote: vote, andVoteCountChange: voteCountChange)
+                voteDelegate?.didVoteOnSongCellAtIndex(index!, withVote: vote, andVoteCountChange: voteCountChange)
             }
         }
     }

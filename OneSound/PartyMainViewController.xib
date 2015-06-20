@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="7515.2" systemVersion="14D72i" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="7706" systemVersion="14E26a" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7512"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7703"/>
         <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
     </dependencies>
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="PartyMainViewController" customModule="OneSound" customModuleProvider="target">
             <connections>
                 <outlet property="addSongButton" destination="AAT-uz-eSM" id="qIR-1W-kDN"/>
+                <outlet property="favoritesButton" destination="5gs-0F-uOV" id="qYO-4G-1Oo"/>
                 <outlet property="messageLabel1" destination="dg1-oM-G78" id="ngp-Q3-VP1"/>
                 <outlet property="messageLabel2" destination="UYc-8M-RBr" id="Clw-KC-Ij1"/>
                 <outlet property="pauseButton" destination="HIU-WJ-aqj" id="qqp-kF-x3H"/>
@@ -623,6 +624,19 @@
                         <action selector="addSong:" destination="-1" eventType="touchUpInside" id="Dvf-iG-2Kd"/>
                     </connections>
                 </button>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="5gs-0F-uOV" userLabel="favoriteButton">
+                    <rect key="frame" x="553" y="79" width="32" height="32"/>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="32" id="Paw-Rd-LR6"/>
+                        <constraint firstAttribute="height" constant="32" id="fJQ-0J-7Is"/>
+                    </constraints>
+                    <state key="normal" image="favoritesIconMainPartyUnselected">
+                        <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                    </state>
+                    <connections>
+                        <action selector="favoriteSong:" destination="-1" eventType="touchUpInside" id="Tce-6E-3VL"/>
+                    </connections>
+                </button>
             </subviews>
             <color key="backgroundColor" red="0.95075207949999996" green="0.95072358850000005" blue="0.95073968170000001" alpha="1" colorSpace="calibratedRGB"/>
             <constraints>
@@ -630,6 +644,7 @@
                 <constraint firstAttribute="trailing" secondItem="qdb-42-GJA" secondAttribute="trailing" id="2f2-fg-0ID"/>
                 <constraint firstItem="NMo-td-Wl0" firstAttribute="trailing" secondItem="HIU-WJ-aqj" secondAttribute="trailing" id="6Ev-Rg-MK2"/>
                 <constraint firstItem="AAT-uz-eSM" firstAttribute="centerX" secondItem="qdb-42-GJA" secondAttribute="centerX" id="ETY-Tp-EeW"/>
+                <constraint firstItem="5gs-0F-uOV" firstAttribute="top" secondItem="NMo-td-Wl0" secondAttribute="top" constant="15" id="F8Q-FS-lUn"/>
                 <constraint firstItem="Flu-ww-wQ5" firstAttribute="leading" secondItem="dAA-if-muq" secondAttribute="trailing" constant="8" id="Gjf-v0-0uk"/>
                 <constraint firstItem="qdb-42-GJA" firstAttribute="top" secondItem="NMo-td-Wl0" secondAttribute="bottom" id="KWB-Iv-WBf"/>
                 <constraint firstItem="NMo-td-Wl0" firstAttribute="leading" secondItem="oBv-JJ-MLy" secondAttribute="leading" constant="-10" id="L6H-SH-9Zk"/>
@@ -638,6 +653,7 @@
                 <constraint firstItem="NMo-td-Wl0" firstAttribute="leading" secondItem="HIU-WJ-aqj" secondAttribute="leading" id="OhI-i1-h93"/>
                 <constraint firstItem="NMo-td-Wl0" firstAttribute="bottom" secondItem="dAA-if-muq" secondAttribute="bottom" constant="10" id="Q55-dE-xj6"/>
                 <constraint firstItem="dg1-oM-G78" firstAttribute="leading" secondItem="ggx-wY-78Y" secondAttribute="leading" constant="20" id="RZR-Ec-2YG"/>
+                <constraint firstItem="5gs-0F-uOV" firstAttribute="trailing" secondItem="NMo-td-Wl0" secondAttribute="trailing" constant="-15" id="Ry0-9x-gaC"/>
                 <constraint firstItem="UYc-8M-RBr" firstAttribute="leading" secondItem="ggx-wY-78Y" secondAttribute="leading" constant="20" id="S9b-L7-ieo"/>
                 <constraint firstItem="NMo-td-Wl0" firstAttribute="leading" secondItem="dAA-if-muq" secondAttribute="leading" constant="-10" id="SgL-Dx-Q4j"/>
                 <constraint firstAttribute="bottom" secondItem="qdb-42-GJA" secondAttribute="bottom" id="W2k-66-0dD"/>
@@ -680,6 +696,7 @@
     </objects>
     <resources>
         <image name="defaultUserImageForMainParty" width="120" height="120"/>
+        <image name="favoritesIconMainPartyUnselected" width="36" height="36"/>
         <image name="hotnessIconLarge" width="24" height="24"/>
         <image name="playIcon" width="38" height="50"/>
         <image name="songIconLarge" width="24" height="24"/>

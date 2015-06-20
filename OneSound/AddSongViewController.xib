@@ -1,16 +1,20 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="7515.2" systemVersion="14D72i" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="7706" systemVersion="14E26a" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7512"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7703"/>
     </dependencies>
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="AddSongViewController" customModule="OneSound" customModuleProvider="target">
             <connections>
                 <outlet property="activityIndicator" destination="0Hp-gN-8bF" id="cT2-Gu-847"/>
                 <outlet property="animatedOneSoundOne" destination="QBl-38-kz5" id="9cF-mF-xRj"/>
+                <outlet property="favoritesTable" destination="Icp-ad-9qV" id="5wW-pO-F2w"/>
+                <outlet property="searchBar" destination="Zha-Cf-aAR" id="9Ty-Qe-xgN"/>
                 <outlet property="searchResultsTable" destination="LRn-oE-J4g" id="LQU-N1-K8I"/>
+                <outlet property="searchTypeControl" destination="ndO-bm-YAL" id="YDu-32-Pe1"/>
                 <outlet property="songSearchBar" destination="Zha-Cf-aAR" id="MxG-3u-sKt"/>
+                <outlet property="toolbar" destination="Z3v-88-Q0q" id="Y2A-Q7-VGU"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
             </connections>
         </placeholder>
@@ -19,26 +23,18 @@
             <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
-                <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="LRn-oE-J4g">
-                    <rect key="frame" x="0.0" y="44" width="600" height="556"/>
-                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                    <connections>
-                        <outlet property="dataSource" destination="-1" id="wdT-L5-dau"/>
-                        <outlet property="delegate" destination="-1" id="16q-aQ-HKD"/>
-                    </connections>
-                </tableView>
                 <imageView hidden="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="QBl-38-kz5">
-                    <rect key="frame" x="280" y="302" width="40" height="40"/>
+                    <rect key="frame" x="280" y="324" width="40" height="40"/>
                     <constraints>
                         <constraint firstAttribute="width" constant="40" id="3wO-Kc-q7J"/>
                         <constraint firstAttribute="height" constant="40" id="rmy-nq-3DM"/>
                     </constraints>
                 </imageView>
                 <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="0Hp-gN-8bF">
-                    <rect key="frame" x="290" y="312" width="20" height="20"/>
+                    <rect key="frame" x="290" y="334" width="20" height="20"/>
                 </activityIndicatorView>
-                <searchBar contentMode="redraw" placeholder="Enter a song name" translucent="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Zha-Cf-aAR">
-                    <rect key="frame" x="0.0" y="0.0" width="600" height="44"/>
+                <searchBar contentMode="redraw" placeholder="Search for a SoundCloud song" translucent="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Zha-Cf-aAR">
+                    <rect key="frame" x="0.0" y="44" width="600" height="44"/>
                     <color key="backgroundColor" red="0.95075207948684692" green="0.95072358846664429" blue="0.95073968172073364" alpha="1" colorSpace="calibratedRGB"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="44" id="303-1k-ERQ"/>
@@ -49,21 +45,70 @@
                         <outlet property="delegate" destination="-1" id="sQP-Pf-H4h"/>
                     </connections>
                 </searchBar>
+                <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Z3v-88-Q0q">
+                    <rect key="frame" x="0.0" y="0.0" width="600" height="44"/>
+                    <color key="backgroundColor" red="1" green="0.99997437" blue="0.99999129769999995" alpha="1" colorSpace="calibratedRGB"/>
+                    <items>
+                        <barButtonItem style="plain" systemItem="flexibleSpace" id="lBc-wm-HRU"/>
+                        <barButtonItem style="plain" id="Sb5-kY-Wxt">
+                            <segmentedControl key="customView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="bar" selectedSegmentIndex="0" id="ndO-bm-YAL" userLabel="SoundCloud, Favorites">
+                                <rect key="frame" x="211" y="7" width="177" height="30"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <segments>
+                                    <segment title="SoundCloud"/>
+                                    <segment title="Favorites"/>
+                                </segments>
+                                <color key="tintColor" red="0.17838662860000001" green="0.73694926500000002" blue="0.94469857219999998" alpha="1" colorSpace="calibratedRGB"/>
+                                <connections>
+                                    <action selector="changeSearchType:" destination="-1" eventType="valueChanged" id="BS1-dO-4j6"/>
+                                </connections>
+                            </segmentedControl>
+                        </barButtonItem>
+                        <barButtonItem style="plain" systemItem="flexibleSpace" id="DK5-Xr-z2J"/>
+                    </items>
+                </toolbar>
+                <tableView clipsSubviews="YES" contentMode="scaleToFill" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="Icp-ad-9qV" userLabel="favoritesTable">
+                    <rect key="frame" x="0.0" y="47" width="600" height="553"/>
+                    <color key="backgroundColor" red="0.96078431372549022" green="0.96078431372549022" blue="0.96078431372549022" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                    <color key="separatorColor" red="0.96078431372549022" green="0.96078431372549022" blue="0.96078431372549022" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                </tableView>
+                <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="LRn-oE-J4g" userLabel="soundCloudTable">
+                    <rect key="frame" x="0.0" y="88" width="600" height="512"/>
+                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                    <color key="separatorColor" red="0.96078431372549022" green="0.96078431372549022" blue="0.96078431372549022" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                    <connections>
+                        <outlet property="dataSource" destination="-1" id="wdT-L5-dau"/>
+                        <outlet property="delegate" destination="-1" id="16q-aQ-HKD"/>
+                    </connections>
+                </tableView>
             </subviews>
-            <color key="backgroundColor" red="0.95075207948684692" green="0.95072358846664429" blue="0.95073968172073364" alpha="1" colorSpace="calibratedRGB"/>
+            <color key="backgroundColor" red="0.96078431372549022" green="0.96078431372549022" blue="0.96078431372549022" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
             <constraints>
+                <constraint firstItem="Zha-Cf-aAR" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" id="5Nd-cD-5oq"/>
+                <constraint firstAttribute="trailing" secondItem="Icp-ad-9qV" secondAttribute="trailing" id="DFU-9h-KFs"/>
+                <constraint firstAttribute="bottom" secondItem="Icp-ad-9qV" secondAttribute="bottom" id="J0b-Ls-ZRj"/>
                 <constraint firstAttribute="trailing" secondItem="Zha-Cf-aAR" secondAttribute="trailing" id="RYk-RP-bYn"/>
                 <constraint firstItem="LRn-oE-J4g" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="RZJ-6k-xWu"/>
                 <constraint firstItem="0Hp-gN-8bF" firstAttribute="centerX" secondItem="LRn-oE-J4g" secondAttribute="centerX" id="Vgj-1o-IXy"/>
+                <constraint firstItem="Icp-ad-9qV" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="Vxv-VN-ieL"/>
                 <constraint firstAttribute="bottom" secondItem="LRn-oE-J4g" secondAttribute="bottom" id="bc4-ge-hS6"/>
                 <constraint firstItem="LRn-oE-J4g" firstAttribute="top" secondItem="Zha-Cf-aAR" secondAttribute="bottom" id="dMt-lI-8Ku"/>
-                <constraint firstItem="Zha-Cf-aAR" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" id="eG8-Fh-xOP"/>
                 <constraint firstItem="0Hp-gN-8bF" firstAttribute="centerY" secondItem="LRn-oE-J4g" secondAttribute="centerY" id="en9-fX-XTZ"/>
                 <constraint firstAttribute="trailing" secondItem="LRn-oE-J4g" secondAttribute="trailing" id="f9C-lZ-kcI"/>
+                <constraint firstItem="Z3v-88-Q0q" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" id="fuS-Hv-tEa"/>
+                <constraint firstItem="Zha-Cf-aAR" firstAttribute="top" secondItem="Z3v-88-Q0q" secondAttribute="bottom" id="k8j-t3-DWw"/>
+                <constraint firstItem="Z3v-88-Q0q" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="m09-JX-K9g"/>
                 <constraint firstItem="LRn-oE-J4g" firstAttribute="centerY" secondItem="QBl-38-kz5" secondAttribute="centerY" id="oHP-0X-BWn"/>
                 <constraint firstItem="Zha-Cf-aAR" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="pqL-4u-LEf"/>
+                <constraint firstItem="Icp-ad-9qV" firstAttribute="top" secondItem="Z3v-88-Q0q" secondAttribute="bottom" constant="3" id="tJy-gg-fAJ"/>
                 <constraint firstItem="LRn-oE-J4g" firstAttribute="centerX" secondItem="QBl-38-kz5" secondAttribute="centerX" id="uyJ-K3-04F"/>
+                <constraint firstAttribute="trailing" secondItem="Z3v-88-Q0q" secondAttribute="trailing" id="xBh-xE-BPj"/>
             </constraints>
+            <variation key="default">
+                <mask key="constraints">
+                    <exclude reference="5Nd-cD-5oq"/>
+                </mask>
+            </variation>
         </view>
     </objects>
 </document>
