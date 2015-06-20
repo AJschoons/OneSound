@@ -5,6 +5,15 @@ iOS app
 
 Changelog
 ===
+* 1.2
+ * Save favorite songs
+ * Add to party playlist from favorite songs
+ * Parties have location
+ * Searching for parties by nearest location
+ * Hosts can delete any song in a party playlist
+ * Party searches by name update while typing
+ * Stability improvements
+
 * 1.1.3
  * Fixed two songs playing at once in parties
  * Fixed entire playlist getting skipped
