@@ -12,6 +12,7 @@ Changelog
  * Searching for parties by nearest location
  * Hosts can delete any song in a party playlist
  * Party searches by name update while typing
+ * Google Analytics
  * Stability improvements
 
 * 1.1.3
