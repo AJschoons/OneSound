@@ -16,7 +16,7 @@ It was developed by Phil Prescher, Ryan Casler, Tanay Salpekar, and myself. Phil
 OneSound launched in early 2015.
 
 
-### Changelog
+## Changelog
 ===
 * 1.2
  * Save favorite songs
