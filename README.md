@@ -6,11 +6,8 @@ How it works:<br>
 When you're hosting a party, you create a Party in our app, and you and your friends join that Party. Within that Party, you add the songs you want to hear, you vote up/down on the songs your friends add, and our app creates a live, updated playlist based on what everyone wants to hear. The music plays through the Party host's device, and guests do the voting and song submission through their personal phones. 
 
 My roles in the project include:
-
 •Implementing the complete native iOS application in Swift to interface with the OneSound API, Facebook iOS SDK, and SoundCloud API
-
 •Collaborating in the development of OneSound's iOS, Android, web, and backend implementations
-
 •Designing the logo, colors, mobile user experience, and mobile user interface
 
 
