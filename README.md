@@ -2,13 +2,13 @@
 
 OneSound is an app that lets everyone at a party or event be the DJ.
 
-How it works:<br>
+How it works:<br />
 When you're hosting a party, you create a Party in our app, and you and your friends join that Party. Within that Party, you add the songs you want to hear, you vote up/down on the songs your friends add, and our app creates a live, updated playlist based on what everyone wants to hear. The music plays through the Party host's device, and guests do the voting and song submission through their personal phones. 
 
-My roles in the project include:
-•Implementing the complete native iOS application in Swift to interface with the OneSound API, Facebook iOS SDK, and SoundCloud API
-•Collaborating in the development of OneSound's iOS, Android, web, and backend implementations
-•Designing the logo, colors, mobile user experience, and mobile user interface
+My roles in the project include:<br />
+•Implementing the complete native iOS application in Swift to interface with the OneSound API, Facebook iOS SDK, and SoundCloud API<br />
+•Collaborating in the development of OneSound's iOS, Android, web, and backend implementations<br />
+•Designing the logo, colors, IOS mobile user experience/interface<br />
 
 
 It was developed by Phil Prescher, Ryan Casler, Tanay Salpekar, and myself. Phil did our server-side programming with primarily Sinatra in Ruby, Ryan did our Android App in Java, I developed our iOS app in Swift, and Tanay helped with all the different apps. 
