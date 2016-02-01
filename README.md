@@ -1,8 +1,8 @@
 ![onesound banner](https://cloud.githubusercontent.com/assets/7013639/12734371/09e6ac7c-c90e-11e5-8056-d2afd78a5a5a.png)
 
-Welcome to the repository for the OneSound iOS app. OneSound is an app that lets everyone at a party or event be the DJ.
-Website: www.onesoundapp.com
-iOS: https://itunes.apple.com/us/app/onesound/id954878250
+Welcome to the repository for the OneSound iOS app. OneSound is an app that lets everyone at a party or event be the DJ.<br />
+Website: www.onesoundapp.com<br />
+iOS: https://itunes.apple.com/us/app/onesound/id954878250<br />
 
 How it works:<br />
 When you're hosting a party, you create a Party in our app, and you and your friends join that Party. Within that Party, you add the songs you want to hear, you vote up/down on the songs your friends add, and our app creates a live, updated playlist based on what everyone wants to hear. The music plays through the Party host's device, and guests do the voting and song submission through their personal phones. 
