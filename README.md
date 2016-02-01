@@ -17,6 +17,7 @@ It was developed by Phil Prescher, Ryan Casler, Tanay Salpekar, and myself. Phil
 
 OneSound launched in early 2015.
 
+<img src="https://cloud.githubusercontent.com/assets/7013639/12734567/6e4461c2-c90f-11e5-936a-6d8e754bbb7c.jpg" width="23%"></img> <img src="https://cloud.githubusercontent.com/assets/7013639/12734569/71505f2e-c90f-11e5-953f-f4b40174713d.jpg" width="23%"></img> <img src="https://cloud.githubusercontent.com/assets/7013639/12734571/73632512-c90f-11e5-8390-c3bfbac2fc70.jpg" width="23%"></img> <img src="https://cloud.githubusercontent.com/assets/7013639/12734574/75d4f2f8-c90f-11e5-8a3f-54bfea303b8c.jpg" width="23%"></img> 
 
 ## Changelog
 ===
